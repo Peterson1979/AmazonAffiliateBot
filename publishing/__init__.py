@@ -7,7 +7,6 @@ from .config import PublishingConfig, DEFAULT_TARGET_ACCOUNTS
 from .publisher import SocialPublisher, SUPPORTED_PLATFORMS
 from .adapters import (
     BasePlatformAdapter,
-    XAdapter,
     FacebookAdapter,
     InstagramAdapter,
     PinterestAdapter,
@@ -52,7 +51,6 @@ __all__ = [
     "DEFAULT_TARGET_ACCOUNTS",
     "SUPPORTED_PLATFORMS",
     "BasePlatformAdapter",
-    "XAdapter",
     "FacebookAdapter",
     "InstagramAdapter",
     "PinterestAdapter",

@@ -53,7 +53,6 @@ class TestDashboard(unittest.TestCase):
 
         # Set fake environment variables to verify secrets are NEVER leaked in HTML
         os.environ["SECRET_TEST_TOKEN"] = "SUPER_SECRET_12345_TOKEN"
-        os.environ["X_API_KEY"] = "X_SECRET_API_KEY_999"
         os.environ["META_ACCESS_TOKEN"] = "META_SECRET_ACCESS_TOKEN_888"
         os.environ["PINTEREST_ACCESS_TOKEN"] = "PINTEREST_SECRET_TOKEN_777"
         os.environ["THREADS_ACCESS_TOKEN"] = "THREADS_SECRET_TOKEN_666"
@@ -62,7 +61,6 @@ class TestDashboard(unittest.TestCase):
         """Clean up environment variables and restore config.json."""
         for key in [
             "SECRET_TEST_TOKEN",
-            "X_API_KEY",
             "META_ACCESS_TOKEN",
             "PINTEREST_ACCESS_TOKEN",
             "THREADS_ACCESS_TOKEN"
@@ -188,7 +186,6 @@ class TestDashboard(unittest.TestCase):
         resp = self.client.get("/")
         html = resp.get_data(as_text=True)
         # Verify active platform headers
-        self.assertIn("X", html)
         self.assertIn("Facebook", html)
         self.assertIn("Pinterest", html)
         self.assertIn("Threads", html)
@@ -196,7 +193,6 @@ class TestDashboard(unittest.TestCase):
         # Check platform statuses dict directly
         cfg = load_application_config()
         platforms = get_platform_statuses(cfg)
-        self.assertIn("x", platforms)
         self.assertIn("facebook", platforms)
         self.assertIn("pinterest", platforms)
         self.assertIn("threads", platforms)
@@ -416,11 +412,10 @@ class TestDashboard(unittest.TestCase):
             self.assertIn("Publishing Queue Schedule", html)
 
     def test_24_content_preview_with_specific_asin(self):
-        """Content preview for specific ASIN renders all 4 platform preview cards."""
+        """Content preview for specific ASIN renders all active platform preview cards."""
         resp = self.client.get("/content-preview/B0GKGBWRTR")
         self.assertEqual(resp.status_code, 200)
         html = resp.get_data(as_text=True)
-        self.assertIn("X (Twitter)", html)
         self.assertIn("Facebook", html)
         self.assertIn("Pinterest Pin", html)
         self.assertIn("Threads Post", html)

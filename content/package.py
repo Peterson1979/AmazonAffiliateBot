@@ -1,7 +1,7 @@
 """
 Content Package module for AmazonAffiliateBot (V3/V4).
 Defines deterministic Content Package structures and serialization for manual-review-ready handoff.
-Active supported platforms: X, Facebook, Pinterest, Threads.
+Active supported platforms: Facebook, Pinterest, Threads. Historical X entries are not regenerated.
 """
 
 from typing import Dict, Any, Optional, List, Tuple
@@ -12,7 +12,7 @@ import json
 from amazon.scraper import Product
 
 
-SUPPORTED_PLATFORMS = ("x", "facebook", "pinterest", "threads")
+SUPPORTED_PLATFORMS = ("facebook", "pinterest", "threads")
 
 STATUS_READY_FOR_REVIEW = "READY_FOR_REVIEW"
 STATUS_FAILED_VALIDATION = "FAILED_VALIDATION"
@@ -22,7 +22,7 @@ STATUS_VALID = "VALID"
 class ContentPackage:
     """
     Deterministic Content Package builder and serializer for V3/V4.
-    Structures validated social copy for X, Facebook, Pinterest, and Threads
+    Structures validated social copy for Facebook, Pinterest, and Threads
     into a single machine-readable package for manual review and publishing.
     """
 
@@ -100,6 +100,9 @@ class ContentPackage:
                 # Content presence check
                 if p_name == "pinterest":
                     has_content = bool(p_data.get("title", "").strip() and p_data.get("description", "").strip())
+                    if not p_data.get("image_url"):
+                        p_errors.append("Pinterest requires a verified product image URL.")
+                        has_content = False
                 else:
                     content_text = (p_data.get("content") or p_data.get("text", "")).strip()
                     has_content = bool(content_text)

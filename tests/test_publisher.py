@@ -16,7 +16,6 @@ if str(PROJECT_ROOT) not in sys.path:
 from publishing.config import PublishingConfig, DEFAULT_TARGET_ACCOUNTS
 from publishing.publisher import SocialPublisher, SUPPORTED_PLATFORMS
 from publishing.adapters import (
-    XAdapter,
     FacebookAdapter,
     PinterestAdapter,
     ThreadsAdapter,
@@ -37,11 +36,6 @@ class TestPublisher(unittest.TestCase):
                 "product_cache": "data/products/asin_B0GKGBWRTR.json"
             },
             "platforms": {
-                "x": {
-                    "status": "VALID",
-                    "content": "Valid X post text.",
-                    "validation": {"status": "VALID", "retry_count": 0, "errors": []}
-                },
                 "facebook": {
                     "status": "VALID",
                     "content": "Valid Facebook post text.",
@@ -51,6 +45,7 @@ class TestPublisher(unittest.TestCase):
                     "status": "VALID",
                     "title": "Valid Pin Title",
                     "description": "Valid Pin Description",
+                    "image_url": "https://m.media-amazon.com/images/I/test.jpg",
                     "validation": {"status": "VALID", "retry_count": 0, "errors": []}
                 },
                 "threads": {
@@ -62,12 +57,12 @@ class TestPublisher(unittest.TestCase):
         }
 
     def test_configured_target_accounts(self):
-        """Verify all 4 active target accounts are correctly configured."""
+        """Verify the three active target accounts are correctly configured."""
         config = PublishingConfig()
         accounts = config.accounts
 
-        self.assertEqual(len(accounts), 4)
-        self.assertEqual(accounts["x"]["account"], "@BitGoldone")
+        self.assertEqual(len(accounts), 3)
+        self.assertNotIn("x", accounts)
         self.assertEqual(accounts["facebook"]["account"], "LifeModeHQ")
         self.assertEqual(accounts["pinterest"]["account"], "dailyideasforyou")
         self.assertEqual(accounts["pinterest"]["board"], "Shopping ideas")
@@ -80,7 +75,7 @@ class TestPublisher(unittest.TestCase):
 
         self.assertEqual(report["mode"], "DRY_RUN")
         self.assertEqual(report["status"], STATUS_WOULD_PUBLISH)
-        self.assertEqual(len(report["results"]), 4)
+        self.assertEqual(len(report["results"]), 3)
 
         for p_name in SUPPORTED_PLATFORMS:
             res = report["results"][p_name]

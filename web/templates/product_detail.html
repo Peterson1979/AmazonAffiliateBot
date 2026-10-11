@@ -75,30 +75,6 @@
     <div class="card-title" style="margin-bottom: 16px;">Generated Multi-Platform Copy</div>
 
     {% if product.platforms %}
-      <!-- X Platform -->
-      {% if 'x' in product.platforms %}
-        {% set x_p = product.platforms['x'] %}
-        <div class="platform-card">
-          <div class="platform-header">
-            <span class="platform-title">X (Twitter) Copy</span>
-            {% if x_p.status == 'VALID' or x_p.status == 'READY_FOR_REVIEW' %}
-              <span class="badge badge-success">VALID</span>
-            {% else %}
-              <span class="badge badge-danger">FAIL</span>
-            {% endif %}
-          </div>
-          <div class="copy-preview">{{ x_p.content }}</div>
-          {% if x_p.errors %}
-            <div style="margin-top: 8px; font-size: 0.82rem; color: var(--danger);">
-              <strong>Validation Issues:</strong>
-              <ul style="padding-left: 18px;">
-                {% for err in x_p.errors %}<li>{{ err }}</li>{% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-        </div>
-      {% endif %}
-
       <!-- Facebook Platform -->
       {% if 'facebook' in product.platforms %}
         {% set fb_p = product.platforms['facebook'] %}

@@ -863,6 +863,15 @@ class QueuePublisher:
                     item.status = STATUS_FAILED
                     failed_count += 1
 
+                if item.status == STATUS_FAILED:
+                    failure_messages = []
+                    for result in platform_results.values():
+                        failure_messages.extend(result.get("errors", []))
+                    if failure_messages:
+                        for message in failure_messages:
+                            if message not in item.errors:
+                                item.errors.append(message)
+
                 item.published_at = current_dt.isoformat()
                 item.publishing_results = platform_results
 

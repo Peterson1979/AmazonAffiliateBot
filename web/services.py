@@ -33,6 +33,7 @@ from content.package import (
     STATUS_VALID,
     SUPPORTED_PLATFORMS
 )
+from publishing.images import recover_verified_image_url
 from publishing.queue import (
     PublishingQueue,
     QueueItem,
@@ -96,7 +97,6 @@ def load_application_config(config_path: Path = CONFIG_PATH) -> Dict[str, Any]:
         "publishing": {
             "dry_run": True,
             "accounts": {
-                "x": {"account": "@BitGoldone"},
                 "facebook": {"account": "LifeModeHQ"},
                 "pinterest": {"account": "dailyideasforyou", "board": "Shopping ideas", "board_id": "1033646620665866548"},
                 "threads": {"account": "lifemodehq"}
@@ -205,12 +205,12 @@ def check_windows_tasks_status() -> Dict[str, Any]:
 
 def get_platform_statuses(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     """
-    Get configured status of active platforms (X, Facebook, Pinterest, Threads).
+    Get configured status of active platforms (Facebook, Pinterest, Threads).
     Instagram is excluded.
     Never exposes raw secrets or tokens.
     """
     pub_cfg = PublishingConfig.from_dict(config)
-    platforms = ["x", "facebook", "pinterest", "threads"]
+    platforms = ["facebook", "pinterest", "threads"]
     res = {}
 
     for p in platforms:
@@ -220,9 +220,7 @@ def get_platform_statuses(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         
         # Check credentials presence safely from environment variables
         has_creds = False
-        if p == "x":
-            has_creds = bool(os.environ.get("X_API_KEY") and os.environ.get("X_ACCESS_TOKEN"))
-        elif p == "facebook":
+        if p == "facebook":
             has_creds = bool(os.environ.get("META_ACCESS_TOKEN") and os.environ.get("FACEBOOK_PAGE_ID"))
         elif p == "pinterest":
             has_creds = bool(os.environ.get("PINTEREST_ACCESS_TOKEN"))
@@ -230,7 +228,7 @@ def get_platform_statuses(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             has_creds = bool(os.environ.get("THREADS_ACCESS_TOKEN"))
 
         res[p] = {
-            "name": p.capitalize() if p != "x" else "X",
+            "name": p.capitalize(),
             "account": account_name,
             "board": board_name,
             "credentials_status": "Configured" if has_creds else "Missing",
@@ -382,7 +380,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
                 "scheduled_at": next_it.scheduled_at,
                 "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
                 "status": next_it.status,
-                "platforms": ["X", "Facebook", "Pinterest", "Threads"]
+                "platforms": ["Facebook", "Pinterest", "Threads"]
             }
             for it_dt, it in active_items[:6]:
                 upcoming_items.append({
@@ -393,7 +391,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
                     "slot_time": "12:00" if it.daily_slot == 1 else "19:00",
                     "scheduled_at": it.scheduled_at,
                     "status": it.status,
-                    "platforms": ["X", "Facebook", "Pinterest", "Threads"]
+                    "platforms": ["Facebook", "Pinterest", "Threads"]
                 })
         elif queue.items:
             # Fallback if all items are before now_dt or unscheduled
@@ -408,7 +406,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
                     "scheduled_at": next_it.scheduled_at,
                     "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
                     "status": next_it.status,
-                    "platforms": ["X", "Facebook", "Pinterest", "Threads"]
+                    "platforms": ["Facebook", "Pinterest", "Threads"]
                 }
 
     target_capacity = config.get("discovery", {}).get("target_future_capacity", DEFAULT_TARGET_FUTURE_CAPACITY)
@@ -797,6 +795,8 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
     if not product and not package and not queue_item:
         return None
 
+    verified_image_url = recover_verified_image_url(package or {}) if package else None
+
     # Format structured canonical facts cleanly
     structured_facts: Dict[str, Any] = {
         "title": product.title if product else (facts.title if facts else ""),
@@ -811,6 +811,7 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
         ],
         "confirmed_concepts": sorted(list(facts.grounded_concepts)) if facts else [],
         "numeric_groundings": sorted(list(facts.source_numbers)) if facts else [],
+        "image_url": verified_image_url or (getattr(product, "image_url", None) if product else None),
         "is_sufficient": facts.is_sufficient() if facts else False
     }
 
@@ -821,7 +822,7 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
             p_data = package["platforms"].get(p_name, {})
             val_meta = p_data.get("validation", {})
             platforms_content[p_name] = {
-                "name": p_name.capitalize() if p_name != "x" else "X",
+                "name": p_name.capitalize(),
                 "status": p_data.get("status", "MISSING"),
                 "content": p_data.get("content", ""),
                 "title": p_data.get("title", ""),

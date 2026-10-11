@@ -2,7 +2,7 @@
 """
 AmazonAffiliateBot - Main Runner (V2/V3/V4)
 Scrapes Amazon affiliate links via Selenium & Firefox, normalizes product details,
-caches data locally, and generates platform-specific social copy (X, Facebook,
+caches data locally, and generates platform-specific social copy (Facebook,
 Pinterest, Threads) using local Ollama (qwen2.5:7b).
 """
 
@@ -151,11 +151,8 @@ def print_v2_preview(
     package_path: Optional[Path] = None,
     package_status: Optional[str] = None
 ) -> None:
-    """Render structured terminal preview for all 4 supported social platforms."""
+    """Render structured terminal preview for active social platforms."""
     platforms = social_data.get("platforms", {})
-
-    print("\n=== X ===", flush=True)
-    print(platforms.get("x", {}).get("text", "(No content generated)"), flush=True)
 
     print("\n=== FACEBOOK ===", flush=True)
     print(platforms.get("facebook", {}).get("text", "(No content generated)"), flush=True)
@@ -205,7 +202,7 @@ def main():
     parser.add_argument("--discovery-queries", default=None, help="Comma-separated custom Amazon search queries for discovery")
     parser.add_argument("--history-file", default=None, help="Path to discovery history JSON (default: data/discovery/discovery_history.json)")
     parser.add_argument("--log-file", default=None, help="Path to daily publisher log file (default: data/logs/daily_publisher.log)")
-    parser.add_argument("--platform", choices=["all", "x", "facebook", "pinterest", "threads"], default="all", help="Generate for specific platform (default: all)")
+    parser.add_argument("--platform", choices=["all", "facebook", "pinterest", "threads"], default="all", help="Generate for specific platform (default: all)")
     parser.add_argument("--publish", action="store_true", help="Publish content package to target accounts in DRY_RUN mode")
     parser.add_argument("--live-publish", action="store_true", help="Publish content package live to target accounts (requires credentials)")
     parser.add_argument("--v1", action="store_true", help="Run legacy V1 single recommendation generator")
@@ -459,11 +456,11 @@ def main():
             print(f"[ERROR] {e}", file=sys.stderr, flush=True)
             sys.exit(1)
     else:
-        # V2 Multi-Platform Flow (X, Facebook, Pinterest, Threads)
+        # Active multi-platform flow (Facebook, Pinterest, Threads)
         generator = ContentGenerator(ollama_client=ollama)
         try:
             if args.platform == "all":
-                print("[INFO] Generating platform-specific content (X, Facebook, Pinterest, Threads)...", flush=True)
+                print("[INFO] Generating platform-specific content (Facebook, Pinterest, Threads)...", flush=True)
                 social_data = generator.generate_all_platforms(
                     product=product,
                     disclosure=disclosure_text

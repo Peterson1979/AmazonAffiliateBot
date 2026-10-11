@@ -32,28 +32,6 @@
 
 {% if product and product.platforms %}
 <div class="grid-2">
-  <!-- X Platform Preview -->
-  {% if 'x' in product.platforms %}
-  {% set x_p = product.platforms['x'] %}
-  <div class="platform-card">
-    <div class="platform-header">
-      <div>
-        <span class="platform-title">X (Twitter)</span>
-        <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>@BitGoldone</code></div>
-      </div>
-      {% if x_p.status == 'VALID' or x_p.status == 'READY_FOR_REVIEW' %}
-        <span class="badge badge-success">VALIDATED</span>
-      {% else %}
-        <span class="badge badge-danger">FAILED VALIDATION</span>
-      {% endif %}
-    </div>
-    <div class="copy-preview">{{ x_p.content }}</div>
-    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
-      Affiliate Link & FTC Disclosure included &bull; Strict proposition grounding verified
-    </div>
-  </div>
-  {% endif %}
-
   <!-- Facebook Platform Preview -->
   {% if 'facebook' in product.platforms %}
   {% set fb_p = product.platforms['facebook'] %}

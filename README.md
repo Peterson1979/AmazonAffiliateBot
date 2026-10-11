@@ -1,6 +1,6 @@
 # AmazonAffiliateBot
 
-A modular, standalone Python automation tool that scrapes Amazon affiliate product pages using Selenium and Firefox, extracts and normalizes product data, and uses a local **Ollama** LLM (`qwen2.5:7b`) to generate platform-specific, strictly grounded social media copy for **X, Facebook, Pinterest, and Threads**.
+A modular, standalone Python automation tool that scrapes Amazon affiliate product pages using Selenium and Firefox, extracts and normalizes product data, and uses a local **Ollama** LLM (`qwen2.5:7b`) to generate platform-specific, strictly grounded social media copy for **Facebook, Pinterest, and Threads**.
 
 ---
 
@@ -19,7 +19,7 @@ Amazon Affiliate URL
         ▼                         ▼
 [Local Product Cache]     [Platform-Specific Ollama Prompts (qwen2.5:7b)]
  (data/products/*.json)           │
-                                  ├─ X (Short, natural, concise product facts)
+                                  ├─ Facebook (Short, natural, concise product facts)
                                   ├─ Facebook (2-4 paragraphs, readable breakdown)
                                   ├─ Pinterest (JSON title + description)
                                   └─ Threads (Casual, conversational)
@@ -119,7 +119,7 @@ Configuration is stored in `config.json`:
 
 ## Usage
 
-### 1. Generate Social Media Content (All 4 Platforms)
+### 1. Generate Social Media Content (All Active Platforms)
 Run the main runner with any Amazon affiliate or product URL:
 
 ```powershell
@@ -130,7 +130,6 @@ If the product was already scraped, it instantly loads from the local cache (`da
 
 ### 2. Generate for a Specific Platform
 ```powershell
-python amazon_affiliate.py "https://link.amazon/B0hwa4Nkm" --platform x
 python amazon_affiliate.py "https://link.amazon/B0hwa4Nkm" --platform facebook
 python amazon_affiliate.py "https://link.amazon/B0hwa4Nkm" --platform pinterest
 python amazon_affiliate.py "https://link.amazon/B0hwa4Nkm" --platform threads
@@ -156,9 +155,6 @@ python amazon_affiliate.py "https://link.amazon/B0hwa4Nkm" --platform threads
   "product_title": "Laptop Stand Ergonomic Adjustable...",
   "generated_with": "qwen2.5:7b",
   "platforms": {
-    "x": {
-      "text": "..."
-    },
     "facebook": {
       "text": "..."
     },
@@ -201,7 +197,7 @@ AmazonAffiliateBot/
 │   └── ollama.py          # Local Ollama client (qwen2.5:7b)
 ├── content/
 │   ├── __init__.py
-│   ├── prompts.py         # Dedicated prompts for X, FB, Pinterest, Threads
+│   ├── prompts.py         # Dedicated prompts for Facebook, Pinterest, Threads
 │   ├── validator.py       # Factual grounding & claim validator
 │   └── generator.py       # Multi-platform content generator & 1-retry orchestration
 ├── data/

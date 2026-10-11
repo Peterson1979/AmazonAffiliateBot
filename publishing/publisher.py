@@ -2,13 +2,12 @@
 Social media publisher module for AmazonAffiliateBot (V4).
 Consumes validated V3/V4 Content Packages and orchestrates publishing across all target accounts.
 Supports DRY_RUN mode by default without requiring live credentials or network calls.
-Active supported platforms: X, Facebook, Pinterest, Threads.
+Active supported platforms: Facebook, Pinterest, and Threads.
 """
 
 from typing import Dict, Any, Optional, List
 from .config import PublishingConfig, DEFAULT_TARGET_ACCOUNTS
 from .adapters import (
-    XAdapter,
     FacebookAdapter,
     PinterestAdapter,
     ThreadsAdapter,
@@ -19,7 +18,7 @@ from .adapters import (
     STATUS_SKIPPED
 )
 
-SUPPORTED_PLATFORMS = ("x", "facebook", "pinterest", "threads")
+SUPPORTED_PLATFORMS = ("facebook", "pinterest", "threads")
 
 
 class SocialPublisher:
@@ -39,7 +38,6 @@ class SocialPublisher:
 
         # Instantiate adapters with platform-specific credentials
         self.adapters: Dict[str, BasePlatformAdapter] = {
-            "x": XAdapter(credentials=self.config.credentials.get("x")),
             "facebook": FacebookAdapter(credentials=self.config.credentials.get("facebook")),
             "pinterest": PinterestAdapter(credentials=self.config.credentials.get("pinterest")),
             "threads": ThreadsAdapter(credentials=self.config.credentials.get("threads")),
@@ -77,6 +75,34 @@ class SocialPublisher:
         results: Dict[str, Any] = {}
         all_succeeded = True
 
+        # Fail closed before routing anything: a missing Pinterest image must
+        # not result in a partial live publication on another platform.
+        from publishing.images import is_valid_image_url, recover_verified_image_url
+        pinterest_content = platforms_dict.get("pinterest") or {}
+        if not pinterest_content.get("image_url"):
+            recovered = recover_verified_image_url(package)
+            if recovered:
+                pinterest_content["image_url"] = recovered
+        if not is_valid_image_url(pinterest_content.get("image_url")):
+            reason = "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
+            for platform_name in SUPPORTED_PLATFORMS:
+                account_cfg = self.config.accounts.get(platform_name, {})
+                results[platform_name] = {
+                    "platform": platform_name,
+                    "account": account_cfg.get("account", ""),
+                    "action": "PUBLISH",
+                    "mode": mode,
+                    "status": STATUS_FAILED if platform_name == "pinterest" else STATUS_SKIPPED,
+                    "errors": [reason] if platform_name == "pinterest" else ["Skipped because item image preflight was blocked."],
+                }
+            return {
+                "asin": package.get("asin", ""),
+                "package_status": package_status,
+                "mode": mode,
+                "status": STATUS_FAILED,
+                "results": results,
+            }
+
         for platform_name in SUPPORTED_PLATFORMS:
             adapter = self.adapters.get(platform_name)
             p_content = platforms_dict.get(platform_name)
@@ -107,21 +133,25 @@ class SocialPublisher:
                 all_succeeded = False
                 continue
 
-            # Resolve image_url from package or product cache if missing in platform content
+            # Resolve only from this package or its same-ASIN product cache.
             if not p_content.get("image_url"):
-                img_candidate = package.get("image_url") or package.get("source", {}).get("image_url")
-                if not img_candidate and package.get("asin"):
-                    from pathlib import Path
-                    p_cache_file = Path("data/products") / f"asin_{package['asin'].upper()}.json"
-                    if p_cache_file.exists():
-                        try:
-                            import json as j_mod
-                            with open(p_cache_file, "r", encoding="utf-8") as pf:
-                                img_candidate = j_mod.load(pf).get("image_url")
-                        except Exception:
-                            pass
+                img_candidate = recover_verified_image_url(package)
                 if img_candidate:
                     p_content["image_url"] = img_candidate
+
+            if platform_name == "pinterest":
+                from publishing.images import is_valid_image_url
+                if not is_valid_image_url(p_content.get("image_url")):
+                    results[platform_name] = {
+                        "platform": platform_name,
+                        "account": account_cfg.get("account", ""),
+                        "action": "PUBLISH",
+                        "mode": mode,
+                        "status": STATUS_FAILED,
+                        "errors": ["Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."],
+                    }
+                    all_succeeded = False
+                    continue
 
             # Route to platform adapter
             account_cfg_to_use = dict(account_cfg)

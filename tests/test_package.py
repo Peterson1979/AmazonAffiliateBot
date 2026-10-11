@@ -44,22 +44,19 @@ class TestContentPackage(unittest.TestCase):
             "product_title": self.sample_product.title,
             "generated_with": "qwen2.5:7b",
             "platforms": {
-                "x": {
-                    "text": f"17.3-inch Laptop Stand adjusts up to 7 inches and fits 10 to 17.3 inches devices with 11 lbs capacity.\n\nLink: {self.sample_product.affiliate_url}\n\n{self.disclosure}"
-                },
                 "facebook": {
                     "text": f"17.3-inch Laptop Stand with 7 inches of height adjustment and 11 lbs capacity.\n\nSupports 10 to 17.3 inches laptops and folds to 10 x 8.7 x 1.8 inches.\n\nLink: {self.sample_product.affiliate_url}\n\n{self.disclosure}"
                 },
                 "pinterest": {
                     "title": "17.3-inch Laptop Stand",
-                    "description": f"7 inches height adjustment, 10 to 17.3 inches device range, 11 lbs loading capacity. {self.sample_product.affiliate_url} {self.disclosure}"
+                    "description": f"7 inches height adjustment, 10 to 17.3 inches device range, 11 lbs loading capacity. {self.sample_product.affiliate_url} {self.disclosure}",
+                    "image_url": "https://m.media-amazon.com/images/I/test.jpg"
                 },
                 "threads": {
                     "text": f"17.3-inch Laptop Stand with 7 inches height adjustment, supporting 10 to 17.3 inches laptops up to 11 lbs.\n\nLink: {self.sample_product.affiliate_url}\n\n{self.disclosure}"
                 }
             },
             "validation_metadata": {
-                "x": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
                 "facebook": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
                 "pinterest": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
                 "threads": {"status": STATUS_VALID, "retry_count": 0, "errors": []}
@@ -84,7 +81,6 @@ class TestContentPackage(unittest.TestCase):
         """Test 2: If one platform fails validation, status is FAILED_VALIDATION and not ready."""
         invalid_social_data = dict(self.valid_social_data)
         invalid_social_data["validation_metadata"] = {
-            "x": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
             "facebook": {"status": STATUS_FAILED_VALIDATION, "retry_count": 1, "errors": ["Unsupported generalization"]},
             "pinterest": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
             "threads": {"status": STATUS_VALID, "retry_count": 0, "errors": []}
@@ -112,14 +108,14 @@ class TestContentPackage(unittest.TestCase):
         self.assertEqual(pin_entry["title"], "17.3-inch Laptop Stand")
         self.assertIn("7 inches height adjustment", pin_entry["description"])
 
-    def test_all_four_active_platforms_present(self):
+    def test_all_three_active_platforms_present(self):
         """Test 4: Package platform set contains exactly x, facebook, pinterest, threads."""
         package = ContentPackage.build_package(
             product=self.sample_product,
             social_data=self.valid_social_data
         )
         platform_keys = set(package["platforms"].keys())
-        expected_platforms = {"x", "facebook", "pinterest", "threads"}
+        expected_platforms = {"facebook", "pinterest", "threads"}
         self.assertEqual(platform_keys, expected_platforms)
         self.assertNotIn("instagram", platform_keys)
 
@@ -142,7 +138,6 @@ class TestContentPackage(unittest.TestCase):
         """Test 6: Verify successful generation after one retry can be represented with retry_count = 1."""
         retry_social_data = dict(self.valid_social_data)
         retry_social_data["validation_metadata"] = {
-            "x": {"status": STATUS_VALID, "retry_count": 1, "errors": []},
             "facebook": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
             "pinterest": {"status": STATUS_VALID, "retry_count": 0, "errors": []},
             "threads": {"status": STATUS_VALID, "retry_count": 0, "errors": []}
@@ -153,8 +148,6 @@ class TestContentPackage(unittest.TestCase):
             social_data=retry_social_data
         )
         self.assertEqual(package["status"], STATUS_READY_FOR_REVIEW)
-        self.assertEqual(package["platforms"]["x"]["validation"]["retry_count"], 1)
-        self.assertEqual(package["platforms"]["x"]["validation"]["status"], STATUS_VALID)
         self.assertEqual(package["platforms"]["facebook"]["validation"]["retry_count"], 0)
 
     def test_failed_package_cannot_be_ready(self):
@@ -162,9 +155,8 @@ class TestContentPackage(unittest.TestCase):
         missing_platform_data = {
             "asin": "B0GKGBWRTR",
             "platforms": {
-                "x": {"text": "Valid X content"},
                 "facebook": {"text": "Valid FB content"},
-                "pinterest": {"title": "Valid Pin", "description": "Valid Desc"}
+            "pinterest": {"title": "Valid Pin", "description": "Valid Desc", "image_url": "https://m.media-amazon.com/images/I/test.jpg"}
                 # threads is omitted/missing
             }
         }

@@ -1,6 +1,6 @@
 """
 Platform-specific prompt builders for AmazonAffiliateBot (V2/V3/V4).
-Defines pure language-transformation prompt templates and strict factual grounding rules for X, Facebook, Pinterest, and Threads.
+Defines pure language-transformation prompt templates and strict factual grounding rules for Facebook, Pinterest, and Threads.
 Enforces the Universal Content Rule: The LLM is strictly a language transformation layer that rephrases,
 condenses, and organizes confirmed SOURCE FACTS without adding marketing hooks, generalizations, or inferred claims.
 """
@@ -52,30 +52,6 @@ COMMON_CONTENT_RULES = """REPHRASING INSTRUCTIONS & CONSTRAINTS:
    - NEVER invent, swap, convert, substitute, or introduce numbers or units not present in SOURCE FACTS.
 8. Use the exact product title or a clean, natural product-oriented compression of it from SOURCE FACTS.
 9. Output ONLY the factual body text. Do not include affiliate links, disclosures, preamble, bullet markers, or quotes."""
-
-
-def build_x_prompt(product: Union[Product, CanonicalProductFacts]) -> str:
-    """
-    Build prompt for generating an X (Twitter) post.
-    Short, natural, readable product recommendation using the most relevant supported facts.
-    Avoids turning the post into a specification dump.
-    """
-    source_facts = format_source_facts(product)
-    return f"""You are writing a concise, natural product recommendation for X (Twitter).
-
-{COMMON_CONTENT_RULES}
-
-PLATFORM FORMAT (X):
-1. Write 1 to 2 natural, readable sentences highlighting key confirmed specifications and components from SOURCE FACTS.
-2. Select 2-3 core features and integrate them naturally using standard verbs like "features", "includes", "is equipped with", or "has" (e.g. "The Electactic espresso machine features 15 bar pressure, an integrated grinder, and a 2.3 litre water tank.").
-3. Avoid raw specification dumps, bullet points, or outside verbs like "operates".
-4. Tone: Natural, concise, clear, and informative. No hashtags, no sales hype, no emojis.
-5. Output ONLY the factual post body text.
-
-{source_facts}
-
-Write the natural factual X post body text for the product in SOURCE FACTS above:
-Post:"""
 
 
 def build_facebook_prompt(product: Union[Product, CanonicalProductFacts]) -> str:
@@ -162,7 +138,6 @@ Post:"""
 
 
 PLATFORM_PROMPTS: Dict[str, Callable[[Product], str]] = {
-    "x": build_x_prompt,
     "facebook": build_facebook_prompt,
     "pinterest": build_pinterest_prompt,
     "threads": build_threads_prompt,

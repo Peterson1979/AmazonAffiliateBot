@@ -1,7 +1,7 @@
 """
 Publishing configuration and target accounts for AmazonAffiliateBot (V4).
 Defines target accounts, credentials loading from environment, and DRY_RUN mode.
-Active supported platforms: X, Facebook, Pinterest, Threads.
+Active supported platforms: Facebook, Pinterest, Threads. Legacy platform data is retained but not routed.
 """
 
 import os
@@ -16,9 +16,6 @@ except ImportError:
 
 
 DEFAULT_TARGET_ACCOUNTS = {
-    "x": {
-        "account": "@BitGoldone"
-    },
     "facebook": {
         "account": "LifeModeHQ"
     },
@@ -64,12 +61,6 @@ class PublishingConfig:
 
         # Load credentials securely from environment variables only
         credentials = {
-            "x": {
-                "api_key": os.environ.get("X_API_KEY", ""),
-                "api_secret": os.environ.get("X_API_SECRET", ""),
-                "access_token": os.environ.get("X_ACCESS_TOKEN", ""),
-                "access_token_secret": os.environ.get("X_ACCESS_TOKEN_SECRET", "")
-            },
             "facebook": {
                 "access_token": os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN") or os.environ.get("META_ACCESS_TOKEN", ""),
                 "page_id": os.environ.get("FACEBOOK_PAGE_ID", "")

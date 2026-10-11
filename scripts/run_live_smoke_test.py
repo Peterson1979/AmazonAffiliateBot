@@ -41,9 +41,9 @@ def run_smoke_test():
         print(f"ERROR: Package is not READY_FOR_REVIEW: status={package.get('status')}. ABORTING live smoke test.")
         sys.exit(1)
 
-    # Verify all 4 platforms in package are VALID
+    # Verify active platforms in package are VALID
     platforms = package.get("platforms", {})
-    active_platforms = ("x", "facebook", "pinterest", "threads")
+    active_platforms = ("facebook", "pinterest", "threads")
     for p in active_platforms:
         p_data = platforms.get(p, {})
         p_val_status = p_data.get("status")
@@ -95,11 +95,8 @@ def run_smoke_test():
                 print(f"  WARNING: Platform '{p_name}' did not return STATUS_PUBLISHED (got '{status}').")
                 # Check failure behavior requirement:
                 # If the first live platform fails unexpectedly, STOP the remaining live publishing attempts.
-                if p_name == "x" and "missing" in str(pub_res.get("errors", "")).lower() and "credentials" in str(pub_res.get("errors", "")).lower():
-                    print("  (X lacks API keys in .env; proceeding to test remaining configured platforms.)")
-                else:
-                    print(f"  Stopping remaining platforms due to failure on {p_name}.")
-                    stop_early = True
+                print(f"  Stopping remaining platforms due to failure on {p_name}.")
+                stop_early = True
 
         except Exception as e:
             print(f"  EXCEPTION on {p_name}: {e}")

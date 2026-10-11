@@ -515,9 +515,8 @@ class TestQueuePublisher(unittest.TestCase):
             "asin": "B0ESPRESS1",
             "status": STATUS_READY_FOR_REVIEW,
             "platforms": {
-                "x": {"status": "VALID", "content": "Espresso machine with 15 bar pump. https://link.amazon/1"},
                 "facebook": {"status": "VALID", "content": "Espresso machine.\n\n15 bar pump.\n\nhttps://link.amazon/1"},
-                "pinterest": {"status": "VALID", "title": "Espresso Machine", "description": "15 bar pump https://link.amazon/1"},
+                "pinterest": {"status": "VALID", "title": "Espresso Machine", "description": "15 bar pump https://link.amazon/1", "image_url": "https://m.media-amazon.com/images/I/test1.jpg"},
                 "threads": {"status": "VALID", "content": "Espresso machine. 15 bar pump. https://link.amazon/1"},
             }
         }
@@ -525,9 +524,8 @@ class TestQueuePublisher(unittest.TestCase):
             "asin": "B0MONITOR2",
             "status": STATUS_READY_FOR_REVIEW,
             "platforms": {
-                "x": {"status": "VALID", "content": "4K Monitor 27-inch IPS. https://link.amazon/2"},
                 "facebook": {"status": "VALID", "content": "4K Monitor.\n\n27-inch IPS.\n\nhttps://link.amazon/2"},
-                "pinterest": {"status": "VALID", "title": "4K Monitor", "description": "27-inch IPS https://link.amazon/2"},
+                "pinterest": {"status": "VALID", "title": "4K Monitor", "description": "27-inch IPS https://link.amazon/2", "image_url": "https://m.media-amazon.com/images/I/test2.jpg"},
                 "threads": {"status": "VALID", "content": "4K Monitor. 27-inch IPS. https://link.amazon/2"},
             }
         }
@@ -784,11 +782,9 @@ class TestQueuePublisher(unittest.TestCase):
         self.assertEqual(item.status, STATUS_PUBLISHED)
         self.assertEqual(item.published_at, "2026-10-07T12:30:00+02:00")
         self.assertIsNotNone(item.publishing_results)
-        self.assertIn("x", item.publishing_results)
         self.assertIn("facebook", item.publishing_results)
         self.assertIn("pinterest", item.publishing_results)
         self.assertIn("threads", item.publishing_results)
-        self.assertEqual(item.publishing_results["x"]["status"], STATUS_WOULD_PUBLISH)
 
     # ==================== 11. FAILED PUBLICATION NOT FALSELY MARKED SUCCESSFUL ====================
 
@@ -811,7 +807,6 @@ class TestQueuePublisher(unittest.TestCase):
                         "mode": "DRY_RUN",
                         "status": "FAILED",
                         "results": {
-                            "x": {"status": PLATFORM_STATUS_FAILED, "errors": ["Network error"]},
                             "facebook": {"status": PLATFORM_STATUS_FAILED, "errors": ["Network error"]},
                             "pinterest": {"status": PLATFORM_STATUS_FAILED, "errors": ["Network error"]},
                             "threads": {"status": PLATFORM_STATUS_FAILED, "errors": ["Network error"]},
@@ -822,7 +817,6 @@ class TestQueuePublisher(unittest.TestCase):
                         "mode": "DRY_RUN",
                         "status": "FAILED",
                         "results": {
-                            "x": {"status": STATUS_WOULD_PUBLISH},
                             "facebook": {"status": STATUS_WOULD_PUBLISH},
                             "pinterest": {"status": PLATFORM_STATUS_FAILED, "errors": ["Pinterest API down"]},
                             "threads": {"status": STATUS_WOULD_PUBLISH},

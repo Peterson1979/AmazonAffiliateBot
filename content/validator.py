@@ -506,7 +506,7 @@ class ClaimValidator:
     ) -> Tuple[bool, List[str]]:
         """
         Validate generated platform content for claim grounding, compliance, and formatting.
-        Active platforms: x, facebook, pinterest, threads.
+        Active platforms: facebook, pinterest, threads.
         """
         platform_key = platform.lower().strip()
         issues: List[str] = []
@@ -549,7 +549,7 @@ class ClaimValidator:
             if disclosure and disclosure.strip() not in description:
                 issues.append("Affiliate disclosure is missing from Pinterest description.")
 
-        elif platform_key in ("x", "facebook", "threads"):
+        elif platform_key in ("facebook", "threads"):
             text = content.get("text", "").strip()
             if not text:
                 issues.append(f"{platform_key.upper()} post text is empty.")
@@ -589,6 +589,6 @@ class ClaimValidator:
                 issues.append(f"Affiliate disclosure is missing from {platform_key.upper()} post.")
 
         else:
-            issues.append(f"Unsupported platform '{platform_key}'. Supported: x, facebook, pinterest, threads.")
+            issues.append(f"Unsupported platform '{platform_key}'. Supported: facebook, pinterest, threads.")
 
         return len(issues) == 0, issues

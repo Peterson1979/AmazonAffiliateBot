@@ -1,7 +1,7 @@
 """
 Content Generator module for AmazonAffiliateBot (V2/V3/V4).
 Orchestrates platform-specific social media copy generation using local Ollama (qwen2.5:7b).
-Supported active platforms: X, Facebook, Pinterest, and Threads.
+Supported active platforms: Facebook, Pinterest, and Threads.
 Enforces strict claim validation and maximum 1 regeneration attempt.
 """
 
@@ -28,7 +28,6 @@ from content.validator import (
 
 # Token budget per platform for CPU efficiency and snappiness
 PLATFORM_PREDICT_TOKENS = {
-    "x": 100,
     "facebook": 320,
     "pinterest": 180,
     "threads": 120,
@@ -107,7 +106,7 @@ def sanitize_generated_text(text: str) -> str:
     text = clean_markdown_fences(text).strip()
     prefixes = [
         r"^(?:CORRECTED|CORRECTION|FIXED|REVISED)\s*(?:POST|TEXT|RECOMMENDATION)?:\s*",
-        r"^(?:Post|Recommendation|Threads post|X post|Facebook post|Title|Description):\s*",
+        r"^(?:Post|Recommendation|Threads post|Facebook post|Title|Description):\s*",
         r"^Here is (?:the|your) (?:post|recommendation|title|description):\s*",
     ]
     for pat in prefixes:
@@ -256,7 +255,7 @@ def extract_grounded_platform_content(
             return {"title": title, "description": description[:400].strip()}
         return None
 
-    # Text-based platforms: X, Facebook, Threads
+    # Text-based platforms: Facebook, Threads
     # Check for hard Layer C violations (price, discounts, fake testimonials)
     for pat in PRICE_PATTERNS + DISCOUNT_DEAL_PATTERNS + PERSONAL_EXPERIENCE_PATTERNS:
         if re.search(pat, raw_text, re.IGNORECASE):
@@ -326,7 +325,7 @@ def extract_grounded_platform_content(
                 p2 = p1
             return {"text": f"{p1}\n\n{p2}"}
     else:
-        # X / Threads
+        # Threads
         combined = clean_formatting(" ".join(valid_sentences[:2]))
         return {"text": combined}
 
@@ -334,7 +333,7 @@ def extract_grounded_platform_content(
 class ContentGenerator:
     """
     Modular social media content generator for V2/V3/V4.
-    Generates factual, compliant copy for X, Facebook, Pinterest, and Threads.
+    Generates factual, compliant copy for Facebook, Pinterest, and Threads.
     Enforces claim grounding and maximum one regeneration attempt.
     """
 
@@ -404,7 +403,7 @@ class ContentGenerator:
         Generate content for a specific social platform with strictly 1 regeneration on failure.
 
         Args:
-            platform: Platform name ('x', 'facebook', 'pinterest', 'threads').
+            platform: Platform name ('facebook', 'pinterest', 'threads').
             product: Normalized Product or CanonicalProductFacts.
             disclosure: Configurable affiliate disclosure string.
 
@@ -537,7 +536,7 @@ class ContentGenerator:
         disclosure: str
     ) -> Dict[str, Any]:
         """
-        Generate content across all 4 supported platforms: X, Facebook, Pinterest, and Threads.
+        Generate content across all supported platforms: Facebook, Pinterest, and Threads.
 
         Args:
             product: Normalized Product dataclass or CanonicalProductFacts.
@@ -552,7 +551,7 @@ class ContentGenerator:
             facts = FactExtractor.extract_canonical_facts(product)
 
         platforms_results: Dict[str, Any] = {}
-        for platform_key in ("x", "facebook", "pinterest", "threads"):
+        for platform_key in ("facebook", "pinterest", "threads"):
             try:
                 platforms_results[platform_key] = self.generate_for_platform(
                     platform=platform_key,

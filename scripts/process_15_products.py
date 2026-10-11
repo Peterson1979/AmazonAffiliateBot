@@ -64,11 +64,11 @@ def process_product(asin: str, generator: ContentGenerator, disclosure: str) -> 
     facts = FactExtractor.extract_canonical_facts(product)
     print(f"Canonical Facts Extracted: {len(facts.features)} features, {len(facts.source_numbers)} numbers, {len(facts.atomic_facts)} atomic facts", flush=True)
 
-    # Generate across all 4 platforms
+    # Generate across active platforms
     platforms_results = {}
     validation_metadata = {}
 
-    for platform_key in ("x", "facebook", "pinterest", "threads"):
+    for platform_key in ("facebook", "pinterest", "threads"):
         print(f"  -> Generating {platform_key.upper()}...", flush=True)
         try:
             res = generator.generate_for_platform(platform_key, facts, disclosure)

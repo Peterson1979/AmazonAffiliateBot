@@ -134,7 +134,7 @@
             {% elif item.status == 'PUBLISHED' %}
               <span style="color: var(--success); font-size: 0.82rem;">Simulated (DRY RUN)</span>
             {% elif item.status == 'READY' %}
-              <span style="color: var(--text-muted); font-size: 0.82rem;">Scheduled (X, FB, Pinterest, Threads)</span>
+              <span style="color: var(--text-muted); font-size: 0.82rem;">Scheduled (FB, Pinterest, Threads)</span>
             {% elif item.status == 'FAILED' %}
               <span style="color: var(--danger); font-size: 0.82rem;" title="{{ item.errors | join('; ') if item.errors else 'Validation/Adapter error' }}">
                 {{ (item.errors[0] if item.errors else 'Validation or adapter error') | truncate(35) }}

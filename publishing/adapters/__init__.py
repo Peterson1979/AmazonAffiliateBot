@@ -9,7 +9,6 @@ from .base import (
     STATUS_FAILED,
     STATUS_SKIPPED
 )
-from .x_adapter import XAdapter
 from .facebook_adapter import FacebookAdapter
 from .instagram_adapter import InstagramAdapter
 from .pinterest_adapter import PinterestAdapter
@@ -17,7 +16,6 @@ from .threads_adapter import ThreadsAdapter
 
 __all__ = [
     "BasePlatformAdapter",
-    "XAdapter",
     "FacebookAdapter",
     "InstagramAdapter",
     "PinterestAdapter",

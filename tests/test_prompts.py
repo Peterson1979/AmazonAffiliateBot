@@ -1,5 +1,5 @@
 """
-Unit tests for platform-specific prompts (X, Facebook, Pinterest, Threads).
+Unit tests for platform-specific prompts (Facebook, Pinterest, Threads).
 Verifies active platforms, Instagram exclusion, strict prompt differentiation, and factual constraints.
 """
 
@@ -15,7 +15,6 @@ from amazon.scraper import Product
 from content.prompts import (
     PLATFORM_PROMPTS,
     format_source_product_data,
-    build_x_prompt,
     build_facebook_prompt,
     build_pinterest_prompt,
     build_threads_prompt
@@ -39,9 +38,9 @@ class TestPrompts(unittest.TestCase):
             asin="B0GKGBWRTR"
         )
 
-    def test_platforms_list_exact_four(self):
-        """Active supported V3/V4 platforms must be exactly: X, Facebook, Pinterest, Threads."""
-        expected = {"x", "facebook", "pinterest", "threads"}
+    def test_platforms_list_exact_three(self):
+        """Active supported platforms must be exactly Facebook, Pinterest, and Threads."""
+        expected = {"facebook", "pinterest", "threads"}
         self.assertEqual(set(PLATFORM_PROMPTS.keys()), expected)
         self.assertNotIn("instagram", PLATFORM_PROMPTS)
 

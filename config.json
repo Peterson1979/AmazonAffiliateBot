@@ -16,9 +16,6 @@
   "publishing": {
     "dry_run": true,
     "accounts": {
-      "x": {
-        "account": "@BitGoldone"
-      },
       "facebook": {
         "account": "LifeModeHQ"
       },

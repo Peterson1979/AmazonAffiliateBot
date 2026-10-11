@@ -71,7 +71,6 @@ def check_budapest_publishing_window(current_dt: datetime) -> Optional[int]:
 def validate_required_live_secrets() -> Tuple[bool, List[str]]:
     """
     Check presence of required environment secrets for live publishing (Facebook, Threads, Pinterest).
-    X (Twitter) is optional and safely skipped if missing.
     """
     fb_token = os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN") or os.environ.get("META_ACCESS_TOKEN")
     fb_page = os.environ.get("FACEBOOK_PAGE_ID")

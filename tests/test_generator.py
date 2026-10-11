@@ -73,11 +73,11 @@ class TestGeneratorAndValidator(unittest.TestCase):
     def test_valid_grounded_content_passes(self):
         gen = ContentGenerator()
         
-        # Valid X post
-        valid_x = {
+        # Valid Threads post
+        valid_text = {
             "text": f"This aluminum laptop stand adjusts up to 7 inches and fits laptops from 10 to 17.3 inches. It supports up to 11 lbs.\n\nLink: {self.sample_product.affiliate_url}\n\n{self.disclosure}"
         }
-        is_valid, issues = gen.validate_platform_content("x", valid_x, self.sample_product, self.disclosure)
+        is_valid, issues = gen.validate_platform_content("threads", valid_text, self.sample_product, self.disclosure)
         self.assertTrue(is_valid, f"Expected valid, got issues: {issues}")
         self.assertEqual(len(issues), 0)
 
@@ -110,14 +110,14 @@ class TestGeneratorAndValidator(unittest.TestCase):
 
     # ==================== PLATFORM COMPLIANCE TESTS ====================
 
-    def test_x_platform_compliance(self):
-        """X: output exists, reasonable length, affiliate URL present, disclosure present, no unsupported claim."""
+    def test_text_platform_compliance(self):
+        """Threads: output exists, affiliate URL present, disclosure present, no unsupported claim."""
         gen = ContentGenerator()
         content = {
             "text": f"Lightweight aluminum laptop stand with up to 7 inches height adjustment and 11 lbs capacity.\n\nLink: {self.sample_product.affiliate_url}\n\n{self.disclosure}"
         }
-        is_valid, issues = gen.validate_platform_content("x", content, self.sample_product, self.disclosure)
-        self.assertTrue(is_valid, f"X post validation failed: {issues}")
+        is_valid, issues = gen.validate_platform_content("threads", content, self.sample_product, self.disclosure)
+        self.assertTrue(is_valid, f"Threads post validation failed: {issues}")
         self.assertIn(self.sample_product.affiliate_url, content["text"])
         self.assertIn(self.disclosure, content["text"])
         self.assertLessEqual(len(content["text"]), 350)
@@ -788,12 +788,10 @@ class TestGeneratorAndValidator(unittest.TestCase):
         self.assertIn("7 inches", result["text"])
 
     def test_generate_all_platforms_mocked(self, tmp_path=None):
-        """Mocked full test verifying all 4 active platforms are generated (X, Facebook, Pinterest, Threads)."""
+        """Mocked full test verifying all 3 active platforms are generated."""
         mock_ollama = MagicMock()
         mock_ollama.model = "qwen2.5:7b"
         mock_ollama.generate_text.side_effect = [
-            # X
-            "Aluminum laptop stand with up to 7 inches height adjustment and 11 lbs capacity.",
             # Facebook
             "This laptop stand is made from lightweight aluminum with a loading capacity of 11 lbs.\n\nIt offers up to 7 inches of height adjustment and fits laptops from 10 to 17.3 inches.\n\nFolds flat to 10 x 8.7 x 1.8 inches for easy storage.",
             # Pinterest (JSON)
@@ -806,7 +804,7 @@ class TestGeneratorAndValidator(unittest.TestCase):
         result = gen.generate_all_platforms(self.sample_product, self.disclosure)
 
         self.assertEqual(result["asin"], "B0GKGBWRTR")
-        self.assertEqual(set(result["platforms"].keys()), {"x", "facebook", "pinterest", "threads"})
+        self.assertEqual(set(result["platforms"].keys()), {"facebook", "pinterest", "threads"})
         self.assertNotIn("instagram", result["platforms"])
 
     # ==================== REGRESSION TESTS: PRODUCT-DATA MISMATCH ====================
