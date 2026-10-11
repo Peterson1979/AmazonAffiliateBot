@@ -1158,3 +1158,10 @@ def get_log_content(log_type: str = "publisher", max_lines: int = 150) -> List[s
             return [l.rstrip("\r\n") for l in tail_lines]
     except Exception as e:
         return [f"Error reading log file: {str(e)}"]
+
+
+def execute_sync_with_github() -> Dict[str, Any]:
+    """Execute safe bidirectional synchronization between local dashboard and GitHub Actions."""
+    from publishing.sync import sync_with_github
+    return sync_with_github()
+

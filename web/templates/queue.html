@@ -9,6 +9,9 @@
     <p class="help-text">Chronological publishing slots in <strong>Europe/Budapest</strong> (Slot 1: 12:00 &bull; Slot 2: 19:00)</p>
   </div>
   <div class="page-actions">
+    <form action="{{ url_for('sync_github') }}" method="POST" style="display:inline;" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='⏳ Syncing...';">
+      <button type="submit" class="btn btn-success" id="btn-sync-github">🔄 Sync with GitHub</button>
+    </form>
     <form action="{{ url_for('queue_maintain') }}" method="POST" style="display:inline;">
       <button type="submit" class="btn btn-primary">⚡ Run Queue Maintenance</button>
     </form>

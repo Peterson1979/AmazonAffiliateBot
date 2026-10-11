@@ -36,6 +36,7 @@ from web.services import (
     get_log_content,
     check_windows_tasks_status,
     get_platform_statuses,
+    execute_sync_with_github,
     DEFAULT_CONFIG_QUERIES,
     DEFAULT_TRACKING_TAG,
     DEFAULT_TARGET_FUTURE_CAPACITY,
@@ -227,6 +228,25 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
             flash(f"Queue maintenance executed (DRY RUN): Added {added} products.", "success")
         else:
             flash(f"Queue maintenance error: {res.get('error')}", "error")
+        return redirect(url_for("queue"))
+
+    # -------------------------------------------------------------
+    # 6.5. GitHub Synchronization
+    # -------------------------------------------------------------
+    @app.route("/sync", methods=["POST"])
+    def sync_github():
+        res = execute_sync_with_github()
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+            return jsonify(res)
+
+        if res.get("success"):
+            flash(f"Sync with GitHub succeeded: {res.get('message')}", "success")
+        else:
+            flash(f"Sync with GitHub failed: {res.get('error')}", "error")
+
+        ref = request.referrer
+        if ref and ("queue" in ref or "dashboard" in ref or "products" in ref or "discovery" in ref):
+            return redirect(ref)
         return redirect(url_for("queue"))
 
     # -------------------------------------------------------------

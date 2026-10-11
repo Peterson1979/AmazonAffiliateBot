@@ -9,6 +9,9 @@
     <p class="help-text">Real-time status of local discovery, Ollama generation, validation, queue, and publisher.</p>
   </div>
   <div class="page-actions">
+    <form action="{{ url_for('sync_github') }}" method="POST" style="display:inline;" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='⏳ Syncing...';">
+      <button type="submit" class="btn btn-success" id="btn-sync-github-dash">🔄 Sync with GitHub</button>
+    </form>
     <form action="{{ url_for('queue_maintain') }}" method="POST" style="display:inline;">
       <button type="submit" class="btn btn-primary">⚡ Run Queue Maintenance</button>
     </form>
