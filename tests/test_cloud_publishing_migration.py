@@ -293,6 +293,12 @@ class TestCloudPublishingMigration(unittest.TestCase):
         self.assertIn("THREADS_USER_ID", content)
         self.assertIn("PINTEREST_ACCESS_TOKEN", content)
 
+        # Verify git commit occurs before git pull --rebase in persistence step
+        commit_idx = content.find('git commit -m "Automated publishing update [skip ci]"')
+        rebase_idx = content.find("git pull --rebase origin")
+        self.assertTrue(commit_idx != -1 and rebase_idx != -1)
+        self.assertLess(commit_idx, rebase_idx, "git commit must occur before git pull --rebase to prevent index failure")
+
     # -------------------------------------------------------------------------
     # 6. Manual Window Bypass & Queue Audit Tests
     # -------------------------------------------------------------------------
@@ -427,6 +433,107 @@ class TestCloudPublishingMigration(unittest.TestCase):
                 with self.assertRaises(SystemExit) as ctx:
                     cloud_main()
                 self.assertEqual(ctx.exception.code, 0)
+
+    def test_manual_live_run_enforces_window_check_by_default(self):
+        """Verify manual live run (dry_run=false) enforces window check unless ignore_window is given."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        test_args = [
+            "run_cloud_publisher.py",
+            "--live",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        # Outside window at 10:00 AM, should exit 0 with window skip message
+        with patch.dict(os.environ, {"EVENT_NAME": "workflow_dispatch", "MANUAL_DRY_RUN": "false"}):
+            with patch.object(sys, "argv", test_args):
+                with self.assertRaises(SystemExit) as ctx:
+                    cloud_main()
+                self.assertEqual(ctx.exception.code, 0)
+
+    def test_manual_live_run_bypasses_window_check_with_ignore_window(self):
+        """Verify manual live run with ignore_window evaluates queue outside window."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        test_args = [
+            "run_cloud_publisher.py",
+            "--live",
+            "--ignore-window",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        mock_secrets = {
+            "FACEBOOK_PAGE_ACCESS_TOKEN": "mock_fb",
+            "FACEBOOK_PAGE_ID": "123456",
+            "THREADS_ACCESS_TOKEN": "mock_th",
+            "THREADS_USER_ID": "mock_uid",
+            "PINTEREST_ACCESS_TOKEN": "mock_pin",
+        }
+        with patch.dict(os.environ, mock_secrets, clear=True):
+            with patch.object(sys, "argv", test_args):
+                # Empty queue, should evaluate and complete cleanly without error
+                cloud_main()
+
+    def test_live_run_exits_with_error_on_publishing_failure(self):
+        """Verify live run exits with code 1 when due items encounter publishing failure."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        # Create queue with a ready item pointing to non-existent package
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": [
+                    {
+                        "queue_item_id": "item_fail_test",
+                        "original_url": "https://link.amazon/fail",
+                        "asin": "B0FAIL",
+                        "product_name": "Failing Product",
+                        "scheduled_date": "2026-10-11",
+                        "daily_slot": 1,
+                        "scheduled_at": "2026-10-11T12:00:00+02:00",
+                        "package_reference": "non_existent_package.json",
+                        "status": "READY",
+                        "validation_status": "READY_FOR_REVIEW",
+                        "errors": [],
+                        "created_at": "2026-10-01T00:00:00Z",
+                    }
+                ]
+            }, f)
+
+        test_args = [
+            "run_cloud_publisher.py",
+            "--live",
+            "--ignore-window",
+            "--now", "2026-10-11T12:30:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        mock_secrets = {
+            "FACEBOOK_PAGE_ACCESS_TOKEN": "mock_fb",
+            "FACEBOOK_PAGE_ID": "123456",
+            "THREADS_ACCESS_TOKEN": "mock_th",
+            "THREADS_USER_ID": "mock_uid",
+            "PINTEREST_ACCESS_TOKEN": "mock_pin",
+        }
+        with patch.dict(os.environ, mock_secrets, clear=True):
+            with patch.object(sys, "argv", test_args):
+                with self.assertRaises(SystemExit) as ctx:
+                    cloud_main()
+                self.assertEqual(ctx.exception.code, 1)
 
 
 if __name__ == "__main__":

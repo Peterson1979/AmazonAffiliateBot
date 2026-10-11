@@ -85,7 +85,7 @@ jobs:
             echo "No queue changes to commit."
           else
             echo "Persisting updated queue and logs back to repository..."
-            git pull --rebase origin ${{ github.ref_name }}
             git commit -m "Automated publishing update [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }}
           fi

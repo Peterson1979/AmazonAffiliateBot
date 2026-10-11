@@ -272,18 +272,17 @@ def main():
         dry_run = False if env_dr in ("false", "0", "no") else True
 
     # Resolve window checking:
-    # 1. Manual dry-run runs (dry_run=True and not scheduled) bypass the window check for evaluation only.
-    # 2. Scheduled runs enforce window checking by default.
-    # 3. Explicit --ignore-window / IGNORE_WINDOW bypasses it.
-    # 4. Explicit --check-window enforces it.
-    if dry_run and github_event != "schedule" and not args.check_window:
-        should_check_window = False
+    # 1. Scheduled runs must always enforce the window.
+    # 2. Manual dry runs bypass window check by default (for evaluation) unless --check-window is requested.
+    # 3. Manual live runs enforce window check unless --ignore-window / IGNORE_WINDOW is explicitly requested.
+    if github_event == "schedule":
+        should_check_window = True
+    elif dry_run:
+        should_check_window = True if args.check_window else False
     elif args.ignore_window or ignore_window_env in ("true", "1", "yes"):
         should_check_window = False
-    elif args.check_window or github_event == "schedule":
-        should_check_window = True
     else:
-        should_check_window = False
+        should_check_window = True
 
     # 1. Timezone and Window Evaluation
     eval_now = args.now or (now_override_env if now_override_env else None)
@@ -428,6 +427,15 @@ def main():
     finally:
         if temp_dir and Path(temp_dir).exists():
             shutil.rmtree(temp_dir, ignore_errors=True)
+
+    if not dry_run and (failed_count > 0 or partially_count > 0):
+        print(
+            f"\n[ERROR] Publishing encountered errors in live run: "
+            f"{failed_count} failed, {partially_count} partially published. Exiting with failure.",
+            file=sys.stderr,
+            flush=True
+        )
+        sys.exit(1)
 
     print("\n[OK] Cloud publisher run complete.\n", flush=True)
 
