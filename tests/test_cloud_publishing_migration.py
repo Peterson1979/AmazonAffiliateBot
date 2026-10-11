@@ -293,6 +293,142 @@ class TestCloudPublishingMigration(unittest.TestCase):
         self.assertIn("THREADS_USER_ID", content)
         self.assertIn("PINTEREST_ACCESS_TOKEN", content)
 
+    # -------------------------------------------------------------------------
+    # 6. Manual Window Bypass & Queue Audit Tests
+    # -------------------------------------------------------------------------
+
+    def test_audit_queue_items_reports_counts_and_reasons(self):
+        """Verify audit_queue_items reports scheduled counts, due counts, and clear skip reasons."""
+        from scripts.run_cloud_publisher import audit_queue_items
+
+        queue = PublishingQueue(
+            queue_id="test_audit_q",
+            created_at="2026-10-01T00:00:00Z",
+            start_date="2026-10-11",
+            total_days=1,
+            products_per_day=3,
+            target_capacity=3,
+            total_submitted=3,
+            total_processed=3,
+            total_ready=1,
+            total_failed=1,
+            scheduled_posts=2,
+            unfilled_slots=0,
+            items=[
+                QueueItem(
+                    queue_item_id="item_001_FAIL",
+                    original_url="https://link.amazon/1",
+                    asin="B001",
+                    product_name="Product 1",
+                    scheduled_date="2026-10-11",
+                    daily_slot=1,
+                    scheduled_at="2026-10-11T12:00:00+02:00",
+                    package_reference="",
+                    status=STATUS_FAILED,
+                ),
+                QueueItem(
+                    queue_item_id="item_002_PUBLISHED",
+                    original_url="https://link.amazon/2",
+                    asin="B002",
+                    product_name="Product 2",
+                    scheduled_date="2026-10-11",
+                    daily_slot=1,
+                    scheduled_at="2026-10-11T12:00:00+02:00",
+                    published_at="2026-10-11T07:30:00+02:00",
+                    package_reference="",
+                    status=STATUS_PUBLISHED,
+                ),
+                QueueItem(
+                    queue_item_id="item_003_FUTURE",
+                    original_url="https://link.amazon/3",
+                    asin="B003",
+                    product_name="Product 3",
+                    scheduled_date="2026-10-11",
+                    daily_slot=2,
+                    scheduled_at="2026-10-11T19:00:00+02:00",
+                    package_reference="",
+                    status=STATUS_READY,
+                ),
+                QueueItem(
+                    queue_item_id="item_004_DUE",
+                    original_url="https://link.amazon/4",
+                    asin="B004",
+                    product_name="Product 4",
+                    scheduled_date="2026-10-11",
+                    daily_slot=1,
+                    scheduled_at="2026-10-11T09:00:00+02:00",
+                    package_reference="",
+                    status=STATUS_READY,
+                ),
+            ]
+        )
+
+        current_dt = datetime.fromisoformat("2026-10-11T10:00:00+02:00")
+        audit = audit_queue_items(queue, current_dt)
+
+        self.assertEqual(audit["total_items"], 4)
+        self.assertEqual(audit["scheduled_items_count"], 2)  # item_003 and item_004 are READY and scheduled
+        self.assertEqual(audit["due_items_count"], 1)        # item_004 is due (09:00 <= 10:00)
+        self.assertEqual(audit["skipped_items_count"], 3)    # item_001, item_002, item_003 skipped
+
+        # Verify reasons are populated and human-readable
+        skipped_by_id = {x["item_id"]: x["reason"] for x in audit["skipped_items"]}
+        self.assertIn("Status is FAILED", skipped_by_id["item_001_FAIL"])
+        self.assertIn("Status is PUBLISHED", skipped_by_id["item_002_PUBLISHED"])
+        self.assertIn("Scheduled in future", skipped_by_id["item_003_FUTURE"])
+
+        self.assertEqual(audit["due_items"][0]["item_id"], "item_004_DUE")
+
+    def test_manual_dry_run_bypasses_window_check(self):
+        """Verify manual dry_run=true bypasses publishing window and evaluates queue."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        # Create dummy queue
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        # Current time outside 12:00/19:00 window (10:00 AM)
+        test_args = [
+            "run_cloud_publisher.py",
+            "--dry-run",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        # Simulate workflow_dispatch event
+        with patch.dict(os.environ, {"EVENT_NAME": "workflow_dispatch", "MANUAL_DRY_RUN": "true"}):
+            with patch.object(sys, "argv", test_args):
+                # Should NOT exit with SystemExit(0) early from window check; should complete cleanly
+                cloud_main()
+
+    def test_scheduled_event_enforces_window_check(self):
+        """Verify scheduled event enforces window check and skips outside 12:00/19:00 hours."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        # Current time outside 12:00/19:00 window (10:00 AM)
+        test_args = [
+            "run_cloud_publisher.py",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        # Simulate schedule cron event
+        with patch.dict(os.environ, {"EVENT_NAME": "schedule"}):
+            with patch.object(sys, "argv", test_args):
+                with self.assertRaises(SystemExit) as ctx:
+                    cloud_main()
+                self.assertEqual(ctx.exception.code, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
+

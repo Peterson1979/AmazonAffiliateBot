@@ -6,7 +6,9 @@ Executes the AmazonAffiliateBot publishing queue in the cloud (GitHub Actions).
 Handles:
 1. Europe/Budapest timezone evaluation across CET (UTC+1) and CEST (UTC+2) DST shifts.
 2. Window check: Only triggers publishing during 12:00-12:59 and 19:00-19:59 Budapest time for scheduled runs.
-3. Safe Dry-Run: Defaults to dry-run on manual triggers; simulates without modifying real queue on disk.
+   Manual dry-run runs bypass the window restriction for evaluation only.
+3. Safe Dry-Run: Evaluates queue, reports scheduled items, due items, and reasons for skipped items.
+   Does not modify real queue on disk during simulation.
 4. Live Validation: Validates that Facebook, Threads, and Pinterest credentials are present before live publishing.
 5. Idempotency & Persistence: Only processes eligible READY items; reports queue update status for Git persistence.
 """
@@ -103,6 +105,125 @@ def set_github_output(name: str, value: Any) -> None:
             print(f"[WARN] Failed to write to GITHUB_OUTPUT: {e}", file=sys.stderr)
 
 
+def audit_queue_items(
+    queue: PublishingQueue,
+    current_dt: datetime,
+    slot_filter: Optional[int] = None
+) -> Dict[str, Any]:
+    """
+    Evaluates every item in the queue against current Europe/Budapest time.
+    Returns counts and detailed reasons for due and skipped items.
+    """
+    total = len(queue.items)
+    scheduled_items = []
+    due_items = []
+    skipped_items = []
+    next_upcoming = None
+    min_future_diff = None
+
+    for item in queue.items:
+        item_id = item.queue_item_id
+        asin = item.asin
+        status = item.status
+        slot = item.daily_slot
+        sched_at = item.scheduled_at
+
+        if status != STATUS_READY:
+            reason = f"Status is {status}"
+            if status in ("PUBLISHED", "PARTIALLY_PUBLISHED"):
+                pub_time = item.published_at or "prior run"
+                reason += f" (completed at {pub_time})"
+            skipped_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "status": status,
+                "reason": reason
+            })
+            continue
+
+        if not sched_at:
+            skipped_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "status": status,
+                "reason": "Missing scheduled_at datetime"
+            })
+            continue
+
+        try:
+            item_dt = QueuePublisher.parse_datetime(sched_at)
+        except Exception as e:
+            skipped_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "status": status,
+                "reason": f"Invalid scheduled_at format: {e}"
+            })
+            continue
+
+        scheduled_items.append(item)
+
+        if slot_filter is not None and slot != slot_filter:
+            skipped_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "status": status,
+                "reason": f"Slot filter active (Slot {slot} != {slot_filter})"
+            })
+            continue
+
+        if item_dt <= current_dt:
+            due_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "item_dt": item_dt,
+                "status": status,
+                "reason": "Currently DUE for publishing"
+            })
+        else:
+            diff = item_dt - current_dt
+            diff_hours = diff.total_seconds() / 3600
+            diff_str = f"in {diff_hours:.1f}h" if diff_hours < 24 else f"in {diff.days}d {int(diff_hours % 24)}h"
+            skipped_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "item_dt": item_dt,
+                "status": status,
+                "reason": f"Scheduled in future ({sched_at}, {diff_str})"
+            })
+            if min_future_diff is None or diff < min_future_diff:
+                min_future_diff = diff
+                next_upcoming = {
+                    "item_id": item_id,
+                    "asin": asin,
+                    "slot": slot,
+                    "scheduled_at": sched_at,
+                    "diff_str": diff_str
+                }
+
+    return {
+        "total_items": total,
+        "scheduled_items_count": len(scheduled_items),
+        "due_items_count": len(due_items),
+        "skipped_items_count": len(skipped_items),
+        "due_items": due_items,
+        "skipped_items": skipped_items,
+        "next_upcoming": next_upcoming,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description="Cloud Publishing Runner for GitHub Actions")
     parser.add_argument("--dry-run", action="store_true", default=None,
@@ -128,6 +249,7 @@ def main():
     github_event = os.environ.get("EVENT_NAME", "").lower()
     manual_dry_run_env = os.environ.get("MANUAL_DRY_RUN", "").strip().lower()
     ignore_window_env = os.environ.get("IGNORE_WINDOW", "").strip().lower()
+    now_override_env = os.environ.get("NOW_OVERRIDE", "").strip()
 
     # Resolve dry-run setting
     if args.dry_run is True:
@@ -150,21 +272,29 @@ def main():
         dry_run = False if env_dr in ("false", "0", "no") else True
 
     # Resolve window checking:
-    # Scheduled runs enforce window checking by default; manual dispatch allows ignore_window
-    should_check_window = False
-    if args.ignore_window or ignore_window_env in ("true", "1", "yes"):
+    # 1. Manual dry-run runs (dry_run=True and not scheduled) bypass the window check for evaluation only.
+    # 2. Scheduled runs enforce window checking by default.
+    # 3. Explicit --ignore-window / IGNORE_WINDOW bypasses it.
+    # 4. Explicit --check-window enforces it.
+    if dry_run and github_event != "schedule" and not args.check_window:
+        should_check_window = False
+    elif args.ignore_window or ignore_window_env in ("true", "1", "yes"):
         should_check_window = False
     elif args.check_window or github_event == "schedule":
         should_check_window = True
+    else:
+        should_check_window = False
 
     # 1. Timezone and Window Evaluation
-    current_dt = get_current_budapest_time(args.now)
+    eval_now = args.now or (now_override_env if now_override_env else None)
+    current_dt = get_current_budapest_time(eval_now)
     slot_window = check_budapest_publishing_window(current_dt)
 
     print(f"\n=======================================================")
     print(f" AmazonAffiliateBot - Cloud Publisher")
     print(f" Current Europe/Budapest Time : {current_dt.strftime('%Y-%m-%d %H:%M:%S %Z')}")
     print(f" Publish Window Match         : Slot {slot_window if slot_window else 'None (Outside Window)'}")
+    print(f" Window Enforcement           : {'ACTIVE (Scheduled Run)' if should_check_window else 'BYPASSED (Manual Evaluation)'}")
     print(f" Mode                         : {'DRY RUN' if dry_run else 'LIVE PUBLISHING'}")
     print(f" Event Source                 : {github_event or 'local/manual'}")
     print(f"=======================================================\n", flush=True)
@@ -197,7 +327,7 @@ def main():
             set_github_output("dry_run", "false")
             sys.exit(1)
 
-    # 3. Queue Execution
+    # 3. Queue Inspection & Pre-Execution Audit
     queue_file = Path(args.queue_file)
     if not queue_file.exists():
         print(f"[ERROR] Queue file not found at: {queue_file}", file=sys.stderr, flush=True)
@@ -205,7 +335,43 @@ def main():
 
     effective_slot = args.slot or (slot_window if should_check_window else None)
 
-    # If dry-run: run on a temporary copy to protect on-disk queue from simulation changes
+    try:
+        raw_queue = PublishingQueue.load(queue_file)
+        audit = audit_queue_items(raw_queue, current_dt, slot_filter=effective_slot)
+    except Exception as e:
+        print(f"[ERROR] Failed to load/audit queue: {e}", file=sys.stderr, flush=True)
+        sys.exit(1)
+
+    print("=======================================================")
+    print(" QUEUE AUDIT & SCHEDULING STATUS REPORT")
+    print(f" Current Europe/Budapest Time : {current_dt.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    print(f" Total Queue Items            : {audit['total_items']}")
+    print(f" Scheduled (Active Future)    : {audit['scheduled_items_count']}")
+    print(f" Currently Due Now            : {audit['due_items_count']}")
+    print(f" Skipped / Ineligible Items   : {audit['skipped_items_count']}")
+    print("=======================================================\n", flush=True)
+
+    print("--- QUEUE ITEM EVALUATION BREAKDOWN ---", flush=True)
+    for s_item in audit["skipped_items"]:
+        slot_str = f"Slot {s_item['slot']} " if s_item.get("slot") else ""
+        sched_str = f"({s_item['scheduled_at']}) " if s_item.get("scheduled_at") else ""
+        print(f"  - [{s_item['item_id']}] ASIN: {s_item['asin']} | {slot_str}{sched_str}| Status: {s_item['status']}")
+        print(f"      -> Reason: {s_item['reason']}")
+
+    if audit["due_items"]:
+        print(f"\n--- DUE ITEMS FOR PUBLISHING ({len(audit['due_items'])}) ---", flush=True)
+        for d_item in audit["due_items"]:
+            print(f"  * [{d_item['item_id']}] ASIN: {d_item['asin']} | Slot {d_item['slot']} ({d_item['scheduled_at']}) -> READY TO PUBLISH")
+    else:
+        print(f"\n--- DUE ITEMS FOR PUBLISHING (0) ---", flush=True)
+        print("  (None currently due at this evaluation time)")
+        if audit.get("next_upcoming"):
+            nxt = audit["next_upcoming"]
+            print(f"  Next Upcoming Item : [{nxt['item_id']}] ASIN: {nxt['asin']} | Slot {nxt['slot']} ({nxt['scheduled_at']}, {nxt['diff_str']})")
+
+    print("-------------------------------------------------------\n", flush=True)
+
+    # 4. Queue Publishing Execution
     temp_dir = None
     exec_queue_file = queue_file
     if dry_run:
@@ -217,7 +383,7 @@ def main():
         report = QueuePublisher.publish_due_items(
             queue_file=exec_queue_file,
             config={},
-            now_str=args.now,
+            now_str=eval_now,
             dry_run=dry_run,
             slot_filter=effective_slot,
             log_file=args.log_file
@@ -228,10 +394,10 @@ def main():
         partially_count = report.get("partially_published_count", 0)
         failed_count = report.get("failed_count", 0)
 
-        print(f"\n--- PUBLISHING EXECUTION SUMMARY ---", flush=True)
+        print(f"--- EXECUTION SUMMARY ---", flush=True)
         print(f"Mode                 : {report.get('mode')}", flush=True)
         print(f"Evaluated At         : {report.get('evaluated_at')}", flush=True)
-        print(f"Due Items Found      : {due_count}", flush=True)
+        print(f"Due Items Processed  : {due_count}", flush=True)
         print(f"Published (All OK)   : {published_count}", flush=True)
         print(f"Partially Published  : {partially_count}", flush=True)
         print(f"Failed               : {failed_count}", flush=True)
@@ -255,6 +421,8 @@ def main():
         set_github_output("queue_updated", str(queue_updated).lower())
         set_github_output("published_count", published_count + partially_count)
         set_github_output("due_count", due_count)
+        set_github_output("scheduled_count", audit["scheduled_items_count"])
+        set_github_output("total_items", audit["total_items"])
         set_github_output("dry_run", str(dry_run).lower())
 
     finally:

@@ -21,6 +21,11 @@ on:
         required: true
         type: boolean
         default: false
+      now_override:
+        description: 'Optional ISO timestamp override for simulation (e.g. 2026-10-11T19:05:00+02:00)'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -56,6 +61,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_DRY_RUN: ${{ github.event.inputs.dry_run }}
           IGNORE_WINDOW: ${{ github.event.inputs.ignore_window }}
+          NOW_OVERRIDE: ${{ github.event.inputs.now_override }}
           FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN || secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
