@@ -1,0 +1,49 @@
+{
+  "asin": "B0VALID001",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T10:39:53.569405+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0VALID001.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "58mm Precision Espresso Coffee Tamper Stainless Steel. Calibrated 30 lbs spring mechanism. 58mm flat stainless steel base. Ergonomic walnut wood handle. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "58mm Precision Espresso Coffee Tamper Stainless Steel. Calibrated 30 lbs spring mechanism. 58mm flat stainless steel base. Ergonomic walnut wood handle.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "58mm Precision Espresso Coffee Tamper Stainless Steel",
+      "description": "Calibrated 30 lbs spring mechanism. 58mm flat stainless steel base. Ergonomic walnut wood handle. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0VALID001?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "58mm Precision Espresso Coffee Tamper Stainless Steel. Calibrated 30 lbs spring mechanism. 58mm flat stainless steel base. Ergonomic walnut wood handle. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

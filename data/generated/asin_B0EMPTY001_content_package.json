@@ -1,0 +1,49 @@
+{
+  "asin": "B0EMPTY001",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-11T04:59:51.619365+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0EMPTY001.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Test Discovery Product 001. Feature 1 for product 001. Feature 2 for product 001. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Test Discovery Product 001. Feature 1 for product 001. Feature 2 for product 001.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Test Discovery Product 001",
+      "description": "Feature 1 for product 001. Feature 2 for product 001. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0EMPTY001?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Test Discovery Product 001. Feature 1 for product 001. Feature 2 for product 001. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

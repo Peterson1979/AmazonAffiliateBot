@@ -1,0 +1,49 @@
+{
+  "asin": "B0DHKSF81K",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T15:51:41.792110+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0DHKSF81K.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "It provides deep hydration.\n\nLink: https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "This 35ml cream offers deep hydration.\n\nIncludes [Triple Blemish Care] 5% Niacinamide + 5% Tranexamic Acid + 1% Melazero V2.\n\nLink: https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Celimax Pore Dark Spot Brightening Cream 35ml",
+      "description": "Lightweight, hydrating formula ideal. https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B054USqXz",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "It provides deep hydration.\n\nLink: https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

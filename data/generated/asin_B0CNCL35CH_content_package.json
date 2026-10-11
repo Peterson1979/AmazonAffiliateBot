@@ -1,0 +1,49 @@
+{
+  "asin": "B0CNCL35CH",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T15:35:45.382734+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0CNCL35CH.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick is a 9g oil balm that gently melts and absorbs into the skin.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "This oil balm texture melts gently into the skin.\n\nIncludes [Use of calcium.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick – Under Eye & Face Wrinkle Care, Firming & H",
+      "description": "9g calcium balm stick for under-eye and face wrinkle care, firming, and hydrating with collagen. https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0exefrmH",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Melaxin Cemenrete Calcium Multi Balm Stick is a 9g balm designed for under eye and face wrinkle care, firming, and hydrating with collagen. Its oil balm texture melts gently and absorbs well into the skin without feeling sticky.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    }
+  }
+}

@@ -1,0 +1,90 @@
+[2026-10-06 12:08:05 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-06 12:08:05 CEST] [INFO] Current Future Capacity: 2 / Target: 2
+[2026-10-06 12:08:05 CEST] [INFO] Queue capacity is healthy (2/2 future slots filled). No replenishment required.
+[2026-10-06 12:08:05 CEST] [INFO] === QUEUE MAINTENANCE RUN END (NO ACTION NEEDED) ===
+[2026-10-06 12:08:22 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-06 12:08:22 CEST] [INFO] Current Future Capacity: 2 / Target: 2
+[2026-10-06 12:08:22 CEST] [INFO] Queue capacity is healthy (2/2 future slots filled). No replenishment required.
+[2026-10-06 12:08:22 CEST] [INFO] === QUEUE MAINTENANCE RUN END (NO ACTION NEEDED) ===
+[2026-10-06 12:14:33 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-06 12:14:33 CEST] [INFO] Current Future Capacity: 2 / Target: 28
+[2026-10-06 12:14:33 CEST] [INFO] Replenishment Required: Need to discover and schedule 26 new valid products.
+[2026-10-06 12:14:33 CEST] [INFO] Querying Amazon Discovery for: 'kitchen accessories and gadgets'...
+[2026-10-06 12:14:55 CEST] [INFO] Discovered 10 raw candidates for query 'kitchen accessories and gadgets'.
+[2026-10-06 13:03:49 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-06 13:03:49 CEST] [INFO] Current Future Capacity: 2 / Target: 30
+[2026-10-06 13:03:49 CEST] [INFO] Replenishment Required: Need to discover and schedule 28 new valid products.
+[2026-10-06 13:03:49 CEST] [INFO] Querying Amazon Discovery for: 'kitchen gadgets'...
+[2026-10-06 13:04:04 CEST] [INFO] Discovered 10 raw candidates for query 'kitchen gadgets'.
+[2026-10-06 13:13:58 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-06 13:13:58 CEST] [INFO] Current Future Capacity: 1 / Target: 30
+[2026-10-06 13:13:58 CEST] [INFO] Replenishment Required: Need to discover and schedule 29 new valid products.
+[2026-10-06 13:13:58 CEST] [INFO] Querying Amazon Discovery for: 'kitchen gadgets'...
+[2026-10-06 13:14:14 CEST] [INFO] Discovered 10 raw candidates for query 'kitchen gadgets'.
+[2026-10-06 13:19:36 CEST] [INFO] Querying Amazon Discovery for: 'office setup'...
+[2026-10-06 13:19:50 CEST] [INFO] Discovered 10 raw candidates for query 'office setup'.
+[2026-10-06 13:25:07 CEST] [INFO] Maintenance Finished: Evaluated=20, Added=0, Rejected=20, Final Future Capacity=1/30
+[2026-10-06 13:25:07 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-10-09 16:04:32 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-09 16:04:32 CEST] [INFO] Current Future Capacity: 0 / Target: 32
+[2026-10-09 16:04:32 CEST] [INFO] Replenishment Required: Need to discover and schedule 32 new valid products.
+[2026-10-09 16:04:32 CEST] [INFO] Querying Amazon Discovery for: 'ergonomic office accessories'...
+[2026-10-09 16:04:34 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-09 16:04:34 CEST] [INFO] Current Future Capacity: 0 / Target: 32
+[2026-10-09 16:04:34 CEST] [INFO] Replenishment Required: Need to discover and schedule 32 new valid products.
+[2026-10-09 16:04:34 CEST] [INFO] Querying Amazon Discovery for: 'ergonomic office accessories'...
+[2026-10-09 16:05:05 CEST] [INFO] Discovered 10 raw candidates for query 'ergonomic office accessories'.
+[2026-10-09 16:05:06 CEST] [INFO] Discovered 10 raw candidates for query 'ergonomic office accessories'.
+[2026-10-09 16:11:04 CEST] [INFO] Querying Amazon Discovery for: 'wfh setup gadgets'...
+[2026-10-09 16:11:15 CEST] [INFO] Querying Amazon Discovery for: 'wfh setup gadgets'...
+[2026-10-09 16:11:20 CEST] [INFO] Discovered 10 raw candidates for query 'wfh setup gadgets'.
+[2026-10-09 16:11:36 CEST] [INFO] Discovered 10 raw candidates for query 'wfh setup gadgets'.
+[2026-10-09 16:16:05 CEST] [INFO] Maintenance Finished: Evaluated=20, Added=0, Rejected=20, Final Future Capacity=0/32
+[2026-10-09 16:16:05 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-10-09 16:16:20 CEST] [INFO] Maintenance Finished: Evaluated=20, Added=0, Rejected=20, Final Future Capacity=0/32
+[2026-10-09 16:16:20 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-10-10 09:43:18 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-10 09:43:19 CEST] [INFO] Current Future Capacity: 0 / Target: 28
+[2026-10-10 09:43:19 CEST] [INFO] Replenishment Required: Need to discover and schedule 28 new valid products.
+[2026-10-10 09:43:19 CEST] [INFO] Querying Amazon Discovery for: 'kitchen accessories and gadgets'...
+[2026-10-10 09:43:58 CEST] [INFO] Discovered 10 raw candidates for query 'kitchen accessories and gadgets'.
+[2026-10-10 09:59:00 CEST] [INFO] Querying Amazon Discovery for: 'home office ergonomic desk setup'...
+[2026-10-10 10:01:23 CEST] [INFO] Discovered 10 raw candidates for query 'home office ergonomic desk setup'.
+[2026-10-10 10:11:08 CEST] [INFO] Querying Amazon Discovery for: 'camping and hiking gear essentials'...
+[2026-10-10 10:13:14 CEST] [INFO] Discovered 10 raw candidates for query 'camping and hiking gear essentials'.
+[2026-10-10 10:26:37 CEST] [INFO] Querying Amazon Discovery for: 'espresso machine accessories'...
+[2026-10-10 10:27:12 CEST] [INFO] Discovered 10 raw candidates for query 'espresso machine accessories'.
+[2026-10-10 10:34:47 CEST] [INFO] Querying Amazon Discovery for: 'portable tech accessories'...
+[2026-10-10 10:35:10 CEST] [INFO] Discovered 10 raw candidates for query 'portable tech accessories'.
+[2026-10-10 10:47:27 CEST] [INFO] Maintenance Finished: Evaluated=50, Added=0, Rejected=50, Final Future Capacity=0/28
+[2026-10-10 10:47:27 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-10-10 19:56:45 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B01NBJEKX2 -> Day 2026-10-11 Slot 1 (2026-10-11T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B08CRPWQHB -> Day 2026-10-11 Slot 2 (2026-10-11T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B08GH41N87 -> Day 2026-10-12 Slot 1 (2026-10-12T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B09SH38JRR -> Day 2026-10-12 Slot 2 (2026-10-12T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B09ZV2TX28 -> Day 2026-10-13 Slot 1 (2026-10-13T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0BJKRYCZF -> Day 2026-10-13 Slot 2 (2026-10-13T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0C235GNV9 -> Day 2026-10-14 Slot 1 (2026-10-14T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0C51CZJ83 -> Day 2026-10-14 Slot 2 (2026-10-14T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0C65T7727 -> Day 2026-10-15 Slot 1 (2026-10-15T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0CNCL35CH -> Day 2026-10-15 Slot 2 (2026-10-15T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0D6G5S35J -> Day 2026-10-16 Slot 1 (2026-10-16T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0D9TCFRJ5 -> Day 2026-10-16 Slot 2 (2026-10-16T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0DHKSF81K -> Day 2026-10-17 Slot 1 (2026-10-17T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0DTHHK2S1 -> Day 2026-10-17 Slot 2 (2026-10-17T19:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Scheduled Existing Product: ASIN B0H1W18KGL -> Day 2026-10-18 Slot 1 (2026-10-18T12:00:00+02:00)
+[2026-10-10 19:56:45 CEST] [INFO] Current Future Capacity: 15 / Target: 28
+[2026-10-10 19:56:45 CEST] [INFO] Automatic discovery is disabled (discovery.enabled=False). Queue maintained from existing products only.
+[2026-10-10 19:56:45 CEST] [INFO] Maintenance Finished: Evaluated=0, Added=15, Rejected=0, Final Future Capacity=15/28
+[2026-10-10 19:56:45 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-10-10 19:56:54 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-10 19:56:54 CEST] [INFO] Current Future Capacity: 15 / Target: 28
+[2026-10-10 19:56:54 CEST] [INFO] Automatic discovery is disabled (discovery.enabled=False). Queue maintained from existing products only.
+[2026-10-10 19:56:54 CEST] [INFO] Maintenance Finished: Evaluated=0, Added=0, Rejected=0, Final Future Capacity=15/28
+[2026-10-10 19:56:54 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-10-11 09:08:36 CEST] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-10-11 09:08:36 CEST] [INFO] Current Future Capacity: 14 / Target: 28
+[2026-10-11 09:08:36 CEST] [INFO] Automatic discovery is disabled (discovery.enabled=False). Queue maintained from existing products only.
+[2026-10-11 09:08:36 CEST] [INFO] Maintenance Finished: Evaluated=0, Added=0, Rejected=0, Final Future Capacity=14/28
+[2026-10-11 09:08:36 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===

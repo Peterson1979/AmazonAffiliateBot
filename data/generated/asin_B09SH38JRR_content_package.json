@@ -1,0 +1,49 @@
+{
+  "asin": "B09SH38JRR",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T14:53:24.623406+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B09SH38JRR.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "The WLIVE Small Dresser Nightstand. It includes a wood top.\n\nLink: https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "This WLIVE Small Dresser Nightstand.\n\nThe sturdy structure features a strong steel frame and water-resistant wood top.\n\nLink: https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "WLIVE Rustic Brown 4 Drawer Nightstand with Multifunction Cabinet",
+      "description": "This WLIVE nightstand features 4 drawers and a wood top. https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0aLCB05n",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The WLIVE Small Dresser Nightstand. It includes 4 drawers and a wood top that can be used for displaying lamps, clocks, books, or glasses.\n\nLink: https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    }
+  }
+}

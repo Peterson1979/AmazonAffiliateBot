@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Automation & Windows Tasks{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Automation & Windows Task Scheduler</h1>
+    <p class="help-text">Automated background execution schedule for discovery and publishing.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Schedule Definition -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Configured Daily Schedule ({{ summary.timezone }})</div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Task Name</th>
+            <th>Routine</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color: var(--primary);">08:30</strong></td>
+            <td><code>AmazonAffiliateBot_DailyMaintenance_0830</code></td>
+            <td>Daily Discovery & Queue Replenishment</td>
+          </tr>
+          <tr>
+            <td><strong style="color: var(--primary);">12:00</strong></td>
+            <td><code>AmazonAffiliateBot_PublishSlot1_1200</code></td>
+            <td>Daily Slot 1 Publishing (European audience)</td>
+          </tr>
+          <tr>
+            <td><strong style="color: var(--primary);">19:00</strong></td>
+            <td><code>AmazonAffiliateBot_PublishSlot2_1900</code></td>
+            <td>Daily Slot 2 Publishing (NA & Pinterest focus)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 16px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+      <div>&bull; <strong>Timezone:</strong> Standard IANA <code>Europe/Budapest</code>.</div>
+      <div>&bull; <strong>Slot Separation:</strong> Strictly 7 hours between daily Slot 1 and Slot 2.</div>
+      <div>&bull; <strong>Recovery:</strong> Missed slots during system downtime are automatically executed upon next startup without duplication.</div>
+    </div>
+  </div>
+
+  <!-- Windows Task Scheduler Registration Status -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Task Scheduler Registration Status</div>
+
+    <div style="margin-bottom: 20px;">
+      {% if tasks.all_registered %}
+        <div class="alert alert-success">
+          <span>✅ All 3 automated scheduled tasks are registered in Windows Task Scheduler.</span>
+        </div>
+      {% else %}
+        <div class="alert alert-warning">
+          <span>⚠️ Windows Scheduled Tasks are not yet registered.</span>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if tasks.tasks %}
+      <div class="table-responsive" style="margin-bottom: 20px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t_name, t_status in tasks.tasks.items() %}
+            <tr>
+              <td><code>{{ t_name }}</code></td>
+              <td>
+                {% if t_status == 'REGISTERED' %}
+                  <span class="badge badge-success">REGISTERED</span>
+                {% else %}
+                  <span class="badge badge-warning">NOT REGISTERED</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    <div class="card-title" style="margin-bottom: 10px;">Setup Instructions</div>
+    <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">
+      For security, scheduled tasks must be registered from an elevated Administrator PowerShell prompt:
+    </p>
+    <div style="background-color: #070b14; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; font-family: 'Consolas', monospace; font-size: 0.82rem; color: #38bdf8; word-break: break-all; margin-bottom: 12px;">
+      powershell -ExecutionPolicy Bypass -File scripts\setup_windows_tasks.ps1
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-muted);">
+      * The dashboard will never automatically execute privileged task registration without your explicit administrator consent.
+    </div>
+  </div>
+</div>
+{% endblock %}

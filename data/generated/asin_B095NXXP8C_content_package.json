@@ -1,0 +1,49 @@
+{
+  "asin": "B095NXXP8C",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-11T04:37:34.455206+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B095NXXP8C.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and a 5.9FT cable.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 4.1FT rotary switch.\n\nBuilt with sturdy metal material, it includes a 5.9FT cable.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Dimmable Floor Lamp with 1000 Lumens LED Bulb",
+      "description": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 5.9FT cable. https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0amY6llW",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 4.1FT rotary switch.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

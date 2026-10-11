@@ -1,0 +1,53 @@
+{
+  "asin": "B0GKGBWRTR",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-11T05:00:05.811123+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0GKGBWRTR.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "17.3-inch Laptop Stand supports 10-17.3 inches with 7 inches height adjustment. https://link.amazon/B0hwa4Nkm\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51KyaTB1EKL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "17.3-inch Laptop Stand constructed from aluminum.\n\nSupports up to 11 lbs with 7 inches height adjustment.\n\nhttps://link.amazon/B0hwa4Nkm\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51KyaTB1EKL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "17.3-inch Laptop Stand",
+      "description": "Adjustable aluminum laptop stand supporting up to 11 lbs. https://link.amazon/B0hwa4Nkm\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51KyaTB1EKL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0hwa4Nkm",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "17.3-inch Laptop Stand with 7 inches height adjustment. https://link.amazon/B0hwa4Nkm\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51KyaTB1EKL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

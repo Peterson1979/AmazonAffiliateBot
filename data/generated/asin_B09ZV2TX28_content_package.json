@@ -1,0 +1,49 @@
+{
+  "asin": "B09ZV2TX28",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T14:58:23.606992+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B09ZV2TX28.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "The Lifewit 60L clothes storage bags feature a 6-pack option, each measuring 55cm x 35cm x 31.5cm with 60L capacity.\n\nLink: https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Crafted from high-quality, odorless, breathable non-woven fabric, these bags are both soft and strong.\n\nIncludes Multi-Pack Options. Each storage bag measures 55cm x 35cm x 31.5cm with 60L capacity. You have the option to choose between a 4-Pack, 6-Pack, and 8-Pack. With so much room, you can easily store winter clothes, sweaters, pillows, blankets and quilts. Keep your home neat and clean.\n\nLink: https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Lifewit 6-Pack 60L Foldable Under-Bed Storage Bags",
+      "description": "Made of high-quality, breathable fabric with clear windows and a tough two-way zipper. https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0arzMCtg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The Lifewit 60L Clothes Storage Bags feature a 6-pack option, each measuring 55cm x 35cm x 31.5cm with 60L capacity.\n\nLink: https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

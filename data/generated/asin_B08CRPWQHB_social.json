@@ -1,0 +1,42 @@
+{
+  "asin": "B08CRPWQHB",
+  "affiliate_url": "https://link.amazon/B08OcbzJJ",
+  "platforms": {
+    "x": {
+      "text": "The BigFoot Shower Curtain Liner is a 72 x 72 inch PEVA heavy-duty liner.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "The BigFoot Shower Curtain Liner is a 72 x 72 inch PEVA heavy-duty shower curtain.\n\nConstructed with 12 rustproof metal grommets, it resists tears and punctures.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "BigFoot 72 x 72 Inch PEVA Heavy Duty Shower Curtain Liner with Metal Grommets and Magnetic Weights",
+      "description": "This 72x72 inch PEVA shower liner provides a moisture barrier, keeping floors dry and protecting your decorative shower curtain from dirt and soap residues. https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "The BigFoot Shower Curtain Liner features a 72 x 72 inch PEVA material that keeps water contained and protects your decorative shower curtain from dirt and discoloration.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

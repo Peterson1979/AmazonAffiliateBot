@@ -1,0 +1,24 @@
+{
+  "asin": "B0EXIST002",
+  "product_name": "Pre-Existing Pour-Over Coffee Dripper Stainless Steel",
+  "status": "READY_FOR_REVIEW",
+  "platforms": {
+    "x": {
+      "content": "Pre-Existing Pour-Over Coffee Dripper Stainless Steel. Reliable camping gear.",
+      "status": "VALID"
+    },
+    "facebook": {
+      "content": "Pre-Existing Pour-Over Coffee Dripper Stainless Steel. High quality.",
+      "status": "VALID"
+    },
+    "pinterest": {
+      "title": "Pre-Existing Pour-Over Coffee Dripper Stainless Steel",
+      "description": "Pre-Existing Pour-Over Coffee Dripper Stainless Steel. Reliable.",
+      "status": "VALID"
+    },
+    "threads": {
+      "content": "Pre-Existing Pour-Over Coffee Dripper Stainless Steel. Reliable.",
+      "status": "VALID"
+    }
+  }
+}

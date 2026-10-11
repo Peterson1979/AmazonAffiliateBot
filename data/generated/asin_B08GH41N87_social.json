@@ -1,0 +1,42 @@
+{
+  "asin": "B08GH41N87",
+  "affiliate_url": "https://link.amazon/B02bkZwVE",
+  "platforms": {
+    "x": {
+      "text": "The Beer Valley Chindi Woven Rug, 2x3 feet, features a handwoven, recycled cotton construction that adds both texture and durability.\n\nLink: https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "The Beer Valley Chindi Woven Rug in Yellow is a handwoven cotton chindi rug, crafted from recycled cotton fabric strips to create a textured, braided weave that adds authentic artisan craftsmanship to any space.\n\nThis 2x3 feet rug, measuring approximately 24 x 36 inches, is perfect. Designed with a durable double-sided weave, this rug can be flipped and used on both sides.\n\nLink: https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "THE BEER VALLEY Chindi Woven Rug 2x3 Feet - Yellow",
+      "description": "This handwoven cotton chindi rug measures 2 x 3 feet and features a durable double-sided design. https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "The Beer Valley Chindi Woven Rug, measuring 2x3 feet (24x36 inches), is a handwoven cotton rug crafted from recycled cotton fabric strips. Featuring a double-sided design, it is perfect.\n\nLink: https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

@@ -1,0 +1,57 @@
+{
+  "asin": "",
+  "status": "FAILED_VALIDATION",
+  "generated_at": "2026-10-06T12:39:17.871679+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_UNKNOWN.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "FAILED_VALIDATION",
+      "content": "",
+      "validation": {
+        "status": "FAILED_VALIDATION",
+        "retry_count": 0,
+        "errors": [
+          "Ollama is not reachable at http://localhost:11434. Please ensure 'ollama serve' is running."
+        ]
+      }
+    },
+    "facebook": {
+      "status": "FAILED_VALIDATION",
+      "content": "",
+      "validation": {
+        "status": "FAILED_VALIDATION",
+        "retry_count": 0,
+        "errors": [
+          "Ollama is not reachable at http://localhost:11434. Please ensure 'ollama serve' is running."
+        ]
+      }
+    },
+    "pinterest": {
+      "status": "FAILED_VALIDATION",
+      "title": "",
+      "description": "",
+      "link": "https://link.amazon/B04Kl1BNM",
+      "validation": {
+        "status": "FAILED_VALIDATION",
+        "retry_count": 0,
+        "errors": [
+          "Ollama is not reachable at http://localhost:11434. Please ensure 'ollama serve' is running."
+        ]
+      }
+    },
+    "threads": {
+      "status": "FAILED_VALIDATION",
+      "content": "",
+      "validation": {
+        "status": "FAILED_VALIDATION",
+        "retry_count": 0,
+        "errors": [
+          "Ollama is not reachable at http://localhost:11434. Please ensure 'ollama serve' is running."
+        ]
+      }
+    }
+  }
+}

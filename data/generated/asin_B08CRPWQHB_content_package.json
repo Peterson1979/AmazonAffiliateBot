@@ -1,0 +1,49 @@
+{
+  "asin": "B08CRPWQHB",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T14:42:07.093062+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B08CRPWQHB.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "The BigFoot Shower Curtain Liner is a 72 x 72 inch PEVA heavy-duty liner.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "The BigFoot Shower Curtain Liner is a 72 x 72 inch PEVA heavy-duty shower curtain.\n\nConstructed with 12 rustproof metal grommets, it resists tears and punctures.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "BigFoot 72 x 72 Inch PEVA Heavy Duty Shower Curtain Liner with Metal Grommets and Magnetic Weights",
+      "description": "This 72x72 inch PEVA shower liner provides a moisture barrier, keeping floors dry and protecting your decorative shower curtain from dirt and soap residues. https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B08OcbzJJ",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The BigFoot Shower Curtain Liner features a 72 x 72 inch PEVA material that keeps water contained and protects your decorative shower curtain from dirt and discoloration.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

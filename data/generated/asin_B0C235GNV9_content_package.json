@@ -1,0 +1,49 @@
+{
+  "asin": "B0C235GNV9",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T17:45:35.359609+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0C235GNV9.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "It includes a rubber-backed non-slip design and reinforced edges for added stability and to prevent tripping.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "The rug has a rubber-backed non-slip design and reinforced edges that are 0.2\" to 0.35\" thick.\n\nTo remove creases, gently iron over a damp towel, reverse roll the rug, or lay it flat with heavy objects; the rug will regain its shape in a few days. If needed, iron on low heat to restore its shape.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "KOZYFLY 5x7 ft Tan/Orange/Brown Braided Cotton Rug with Rubber Backing",
+      "description": "It is 0.2\" thick with edges up to 0.35\" high, and comes in a neutral tan/orange/brown color that may appear differently under various lighting conditions. https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0eFc8pa5",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The KOZYFLY washable area rug measures 5x7 feet (60\" x 84\") and is 0.2\" thick with reinforced edges up to 0.35\". It features a rubber non-slip backing and is available in a tan/orange/brown color that blends light beige, light brown, and deep brown.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    }
+  }
+}

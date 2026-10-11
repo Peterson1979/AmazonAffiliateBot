@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Operational Logs{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Operational Logs</h1>
+    <p class="help-text">Live view of automation routines, discovery history, and daily publisher events.</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ url_for('logs', type=log_type, lines=max_lines) }}" class="btn btn-secondary">🔄 Refresh Logs</a>
+  </div>
+</div>
+
+<!-- Log Switcher Tabs -->
+<div style="display: flex; gap: 10px; margin-bottom: 20px;">
+  <a href="{{ url_for('logs', type='publisher', lines=max_lines) }}" class="btn {% if log_type == 'publisher' %}btn-primary{% else %}btn-secondary{% endif %}">
+    📢 Daily Publisher Log (daily_publisher.log)
+  </a>
+  <a href="{{ url_for('logs', type='maintenance', lines=max_lines) }}" class="btn {% if log_type == 'maintenance' %}btn-primary{% else %}btn-secondary{% endif %}">
+    ⚙️ Queue Maintenance Log (queue_maintenance.log)
+  </a>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+  <div style="padding: 12px 16px; background-color: #162032; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1;">
+      Showing last {{ lines|length }} entries from: <code>{{ 'daily_publisher.log' if log_type == 'publisher' else 'queue_maintenance.log' }}</code>
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-muted);">
+      Timezone: Europe/Budapest
+    </div>
+  </div>
+
+  <div style="padding: 16px; background-color: #070b14; color: #e2e8f0; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.6; max-height: 600px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;">
+    {% if lines %}
+      {% for line in lines %}{{ line }}
+{% endfor %}
+    {% else %}
+      <span style="color: var(--text-muted);">Log file is empty or has not been created yet.</span>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Overview{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Operations & Management Dashboard</h1>
+    <p class="help-text">Real-time status of local discovery, Ollama generation, validation, queue, and publisher.</p>
+  </div>
+  <div class="page-actions">
+    <form action="{{ url_for('queue_maintain') }}" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-primary">⚡ Run Queue Maintenance</button>
+    </form>
+    <form action="{{ url_for('publisher_run') }}" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-secondary">🚀 Run Publisher (DRY RUN)</button>
+    </form>
+  </div>
+</div>
+
+<!-- System Status Grid -->
+<div class="grid-4">
+  <div class="card">
+    <div class="card-title">System Health</div>
+    <div class="card-value">
+      {% if "PRODUCTION" in summary.system_status %}
+        <span style="color: var(--success); font-size: 1.3rem;">● PRODUCTION READY</span>
+      {% elif "OPERATIONAL" in summary.system_status %}
+        <span style="color: var(--primary); font-size: 1.3rem;">● OPERATIONAL</span>
+      {% elif "WARNING" in summary.system_status %}
+        <span style="color: var(--warning); font-size: 1.3rem;">▲ ATTENTION</span>
+      {% else %}
+        <span style="color: var(--danger); font-size: 1.3rem;">■ ATTENTION</span>
+      {% endif %}
+    </div>
+    <div class="card-subtext">{{ summary.system_status }}</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Publishing Mode</div>
+    <div class="card-value">
+      {% if summary.dry_run %}
+        <span class="badge badge-warning" style="font-size: 1rem;">DRY RUN</span>
+      {% else %}
+        <span class="badge badge-danger" style="font-size: 1rem;">LIVE</span>
+      {% endif %}
+    </div>
+    <div class="card-subtext">No live social requests in DRY RUN</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Local Ollama Status</div>
+    <div class="card-value">
+      {% if summary.ollama.online %}
+        <span style="color: var(--success);">ONLINE</span>
+      {% else %}
+        <span style="color: var(--danger);">OFFLINE</span>
+      {% endif %}
+    </div>
+    <div class="card-subtext">
+      Target: <code>qwen2.5:7b</code>
+      {% if summary.ollama.target_model_available %}
+        <span class="badge badge-success">READY</span>
+      {% else %}
+        <span class="badge badge-warning">NOT FOUND</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Windows Scheduler</div>
+    <div class="card-value">
+      {% if summary.windows_tasks.all_registered %}
+        <span style="color: var(--success);">ACTIVE</span>
+      {% else %}
+        <span style="color: var(--warning);">UNREGISTERED</span>
+      {% endif %}
+    </div>
+    <div class="card-subtext">
+      {{ summary.windows_tasks.status_text }}
+    </div>
+</div>
+
+<!-- Product Inventory & Pipeline Breakdown -->
+<div class="card" style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+    <div>
+      <div class="card-title" style="font-size: 1.15rem; color: #fff;">Product Inventory &amp; Pipeline Breakdown</div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;">
+        Direct accounting of user-submitted products vs. discovery candidates. Existing products progress independently without discovery quota.
+      </p>
+    </div>
+    <div>
+      <span class="badge {% if summary.inventory.discovery_enabled %}badge-warning{% else %}badge-info{% endif %}" style="font-size: 0.85rem; padding: 6px 12px;">
+        Automatic Discovery: {{ summary.inventory.discovery_status_text }}
+      </span>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-bottom: 16px;">
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Manually Submitted Links</div>
+      <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary);">{{ summary.inventory.manually_submitted }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Primary product source from user</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Stored Product Records</div>
+      <div style="font-size: 1.6rem; font-weight: 700; color: #fff;">{{ summary.inventory.stored_records }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Scraped product JSON records on disk</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Ready for Publication</div>
+      <div style="font-size: 1.6rem; font-weight: 700; color: var(--success);">{{ summary.inventory.ready_for_review }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Generated &amp; claim-validated packages</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Future Scheduled in Queue</div>
+      <div style="font-size: 1.6rem; font-weight: 700; color: var(--accent);">{{ summary.inventory.future_scheduled }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Upcoming daily Budapest slots booked</div>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-bottom: 16px;">
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Published Items</div>
+      <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);">{{ summary.inventory.published }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Successfully posted socially</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Awaiting Processing / Retry</div>
+      <div style="font-size: 1.4rem; font-weight: 700; color: var(--warning);">{{ summary.inventory.awaiting_processing }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Pending direct URL / extraction retry</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Discovered Candidates (Historical)</div>
+      <div style="font-size: 1.4rem; font-weight: 700; color: var(--text-muted);">{{ summary.inventory.discovery_candidates }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Evaluated in previous auto-discovery runs</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Rejected Candidates (Historical)</div>
+      <div style="font-size: 1.4rem; font-weight: 700; color: var(--danger);">{{ summary.inventory.discovery_rejected }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">Rejected during past keyword scans</div>
+    </div>
+  </div>
+
+  {% if summary.inventory.rejected_items %}
+  <div style="margin-top: 16px;">
+    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">
+      Specific Diagnostics &amp; Attention Items (Retained for Safe Retry):
+    </div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Identifier</th>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Diagnostic Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in summary.inventory.rejected_items %}
+          <tr>
+            <td><code>{{ r.id }}</code></td>
+            <td><small>{{ r.type }}</small></td>
+            <td style="max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.title }}</td>
+            <td><span class="badge badge-danger">{{ r.status }}</span></td>
+            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ r.reason }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Queue Summary Grid -->
+<div class="grid-4">
+  <div class="card">
+    <div class="card-title">Future Coverage</div>
+    <div class="card-value">{{ summary.queue.days_of_coverage }} <span style="font-size: 1rem; font-weight: 500; color: var(--text-muted);">days</span></div>
+    <div class="card-subtext">{{ summary.queue.future_scheduled }} of {{ summary.queue.target_capacity }} future products queued (Min: {{ summary.queue.min_capacity }})</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Total Queued Items</div>
+    <div class="card-value">{{ summary.queue.total_items }}</div>
+    <div class="card-subtext">Published: {{ summary.queue.published }} &bull; Failed: {{ summary.queue.failed }}</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Next Scheduled Slot</div>
+    <div class="card-value">
+      Slot {{ summary.queue.next_slot.slot }}
+    </div>
+    <div class="card-subtext">
+      {{ summary.queue.next_slot.date }} at <strong>{{ summary.queue.next_slot.time }}</strong> ({{ summary.timezone }})
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Next Queued Product</div>
+    {% if summary.queue.next_scheduled_item %}
+      <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        {{ summary.queue.next_scheduled_item.product_name }}
+      </div>
+      <div class="card-subtext">
+        ASIN: <strong>{{ summary.queue.next_scheduled_item.asin }}</strong> &bull; Slot {{ summary.queue.next_scheduled_item.daily_slot }} ({{ summary.queue.next_scheduled_item.scheduled_date }})
+      </div>
+    {% else %}
+      <div class="card-value" style="font-size: 1.2rem; color: var(--text-muted);">None scheduled</div>
+      <div class="card-subtext">Run discovery or add products</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Platforms Status -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Active Platform Targets</div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Target Account</th>
+            <th>Credentials</th>
+            <th>Mode</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p_key, p_info in summary.platforms.items() %}
+          <tr>
+            <td><strong>{{ p_info.name }}</strong></td>
+            <td>
+              {{ p_info.account }}
+              {% if p_info.board %}<br><small style="color: var(--text-muted);">Board: {{ p_info.board }}</small>{% endif %}
+            </td>
+            <td>
+              {% if p_info.credentials_status == "Configured" %}
+                <span class="badge badge-success">Configured</span>
+              {% else %}
+                <span class="badge badge-warning">Missing</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="badge badge-info">DRY RUN</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Automation Schedule -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Automation Schedule ({{ summary.timezone }})</div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Routine</th>
+            <th>Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in summary.schedule %}
+          <tr>
+            <td><strong style="color: var(--primary);">{{ s.time }}</strong></td>
+            <td><strong>{{ s.name }}</strong></td>
+            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ s.description }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 14px; font-size: 0.82rem; color: var(--text-muted);">
+      * Timezone strictly handled via IANA <code>Europe/Budapest</code> with automatic daylight saving transitions.
+    </div>
+  </div>
+</div>
+
+{% endblock %}

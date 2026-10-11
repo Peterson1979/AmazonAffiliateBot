@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock %} - AmazonAffiliateBot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  {% if dry_run %}
+  <div class="dry-run-banner">
+    ⚠️ DRY RUN ENABLED — All platform adapters in simulation mode. No live social posts will be published.
+  </div>
+  {% endif %}
+
+  <nav class="navbar">
+    <a href="{{ url_for('index') }}" class="brand">
+      🚀 AmazonAffiliateBot <span class="tag">Control Center</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}">Overview</a></li>
+      <li><a href="{{ url_for('products') }}">Products</a></li>
+      <li><a href="{{ url_for('add_product') }}">Add Products</a></li>
+      <li><a href="{{ url_for('discovery') }}">Discovery</a></li>
+      <li><a href="{{ url_for('queue') }}">Queue</a></li>
+      <li><a href="{{ url_for('content_preview') }}">Content Preview</a></li>
+      <li><a href="{{ url_for('automation') }}">Automation</a></li>
+      <li><a href="{{ url_for('logs') }}">Logs</a></li>
+      <li><a href="{{ url_for('settings') }}">Settings</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+  <footer>
+    AmazonAffiliateBot Management Dashboard &bull; Timezone: <strong>Europe/Budapest</strong> &bull; Localhost (127.0.0.1) Only
+  </footer>
+</body>
+</html>

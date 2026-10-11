@@ -1,0 +1,42 @@
+{
+  "asin": "B0DTHHK2S1",
+  "affiliate_url": "https://link.amazon/B07zWpUB4",
+  "platforms": {
+    "x": {
+      "text": "These boots are equipped with soft synthetic lining that wicks away moisture.\n\nLink: https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "IUV Women's Western Boots.\n\nIncludes 【Cowgirl Boots Style】:The 2.0 inches western wooden heel and classic western design showcase a classic but elegant style.\n\nLink: https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "IUV Western Wooden Heel Cowgirl Boots",
+      "description": "IUV western wooden heel cowgirl boots feature a 2.0-inch heel and soft synthetic lining. https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "Features a 2.0 inches western wooden heel and a classic design, these cowgirl boots offer a comfortable next-to-skin feel with soft synthetic lining.\n\nLink: https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

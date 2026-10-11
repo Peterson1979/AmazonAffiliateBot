@@ -1,0 +1,42 @@
+{
+  "asin": "B0D6G5S35J",
+  "affiliate_url": "https://link.amazon/B09PbfKuR",
+  "platforms": {
+    "x": {
+      "text": "With a sleek design, this 170cm tall lamp features a linen lampshade and a sturdy black base, perfect.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "The lamp also includes a music sync light mode, pulsing to the rhythm of your music or game audio, and a timer function.\n\nPerfect as a gift.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
+      "description": "This sleek, modern FRIDEKO HOME floor lamp features a 170cm tall design with a sturdy black base and a linen lampshade. It offers smart control via remote, APP, and foot switch, with adjustable brightness and RGB colour options. https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "With a sleek design featuring a linen lampshade and a sturdy black base, this floor lamp stands at approximately 170cm tall, making it perfect.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

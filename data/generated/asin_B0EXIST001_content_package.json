@@ -1,0 +1,24 @@
+{
+  "asin": "B0EXIST001",
+  "product_name": "Pre-Existing Camping Lantern 1000 Lumens",
+  "status": "READY_FOR_REVIEW",
+  "platforms": {
+    "x": {
+      "content": "Pre-Existing Camping Lantern 1000 Lumens. Reliable camping gear.",
+      "status": "VALID"
+    },
+    "facebook": {
+      "content": "Pre-Existing Camping Lantern 1000 Lumens. High quality.",
+      "status": "VALID"
+    },
+    "pinterest": {
+      "title": "Pre-Existing Camping Lantern 1000 Lumens",
+      "description": "Pre-Existing Camping Lantern 1000 Lumens. Reliable.",
+      "status": "VALID"
+    },
+    "threads": {
+      "content": "Pre-Existing Camping Lantern 1000 Lumens. Reliable.",
+      "status": "VALID"
+    }
+  }
+}

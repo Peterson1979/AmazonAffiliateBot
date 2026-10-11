@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Content Preview{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Multi-Platform Content Preview</h1>
+    <p class="help-text">Inspect the exact social copy, affiliate link, and disclosure that will be dispatched to each platform.</p>
+  </div>
+</div>
+
+<div class="alert alert-warning" style="margin-bottom: 24px; font-weight: 600;">
+  🛡️ DRY RUN — NOTHING WILL BE PUBLISHED TO LIVE SOCIAL PLATFORMS.
+</div>
+
+<!-- Product Selector -->
+<div class="card" style="margin-bottom: 24px;">
+  <form method="GET" action="{{ url_for('content_preview') }}" style="display: flex; gap: 12px; align-items: flex-end;">
+    <div style="flex: 1;">
+      <label for="product_select">Select Product to Preview</label>
+      <select id="product_select" name="asin" onchange="window.location.href='{{ url_for('content_preview') }}/' + this.value;">
+        {% for p in products %}
+          <option value="{{ p.asin }}" {% if p.asin == selected_asin %}selected{% endif %}>
+            {{ p.asin }} — {{ p.title }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+
+{% if product and product.platforms %}
+<div class="grid-2">
+  <!-- X Platform Preview -->
+  {% if 'x' in product.platforms %}
+  {% set x_p = product.platforms['x'] %}
+  <div class="platform-card">
+    <div class="platform-header">
+      <div>
+        <span class="platform-title">X (Twitter)</span>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>@BitGoldone</code></div>
+      </div>
+      {% if x_p.status == 'VALID' or x_p.status == 'READY_FOR_REVIEW' %}
+        <span class="badge badge-success">VALIDATED</span>
+      {% else %}
+        <span class="badge badge-danger">FAILED VALIDATION</span>
+      {% endif %}
+    </div>
+    <div class="copy-preview">{{ x_p.content }}</div>
+    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
+      Affiliate Link & FTC Disclosure included &bull; Strict proposition grounding verified
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Facebook Platform Preview -->
+  {% if 'facebook' in product.platforms %}
+  {% set fb_p = product.platforms['facebook'] %}
+  <div class="platform-card">
+    <div class="platform-header">
+      <div>
+        <span class="platform-title">Facebook</span>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>LifeModeHQ</code></div>
+      </div>
+      {% if fb_p.status == 'VALID' or fb_p.status == 'READY_FOR_REVIEW' %}
+        <span class="badge badge-success">VALIDATED</span>
+      {% else %}
+        <span class="badge badge-danger">FAILED VALIDATION</span>
+      {% endif %}
+    </div>
+    <div class="copy-preview">{{ fb_p.content }}</div>
+    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
+      Multi-paragraph structure &bull; Affiliate Link & Disclosure verified
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Pinterest Platform Preview -->
+  {% if 'pinterest' in product.platforms %}
+  {% set pin_p = product.platforms['pinterest'] %}
+  <div class="platform-card">
+    <div class="platform-header">
+      <div>
+        <span class="platform-title">Pinterest Pin</span>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>dailyideasforyou</code> / Board: <code>Shopping ideas</code></div>
+      </div>
+      {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
+        <span class="badge badge-success">VALIDATED</span>
+      {% else %}
+        <span class="badge badge-danger">FAILED VALIDATION</span>
+      {% endif %}
+    </div>
+    <div style="margin-bottom: 8px;">
+      <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Title:</strong>
+      <div style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-top: 2px;">{{ pin_p.title }}</div>
+    </div>
+    <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Description:</strong>
+    <div class="copy-preview" style="margin-top: 4px;">{{ pin_p.description }}</div>
+  </div>
+  {% endif %}
+
+  <!-- Threads Platform Preview -->
+  {% if 'threads' in product.platforms %}
+  {% set th_p = product.platforms['threads'] %}
+  <div class="platform-card">
+    <div class="platform-header">
+      <div>
+        <span class="platform-title">Threads Post</span>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>lifemodehq</code></div>
+      </div>
+      {% if th_p.status == 'VALID' or th_p.status == 'READY_FOR_REVIEW' %}
+        <span class="badge badge-success">VALIDATED</span>
+      {% else %}
+        <span class="badge badge-danger">FAILED VALIDATION</span>
+      {% endif %}
+    </div>
+    <div class="copy-preview">{{ th_p.content }}</div>
+    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
+      Short-form conversational marketing copy &bull; Verified compliance
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% else %}
+<div class="card" style="text-align: center; padding: 48px; color: var(--text-muted);">
+  No content generated yet for the selected product. Please select another product or regenerate copy.
+</div>
+{% endif %}
+{% endblock %}

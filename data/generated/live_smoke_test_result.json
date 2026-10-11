@@ -1,0 +1,60 @@
+{
+  "asin": "B0H1W18KGL",
+  "affiliate_url": "https://link.amazon/B0isaIph6",
+  "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+  "timestamp": "2026-10-06T16:01:06.754606+00:00",
+  "results": {
+    "x": {
+      "platform": "x",
+      "account": "@BitGoldone",
+      "action": "PUBLISH",
+      "mode": "LIVE",
+      "status": "FAILED",
+      "errors": [
+        "Missing required credentials for x: api_key, api_secret, access_token, access_token_secret"
+      ],
+      "message": "Cannot publish to x: missing credentials."
+    },
+    "facebook": {
+      "platform": "facebook",
+      "account": "LifeModeHQ",
+      "page_id": "226949230493910",
+      "post_id": "226949230493910_122325355262197726",
+      "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+      "action": "PUBLISH",
+      "mode": "LIVE",
+      "status": "PUBLISHED",
+      "http_status": 200,
+      "message": "Successfully published photo 226949230493910_122325355262197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+    },
+    "pinterest": {
+      "platform": "pinterest",
+      "account": "dailyideasforyou",
+      "board": "Shopping ideas",
+      "board_id": "1033646620665866548",
+      "pin_id": "1033646551998800365",
+      "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+      "link": "https://link.amazon/B0isaIph6",
+      "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+      "action": "PUBLISH",
+      "mode": "LIVE",
+      "status": "PUBLISHED",
+      "http_status": 201,
+      "message": "Successfully created pin 1033646551998800365 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+    },
+    "threads": {
+      "platform": "threads",
+      "account": "lifemodehq",
+      "user_id": "28272717349017680",
+      "creation_id": "17982617046139258",
+      "post_id": "18235202842321711",
+      "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+      "permalink": "https://www.threads.com/@lifemodehq/post/DeR9YaoDj5M",
+      "action": "PUBLISH",
+      "mode": "LIVE",
+      "status": "PUBLISHED",
+      "http_status": 200,
+      "message": "Successfully published post 18235202842321711 to Threads account 'lifemodehq' (28272717349017680)."
+    }
+  }
+}

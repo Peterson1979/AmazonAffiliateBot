@@ -1,0 +1,49 @@
+{
+  "asin": "B0NEW00004",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-11T04:59:51.574383+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0NEW00004.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Wireless Mechanical Keyboard RGB. Bluetooth 5.0 connection. RGB backlighting. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Wireless Mechanical Keyboard RGB. Bluetooth 5.0 connection. RGB backlighting.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Wireless Mechanical Keyboard RGB",
+      "description": "Bluetooth 5.0 connection. RGB backlighting. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0NEW00004?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Wireless Mechanical Keyboard RGB. Bluetooth 5.0 connection. RGB backlighting. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

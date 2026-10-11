@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Discovery Results{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div style="margin-bottom: 4px;">
+      <a href="{{ url_for('discovery') }}" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">&larr; Back to Discovery</a>
+    </div>
+    <h1 class="page-title">Discovery Execution Report</h1>
+    <p class="help-text">DRY RUN mode &bull; Zero live social publishing performed</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ url_for('queue') }}" class="btn btn-primary">View Queue</a>
+  </div>
+</div>
+
+<div class="grid-4" style="margin-bottom: 24px;">
+  <div class="card">
+    <div class="card-title">Replenishment Status</div>
+    <div class="card-value">
+      {% if report.replenished %}
+        <span style="color: var(--success); font-size: 1.5rem;">REPLENISHED</span>
+      {% else %}
+        <span style="color: var(--warning); font-size: 1.5rem;">NO ACTION</span>
+      {% endif %}
+    </div>
+    <div class="card-subtext">{{ report.reason or 'Complete' }}</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Initial vs Final Capacity</div>
+    <div class="card-value">{{ report.initial_future_capacity }} &rarr; {{ report.final_future_capacity }}</div>
+    <div class="card-subtext">Target: {{ report.target_capacity }} products</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Candidates Evaluated</div>
+    <div class="card-value">{{ report.candidates_evaluated }}</div>
+    <div class="card-subtext">Rejected: {{ report.candidates_rejected }}</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Products Added</div>
+    <div class="card-value" style="color: var(--success);">{{ report.items_added_count }}</div>
+    <div class="card-subtext">Scheduled into future slots</div>
+  </div>
+</div>
+
+{% if report.items_added %}
+<div class="card" style="margin-bottom: 24px;">
+  <div class="card-title" style="margin-bottom: 16px;">Newly Scheduled Products</div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Item ID</th>
+          <th>ASIN</th>
+          <th>Product Title</th>
+          <th>Scheduled Date</th>
+          <th>Slot</th>
+          <th>Time (Budapest)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in report.items_added %}
+        <tr>
+          <td><code>{{ item.item_id }}</code></td>
+          <td><strong><a href="{{ url_for('product_detail', asin=item.asin) }}" style="color: var(--primary);">{{ item.asin }}</a></strong></td>
+          <td>{{ item.title }}</td>
+          <td>{{ item.scheduled_date }}</td>
+          <td><span class="badge badge-info">Slot {{ item.daily_slot }}</span></td>
+          <td>{{ item.scheduled_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% if report.rejection_summary %}
+<div class="card">
+  <div class="card-title" style="margin-bottom: 12px;">Candidate Rejection Breakdown</div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Reason</th>
+          <th>Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reason, count in report.rejection_summary.items() %}
+        <tr>
+          <td><code>{{ reason }}</code></td>
+          <td><strong>{{ count }}</strong></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

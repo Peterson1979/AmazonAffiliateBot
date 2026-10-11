@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Settings & Configuration{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Settings & Configuration</h1>
+    <p class="help-text">Manage safe configuration parameters and inspect platform credential statuses.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Safe Configuration Form -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Core Application Configuration</div>
+    <form method="POST" action="{{ url_for('settings') }}">
+      <div class="form-group">
+        <label for="disclosure">Affiliate FTC Disclosure Notice</label>
+        <textarea id="disclosure" name="disclosure" rows="3">{{ config.affiliate.disclosure }}</textarea>
+        <div class="help-text">Automatically appended to all generated social posts and descriptions.</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="ollama_url">Ollama Base URL</label>
+          <input type="text" id="ollama_url" name="ollama_url" value="{{ config.ollama.base_url }}">
+        </div>
+
+        <div class="form-group">
+          <label for="ollama_model">Ollama Model</label>
+          <input type="text" id="ollama_model" name="ollama_model" value="{{ config.ollama.model }}">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="target_capacity">Queue Target Capacity (Products)</label>
+          <input type="number" id="target_capacity" name="target_capacity" value="{{ config.discovery.target_future_capacity }}">
+        </div>
+
+        <div class="form-group">
+          <label for="min_capacity">Minimum Queue Capacity</label>
+          <input type="number" id="min_capacity" name="min_capacity" value="{{ config.discovery.min_future_capacity }}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="tracking_tag">Amazon Affiliate Tracking Tag</label>
+        <input type="text" id="tracking_tag" name="tracking_tag" value="{{ config.discovery.tracking_tag }}">
+      </div>
+
+      <div class="form-group">
+        <label for="queries">Discovery Search Queries</label>
+        <textarea id="queries" name="queries" rows="5">{% for q in config.discovery.queries %}{{ q }}
+{% endfor %}</textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save Settings</button>
+    </form>
+  </div>
+
+  <!-- Platform Credentials Status & System Constants -->
+  <div>
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-title" style="margin-bottom: 16px;">Platform Credential Verification</div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>Target Account</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p_key, p_info in platforms.items() %}
+            <tr>
+              <td><strong>{{ p_info.name }}</strong></td>
+              <td>{{ p_info.account }}</td>
+              <td>
+                {% if p_info.credentials_status == "Configured" %}
+                  <span class="badge badge-success">CONFIGURED</span>
+                {% else %}
+                  <span class="badge badge-warning">MISSING</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
+        🔒 For security, API keys and secrets are loaded exclusively from environment variables / <code>.env</code> and are NEVER stored or displayed in plaintext.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom: 12px;">System Scheduling Constants</div>
+      <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.7;">
+        <div>&bull; <strong>Timezone:</strong> <code>Europe/Budapest</code></div>
+        <div>&bull; <strong>Posts Per Day:</strong> <code>2</code></div>
+        <div>&bull; <strong>Slot 1 Time:</strong> <code>12:00</code> (European audience)</div>
+        <div>&bull; <strong>Slot 2 Time:</strong> <code>19:00</code> (North American & Pinterest audience)</div>
+        <div>&bull; <strong>Slot Separation:</strong> Strictly <code>7 hours</code></div>
+        <div>&bull; <strong>Publishing Mode:</strong> 
+          {% if config.publishing.dry_run %}
+            <span class="badge badge-warning">DRY_RUN (Simulated)</span>
+          {% else %}
+            <span class="badge badge-danger">LIVE</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{
+  "asin": "B0CNCL35CH",
+  "affiliate_url": "https://link.amazon/B0exefrmH",
+  "platforms": {
+    "x": {
+      "text": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick is a 9g oil balm that gently melts and absorbs into the skin.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "This oil balm texture melts gently into the skin.\n\nIncludes [Use of calcium.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick – Under Eye & Face Wrinkle Care, Firming & H",
+      "description": "9g calcium balm stick for under-eye and face wrinkle care, firming, and hydrating with collagen. https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "Melaxin Cemenrete Calcium Multi Balm Stick is a 9g balm designed for under eye and face wrinkle care, firming, and hydrating with collagen. Its oil balm texture melts gently and absorbs well into the skin without feeling sticky.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

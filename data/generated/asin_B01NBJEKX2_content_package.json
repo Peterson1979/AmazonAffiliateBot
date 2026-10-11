@@ -1,0 +1,54 @@
+{
+  "asin": "B01NBJEKX2",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T14:37:04.191775+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B01NBJEKX2.json",
+    "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Made from 100% microfiber, this wrinkle-resistant, Oeko-Tex certified set is machine washable and includes all the essentials.\n\nLink: https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Made from 100% microfiber, this set is both wrinkle resistant and Oeko-TEX certified.\n\nIncludes Machine washable.\n\nLink: https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "TRULY SOFT Everyday Sheet Set White Polyester 4-Piece Full Sheet Set",
+      "description": "This 100% microfiber sheet set is Oeko-TEX certified, wrinkle resistant, and machine washable. https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B08rC9igT",
+      "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Truly Soft features a 100% microfiber 4-piece full sheet set that is Oeko-TEX certified and wrinkle resistant.\n\nLink: https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

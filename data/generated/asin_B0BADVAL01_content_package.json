@@ -1,0 +1,49 @@
+{
+  "asin": "B0BADVAL01",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T10:12:35.377763+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0BADVAL01.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Product With Hallucinated Copy. Guarantees 100% cure and miraculous life transformation. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Product With Hallucinated Copy. Miraculous comfort.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Product With Hallucinated Copy",
+      "description": "Miraculous cure. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0BADVAL01?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Product With Hallucinated Copy. Miraculous cure. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

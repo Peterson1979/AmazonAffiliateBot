@@ -1,0 +1,155 @@
+{
+  "timestamp": "2026-10-06T17:51:38Z",
+  "total_processed": 3,
+  "ready_count": 3,
+  "failed_count": 0,
+  "packages": [
+    {
+      "asin": "B0BJKRYCZF",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T17:38:30.375528+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0BJKRYCZF.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "Their varied heights create dynamic depth.\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "Ideal as a gift.\n\nIncludes Design Concept. Art comes from life, each different pattern design comes from the artisan's careful observation of life. Abstract art design, clear layers, simple and clear lines, strong three-dimensional sense, strong texture, it all has a good charm, and is a good choice to enhance the taste of home decoration.\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture - Modern Home Decoration",
+          "description": "Their varied heights and compact forms create dynamic depth and highlight bold abstract artistry, making them ideal. https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B00j5slzz",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "Crafted from resin, these statues come in different heights\u20145.98\", 6.57\", and 6.37\" tall\u2014with a unified width of 2.1\".\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0C235GNV9",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T17:45:35.359609+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0C235GNV9.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "It includes a rubber-backed non-slip design and reinforced edges for added stability and to prevent tripping.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The rug has a rubber-backed non-slip design and reinforced edges that are 0.2\" to 0.35\" thick.\n\nTo remove creases, gently iron over a damp towel, reverse roll the rug, or lay it flat with heavy objects; the rug will regain its shape in a few days. If needed, iron on low heat to restore its shape.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "KOZYFLY 5x7 ft Tan/Orange/Brown Braided Cotton Rug with Rubber Backing",
+          "description": "It is 0.2\" thick with edges up to 0.35\" high, and comes in a neutral tan/orange/brown color that may appear differently under various lighting conditions. https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0eFc8pa5",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The KOZYFLY washable area rug measures 5x7 feet (60\" x 84\") and is 0.2\" thick with reinforced edges up to 0.35\". It features a rubber non-slip backing and is available in a tan/orange/brown color that blends light beige, light brown, and deep brown.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0D6G5S35J",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T17:51:38.731511+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0D6G5S35J.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "With a sleek design, this 170cm tall lamp features a linen lampshade and a sturdy black base, perfect.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The lamp also includes a music sync light mode, pulsing to the rhythm of your music or game audio, and a timer function.\n\nPerfect as a gift.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
+          "description": "This sleek, modern FRIDEKO HOME floor lamp features a 170cm tall design with a sturdy black base and a linen lampshade. It offers smart control via remote, APP, and foot switch, with adjustable brightness and RGB colour options. https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B09PbfKuR",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "With a sleek design featuring a linen lampshade and a sturdy black base, this floor lamp stands at approximately 170cm tall, making it perfect.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    }
+  ]
+}

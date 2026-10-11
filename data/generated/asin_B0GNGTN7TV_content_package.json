@@ -1,0 +1,49 @@
+{
+  "asin": "B0GNGTN7TV",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T14:20:49.422256+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0GNGTN7TV.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "The Electactic espresso machine features 15 bar pressure and an integrated grinder, making it easy to prepare delicious espresso, lattes, and cappuccino at home.\n\nLink: https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "The machine features a powerful steam bar.\n\nIt also includes a removable drip tray.\n\nLink: https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Electactic 15 Bar Espresso Machine with Grinder and Steam Bar",
+      "description": "15 bar pressure and precise eyebrows. Enhanced grinding system and removable water tank included. https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0bXBNrkK",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The Electactic espresso machine features 15 bars of pressure and a built-in grinder, making it easy to prepare delicious espresso, lattes, and cappuccino at home.\n\nLink: https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

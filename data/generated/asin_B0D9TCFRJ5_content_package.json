@@ -1,0 +1,49 @@
+{
+  "asin": "B0D9TCFRJ5",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T15:47:00.098003+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0D9TCFRJ5.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Crafted from natural marble, the MULWR Marble Tray adds luxury and sophistication to your bathroom decor. This versatile and functional tray is.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "The Travertine Tray, a bathroom vanity tray, is crafted from exquisite natural marble, adding a touch of luxury and sophistication to your bathroom decor.\n\nThis marble vanity tray is designed. Its solid marble construction ensures durability and stability.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "MULWR Natural Marble Bathroom Vanity Tray - Versatile and Sturdy Storage Solution",
+      "description": "Its sturdy and smooth construction provides a sleek look and convenient storage for bathroom essentials. https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0dycBsOk",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The MULWR Marble Tray features natural marble construction, adding a touch of luxury to your bathroom decor. It is both versatile and functional, perfect.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

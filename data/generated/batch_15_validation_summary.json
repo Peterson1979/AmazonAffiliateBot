@@ -1,0 +1,743 @@
+{
+  "timestamp": "2026-10-06T16:01:06Z",
+  "total_processed": 15,
+  "ready_count": 15,
+  "failed_count": 0,
+  "packages": [
+    {
+      "asin": "B01NBJEKX2",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T14:37:04.191775+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B01NBJEKX2.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "Made from 100% microfiber, this wrinkle-resistant, Oeko-Tex certified set is machine washable and includes all the essentials.\n\nLink: https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "Made from 100% microfiber, this set is both wrinkle resistant and Oeko-TEX certified.\n\nIncludes Machine washable.\n\nLink: https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "TRULY SOFT Everyday Sheet Set White Polyester 4-Piece Full Sheet Set",
+          "description": "This 100% microfiber sheet set is Oeko-TEX certified, wrinkle resistant, and machine washable. https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B08rC9igT",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "Truly Soft features a 100% microfiber 4-piece full sheet set that is Oeko-TEX certified and wrinkle resistant.\n\nLink: https://link.amazon/B08rC9igT\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B08CRPWQHB",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T14:42:07.093062+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B08CRPWQHB.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "The BigFoot Shower Curtain Liner is a 72 x 72 inch PEVA heavy-duty liner.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The BigFoot Shower Curtain Liner is a 72 x 72 inch PEVA heavy-duty shower curtain.\n\nConstructed with 12 rustproof metal grommets, it resists tears and punctures.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "BigFoot 72 x 72 Inch PEVA Heavy Duty Shower Curtain Liner with Metal Grommets and Magnetic Weights",
+          "description": "This 72x72 inch PEVA shower liner provides a moisture barrier, keeping floors dry and protecting your decorative shower curtain from dirt and soap residues. https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B08OcbzJJ",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The BigFoot Shower Curtain Liner features a 72 x 72 inch PEVA material that keeps water contained and protects your decorative shower curtain from dirt and discoloration.\n\nLink: https://link.amazon/B08OcbzJJ\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B08GH41N87",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T14:48:12.625200+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B08GH41N87.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "The Beer Valley Chindi Woven Rug, 2x3 feet, features a handwoven, recycled cotton construction that adds both texture and durability.\n\nLink: https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The Beer Valley Chindi Woven Rug in Yellow is a handwoven cotton chindi rug, crafted from recycled cotton fabric strips to create a textured, braided weave that adds authentic artisan craftsmanship to any space.\n\nThis 2x3 feet rug, measuring approximately 24 x 36 inches, is perfect. Designed with a durable double-sided weave, this rug can be flipped and used on both sides.\n\nLink: https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "THE BEER VALLEY Chindi Woven Rug 2x3 Feet - Yellow",
+          "description": "This handwoven cotton chindi rug measures 2 x 3 feet and features a durable double-sided design. https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B02bkZwVE",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The Beer Valley Chindi Woven Rug, measuring 2x3 feet (24x36 inches), is a handwoven cotton rug crafted from recycled cotton fabric strips. Featuring a double-sided design, it is perfect.\n\nLink: https://link.amazon/B02bkZwVE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B09SH38JRR",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T14:53:24.623406+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B09SH38JRR.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "The WLIVE Small Dresser Nightstand. It includes a wood top.\n\nLink: https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "This WLIVE Small Dresser Nightstand.\n\nThe sturdy structure features a strong steel frame and water-resistant wood top.\n\nLink: https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "WLIVE Rustic Brown 4 Drawer Nightstand with Multifunction Cabinet",
+          "description": "This WLIVE nightstand features 4 drawers and a wood top. https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0aLCB05n",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The WLIVE Small Dresser Nightstand. It includes 4 drawers and a wood top that can be used for displaying lamps, clocks, books, or glasses.\n\nLink: https://link.amazon/B0aLCB05n\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B09ZV2TX28",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T14:58:23.606992+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B09ZV2TX28.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "The Lifewit 60L clothes storage bags feature a 6-pack option, each measuring 55cm x 35cm x 31.5cm with 60L capacity.\n\nLink: https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "Crafted from high-quality, odorless, breathable non-woven fabric, these bags are both soft and strong.\n\nIncludes Multi-Pack Options. Each storage bag measures 55cm x 35cm x 31.5cm with 60L capacity. You have the option to choose between a 4-Pack, 6-Pack, and 8-Pack. With so much room, you can easily store winter clothes, sweaters, pillows, blankets and quilts. Keep your home neat and clean.\n\nLink: https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "Lifewit 6-Pack 60L Foldable Under-Bed Storage Bags",
+          "description": "Made of high-quality, breathable fabric with clear windows and a tough two-way zipper. https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0arzMCtg",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The Lifewit 60L Clothes Storage Bags feature a 6-pack option, each measuring 55cm x 35cm x 31.5cm with 60L capacity.\n\nLink: https://link.amazon/B0arzMCtg\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0BJKRYCZF",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T17:38:30.375528+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0BJKRYCZF.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "Their varied heights create dynamic depth.\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "Ideal as a gift.\n\nIncludes Design Concept. Art comes from life, each different pattern design comes from the artisan's careful observation of life. Abstract art design, clear layers, simple and clear lines, strong three-dimensional sense, strong texture, it all has a good charm, and is a good choice to enhance the taste of home decoration.\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture - Modern Home Decoration",
+          "description": "Their varied heights and compact forms create dynamic depth and highlight bold abstract artistry, making them ideal. https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B00j5slzz",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "Crafted from resin, these statues come in different heights\u20145.98\", 6.57\", and 6.37\" tall\u2014with a unified width of 2.1\".\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0C235GNV9",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T17:45:35.359609+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0C235GNV9.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "It includes a rubber-backed non-slip design and reinforced edges for added stability and to prevent tripping.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The rug has a rubber-backed non-slip design and reinforced edges that are 0.2\" to 0.35\" thick.\n\nTo remove creases, gently iron over a damp towel, reverse roll the rug, or lay it flat with heavy objects; the rug will regain its shape in a few days. If needed, iron on low heat to restore its shape.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "KOZYFLY 5x7 ft Tan/Orange/Brown Braided Cotton Rug with Rubber Backing",
+          "description": "It is 0.2\" thick with edges up to 0.35\" high, and comes in a neutral tan/orange/brown color that may appear differently under various lighting conditions. https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0eFc8pa5",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The KOZYFLY washable area rug measures 5x7 feet (60\" x 84\") and is 0.2\" thick with reinforced edges up to 0.35\". It features a rubber non-slip backing and is available in a tan/orange/brown color that blends light beige, light brown, and deep brown.\n\nLink: https://link.amazon/B0eFc8pa5\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0C51CZJ83",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T15:21:57.458025+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0C51CZJ83.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "They are a great gift idea.\n\nLink: https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "Feel the difference with our twin bedding set, featuring 2 pillow cases, 1 flat sheet, and 1 fitted sheet.\n\nThese sheets are a great gift idea.\n\nLink: https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "Twin Size Sheet Set",
+          "description": "This 4-piece twin size sheet set includes 2 pillow cases, 1 flat sheet, and 1 fitted sheet. The flat sheet measures 66\u2033x 96\u2033, the fitted sheet measures 38\u2033x 75\u2033, and the pillow cases measure 20\u2033x 30\u2033. https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B079VepZB",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "Our sheets are crafted from high-quality brushed microfiber, offering a super soft, breathable, and cooling feel that's softer than Egyptian and organic cotton.\n\nLink: https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0C65T7727",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T15:29:59.655296+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0C65T7727.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "These trendy queen womens oversized hoodies are made of 50% polyester and 50% cotton.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts, designed.\n\nThese pullover sweaters feature a long sleeve design with a pocket, making them ideal. Crafted from 50% polyester and 50% cotton, these sweatshirts are thick and warm.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025",
+          "description": "Made of 50% polyester and 50% cotton, these oversized hoodies are thick and comfortable. https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0bUpIGar",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "These trendy Queen Womens Oversized Hoodies are made of 50% polyester and 50% cotton.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0CNCL35CH",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T15:35:45.382734+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0CNCL35CH.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick is a 9g oil balm that gently melts and absorbs into the skin.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "This oil balm texture melts gently into the skin.\n\nIncludes [Use of calcium.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick \u2013 Under Eye & Face Wrinkle Care, Firming & H",
+          "description": "9g calcium balm stick for under-eye and face wrinkle care, firming, and hydrating with collagen. https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0exefrmH",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "Melaxin Cemenrete Calcium Multi Balm Stick is a 9g balm designed for under eye and face wrinkle care, firming, and hydrating with collagen. Its oil balm texture melts gently and absorbs well into the skin without feeling sticky.\n\nLink: https://link.amazon/B0exefrmH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 1,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0D6G5S35J",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T17:51:38.731511+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0D6G5S35J.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "With a sleek design, this 170cm tall lamp features a linen lampshade and a sturdy black base, perfect.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The lamp also includes a music sync light mode, pulsing to the rhythm of your music or game audio, and a timer function.\n\nPerfect as a gift.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
+          "description": "This sleek, modern FRIDEKO HOME floor lamp features a 170cm tall design with a sturdy black base and a linen lampshade. It offers smart control via remote, APP, and foot switch, with adjustable brightness and RGB colour options. https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B09PbfKuR",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "With a sleek design featuring a linen lampshade and a sturdy black base, this floor lamp stands at approximately 170cm tall, making it perfect.\n\nLink: https://link.amazon/B09PbfKuR\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0D9TCFRJ5",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T15:47:00.098003+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0D9TCFRJ5.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "Crafted from natural marble, the MULWR Marble Tray adds luxury and sophistication to your bathroom decor. This versatile and functional tray is.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "The Travertine Tray, a bathroom vanity tray, is crafted from exquisite natural marble, adding a touch of luxury and sophistication to your bathroom decor.\n\nThis marble vanity tray is designed. Its solid marble construction ensures durability and stability.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "MULWR Natural Marble Bathroom Vanity Tray - Versatile and Sturdy Storage Solution",
+          "description": "Its sturdy and smooth construction provides a sleek look and convenient storage for bathroom essentials. https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0dycBsOk",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "The MULWR Marble Tray features natural marble construction, adding a touch of luxury to your bathroom decor. It is both versatile and functional, perfect.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0DHKSF81K",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T15:51:41.792110+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0DHKSF81K.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "It provides deep hydration.\n\nLink: https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "This 35ml cream offers deep hydration.\n\nIncludes [Triple Blemish Care] 5% Niacinamide + 5% Tranexamic Acid + 1% Melazero V2.\n\nLink: https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "Celimax Pore Dark Spot Brightening Cream 35ml",
+          "description": "Lightweight, hydrating formula ideal. https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B054USqXz",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "It provides deep hydration.\n\nLink: https://link.amazon/B054USqXz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0DTHHK2S1",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T15:55:52.672473+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0DTHHK2S1.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "These boots are equipped with soft synthetic lining that wicks away moisture.\n\nLink: https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "IUV Women's Western Boots.\n\nIncludes \u3010Cowgirl Boots Style\u3011:The 2.0 inches western wooden heel and classic western design showcase a classic but elegant style.\n\nLink: https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "IUV Western Wooden Heel Cowgirl Boots",
+          "description": "IUV western wooden heel cowgirl boots feature a 2.0-inch heel and soft synthetic lining. https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B07zWpUB4",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "Features a 2.0 inches western wooden heel and a classic design, these cowgirl boots offer a comfortable next-to-skin feel with soft synthetic lining.\n\nLink: https://link.amazon/B07zWpUB4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    },
+    {
+      "asin": "B0H1W18KGL",
+      "status": "READY_FOR_REVIEW",
+      "generated_at": "2026-10-06T16:01:06.754606+00:00",
+      "model": "qwen2.5:7b",
+      "source": {
+        "product_cache": "data/products/asin_B0H1W18KGL.json"
+      },
+      "platforms": {
+        "x": {
+          "status": "VALID",
+          "content": "Crafted with soft, flowy white tulle that billows naturally in the wind, this glowing ghost comes with a detachable black witch hat, offering two distinct styling looks\u2014classic plain ghost or spooky witch ghost. The built-in warm white LED lights illuminate the sheer fabric from within, casting a soft eerie glow.\n\nLink: https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "facebook": {
+          "status": "VALID",
+          "content": "\ud83e\uddd9\u200d\u2642\ufe0f. Inside, the ghost is equipped with built-in warm white LED lights that illuminate the sheer fabric from within, casting a soft eerie glow after dusk.\n\nIt runs on batteries (not included), making it easy to hang anywhere outdoors. This hanging ghost swing is perfect. Pair it.\n\nLink: https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "pinterest": {
+          "status": "VALID",
+          "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+          "description": "Crafted from soft, flowy white tulle and featuring a detachable black witch hat, this glowing ghost can be styled as a classic plain ghost or a spooky witch ghost. Built-in warm white LED lights illuminate the sheer fabric from within, casting a soft eerie glow after dusk to create an unforgettable haunted house atmosphere. https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "link": "https://link.amazon/B0isaIph6",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        },
+        "threads": {
+          "status": "VALID",
+          "content": "This giant, sheer fabric ghost hanging swing is the perfect centerpiece for any haunted house display. Crafted from soft, flowy white tulle, it billows naturally in the wind, creating a spooky and lifelike floating ghost effect.\n\nLink: https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "validation": {
+            "status": "VALID",
+            "retry_count": 0,
+            "errors": []
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "asin": "B0NEW00003",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-11T04:59:51.567696+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0NEW00003.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "4K Monitor 27-inch IPS Display. 27-inch IPS panel. 3840x2160 resolution. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "4K Monitor 27-inch IPS Display. 27-inch IPS panel. 3840x2160 resolution.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "4K Monitor 27-inch IPS Display",
+      "description": "27-inch IPS panel. 3840x2160 resolution. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0NEW00003?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "4K Monitor 27-inch IPS Display. 27-inch IPS panel. 3840x2160 resolution. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

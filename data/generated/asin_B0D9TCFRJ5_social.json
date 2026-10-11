@@ -1,0 +1,42 @@
+{
+  "asin": "B0D9TCFRJ5",
+  "affiliate_url": "https://link.amazon/B0dycBsOk",
+  "platforms": {
+    "x": {
+      "text": "Crafted from natural marble, the MULWR Marble Tray adds luxury and sophistication to your bathroom decor. This versatile and functional tray is.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "The Travertine Tray, a bathroom vanity tray, is crafted from exquisite natural marble, adding a touch of luxury and sophistication to your bathroom decor.\n\nThis marble vanity tray is designed. Its solid marble construction ensures durability and stability.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "MULWR Natural Marble Bathroom Vanity Tray - Versatile and Sturdy Storage Solution",
+      "description": "Its sturdy and smooth construction provides a sleek look and convenient storage for bathroom essentials. https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "The MULWR Marble Tray features natural marble construction, adding a touch of luxury to your bathroom decor. It is both versatile and functional, perfect.\n\nLink: https://link.amazon/B0dycBsOk\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

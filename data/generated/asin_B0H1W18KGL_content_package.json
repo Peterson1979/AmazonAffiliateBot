@@ -1,0 +1,52 @@
+{
+  "asin": "B0H1W18KGL",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T16:01:06.754606+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0H1W18KGL.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Crafted with soft, flowy white tulle that billows naturally in the wind, this glowing ghost comes with a detachable black witch hat, offering two distinct styling looks—classic plain ghost or spooky witch ghost. The built-in warm white LED lights illuminate the sheer fabric from within, casting a soft eerie glow.\n\nLink: https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "🧙‍♂️. Inside, the ghost is equipped with built-in warm white LED lights that illuminate the sheer fabric from within, casting a soft eerie glow after dusk.\n\nIt runs on batteries (not included), making it easy to hang anywhere outdoors. This hanging ghost swing is perfect. Pair it.\n\nLink: https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+      "description": "Crafted from soft, flowy white tulle and featuring a detachable black witch hat, this glowing ghost can be styled as a classic plain ghost or a spooky witch ghost. Built-in warm white LED lights illuminate the sheer fabric from within, casting a soft eerie glow after dusk to create an unforgettable haunted house atmosphere. https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0isaIph6",
+      "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "This giant, sheer fabric ghost hanging swing is the perfect centerpiece for any haunted house display. Crafted from soft, flowy white tulle, it billows naturally in the wind, creating a spooky and lifelike floating ghost effect.\n\nLink: https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

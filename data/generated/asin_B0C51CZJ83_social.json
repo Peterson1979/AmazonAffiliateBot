@@ -1,0 +1,42 @@
+{
+  "asin": "B0C51CZJ83",
+  "affiliate_url": "https://link.amazon/B079VepZB",
+  "platforms": {
+    "x": {
+      "text": "They are a great gift idea.\n\nLink: https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "Feel the difference with our twin bedding set, featuring 2 pillow cases, 1 flat sheet, and 1 fitted sheet.\n\nThese sheets are a great gift idea.\n\nLink: https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "Twin Size Sheet Set",
+      "description": "This 4-piece twin size sheet set includes 2 pillow cases, 1 flat sheet, and 1 fitted sheet. The flat sheet measures 66″x 96″, the fitted sheet measures 38″x 75″, and the pillow cases measure 20″x 30″. https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "Our sheets are crafted from high-quality brushed microfiber, offering a super soft, breathable, and cooling feel that's softer than Egyptian and organic cotton.\n\nLink: https://link.amazon/B079VepZB\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

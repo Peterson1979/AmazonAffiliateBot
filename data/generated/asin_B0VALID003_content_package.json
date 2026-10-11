@@ -1,0 +1,49 @@
+{
+  "asin": "B0VALID003",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T10:39:53.581079+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0VALID003.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "65W GaN USB-C Dual Port Fast Wall Charger. 65W max Power Delivery 3.0 output. Dual USB-C and USB-A ports. GaN semiconductor technology. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "65W GaN USB-C Dual Port Fast Wall Charger. 65W max Power Delivery 3.0 output. Dual USB-C and USB-A ports. GaN semiconductor technology.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "65W GaN USB-C Dual Port Fast Wall Charger",
+      "description": "65W max Power Delivery 3.0 output. Dual USB-C and USB-A ports. GaN semiconductor technology. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0VALID003?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "65W GaN USB-C Dual Port Fast Wall Charger. 65W max Power Delivery 3.0 output. Dual USB-C and USB-A ports. GaN semiconductor technology. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

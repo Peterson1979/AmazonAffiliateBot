@@ -1,0 +1,49 @@
+{
+  "asin": "B0C65T7727",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T15:29:59.655296+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0C65T7727.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "These trendy queen womens oversized hoodies are made of 50% polyester and 50% cotton.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts, designed.\n\nThese pullover sweaters feature a long sleeve design with a pocket, making them ideal. Crafted from 50% polyester and 50% cotton, these sweatshirts are thick and warm.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025",
+      "description": "Made of 50% polyester and 50% cotton, these oversized hoodies are thick and comfortable. https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0bUpIGar",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "These trendy Queen Womens Oversized Hoodies are made of 50% polyester and 50% cotton.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    }
+  }
+}

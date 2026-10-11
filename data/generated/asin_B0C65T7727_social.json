@@ -1,0 +1,42 @@
+{
+  "asin": "B0C65T7727",
+  "affiliate_url": "https://link.amazon/B0bUpIGar",
+  "platforms": {
+    "x": {
+      "text": "These trendy queen womens oversized hoodies are made of 50% polyester and 50% cotton.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts, designed.\n\nThese pullover sweaters feature a long sleeve design with a pocket, making them ideal. Crafted from 50% polyester and 50% cotton, these sweatshirts are thick and warm.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025",
+      "description": "Made of 50% polyester and 50% cotton, these oversized hoodies are thick and comfortable. https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "These trendy Queen Womens Oversized Hoodies are made of 50% polyester and 50% cotton.\n\nLink: https://link.amazon/B0bUpIGar\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 1,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

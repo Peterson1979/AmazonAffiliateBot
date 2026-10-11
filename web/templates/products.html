@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Products Directory</h1>
+    <p class="help-text">Overview of discovered, cached, generated, and scheduled Amazon affiliate products.</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Products</a>
+  </div>
+</div>
+
+<!-- Filters and Search Form -->
+<div class="card" style="margin-bottom: 20px;">
+  <form method="GET" action="{{ url_for('products') }}" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+    <div style="flex: 2; min-width: 250px;">
+      <label for="q">Search by Title or ASIN</label>
+      <input type="text" id="q" name="q" value="{{ search_query }}" placeholder="e.g. B0GNGTN7TV or espresso...">
+    </div>
+    <div style="flex: 1; min-width: 180px;">
+      <label for="status">Filter by Status</label>
+      <select id="status" name="status">
+        <option value="all" {% if current_filter == 'all' %}selected{% endif %}>All Products</option>
+        <option value="ready" {% if current_filter == 'ready' %}selected{% endif %}>Ready in Queue</option>
+        <option value="queued" {% if current_filter == 'queued' %}selected{% endif %}>Queued / Scheduled</option>
+        <option value="published" {% if current_filter == 'published' %}selected{% endif %}>Published</option>
+        <option value="valid" {% if current_filter == 'valid' %}selected{% endif %}>Validated (PASS)</option>
+        <option value="failed" {% if current_filter == 'failed' %}selected{% endif %}>Validation / Queue Failed</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-secondary">Filter</button>
+      {% if search_query or current_filter != 'all' %}
+        <a href="{{ url_for('products') }}" class="btn btn-sm btn-secondary" style="margin-left: 6px;">Clear</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Products Table -->
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>ASIN</th>
+        <th>Product Title</th>
+        <th>Facts</th>
+        <th>Content</th>
+        <th>Validation</th>
+        <th>Queue Status</th>
+        <th>Scheduled (Europe/Budapest)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if products %}
+        {% for p in products %}
+        <tr>
+          <td>
+            <strong><a href="{{ url_for('product_detail', asin=p.asin) }}" style="color: var(--primary); text-decoration: none;">{{ p.asin }}</a></strong>
+          </td>
+          <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <a href="{{ url_for('product_detail', asin=p.asin) }}" style="color: inherit; text-decoration: none;" title="{{ p.title }}">
+              {{ p.title }}
+            </a>
+          </td>
+          <td>
+            {% if p.facts_status == 'SUFFICIENT' or p.facts_status == 'EXTRACTED' %}
+              <span class="badge badge-success">{{ p.facts_count }} Facts</span>
+            {% else %}
+              <span class="badge badge-warning">Insufficient</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if p.content_status == 'GENERATED' %}
+              <span class="badge badge-success">Generated</span>
+            {% else %}
+              <span class="badge badge-muted">Not Generated</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if p.validation_status == 'READY_FOR_REVIEW' or p.validation_status == 'VALID' %}
+              <span class="badge badge-success">PASS</span>
+            {% elif p.validation_status == 'FAILED_VALIDATION' or p.validation_status == 'FAILED' %}
+              <span class="badge badge-danger">FAIL</span>
+            {% else %}
+              <span class="badge badge-muted">{{ p.validation_status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if p.queue_status == 'READY' %}
+              <span class="badge badge-info">READY</span>
+            {% elif p.queue_status == 'PUBLISHED' %}
+              <span class="badge badge-success">PUBLISHED</span>
+            {% elif p.queue_status == 'FAILED' %}
+              <span class="badge badge-danger">FAILED</span>
+            {% else %}
+              <span class="badge badge-muted">{{ p.queue_status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if p.scheduled_date %}
+              <span style="font-size: 0.85rem;">{{ p.scheduled_date }} &bull; Slot {{ p.daily_slot }}</span>
+            {% else %}
+              <span style="color: var(--text-muted); font-size: 0.8rem;">Unscheduled</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('product_detail', asin=p.asin) }}" class="btn btn-sm btn-secondary">Inspect</a>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 32px; color: var(--text-muted);">
+            No products match the selected criteria.
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

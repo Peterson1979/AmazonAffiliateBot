@@ -1,0 +1,50 @@
+{
+  "asin": "B095NXXP8C",
+  "affiliate_url": "https://link.amazon/B0amY6llW",
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and a 5.9FT cable.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "text": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and a 5.9FT cable.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 4.1FT rotary switch.\n\nBuilt with sturdy metal material, it includes a 5.9FT cable.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "text": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 4.1FT rotary switch.\n\nBuilt with sturdy metal material, it includes a 5.9FT cable.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Dimmable Floor Lamp with 1000 Lumens LED Bulb",
+      "description": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 5.9FT cable. https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B0amY6llW"
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 4.1FT rotary switch.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "text": "This dimmable floor lamp includes a 1000 lumens E26 LED bulb and features a 4.1FT rotary switch.\n\nLink: https://link.amazon/B0amY6llW\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

@@ -1,0 +1,47 @@
+{
+  "ollama": {
+    "base_url": "http://localhost:11434",
+    "model": "qwen2.5:7b",
+    "timeout": 300,
+    "num_predict": 90,
+    "num_ctx": 1024
+  },
+  "affiliate": {
+    "disclosure": "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+  },
+  "browser": {
+    "headless": false,
+    "firefox_profile": ""
+  },
+  "publishing": {
+    "dry_run": true,
+    "accounts": {
+      "x": {
+        "account": "@BitGoldone"
+      },
+      "facebook": {
+        "account": "LifeModeHQ"
+      },
+      "instagram": {
+        "account": "lifemodehq"
+      },
+      "pinterest": {
+        "account": "dailyideasforyou",
+        "board": "Shopping ideas"
+      },
+      "threads": {
+        "account": "lifemodehq"
+      }
+    }
+  },
+  "discovery": {
+    "enabled": false,
+    "target_future_capacity": 32,
+    "min_future_capacity": 16,
+    "tracking_tag": "customtag-20",
+    "queries": [
+      "ergonomic office accessories",
+      "wfh setup gadgets"
+    ]
+  }
+}

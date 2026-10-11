@@ -1,0 +1,49 @@
+{
+  "asin": "B0VALID002",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T10:39:53.578476+00:00",
+  "model": "mock_model",
+  "source": {
+    "product_cache": "data/products/asin_B0VALID002.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Adjustable Aluminum Laptop Stand with 7 Height Settings. 7 adjustable height levels from 2.5 to 6 inches. Solid aluminum alloy construction. Supports up to 17.3 inch laptops. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Adjustable Aluminum Laptop Stand with 7 Height Settings. 7 adjustable height levels from 2.5 to 6 inches. Solid aluminum alloy construction. Supports up to 17.3 inch laptops.\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Adjustable Aluminum Laptop Stand",
+      "description": "7 adjustable height levels from 2.5 to 6 inches. Solid aluminum alloy construction. Supports up to 17.3 inch laptops. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://www.amazon.com/dp/B0VALID002?tag=lifemode-20",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Adjustable Aluminum Laptop Stand with 7 Height Settings. 7 adjustable height levels from 2.5 to 6 inches. Solid aluminum alloy construction. Supports up to 17.3 inch laptops. This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

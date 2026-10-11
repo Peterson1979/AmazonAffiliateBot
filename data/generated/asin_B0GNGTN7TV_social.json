@@ -1,0 +1,42 @@
+{
+  "asin": "B0GNGTN7TV",
+  "affiliate_url": "https://link.amazon/B0bXBNrkK",
+  "platforms": {
+    "x": {
+      "text": "The Electactic espresso machine features 15 bar pressure and an integrated grinder, making it easy to prepare delicious espresso, lattes, and cappuccino at home.\n\nLink: https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "facebook": {
+      "text": "The machine features a powerful steam bar.\n\nIt also includes a removable drip tray.\n\nLink: https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "pinterest": {
+      "title": "Electactic 15 Bar Espresso Machine with Grinder and Steam Bar",
+      "description": "15 bar pressure and precise eyebrows. Enhanced grinding system and removable water tank included. https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    },
+    "threads": {
+      "text": "The Electactic espresso machine features 15 bars of pressure and a built-in grinder, making it easy to prepare delicious espresso, lattes, and cappuccino at home.\n\nLink: https://link.amazon/B0bXBNrkK\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+    }
+  },
+  "validation_metadata": {
+    "x": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "facebook": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "pinterest": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    },
+    "threads": {
+      "status": "VALID",
+      "retry_count": 0,
+      "errors": []
+    }
+  },
+  "generated_with": "qwen2.5:7b"
+}

@@ -1,0 +1,85 @@
+name: Scheduled Amazon Affiliate Publishing
+
+on:
+  schedule:
+    # Triggers at 10:00, 11:00, 17:00, 18:00 UTC every day.
+    # Corresponds to 12:00 and 19:00 Europe/Budapest across both:
+    # - CEST (Summer, UTC+2): 10:00 UTC = 12:00 CEST, 17:00 UTC = 19:00 CEST
+    # - CET  (Winter, UTC+1): 11:00 UTC = 12:00 CET,  18:00 UTC = 19:00 CET
+    # The timezone-aware runtime guard automatically filters out non-matching window hours.
+    - cron: '0 10,11,17,18 * * *'
+
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Simulate publishing without sending live posts (DRY RUN)'
+        required: true
+        type: boolean
+        default: true
+      ignore_window:
+        description: 'Bypass Europe/Budapest hour window check (publish due items immediately)'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publishing-queue-lock
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Evaluate & Publish Scheduled Queue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Cloud Publisher
+        id: publisher
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          IGNORE_WINDOW: ${{ github.event.inputs.ignore_window }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN || secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          python scripts/run_cloud_publisher.py
+
+      - name: Persist Queue and Logs
+        if: always() && steps.publisher.outputs.queue_updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/queue/publishing_queue.json data/logs/daily_publisher.log
+          if git diff --staged --quiet; then
+            echo "No queue changes to commit."
+          else
+            echo "Persisting updated queue and logs back to repository..."
+            git pull --rebase origin ${{ github.ref_name }}
+            git commit -m "Automated publishing update [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Add Amazon Products{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Add Amazon Products</h1>
+    <p class="help-text">Directly ingest Amazon affiliate links into the automated pipeline and queue.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Input Form -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Enter Amazon Affiliate Links</div>
+    <form method="POST" action="{{ url_for('add_product') }}">
+      <div class="form-group">
+        <label for="url">Single Affiliate URL (Optional)</label>
+        <input type="text" id="url" name="url" placeholder="https://www.amazon.com/dp/B0XXXXXXXX?tag=lifemode-20">
+      </div>
+
+      <div class="form-group">
+        <label for="urls">Batch Affiliate URLs (One URL per line)</label>
+        <textarea id="urls" name="urls" rows="8" placeholder="https://www.amazon.com/dp/B0XXXXXXXX?tag=lifemode-20
+https://link.amazon/B0YYYYYYYY
+# Lines starting with # are ignored">{{ last_input or '' }}</textarea>
+        <div class="help-text">Affiliate tags and parameters are preserved exactly. Duplicates will be rejected automatically.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Process & Queue Products</button>
+    </form>
+  </div>
+
+  <!-- Ingestion Pipeline Explanation & Results -->
+  <div>
+    {% if result %}
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-title" style="margin-bottom: 12px;">Ingestion Summary</div>
+        <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+          <div><strong>Total:</strong> {{ result.total }}</div>
+          <div style="color: var(--success);"><strong>Accepted:</strong> {{ result.accepted }}</div>
+          <div style="color: var(--danger);"><strong>Rejected / Failed:</strong> {{ result.rejected }}</div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ASIN / URL</th>
+                <th>Status</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for res in result.results %}
+              <tr>
+                <td style="font-size: 0.82rem; word-break: break-all;">
+                  {% if res.asin != 'UNKNOWN' %}
+                    <strong><a href="{{ url_for('product_detail', asin=res.asin) }}" style="color: var(--primary);">{{ res.asin }}</a></strong><br>
+                  {% endif %}
+                  {{ res.url }}
+                </td>
+                <td>
+                  {% if res.status == 'ACCEPTED' %}
+                    <span class="badge badge-success">ACCEPTED</span>
+                  {% elif res.status == 'DUPLICATE' %}
+                    <span class="badge badge-warning">DUPLICATE</span>
+                  {% elif res.status == 'VALIDATION_FAILED' %}
+                    <span class="badge badge-danger">VALIDATION FAIL</span>
+                  {% else %}
+                    <span class="badge badge-danger">{{ res.status }}</span>
+                  {% endif %}
+                </td>
+                <td style="font-size: 0.82rem; color: #cbd5e1;">
+                  {% if res.status == 'ACCEPTED' %}
+                    Scheduled on <strong>{{ res.scheduled_date }}</strong> (Slot {{ res.daily_slot }})
+                  {% else %}
+                    {{ res.reason }}
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom: 12px;">Automated Ingestion Pipeline</div>
+      <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.7;">
+        <div style="margin-bottom: 8px;">1. <strong>Product Scraper:</strong> Normalizes title, specifications, and images via headless browser.</div>
+        <div style="margin-bottom: 8px;">2. <strong>CanonicalProductFacts:</strong> Extracts isolated structured ground truth facts.</div>
+        <div style="margin-bottom: 8px;">3. <strong>Local Ollama (qwen2.5:7b):</strong> Produces marketing-oriented platform copy (X, FB, Pinterest, Threads).</div>
+        <div style="margin-bottom: 8px;">4. <strong>ClaimValidator:</strong> Enforces universal claim grounding against source facts.</div>
+        <div style="margin-bottom: 8px;">5. <strong>Publishing Queue:</strong> Appends valid packages to next available daily slots (12:00 / 19:00 Europe/Budapest).</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

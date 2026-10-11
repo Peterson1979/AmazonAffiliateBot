@@ -1,0 +1,49 @@
+{
+  "asin": "B0BJKRYCZF",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-06T17:38:30.375528+00:00",
+  "model": "qwen2.5:7b",
+  "source": {
+    "product_cache": "data/products/asin_B0BJKRYCZF.json"
+  },
+  "platforms": {
+    "x": {
+      "status": "VALID",
+      "content": "Their varied heights create dynamic depth.\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "facebook": {
+      "status": "VALID",
+      "content": "Ideal as a gift.\n\nIncludes Design Concept. Art comes from life, each different pattern design comes from the artisan's careful observation of life. Abstract art design, clear layers, simple and clear lines, strong three-dimensional sense, strong texture, it all has a good charm, and is a good choice to enhance the taste of home decoration.\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture - Modern Home Decoration",
+      "description": "Their varied heights and compact forms create dynamic depth and highlight bold abstract artistry, making them ideal. https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "link": "https://link.amazon/B00j5slzz",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Crafted from resin, these statues come in different heights\u20145.98\", 6.57\", and 6.37\" tall\u2014with a unified width of 2.1\".\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  }
+}

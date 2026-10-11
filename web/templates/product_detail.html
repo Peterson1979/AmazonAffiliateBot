@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.asin }} - Detail{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div style="margin-bottom: 4px;">
+      <a href="{{ url_for('products') }}" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">&larr; Back to Products</a>
+    </div>
+    <h1 class="page-title">{{ product.title }}</h1>
+    <p class="help-text">ASIN: <strong>{{ product.asin }}</strong> &bull; Status: <strong>{{ product.status }}</strong></p>
+  </div>
+  <div class="page-actions">
+    <form action="{{ url_for('api_validate', asin=product.asin) }}" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-secondary">🔍 Re-Validate Content</button>
+    </form>
+    <form action="{{ url_for('api_regenerate', asin=product.asin) }}" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-primary">⚡ Regenerate Content</button>
+    </form>
+    <a href="{{ url_for('content_preview', asin=product.asin) }}" class="btn btn-secondary">👁️ Visual Preview</a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Product Identity & Canonical Facts -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 12px;">Product Identity & Affiliate Reference</div>
+    <div style="font-size: 0.9rem; margin-bottom: 16px;">
+      <div style="margin-bottom: 6px;"><strong>ASIN:</strong> <code>{{ product.asin }}</code></div>
+      {% if product.facts.price %}
+        <div style="margin-bottom: 6px;"><strong>Price:</strong> {{ product.facts.price }}</div>
+      {% endif %}
+      {% if product.affiliate_url %}
+        <div style="margin-bottom: 6px; word-break: break-all;">
+          <strong>Affiliate URL:</strong>
+          <a href="{{ product.affiliate_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">{{ product.affiliate_url }}</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card-title" style="margin-top: 20px; margin-bottom: 12px;">Structured Canonical Facts (Sole Truth Source)</div>
+    {% if product.facts.specifications %}
+      <ul style="padding-left: 20px; font-size: 0.88rem; color: #cbd5e1; margin-bottom: 16px;">
+        {% for spec in product.facts.specifications %}
+          <li style="margin-bottom: 4px;">{{ spec.spec }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color: var(--text-muted); font-size: 0.85rem;">No atomic facts extracted yet.</p>
+    {% endif %}
+
+    {% if product.facts.numeric_groundings %}
+      <div style="margin-top: 14px;">
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Verified Numbers & Units:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;">
+          {% for num in product.facts.numeric_groundings %}
+            <span class="badge badge-muted">{{ num }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if product.queue_item %}
+      <div class="card-title" style="margin-top: 24px; margin-bottom: 10px;">Queue Information</div>
+      <div style="font-size: 0.85rem; color: #cbd5e1;">
+        <div><strong>Status:</strong> <span class="badge badge-info">{{ product.queue_item.status }}</span></div>
+        <div style="margin-top: 4px;"><strong>Scheduled Slot:</strong> {{ product.queue_item.scheduled_date }} (Slot {{ product.queue_item.daily_slot }} @ {{ product.queue_item.scheduled_at }})</div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Generated Content & Validation -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Generated Multi-Platform Copy</div>
+
+    {% if product.platforms %}
+      <!-- X Platform -->
+      {% if 'x' in product.platforms %}
+        {% set x_p = product.platforms['x'] %}
+        <div class="platform-card">
+          <div class="platform-header">
+            <span class="platform-title">X (Twitter) Copy</span>
+            {% if x_p.status == 'VALID' or x_p.status == 'READY_FOR_REVIEW' %}
+              <span class="badge badge-success">VALID</span>
+            {% else %}
+              <span class="badge badge-danger">FAIL</span>
+            {% endif %}
+          </div>
+          <div class="copy-preview">{{ x_p.content }}</div>
+          {% if x_p.errors %}
+            <div style="margin-top: 8px; font-size: 0.82rem; color: var(--danger);">
+              <strong>Validation Issues:</strong>
+              <ul style="padding-left: 18px;">
+                {% for err in x_p.errors %}<li>{{ err }}</li>{% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Facebook Platform -->
+      {% if 'facebook' in product.platforms %}
+        {% set fb_p = product.platforms['facebook'] %}
+        <div class="platform-card">
+          <div class="platform-header">
+            <span class="platform-title">Facebook Copy</span>
+            {% if fb_p.status == 'VALID' or fb_p.status == 'READY_FOR_REVIEW' %}
+              <span class="badge badge-success">VALID</span>
+            {% else %}
+              <span class="badge badge-danger">FAIL</span>
+            {% endif %}
+          </div>
+          <div class="copy-preview">{{ fb_p.content }}</div>
+          {% if fb_p.errors %}
+            <div style="margin-top: 8px; font-size: 0.82rem; color: var(--danger);">
+              <strong>Validation Issues:</strong>
+              <ul style="padding-left: 18px;">
+                {% for err in fb_p.errors %}<li>{{ err }}</li>{% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Pinterest Platform -->
+      {% if 'pinterest' in product.platforms %}
+        {% set pin_p = product.platforms['pinterest'] %}
+        <div class="platform-card">
+          <div class="platform-header">
+            <span class="platform-title">Pinterest Pin</span>
+            {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
+              <span class="badge badge-success">VALID</span>
+            {% else %}
+              <span class="badge badge-danger">FAIL</span>
+            {% endif %}
+          </div>
+          <div style="margin-bottom: 6px;"><strong>Title:</strong> {{ pin_p.title }}</div>
+          <div class="copy-preview">{{ pin_p.description }}</div>
+          {% if pin_p.errors %}
+            <div style="margin-top: 8px; font-size: 0.82rem; color: var(--danger);">
+              <strong>Validation Issues:</strong>
+              <ul style="padding-left: 18px;">
+                {% for err in pin_p.errors %}<li>{{ err }}</li>{% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Threads Platform -->
+      {% if 'threads' in product.platforms %}
+        {% set th_p = product.platforms['threads'] %}
+        <div class="platform-card">
+          <div class="platform-header">
+            <span class="platform-title">Threads Post</span>
+            {% if th_p.status == 'VALID' or th_p.status == 'READY_FOR_REVIEW' %}
+              <span class="badge badge-success">VALID</span>
+            {% else %}
+              <span class="badge badge-danger">FAIL</span>
+            {% endif %}
+          </div>
+          <div class="copy-preview">{{ th_p.content }}</div>
+          {% if th_p.errors %}
+            <div style="margin-top: 8px; font-size: 0.82rem; color: var(--danger);">
+              <strong>Validation Issues:</strong>
+              <ul style="padding-left: 18px;">
+                {% for err in th_p.errors %}<li>{{ err }}</li>{% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    {% else %}
+      <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+        No content package generated yet. Click <strong>Regenerate Content</strong> above to create multi-platform copy.
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
