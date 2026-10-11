@@ -6,229 +6,270 @@
 <div class="page-header">
   <div>
     <h1 class="page-title">Operations & Management Dashboard</h1>
-    <p class="help-text">Real-time status of local discovery, Ollama generation, validation, queue, and publisher.</p>
+    <p class="help-text">Real-time publishing pipeline, platform readiness, queue scheduling, and synchronization.</p>
   </div>
   <div class="page-actions">
     <form action="{{ url_for('sync_github') }}" method="POST" style="display:inline;" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='⏳ Syncing...';">
-      <button type="submit" class="btn btn-success" id="btn-sync-github-dash">🔄 Sync with GitHub</button>
+      <button type="submit" class="btn btn-success" id="btn-sync-github-dash" title="Synchronize local queue with GitHub Actions remote repository">🔄 Sync with GitHub</button>
     </form>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Product</a>
+    <a href="{{ url_for('queue') }}" class="btn btn-secondary">View Queue</a>
+    <a href="{{ url_for('content_preview') }}" class="btn btn-secondary">Preview Content</a>
     <form action="{{ url_for('queue_maintain') }}" method="POST" style="display:inline;">
-      <button type="submit" class="btn btn-primary">⚡ Run Queue Maintenance</button>
+      <button type="submit" class="btn btn-secondary" title="Runs queue replenishment without live publishing">⚡ Run Maintenance</button>
     </form>
     <form action="{{ url_for('publisher_run') }}" method="POST" style="display:inline;">
-      <button type="submit" class="btn btn-secondary">🚀 Run Publisher (DRY RUN)</button>
+      <button type="submit" class="btn btn-secondary" title="Simulates publishing locally. Does not affect separate cloud publisher on GitHub Actions.">🚀 Run Publisher (DRY RUN)</button>
     </form>
   </div>
 </div>
 
-<!-- System Status Grid -->
-<div class="grid-4">
+<!-- Operational Status & Sync Grid -->
+<div class="grid-3">
+  <!-- 1. System Health -->
   <div class="card">
-    <div class="card-title">System Health</div>
-    <div class="card-value">
+    <div class="card-title">System Status</div>
+    <div class="card-value" style="font-size: 1.35rem; display: flex; align-items: center; gap: 8px;">
       {% if "PRODUCTION" in summary.system_status %}
-        <span style="color: var(--success); font-size: 1.3rem;">● PRODUCTION READY</span>
+        <span style="color: var(--success);">● PRODUCTION READY</span>
       {% elif "OPERATIONAL" in summary.system_status %}
-        <span style="color: var(--primary); font-size: 1.3rem;">● OPERATIONAL</span>
+        <span style="color: var(--primary);">● OPERATIONAL</span>
       {% elif "WARNING" in summary.system_status %}
-        <span style="color: var(--warning); font-size: 1.3rem;">▲ ATTENTION</span>
+        <span style="color: var(--warning);">▲ ATTENTION</span>
       {% else %}
-        <span style="color: var(--danger); font-size: 1.3rem;">■ ATTENTION</span>
+        <span style="color: var(--danger);">■ ATTENTION</span>
       {% endif %}
     </div>
     <div class="card-subtext">{{ summary.system_status }}</div>
   </div>
 
+  <!-- 2. GitHub Synchronization Status -->
   <div class="card">
-    <div class="card-title">Publishing Mode</div>
-    <div class="card-value">
-      {% if summary.dry_run %}
-        <span class="badge badge-warning" style="font-size: 1rem;">DRY RUN</span>
-      {% else %}
-        <span class="badge badge-danger" style="font-size: 1rem;">LIVE</span>
-      {% endif %}
-    </div>
-    <div class="card-subtext">No live social requests in DRY RUN</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Local Ollama Status</div>
-    <div class="card-value">
-      {% if summary.ollama.online %}
-        <span style="color: var(--success);">ONLINE</span>
-      {% else %}
-        <span style="color: var(--danger);">OFFLINE</span>
-      {% endif %}
-    </div>
-    <div class="card-subtext">
-      Target: <code>qwen2.5:7b</code>
-      {% if summary.ollama.target_model_available %}
-        <span class="badge badge-success">READY</span>
-      {% else %}
-        <span class="badge badge-warning">NOT FOUND</span>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Windows Scheduler</div>
-    <div class="card-value">
-      {% if summary.windows_tasks.all_registered %}
-        <span style="color: var(--success);">ACTIVE</span>
-      {% else %}
-        <span style="color: var(--warning);">UNREGISTERED</span>
-      {% endif %}
-    </div>
-    <div class="card-subtext">
-      {{ summary.windows_tasks.status_text }}
-    </div>
-</div>
-
-<!-- Product Inventory & Pipeline Breakdown -->
-<div class="card" style="margin-bottom: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-    <div>
-      <div class="card-title" style="font-size: 1.15rem; color: #fff;">Product Inventory &amp; Pipeline Breakdown</div>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;">
-        Direct accounting of user-submitted products vs. discovery candidates. Existing products progress independently without discovery quota.
-      </p>
-    </div>
-    <div>
-      <span class="badge {% if summary.inventory.discovery_enabled %}badge-warning{% else %}badge-info{% endif %}" style="font-size: 0.85rem; padding: 6px 12px;">
-        Automatic Discovery: {{ summary.inventory.discovery_status_text }}
+    <div class="card-title">GitHub Synchronization</div>
+    <div class="card-value" style="font-size: 1.25rem;">
+      <span class="badge {{ summary.sync.badge_class }}" style="font-size: 0.85rem; padding: 4px 10px;">
+        {{ summary.sync.label }}
       </span>
     </div>
+    <div class="card-subtext">{{ summary.sync.description }}</div>
   </div>
 
-  <div class="grid-4" style="margin-bottom: 16px;">
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Manually Submitted Links</div>
-      <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary);">{{ summary.inventory.manually_submitted }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Primary product source from user</div>
+  <!-- 3. Publishing Mode & Cloud Separation -->
+  <div class="card">
+    <div class="card-title">Execution Mode</div>
+    <div class="card-value" style="font-size: 1.25rem;">
+      {% if summary.dry_run %}
+        <span class="badge badge-warning" style="font-size: 0.85rem; padding: 4px 10px;">LOCAL DRY RUN</span>
+      {% else %}
+        <span class="badge badge-danger" style="font-size: 0.85rem; padding: 4px 10px;">LIVE POSTING</span>
+      {% endif %}
     </div>
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Stored Product Records</div>
-      <div style="font-size: 1.6rem; font-weight: 700; color: #fff;">{{ summary.inventory.stored_records }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Scraped product JSON records on disk</div>
+    <div class="card-subtext">
+      Local DRY RUN simulates actions safely. Cloud publisher runs independently via GitHub Actions.
     </div>
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Ready for Publication</div>
-      <div style="font-size: 1.6rem; font-weight: 700; color: var(--success);">{{ summary.inventory.ready_for_review }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Generated &amp; claim-validated packages</div>
+  </div>
+</div>
+
+<!-- Attention Alert (Only if issues or failures detected) -->
+{% if summary.queue.failed > 0 or not summary.ollama.online or not summary.ollama.target_model_available %}
+<div class="attention-banner {% if summary.queue.failed > 0 or not summary.ollama.online %}error-mode{% else %}warning-mode{% endif %}">
+  <div class="attention-icon">⚠️</div>
+  <div>
+    <div class="attention-title">Action Required</div>
+    <div class="attention-body">
+      {% if not summary.ollama.online %}
+        • Local Ollama server is offline at <code>{{ summary.ollama.base_url }}</code>. Start Ollama to enable content generation and validation.<br>
+      {% elif not summary.ollama.target_model_available %}
+        • Target model <code>qwen2.5:7b</code> is missing from Ollama. Run <code>ollama pull qwen2.5:7b</code>.<br>
+      {% endif %}
+      {% if summary.queue.failed > 0 %}
+        • {{ summary.queue.failed }} item(s) in the queue failed validation or platform publishing. <a href="{{ url_for('queue', status='FAILED') }}" style="color: #60a5fa; text-decoration: underline;">Review failed queue items</a>.<br>
+      {% endif %}
     </div>
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Future Scheduled in Queue</div>
-      <div style="font-size: 1.6rem; font-weight: 700; color: var(--accent);">{{ summary.inventory.future_scheduled }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Upcoming daily Budapest slots booked</div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Hero Card: Next Scheduled Publication -->
+<div class="hero-card">
+  <div class="hero-header">
+    <div>
+      <div class="card-title" style="margin-bottom: 2px;">Next Scheduled Publication</div>
+      <div style="font-size: 0.88rem; color: var(--text-muted);">
+        Next publishing window in <strong>{{ summary.timezone }}</strong> (Europe/Budapest)
+      </div>
+    </div>
+    <div class="hero-badge-group">
+      {% if summary.queue.next_scheduled_item %}
+        <span class="badge badge-ready">READY TO PUBLISH</span>
+        <span class="badge badge-muted">Slot {{ summary.queue.next_scheduled_item.daily_slot }} ({{ summary.queue.next_scheduled_item.slot_time }})</span>
+      {% else %}
+        <span class="badge badge-muted">NO SCHEDULED ITEMS</span>
+      {% endif %}
     </div>
   </div>
 
-  <div class="grid-4" style="margin-bottom: 16px;">
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Published Items</div>
-      <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);">{{ summary.inventory.published }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Successfully posted socially</div>
+  {% if summary.queue.next_scheduled_item %}
+    <div class="hero-title">
+      {{ summary.queue.next_scheduled_item.product_name }}
     </div>
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Awaiting Processing / Retry</div>
-      <div style="font-size: 1.4rem; font-weight: 700; color: var(--warning);">{{ summary.inventory.awaiting_processing }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Pending direct URL / extraction retry</div>
+    <div class="hero-meta">
+      <div>
+        ASIN: <strong><a href="{{ url_for('product_detail', asin=summary.queue.next_scheduled_item.asin) }}" style="color: var(--primary); text-decoration: none;">{{ summary.queue.next_scheduled_item.asin }}</a></strong>
+      </div>
+      <div>&bull;</div>
+      <div>
+        Scheduled Date: <strong>{{ summary.queue.next_scheduled_item.scheduled_date }}</strong>
+      </div>
+      <div>&bull;</div>
+      <div>
+        Target Time: <strong>{{ summary.queue.next_scheduled_item.slot_time }} {{ summary.timezone }}</strong>
+      </div>
+      <div>&bull;</div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        Target Platforms:
+        <span class="platform-pill configured">X</span>
+        <span class="platform-pill configured">Facebook</span>
+        <span class="platform-pill configured">Pinterest</span>
+        <span class="platform-pill configured">Threads</span>
+      </div>
     </div>
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Discovered Candidates (Historical)</div>
-      <div style="font-size: 1.4rem; font-weight: 700; color: var(--text-muted);">{{ summary.inventory.discovery_candidates }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Evaluated in previous auto-discovery runs</div>
+    <div style="margin-top: 16px;">
+      <a href="{{ url_for('content_preview', asin=summary.queue.next_scheduled_item.asin) }}" class="btn btn-primary btn-sm">Inspect Content Preview &rarr;</a>
+      <a href="{{ url_for('product_detail', asin=summary.queue.next_scheduled_item.asin) }}" class="btn btn-secondary btn-sm" style="margin-left: 8px;">Product Details</a>
     </div>
-    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-      <div style="font-size: 0.8rem; color: var(--text-muted);">Rejected Candidates (Historical)</div>
-      <div style="font-size: 1.4rem; font-weight: 700; color: var(--danger);">{{ summary.inventory.discovery_rejected }}</div>
-      <div style="font-size: 0.75rem; color: var(--text-muted);">Rejected during past keyword scans</div>
+  {% else %}
+    <div class="empty-state" style="padding: 24px 10px;">
+      <div class="empty-state-icon">📅</div>
+      <div class="empty-state-title">No upcoming publications scheduled</div>
+      <div class="empty-state-desc">Your publishing queue currently has no future items booked. Add new Amazon product links to populate the upcoming pipeline.</div>
+      <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-sm">+ Add Amazon Products</a>
     </div>
-  </div>
-
-  {% if summary.inventory.rejected_items %}
-  <div style="margin-top: 16px;">
-    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">
-      Specific Diagnostics &amp; Attention Items (Retained for Safe Retry):
-    </div>
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>Identifier</th>
-            <th>Type</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Diagnostic Reason</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for r in summary.inventory.rejected_items %}
-          <tr>
-            <td><code>{{ r.id }}</code></td>
-            <td><small>{{ r.type }}</small></td>
-            <td style="max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.title }}</td>
-            <td><span class="badge badge-danger">{{ r.status }}</span></td>
-            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ r.reason }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
   {% endif %}
 </div>
 
-<!-- Queue Summary Grid -->
+<!-- Queue Pipeline Metrics -->
 <div class="grid-4">
   <div class="card">
-    <div class="card-title">Future Coverage</div>
-    <div class="card-value">{{ summary.queue.days_of_coverage }} <span style="font-size: 1rem; font-weight: 500; color: var(--text-muted);">days</span></div>
-    <div class="card-subtext">{{ summary.queue.future_scheduled }} of {{ summary.queue.target_capacity }} future products queued (Min: {{ summary.queue.min_capacity }})</div>
+    <div class="card-title">Ready in Queue</div>
+    <div class="card-value" style="color: #60a5fa;">{{ summary.queue.ready }}</div>
+    <div class="card-subtext">Validated &amp; ready for upcoming slots</div>
   </div>
 
   <div class="card">
-    <div class="card-title">Total Queued Items</div>
-    <div class="card-value">{{ summary.queue.total_items }}</div>
-    <div class="card-subtext">Published: {{ summary.queue.published }} &bull; Failed: {{ summary.queue.failed }}</div>
+    <div class="card-title">Published</div>
+    <div class="card-value" style="color: var(--success);">{{ summary.queue.published }}</div>
+    <div class="card-subtext">Successfully published items</div>
   </div>
 
   <div class="card">
-    <div class="card-title">Next Scheduled Slot</div>
-    <div class="card-value">
-      Slot {{ summary.queue.next_slot.slot }}
-    </div>
-    <div class="card-subtext">
-      {{ summary.queue.next_slot.date }} at <strong>{{ summary.queue.next_slot.time }}</strong> ({{ summary.timezone }})
-    </div>
+    <div class="card-title">Partially Published</div>
+    <div class="card-value" style="color: var(--warning);">{{ summary.queue.partially_published }}</div>
+    <div class="card-subtext">Completed on subset of platforms</div>
   </div>
 
   <div class="card">
-    <div class="card-title">Next Queued Product</div>
-    {% if summary.queue.next_scheduled_item %}
-      <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-        {{ summary.queue.next_scheduled_item.product_name }}
-      </div>
-      <div class="card-subtext">
-        ASIN: <strong>{{ summary.queue.next_scheduled_item.asin }}</strong> &bull; Slot {{ summary.queue.next_scheduled_item.daily_slot }} ({{ summary.queue.next_scheduled_item.scheduled_date }})
-      </div>
-    {% else %}
-      <div class="card-value" style="font-size: 1.2rem; color: var(--text-muted);">None scheduled</div>
-      <div class="card-subtext">Run discovery or add products</div>
-    {% endif %}
+    <div class="card-title">Failed / Errors</div>
+    <div class="card-value" style="color: var(--danger);">{{ summary.queue.failed }}</div>
+    <div class="card-subtext">Requires validation or URL retry</div>
   </div>
 </div>
 
+<!-- Upcoming Schedule Pipeline Table -->
+<div class="card" style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+    <div>
+      <div class="card-title" style="font-size: 0.95rem; color: #fff; margin-bottom: 2px;">Upcoming Publishing Pipeline</div>
+      <p style="color: var(--text-muted); font-size: 0.84rem;">
+        Next scheduled items in chronological order ({{ summary.timezone }} / Budapest time). Coverage: <strong>{{ summary.queue.days_of_coverage }} days</strong> ({{ summary.queue.future_scheduled }} queued of {{ summary.queue.target_capacity }} target capacity).
+      </p>
+    </div>
+    <div>
+      <a href="{{ url_for('queue') }}" class="btn btn-secondary btn-sm">View Full Queue &rarr;</a>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Date &amp; Time (Budapest)</th>
+          <th>Slot</th>
+          <th>ASIN</th>
+          <th>Product Title</th>
+          <th>Status</th>
+          <th>Target Platforms</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if summary.queue.upcoming_items %}
+          {% for item in summary.queue.upcoming_items %}
+          <tr>
+            <td>
+              <strong>{{ item.scheduled_date }}</strong>
+              <span style="color: var(--text-muted); font-size: 0.82rem; margin-left: 4px;">{{ item.slot_time }}</span>
+            </td>
+            <td>
+              {% if item.daily_slot == 1 %}
+                <span class="badge badge-info">Slot 1 (EU)</span>
+              {% else %}
+                <span class="badge badge-warning">Slot 2 (NA)</span>
+              {% endif %}
+            </td>
+            <td>
+              <strong><a href="{{ url_for('product_detail', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">{{ item.asin }}</a></strong>
+            </td>
+            <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              {{ item.product_name }}
+            </td>
+            <td>
+              {% if item.status == 'READY' %}
+                <span class="badge badge-ready">READY</span>
+              {% elif item.status == 'PUBLISHED' %}
+                <span class="badge badge-published">PUBLISHED</span>
+              {% elif item.status == 'PARTIALLY_PUBLISHED' %}
+                <span class="badge badge-partial">PARTIAL</span>
+              {% elif item.status == 'FAILED' %}
+                <span class="badge badge-failed">FAILED</span>
+              {% else %}
+                <span class="badge badge-muted">{{ item.status }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="platform-pill configured">X</span>
+              <span class="platform-pill configured">FB</span>
+              <span class="platform-pill configured">Pin</span>
+              <span class="platform-pill configured">Threads</span>
+            </td>
+            <td>
+              <a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary">Preview</a>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 32px; color: var(--text-muted);">
+              No upcoming items scheduled. Add Amazon affiliate links or run queue replenishment.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Platforms & Automation Health Grid -->
 <div class="grid-2">
-  <!-- Platforms Status -->
+  <!-- Active Platform Targets -->
   <div class="card">
-    <div class="card-title" style="margin-bottom: 16px;">Active Platform Targets</div>
+    <div class="card-title" style="margin-bottom: 14px;">Connected Platform Targets</div>
     <div class="table-responsive">
       <table>
         <thead>
           <tr>
             <th>Platform</th>
-            <th>Target Account</th>
+            <th>Account / Target</th>
             <th>Credentials</th>
             <th>Mode</th>
           </tr>
@@ -256,18 +297,21 @@
         </tbody>
       </table>
     </div>
+    <div class="card-subtext" style="margin-top: 10px;">
+      Social adapters operate in simulation mode during local execution. Secrets are never exposed in UI or logs.
+    </div>
   </div>
 
-  <!-- Automation Schedule -->
+  <!-- Automation Diagnostics & Schedule -->
   <div class="card">
-    <div class="card-title" style="margin-bottom: 16px;">Automation Schedule ({{ summary.timezone }})</div>
+    <div class="card-title" style="margin-bottom: 14px;">Automation &amp; System Schedule ({{ summary.timezone }})</div>
     <div class="table-responsive">
       <table>
         <thead>
           <tr>
             <th>Time</th>
             <th>Routine</th>
-            <th>Target</th>
+            <th>Audience / Target</th>
           </tr>
         </thead>
         <tbody>
@@ -281,8 +325,14 @@
         </tbody>
       </table>
     </div>
-    <div style="margin-top: 14px; font-size: 0.82rem; color: var(--text-muted);">
-      * Timezone strictly handled via IANA <code>Europe/Budapest</code> with automatic daylight saving transitions.
+    <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div style="font-size: 0.82rem; color: var(--text-muted);">
+        Ollama AI: <strong style="color: #fff;">{{ summary.ollama.model }}</strong> &bull;
+        Scheduler: <strong style="color: #fff;">{{ summary.windows_tasks.status_text }}</strong>
+      </div>
+      <div>
+        <a href="{{ url_for('automation') }}" class="btn btn-secondary btn-sm">Automation Settings &rarr;</a>
+      </div>
     </div>
   </div>
 </div>

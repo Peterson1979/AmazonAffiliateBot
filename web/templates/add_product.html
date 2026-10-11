@@ -14,7 +14,7 @@
   <!-- Input Form -->
   <div class="card">
     <div class="card-title" style="margin-bottom: 16px;">Enter Amazon Affiliate Links</div>
-    <form method="POST" action="{{ url_for('add_product') }}">
+    <form method="POST" action="{{ url_for('add_product') }}" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled=true; btn.innerText='⏳ Processing Products...';">
       <div class="form-group">
         <label for="url">Single Affiliate URL (Optional)</label>
         <input type="text" id="url" name="url" placeholder="https://www.amazon.com/dp/B0XXXXXXXX?tag=lifemode-20">
@@ -28,7 +28,7 @@ https://link.amazon/B0YYYYYYYY
         <div class="help-text">Affiliate tags and parameters are preserved exactly. Duplicates will be rejected automatically.</div>
       </div>
 
-      <button type="submit" class="btn btn-primary">Process & Queue Products</button>
+      <button type="submit" class="btn btn-primary">Process &amp; Queue Products</button>
     </form>
   </div>
 

@@ -261,6 +261,62 @@ def get_next_publishing_slot_time() -> Dict[str, Any]:
         return {"slot": 1, "time": "12:00", "date": tomorrow.strftime("%Y-%m-%d"), "dt": next_dt.isoformat(), "is_today": False}
 
 
+def get_git_sync_status() -> Dict[str, Any]:
+    """Check lightweight local git status for queue synchronization visibility."""
+    repo_root = Path(__file__).resolve().parent.parent
+    try:
+        proc = subprocess.run(
+            ["git", "status", "--porcelain", "data/queue/publishing_queue.json"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=2
+        )
+        has_uncommitted_queue = bool(proc.stdout.strip())
+
+        proc_unpushed = subprocess.run(
+            ["git", "rev-list", "--count", "origin/master..HEAD"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=2
+        )
+        unpushed_count = int(proc_unpushed.stdout.strip()) if proc_unpushed.returncode == 0 and proc_unpushed.stdout.strip().isdigit() else 0
+
+        if has_uncommitted_queue:
+            return {
+                "status": "UNCOMMITTED_CHANGES",
+                "label": "Local changes pending sync",
+                "description": "Local queue has modified items not yet pushed to GitHub.",
+                "badge_class": "badge-warning",
+                "is_synced": False
+            }
+        elif unpushed_count > 0:
+            return {
+                "status": "UNPUSHED_COMMITS",
+                "label": f"{unpushed_count} commit(s) ahead of GitHub",
+                "description": f"{unpushed_count} local commit(s) ready to sync to GitHub Actions.",
+                "badge_class": "badge-info",
+                "is_synced": False
+            }
+        else:
+            return {
+                "status": "SYNCHRONIZED",
+                "label": "Synchronized with GitHub",
+                "description": "Local queue is in sync with origin/master.",
+                "badge_class": "badge-success",
+                "is_synced": True
+            }
+    except Exception:
+        return {
+            "status": "READY",
+            "label": "Ready to Sync",
+            "description": "Click 'Sync with GitHub' to synchronize local and cloud queues.",
+            "badge_class": "badge-info",
+            "is_synced": True
+        }
+
+
 def get_dashboard_summary() -> Dict[str, Any]:
     """Aggregate complete dashboard overview statistics and statuses."""
     config = load_application_config()
@@ -268,6 +324,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
     windows_tasks = check_windows_tasks_status()
     platforms = get_platform_statuses(config)
     next_slot = get_next_publishing_slot_time()
+    sync_status = get_git_sync_status()
 
     # Load Queue statistics
     queue_exists = QUEUE_FILE.exists()
@@ -278,10 +335,13 @@ def get_dashboard_summary() -> Dict[str, Any]:
 
     total_queued = len(queue.items) if queue else 0
     future_scheduled = 0
+    ready_count = 0
     published_count = 0
+    partially_published_count = 0
     failed_count = 0
     validation_failures = 0
     next_scheduled_item = None
+    upcoming_items: List[Dict[str, Any]] = []
 
     if queue:
         # Sort items chronologically to find next item
@@ -289,9 +349,13 @@ def get_dashboard_summary() -> Dict[str, Any]:
         for it in queue.items:
             if it.status == STATUS_PUBLISHED:
                 published_count += 1
+            elif it.status == STATUS_PARTIALLY_PUBLISHED:
+                partially_published_count += 1
             elif it.status in (STATUS_FAILED,):
                 failed_count += 1
-            
+            elif it.status in (STATUS_READY, STATUS_QUEUED):
+                ready_count += 1
+
             if it.validation_status == STATUS_FAILED_VALIDATION:
                 validation_failures += 1
 
@@ -315,8 +379,37 @@ def get_dashboard_summary() -> Dict[str, Any]:
                 "product_name": next_it.product_name,
                 "scheduled_date": next_it.scheduled_date,
                 "daily_slot": next_it.daily_slot,
-                "scheduled_at": next_it.scheduled_at
+                "scheduled_at": next_it.scheduled_at,
+                "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
+                "status": next_it.status,
+                "platforms": ["X", "Facebook", "Pinterest", "Threads"]
             }
+            for it_dt, it in active_items[:6]:
+                upcoming_items.append({
+                    "asin": it.asin,
+                    "product_name": it.product_name,
+                    "scheduled_date": it.scheduled_date,
+                    "daily_slot": it.daily_slot,
+                    "slot_time": "12:00" if it.daily_slot == 1 else "19:00",
+                    "scheduled_at": it.scheduled_at,
+                    "status": it.status,
+                    "platforms": ["X", "Facebook", "Pinterest", "Threads"]
+                })
+        elif queue.items:
+            # Fallback if all items are before now_dt or unscheduled
+            ready_candidates = [it for it in queue.items if it.status in (STATUS_READY, STATUS_QUEUED)]
+            if ready_candidates:
+                next_it = ready_candidates[0]
+                next_scheduled_item = {
+                    "asin": next_it.asin,
+                    "product_name": next_it.product_name,
+                    "scheduled_date": next_it.scheduled_date,
+                    "daily_slot": next_it.daily_slot,
+                    "scheduled_at": next_it.scheduled_at,
+                    "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
+                    "status": next_it.status,
+                    "platforms": ["X", "Facebook", "Pinterest", "Threads"]
+                }
 
     target_capacity = config.get("discovery", {}).get("target_future_capacity", DEFAULT_TARGET_FUTURE_CAPACITY)
     min_capacity = config.get("discovery", {}).get("min_future_capacity", DEFAULT_MIN_FUTURE_CAPACITY)
@@ -439,11 +532,14 @@ def get_dashboard_summary() -> Dict[str, Any]:
         "ollama": ollama_info,
         "windows_tasks": windows_tasks,
         "platforms": platforms,
+        "sync": sync_status,
         "queue": {
             "exists": queue_exists,
             "total_items": total_queued,
             "future_scheduled": future_scheduled,
+            "ready": ready_count,
             "published": published_count,
+            "partially_published": partially_published_count,
             "failed": failed_count,
             "validation_failures": validation_failures,
             "target_capacity": target_capacity,
@@ -451,6 +547,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
             "remaining_capacity": remaining_capacity,
             "days_of_coverage": days_of_coverage,
             "next_scheduled_item": next_scheduled_item,
+            "upcoming_items": upcoming_items,
             "next_slot": next_slot
         },
         "inventory": {

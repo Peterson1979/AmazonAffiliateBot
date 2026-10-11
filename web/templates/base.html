@@ -9,7 +9,7 @@
 <body>
   {% if dry_run %}
   <div class="dry-run-banner">
-    ⚠️ DRY RUN ENABLED — All platform adapters in simulation mode. No live social posts will be published.
+    <span>🛡️ <strong>LOCAL SIMULATION MODE (DRY RUN)</strong> — Local publisher actions simulate publishing without live social posts. Cloud publishing is managed separately via scheduled GitHub Actions on master.</span>
   </div>
   {% endif %}
 
@@ -18,15 +18,15 @@
       🚀 AmazonAffiliateBot <span class="tag">Control Center</span>
     </a>
     <ul class="nav-links">
-      <li><a href="{{ url_for('index') }}">Overview</a></li>
-      <li><a href="{{ url_for('products') }}">Products</a></li>
-      <li><a href="{{ url_for('add_product') }}">Add Products</a></li>
-      <li><a href="{{ url_for('discovery') }}">Discovery</a></li>
-      <li><a href="{{ url_for('queue') }}">Queue</a></li>
-      <li><a href="{{ url_for('content_preview') }}">Content Preview</a></li>
-      <li><a href="{{ url_for('automation') }}">Automation</a></li>
-      <li><a href="{{ url_for('logs') }}">Logs</a></li>
-      <li><a href="{{ url_for('settings') }}">Settings</a></li>
+      <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Overview</a></li>
+      <li><a href="{{ url_for('products') }}" class="{% if request.endpoint in ('products', 'product_detail') %}active{% endif %}">Products</a></li>
+      <li><a href="{{ url_for('add_product') }}" class="{% if request.endpoint == 'add_product' %}active{% endif %}">Add Products</a></li>
+      <li><a href="{{ url_for('queue') }}" class="{% if request.endpoint == 'queue' %}active{% endif %}">Queue</a></li>
+      <li><a href="{{ url_for('content_preview') }}" class="{% if request.endpoint == 'content_preview' %}active{% endif %}">Content Preview</a></li>
+      <li><a href="{{ url_for('discovery') }}" class="{% if request.endpoint == 'discovery' %}active{% endif %}">Discovery</a></li>
+      <li><a href="{{ url_for('automation') }}" class="{% if request.endpoint == 'automation' %}active{% endif %}">Automation</a></li>
+      <li><a href="{{ url_for('logs') }}" class="{% if request.endpoint == 'logs' %}active{% endif %}">Logs</a></li>
+      <li><a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a></li>
     </ul>
   </nav>
 

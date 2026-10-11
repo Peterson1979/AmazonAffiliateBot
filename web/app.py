@@ -204,6 +204,8 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
                 items = [it for it in items if it.status == "READY"]
             elif status_filter == "PUBLISHED":
                 items = [it for it in items if it.status == "PUBLISHED"]
+            elif status_filter == "PARTIALLY_PUBLISHED":
+                items = [it for it in items if it.status == "PARTIALLY_PUBLISHED"]
             elif status_filter == "FAILED":
                 items = [it for it in items if it.status in ("FAILED",) or it.validation_status == "FAILED_VALIDATION"]
 
