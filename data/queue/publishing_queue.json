@@ -11,6 +11,23 @@
   "total_failed": 3,
   "scheduled_posts": 14,
   "unfilled_slots": 46,
+  "slot_claims": {
+    "2026-10-11-slot-2": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-12T21:25:16.631576+02:00",
+      "attempt": 1
+    },
+    "2026-10-12-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-12T21:25:16.631576+02:00",
+      "attempt": 1
+    },
+    "2026-10-12-slot-2": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-12T21:25:16.631576+02:00",
+      "attempt": 1
+    }
+  },
   "items": [
     {
       "queue_item_id": "item_001_B0GNGTN7TV",
