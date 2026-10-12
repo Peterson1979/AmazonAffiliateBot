@@ -73,8 +73,91 @@ GENERATED_DIR = DATA_DIR / "generated"
 QUEUE_FILE = DATA_DIR / "queue" / "publishing_queue.json"
 LOGS_DIR = DATA_DIR / "logs"
 DISCOVERY_HISTORY_FILE = DATA_DIR / "discovery" / "discovery_history.json"
+SCHEDULED_WORKFLOW_FILE = PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml"
+ACTIVE_PUBLISHING_PLATFORMS = ("facebook", "pinterest", "threads")
 
 DEFAULT_AFFILIATE_DISCLOSURE = "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+
+
+def _slot_claim_for_item(queue: PublishingQueue, item: QueueItem) -> Dict[str, Any]:
+    """Return the persisted claim for an item without inventing live state."""
+    if not item.scheduled_at or not item.daily_slot:
+        return {}
+    try:
+        item_dt = QueuePublisher.parse_datetime(item.scheduled_at)
+    except Exception:
+        return {}
+    key = f"{item_dt.date().isoformat()}-slot-{item.daily_slot}"
+    return (queue.slot_claims or {}).get(key) or {}
+
+
+def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str, Any]:
+    """Normalize one active platform result for truthful UI rendering."""
+    result = (item.publishing_results or {}).get(platform)
+    if not isinstance(result, dict):
+        result = None
+
+    state = "UNKNOWN"
+    if result:
+        result_status = result.get("status")
+        mode = result.get("mode")
+        if result_status == "WOULD_PUBLISH" or mode == "DRY_RUN":
+            state = "SIMULATED"
+        elif result_status == "PUBLISHED" and mode == "LIVE":
+            state = "PUBLISHED"
+        elif result_status == "FAILED":
+            state = "FAILED"
+    elif item.status in (STATUS_READY, STATUS_QUEUED):
+        claim = (item._ui_claim if hasattr(item, "_ui_claim") else {}) or {}
+        state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
+
+    live_confirmed = state == "PUBLISHED"
+    result = result or {}
+    return {
+        "platform": platform,
+        "label": platform.capitalize(),
+        "state": state,
+        "mode": result.get("mode"),
+        "timestamp": item.published_at if live_confirmed else None,
+        "post_id": result.get("post_id") or result.get("pin_id") or result.get("photo_id"),
+        "post_url": result.get("permalink_url") or result.get("pin_url") or result.get("permalink"),
+        "errors": result.get("errors") or ([result.get("message")] if state == "FAILED" and result.get("message") else []),
+    }
+
+
+def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict[str, Any]:
+    """Expose only evidence-backed queue and platform states to the UI."""
+    claim = _slot_claim_for_item(queue, item)
+    item._ui_claim = claim
+    platform_results = {
+        platform: get_platform_publication_result(item, platform)
+        for platform in ACTIVE_PUBLISHING_PLATFORMS
+    }
+    states = {result["state"] for result in platform_results.values()}
+    if item.status in (STATUS_READY, STATUS_QUEUED):
+        state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
+    elif "SIMULATED" in states and not ({"PUBLISHED", "FAILED"} & states):
+        state = "SIMULATED"
+    elif "PUBLISHED" in states and "FAILED" in states:
+        state = "PARTIAL"
+    elif item.status == STATUS_PARTIALLY_PUBLISHED:
+        state = "PARTIAL"
+    elif item.status == STATUS_FAILED:
+        state = "FAILED"
+    elif states and all(s == "PUBLISHED" for s in states):
+        state = "PUBLISHED"
+    elif "SIMULATED" in states:
+        state = "SIMULATED"
+    else:
+        state = "UNKNOWN"
+
+    return {
+        "state": state,
+        "retryable": claim.get("state") == "RETRYABLE",
+        "published_at": item.published_at if state == "PUBLISHED" or state == "PARTIAL" else None,
+        "platforms": platform_results,
+        "errors": item.errors or [],
+    }
 
 
 def load_application_config(config_path: Path = CONFIG_PATH) -> Dict[str, Any]:
@@ -337,6 +420,11 @@ def get_dashboard_summary() -> Dict[str, Any]:
     published_count = 0
     partially_published_count = 0
     failed_count = 0
+    processing_count = 0
+    retryable_count = 0
+    simulated_count = 0
+    unknown_count = 0
+    scheduled_count = 0
     validation_failures = 0
     next_scheduled_item = None
     upcoming_items: List[Dict[str, Any]] = []
@@ -345,14 +433,26 @@ def get_dashboard_summary() -> Dict[str, Any]:
         # Sort items chronologically to find next item
         active_items = []
         for it in queue.items:
-            if it.status == STATUS_PUBLISHED:
+            presentation = get_queue_item_presentation(queue, it)
+            ui_state = presentation["state"]
+            if ui_state == "PUBLISHED":
                 published_count += 1
-            elif it.status == STATUS_PARTIALLY_PUBLISHED:
+            elif ui_state == "PARTIAL":
                 partially_published_count += 1
-            elif it.status in (STATUS_FAILED,):
+            elif ui_state == "FAILED":
                 failed_count += 1
-            elif it.status in (STATUS_READY, STATUS_QUEUED):
+            elif ui_state == "PUBLISHING":
+                processing_count += 1
+            elif ui_state == "SIMULATED":
+                simulated_count += 1
+            elif ui_state == "UNKNOWN":
+                unknown_count += 1
+            elif ui_state == "SCHEDULED":
+                scheduled_count += 1
+            if it.status == STATUS_READY:
                 ready_count += 1
+            if presentation["retryable"]:
+                retryable_count += 1
 
             if it.validation_status == STATUS_FAILED_VALIDATION:
                 validation_failures += 1
@@ -380,7 +480,8 @@ def get_dashboard_summary() -> Dict[str, Any]:
                 "scheduled_at": next_it.scheduled_at,
                 "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
                 "status": next_it.status,
-                "platforms": ["Facebook", "Pinterest", "Threads"]
+                "ui_state": get_queue_item_presentation(queue, next_it)["state"],
+                "platforms": list(ACTIVE_PUBLISHING_PLATFORMS)
             }
             for it_dt, it in active_items[:6]:
                 upcoming_items.append({
@@ -391,7 +492,8 @@ def get_dashboard_summary() -> Dict[str, Any]:
                     "slot_time": "12:00" if it.daily_slot == 1 else "19:00",
                     "scheduled_at": it.scheduled_at,
                     "status": it.status,
-                    "platforms": ["Facebook", "Pinterest", "Threads"]
+                    "ui_state": get_queue_item_presentation(queue, it)["state"],
+                    "platforms": list(ACTIVE_PUBLISHING_PLATFORMS)
                 })
         elif queue.items:
             # Fallback if all items are before now_dt or unscheduled
@@ -406,7 +508,8 @@ def get_dashboard_summary() -> Dict[str, Any]:
                     "scheduled_at": next_it.scheduled_at,
                     "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
                     "status": next_it.status,
-                    "platforms": ["Facebook", "Pinterest", "Threads"]
+                    "ui_state": get_queue_item_presentation(queue, next_it)["state"],
+                    "platforms": list(ACTIVE_PUBLISHING_PLATFORMS)
                 }
 
     target_capacity = config.get("discovery", {}).get("target_future_capacity", DEFAULT_TARGET_FUTURE_CAPACITY)
@@ -493,6 +596,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
 
     # Determine accurate overall system health
     is_dry_run = config.get("publishing", {}).get("dry_run", True)
+    workflow_configured = SCHEDULED_WORKFLOW_FILE.exists()
     if not ollama_info["online"] or not ollama_info["target_model_available"]:
         system_health = "ATTENTION (Ollama Offline or Model Missing)"
     elif future_scheduled == 0:
@@ -526,6 +630,13 @@ def get_dashboard_summary() -> Dict[str, Any]:
     return {
         "system_status": system_health,
         "dry_run": is_dry_run,
+        "github_actions": {
+            "configured": workflow_configured,
+            "status": "CONFIGURED LOCALLY" if workflow_configured else "NOT CONFIGURED",
+            "latest_run": None,
+            "latest_result": None,
+            "detail": "Latest run unavailable: GitHub Actions status integration is not configured in the local dashboard."
+        },
         "timezone": DEFAULT_TIMEZONE,
         "ollama": ollama_info,
         "windows_tasks": windows_tasks,
@@ -536,9 +647,14 @@ def get_dashboard_summary() -> Dict[str, Any]:
             "total_items": total_queued,
             "future_scheduled": future_scheduled,
             "ready": ready_count,
+            "scheduled": scheduled_count,
+            "processing": processing_count,
             "published": published_count,
             "partially_published": partially_published_count,
             "failed": failed_count,
+            "retryable": retryable_count,
+            "simulated": simulated_count,
+            "unknown": unknown_count,
             "validation_failures": validation_failures,
             "target_capacity": target_capacity,
             "min_capacity": min_capacity,
@@ -650,7 +766,7 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                             "scheduled_date": None,
                             "daily_slot": None,
                             "scheduled_at": None,
-                            "publishing_status": "N/A",
+                            "publishing_status": "UNKNOWN",
                             "package_path": str(gfile),
                             "product_file": None
                         }
@@ -669,6 +785,7 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                 asin = (item.asin or "").upper()
                 if not asin:
                     continue
+                presentation = get_queue_item_presentation(queue, item)
                 if asin not in products_by_asin:
                     products_by_asin[asin] = {
                         "asin": asin,
@@ -683,7 +800,10 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                         "scheduled_date": item.scheduled_date,
                         "daily_slot": item.daily_slot,
                         "scheduled_at": item.scheduled_at,
-                        "publishing_status": "PUBLISHED" if item.status == STATUS_PUBLISHED else ("WOULD_PUBLISH" if item.status == STATUS_READY else item.status),
+                        "publishing_status": presentation["state"],
+                        "publishing_results": presentation["platforms"],
+                        "published_at": presentation["published_at"],
+                        "retryable": presentation["retryable"],
                         "package_path": item.package_reference,
                         "product_file": None
                     }
@@ -693,7 +813,10 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                     products_by_asin[asin]["daily_slot"] = item.daily_slot
                     products_by_asin[asin]["scheduled_at"] = item.scheduled_at
                     products_by_asin[asin]["validation_status"] = item.validation_status or products_by_asin[asin]["validation_status"]
-                    products_by_asin[asin]["publishing_status"] = "PUBLISHED" if item.status == STATUS_PUBLISHED else ("WOULD_PUBLISH" if item.status == STATUS_READY else item.status)
+                    products_by_asin[asin]["publishing_status"] = presentation["state"]
+                    products_by_asin[asin]["publishing_results"] = presentation["platforms"]
+                    products_by_asin[asin]["published_at"] = presentation["published_at"]
+                    products_by_asin[asin]["retryable"] = presentation["retryable"]
                     if item.package_reference:
                         products_by_asin[asin]["package_path"] = item.package_reference
         except Exception:
@@ -701,6 +824,11 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
 
     # Convert to list and sort
     results = list(products_by_asin.values())
+    for product_row in results:
+        if product_row.get("publishing_status") not in ("SCHEDULED", "SIMULATED", "PUBLISHING", "PUBLISHED", "PARTIAL", "FAILED", "UNKNOWN"):
+            product_row["publishing_status"] = "UNKNOWN"
+        product_row.setdefault("publishing_results", {})
+        product_row.setdefault("retryable", False)
 
     # Apply search query filter
     if query:
@@ -713,12 +841,14 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
     # Apply status filter
     if status_filter and status_filter != "all":
         sf = status_filter.upper().strip()
-        if sf == "READY":
+        if sf == "FAILED":
+            results = [p for p in results if p.get("publishing_status") == "FAILED" or p["queue_status"] == STATUS_FAILED or p["validation_status"] == STATUS_FAILED_VALIDATION]
+        elif sf in ("SCHEDULED", "PUBLISHING", "SIMULATED", "PUBLISHED", "PARTIAL", "UNKNOWN"):
+            results = [p for p in results if p.get("publishing_status") == sf]
+        elif sf == "RETRYABLE":
+            results = [p for p in results if p.get("retryable")]
+        elif sf == "READY":
             results = [p for p in results if p["queue_status"] == STATUS_READY]
-        elif sf == "PUBLISHED":
-            results = [p for p in results if p["queue_status"] == STATUS_PUBLISHED]
-        elif sf == "FAILED":
-            results = [p for p in results if p["queue_status"] == STATUS_FAILED or p["validation_status"] == STATUS_FAILED_VALIDATION]
         elif sf == "VALID":
             results = [p for p in results if p["validation_status"] == STATUS_READY_FOR_REVIEW]
         elif sf == "QUEUED":

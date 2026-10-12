@@ -1,338 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Overview{% endblock %}
+{% block title %}Publishing Operations{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Operations & Management Dashboard</h1>
-    <p class="help-text">Real-time publishing pipeline, platform readiness, queue scheduling, and synchronization.</p>
-  </div>
-  <div class="page-actions">
-    <form action="{{ url_for('sync_github') }}" method="POST" style="display:inline;" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='⏳ Syncing...';">
-      <button type="submit" class="btn btn-success" id="btn-sync-github-dash" title="Synchronize local queue with GitHub Actions remote repository">🔄 Sync with GitHub</button>
-    </form>
-    <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Product</a>
-    <a href="{{ url_for('queue') }}" class="btn btn-secondary">View Queue</a>
-    <a href="{{ url_for('content_preview') }}" class="btn btn-secondary">Preview Content</a>
-    <form action="{{ url_for('queue_maintain') }}" method="POST" style="display:inline;">
-      <button type="submit" class="btn btn-secondary" title="Runs queue replenishment without live publishing">⚡ Run Maintenance</button>
-    </form>
-    <form action="{{ url_for('publisher_run') }}" method="POST" style="display:inline;">
-      <button type="submit" class="btn btn-secondary" title="Simulates publishing locally. Does not affect separate cloud publisher on GitHub Actions.">🚀 Run Publisher (DRY RUN)</button>
-    </form>
-  </div>
+<div class="page-header page-header-compact">
+  <div><div class="eyebrow">Operations control</div><h1 class="page-title">Scheduled publishing</h1><p class="help-text">Production queue visibility for Europe/Budapest time. Live publication is executed by the protected GitHub Actions workflow.</p></div>
+  <div class="page-actions"><a href="{{ url_for('queue') }}" class="btn btn-secondary">Open queue</a><a href="{{ url_for('add_product') }}" class="btn btn-primary">Add product</a></div>
 </div>
 
-<!-- Operational Status & Sync Grid -->
-<div class="grid-3">
-  <!-- 1. System Health -->
-  <div class="card">
-    <div class="card-title">System Status</div>
-    <div class="card-value" style="font-size: 1.35rem; display: flex; align-items: center; gap: 8px;">
-      {% if "PRODUCTION" in summary.system_status %}
-        <span style="color: var(--success);">● PRODUCTION READY</span>
-      {% elif "OPERATIONAL" in summary.system_status %}
-        <span style="color: var(--primary);">● OPERATIONAL</span>
-      {% elif "WARNING" in summary.system_status %}
-        <span style="color: var(--warning);">▲ ATTENTION</span>
-      {% else %}
-        <span style="color: var(--danger);">■ ATTENTION</span>
-      {% endif %}
-    </div>
-    <div class="card-subtext">{{ summary.system_status }}</div>
-  </div>
+<section class="status-strip" aria-label="System status">
+  <div class="status-strip-item"><span class="status-dot {% if summary.github_actions.configured %}status-dot-success{% else %}status-dot-warning{% endif %}"></span><div><span class="status-label">Scheduled workflow</span><strong>{{ summary.github_actions.status }}</strong></div></div>
+  <div class="status-strip-item"><span class="status-dot {% if summary.sync.is_synced %}status-dot-success{% else %}status-dot-warning{% endif %}"></span><div><span class="status-label">Queue sync</span><strong>{{ summary.sync.label }}</strong></div></div>
+  <div class="status-strip-item"><span class="status-dot {% if summary.ollama.online and summary.ollama.target_model_available %}status-dot-success{% else %}status-dot-warning{% endif %}"></span><div><span class="status-label">Content validation</span><strong>{% if summary.ollama.online and summary.ollama.target_model_available %}Available{% else %}Attention required{% endif %}</strong></div></div>
+</section>
 
-  <!-- 2. GitHub Synchronization Status -->
-  <div class="card">
-    <div class="card-title">GitHub Synchronization</div>
-    <div class="card-value" style="font-size: 1.25rem;">
-      <span class="badge {{ summary.sync.badge_class }}" style="font-size: 0.85rem; padding: 4px 10px;">
-        {{ summary.sync.label }}
-      </span>
-    </div>
-    <div class="card-subtext">{{ summary.sync.description }}</div>
-  </div>
+<div class="dashboard-grid dashboard-grid-primary">
+  <section class="card schedule-card">
+    <div class="section-heading"><div><div class="eyebrow">Europe/Budapest</div><h2>Next publishing slots</h2></div><span class="badge badge-info">12:00 · 19:00</span></div>
+    {% if summary.queue.upcoming_items %}<div class="slot-list">
+      {% for item in summary.queue.upcoming_items[:4] %}<div class="slot-row"><div class="slot-time"><strong>{{ item.slot_time }}</strong><span>{{ item.scheduled_date }}</span></div><div class="slot-product"><strong>{{ item.product_name }}</strong><span>{{ item.asin }}</span></div><span class="state-pill state-{{ item.ui_state|lower|replace('_', '-') }}">{{ item.ui_state }}</span></div>{% endfor %}
+    </div>{% else %}<div class="empty-state compact"><div class="empty-state-title">No scheduled items</div><div class="empty-state-desc">The queue has no upcoming validated products.</div></div>{% endif %}
+  </section>
 
-  <!-- 3. Publishing Mode & Cloud Separation -->
-  <div class="card">
-    <div class="card-title">Execution Mode</div>
-    <div class="card-value" style="font-size: 1.25rem;">
-      {% if summary.dry_run %}
-        <span class="badge badge-warning" style="font-size: 0.85rem; padding: 4px 10px;">LOCAL SIMULATION ONLY</span>
-      {% else %}
-        <span class="badge badge-danger" style="font-size: 0.85rem; padding: 4px 10px;">LIVE POSTING</span>
-      {% endif %}
-    </div>
-    <div class="card-subtext">
-      Local actions are simulations only. A cloud result is confirmed only when recorded by the GitHub Actions publisher.
-    </div>
-  </div>
+  <section class="card cloud-card">
+    <div class="section-heading"><div><div class="eyebrow">GitHub Actions</div><h2>Cloud publisher</h2></div><span class="badge {% if summary.github_actions.configured %}badge-success{% else %}badge-warning{% endif %}">{{ summary.github_actions.status }}</span></div>
+    <dl class="detail-list"><div><dt>Latest known run</dt><dd>{% if summary.github_actions.latest_run %}{{ summary.github_actions.latest_run }}{% else %}<span class="muted-value">Unavailable</span>{% endif %}</dd></div><div><dt>Latest result</dt><dd>{% if summary.github_actions.latest_result %}{{ summary.github_actions.latest_result }}{% else %}<span class="muted-value">Unavailable</span>{% endif %}</dd></div><div><dt>Evidence source</dt><dd>Local workflow configuration</dd></div></dl>
+    <p class="card-note">{{ summary.github_actions.detail }}</p>
+  </section>
 </div>
 
-<!-- Attention Alert (Only if issues or failures detected) -->
-{% if summary.queue.failed > 0 or not summary.ollama.online or not summary.ollama.target_model_available %}
-<div class="attention-banner {% if summary.queue.failed > 0 or not summary.ollama.online %}error-mode{% else %}warning-mode{% endif %}">
-  <div class="attention-icon">⚠️</div>
-  <div>
-    <div class="attention-title">Action Required</div>
-    <div class="attention-body">
-      {% if not summary.ollama.online %}
-        • Local Ollama server is offline at <code>{{ summary.ollama.base_url }}</code>. Start Ollama to enable content generation and validation.<br>
-      {% elif not summary.ollama.target_model_available %}
-        • Target model <code>qwen2.5:7b</code> is missing from Ollama. Run <code>ollama pull qwen2.5:7b</code>.<br>
-      {% endif %}
-      {% if summary.queue.failed > 0 %}
-        • {{ summary.queue.failed }} item(s) in the queue failed validation or platform publishing. <a href="{{ url_for('queue', status='FAILED') }}" style="color: #60a5fa; text-decoration: underline;">Review failed queue items</a>.<br>
-      {% endif %}
-    </div>
-  </div>
+<section class="metric-grid" aria-label="Queue counts">
+  <div class="metric-card"><span class="metric-label">Ready</span><strong>{{ summary.queue.ready }}</strong><span>Validated items awaiting execution</span></div>
+  <div class="metric-card"><span class="metric-label">Publishing</span><strong>{{ summary.queue.processing }}</strong><span>Items with an active slot claim</span></div>
+  <div class="metric-card metric-success"><span class="metric-label">Completed</span><strong>{{ summary.queue.published }}</strong><span>Live platform results confirmed</span></div>
+  <div class="metric-card metric-warning"><span class="metric-label">Partial</span><strong>{{ summary.queue.partially_published }}</strong><span>Mixed platform outcomes</span></div>
+  <div class="metric-card metric-danger"><span class="metric-label">Failed</span><strong>{{ summary.queue.failed }}</strong><span>Confirmed failures</span></div>
+  <div class="metric-card metric-warning"><span class="metric-label">Retryable</span><strong>{{ summary.queue.retryable }}</strong><span>Claim marked for recovery</span></div>
+</section>
+
+{% if summary.queue.failed or summary.queue.retryable or not summary.github_actions.configured %}<section class="attention-banner warning-mode"><div class="attention-icon">!</div><div><div class="attention-title">Operational attention</div><div class="attention-body">{% if not summary.github_actions.configured %}The scheduled workflow file is not available locally.{% endif %}{% if summary.queue.failed %} {{ summary.queue.failed }} item(s) have confirmed failures.{% endif %}{% if summary.queue.retryable %} {{ summary.queue.retryable }} item(s) are marked retryable.{% endif %}</div></div></section>{% endif %}
+
+<div class="dashboard-grid dashboard-grid-secondary">
+  <section class="card"><div class="section-heading"><div><div class="eyebrow">Live evidence</div><h2>Platform readiness</h2></div><span class="card-note">No secrets displayed</span></div><div class="platform-status-list">{% for p_key, p_info in summary.platforms.items() %}<div class="platform-status-row"><span class="platform-name">{{ p_info.name }}</span><span>{{ p_info.account }}</span><span class="badge {% if p_info.credentials_status == 'Configured' %}badge-success{% else %}badge-warning{% endif %}">{{ p_info.credentials_status }}</span></div>{% endfor %}</div></section>
+  <section class="card"><div class="section-heading"><div><div class="eyebrow">Execution boundary</div><h2>Local actions</h2></div><span class="badge badge-info">SIMULATED</span></div><p class="body-copy">Local maintenance, previews, and publisher controls do not publish live posts. Only a live platform result recorded by the cloud publisher can produce a <strong>PUBLISHED</strong> state.</p><div class="page-actions"><a href="{{ url_for('queue') }}" class="btn btn-secondary btn-sm">Review outcomes</a><a href="{{ url_for('logs') }}" class="btn btn-secondary btn-sm">View logs</a></div></section>
 </div>
-{% endif %}
-
-<!-- Hero Card: Next Scheduled Publication -->
-<div class="hero-card">
-  <div class="hero-header">
-    <div>
-      <div class="card-title" style="margin-bottom: 2px;">Next Scheduled Publication</div>
-      <div style="font-size: 0.88rem; color: var(--text-muted);">
-        Next publishing window in <strong>{{ summary.timezone }}</strong> (Europe/Budapest)
-      </div>
-    </div>
-    <div class="hero-badge-group">
-      {% if summary.queue.next_scheduled_item %}
-        <span class="badge badge-ready">READY TO PUBLISH</span>
-        <span class="badge badge-muted">Slot {{ summary.queue.next_scheduled_item.daily_slot }} ({{ summary.queue.next_scheduled_item.slot_time }})</span>
-      {% else %}
-        <span class="badge badge-muted">NO SCHEDULED ITEMS</span>
-      {% endif %}
-    </div>
-  </div>
-
-  {% if summary.queue.next_scheduled_item %}
-    <div class="hero-title">
-      {{ summary.queue.next_scheduled_item.product_name }}
-    </div>
-    <div class="hero-meta">
-      <div>
-        ASIN: <strong><a href="{{ url_for('product_detail', asin=summary.queue.next_scheduled_item.asin) }}" style="color: var(--primary); text-decoration: none;">{{ summary.queue.next_scheduled_item.asin }}</a></strong>
-      </div>
-      <div>&bull;</div>
-      <div>
-        Scheduled Date: <strong>{{ summary.queue.next_scheduled_item.scheduled_date }}</strong>
-      </div>
-      <div>&bull;</div>
-      <div>
-        Target Time: <strong>{{ summary.queue.next_scheduled_item.slot_time }} {{ summary.timezone }}</strong>
-      </div>
-      <div>&bull;</div>
-      <div style="display: flex; gap: 6px; align-items: center;">
-        Target Platforms:
-        <span class="platform-pill configured">Facebook</span>
-        <span class="platform-pill configured">Pinterest</span>
-        <span class="platform-pill configured">Threads</span>
-      </div>
-    </div>
-    <div style="margin-top: 16px;">
-      <a href="{{ url_for('content_preview', asin=summary.queue.next_scheduled_item.asin) }}" class="btn btn-primary btn-sm">Inspect Content Preview &rarr;</a>
-      <a href="{{ url_for('product_detail', asin=summary.queue.next_scheduled_item.asin) }}" class="btn btn-secondary btn-sm" style="margin-left: 8px;">Product Details</a>
-    </div>
-  {% else %}
-    <div class="empty-state" style="padding: 24px 10px;">
-      <div class="empty-state-icon">📅</div>
-      <div class="empty-state-title">No upcoming publications scheduled</div>
-      <div class="empty-state-desc">Your publishing queue currently has no future items booked. Add new Amazon product links to populate the upcoming pipeline.</div>
-      <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-sm">+ Add Amazon Products</a>
-    </div>
-  {% endif %}
-</div>
-
-<!-- Queue Pipeline Metrics -->
-<div class="grid-4">
-  <div class="card">
-    <div class="card-title">Ready in Queue</div>
-    <div class="card-value" style="color: #60a5fa;">{{ summary.queue.ready }}</div>
-    <div class="card-subtext">Validated &amp; ready for upcoming slots</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Cloud-confirmed Published</div>
-    <div class="card-value" style="color: var(--success);">{{ summary.queue.published }}</div>
-    <div class="card-subtext">Live publication results recorded by the cloud runner</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Cloud Partial Results</div>
-    <div class="card-value" style="color: var(--warning);">{{ summary.queue.partially_published }}</div>
-      <div class="card-subtext">Cloud-confirmed on a subset of active platforms</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Failed / Errors</div>
-    <div class="card-value" style="color: var(--danger);">{{ summary.queue.failed }}</div>
-    <div class="card-subtext">Requires validation or URL retry</div>
-  </div>
-</div>
-
-<!-- Upcoming Schedule Pipeline Table -->
-<div class="card" style="margin-bottom: 24px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-    <div>
-      <div class="card-title" style="font-size: 0.95rem; color: #fff; margin-bottom: 2px;">Upcoming Publishing Pipeline</div>
-      <p style="color: var(--text-muted); font-size: 0.84rem;">
-        Next scheduled items in chronological order ({{ summary.timezone }} / Budapest time). Coverage: <strong>{{ summary.queue.days_of_coverage }} days</strong> ({{ summary.queue.future_scheduled }} queued of {{ summary.queue.target_capacity }} target capacity).
-      </p>
-    </div>
-    <div>
-      <a href="{{ url_for('queue') }}" class="btn btn-secondary btn-sm">View Full Queue &rarr;</a>
-    </div>
-  </div>
-
-  <div class="table-responsive">
-    <table>
-      <thead>
-        <tr>
-          <th>Date &amp; Time (Budapest)</th>
-          <th>Slot</th>
-          <th>ASIN</th>
-          <th>Product Title</th>
-          <th>Status</th>
-          <th>Target Platforms</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if summary.queue.upcoming_items %}
-          {% for item in summary.queue.upcoming_items %}
-          <tr>
-            <td>
-              <strong>{{ item.scheduled_date }}</strong>
-              <span style="color: var(--text-muted); font-size: 0.82rem; margin-left: 4px;">{{ item.slot_time }}</span>
-            </td>
-            <td>
-              {% if item.daily_slot == 1 %}
-                <span class="badge badge-info">Slot 1 (EU)</span>
-              {% else %}
-                <span class="badge badge-warning">Slot 2 (NA)</span>
-              {% endif %}
-            </td>
-            <td>
-              <strong><a href="{{ url_for('product_detail', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">{{ item.asin }}</a></strong>
-            </td>
-            <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-              {{ item.product_name }}
-            </td>
-            <td>
-              {% if item.status == 'READY' %}
-                <span class="badge badge-ready">READY</span>
-              {% elif item.status == 'PUBLISHED' %}
-                <span class="badge badge-published">CLOUD PUBLISHED</span>
-              {% elif item.status == 'PARTIALLY_PUBLISHED' %}
-                <span class="badge badge-partial">CLOUD PARTIAL</span>
-              {% elif item.status == 'FAILED' %}
-                <span class="badge badge-failed">FAILED</span>
-              {% else %}
-                <span class="badge badge-muted">{{ item.status }}</span>
-              {% endif %}
-            </td>
-            <td>
-              <span class="platform-pill configured">FB</span>
-              <span class="platform-pill configured">Pin</span>
-              <span class="platform-pill configured">Threads</span>
-            </td>
-            <td>
-              <a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary">Preview</a>
-            </td>
-          </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-            <td colspan="7" style="text-align: center; padding: 32px; color: var(--text-muted);">
-              No upcoming items scheduled. Add Amazon affiliate links or run queue replenishment.
-            </td>
-          </tr>
-        {% endif %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Platforms & Automation Health Grid -->
-<div class="grid-2">
-  <!-- Active Platform Targets -->
-  <div class="card">
-    <div class="card-title" style="margin-bottom: 14px;">Connected Platform Targets</div>
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>Platform</th>
-            <th>Account / Target</th>
-            <th>Credentials</th>
-            <th>Mode</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for p_key, p_info in summary.platforms.items() %}
-          <tr>
-            <td><strong>{{ p_info.name }}</strong></td>
-            <td>
-              {{ p_info.account }}
-              {% if p_info.board %}<br><small style="color: var(--text-muted);">Board: {{ p_info.board }}</small>{% endif %}
-            </td>
-            <td>
-              {% if p_info.credentials_status == "Configured" %}
-                <span class="badge badge-success">Configured</span>
-              {% else %}
-                <span class="badge badge-warning">Missing</span>
-              {% endif %}
-            </td>
-            <td>
-                <span class="badge badge-info">LOCAL SIMULATION</span>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="card-subtext" style="margin-top: 10px;">
-      Social adapters operate in simulation mode during local execution. Secrets are never exposed in UI or logs.
-    </div>
-  </div>
-
-  <!-- Automation Diagnostics & Schedule -->
-  <div class="card">
-    <div class="card-title" style="margin-bottom: 14px;">Automation &amp; System Schedule ({{ summary.timezone }})</div>
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Routine</th>
-            <th>Audience / Target</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for s in summary.schedule %}
-          <tr>
-            <td><strong style="color: var(--primary);">{{ s.time }}</strong></td>
-            <td><strong>{{ s.name }}</strong></td>
-            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ s.description }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-      <div style="font-size: 0.82rem; color: var(--text-muted);">
-        Ollama AI: <strong style="color: #fff;">{{ summary.ollama.model }}</strong> &bull;
-        Scheduler: <strong style="color: #fff;">{{ summary.windows_tasks.status_text }}</strong>
-      </div>
-      <div>
-        <a href="{{ url_for('automation') }}" class="btn btn-secondary btn-sm">Automation Settings &rarr;</a>
-      </div>
-    </div>
-  </div>
-</div>
-
 {% endblock %}

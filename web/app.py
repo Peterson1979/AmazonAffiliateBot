@@ -26,6 +26,7 @@ from web.services import (
     load_application_config,
     save_application_config,
     get_dashboard_summary,
+    get_queue_item_presentation,
     get_all_products,
     get_product_detail,
     add_products_from_urls,
@@ -199,15 +200,19 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
         queue_obj = PublishingQueue.load(DEFAULT_QUEUE_FILE) if DEFAULT_QUEUE_FILE.exists() else None
         
         items = queue_obj.items if queue_obj else []
+        for item in items:
+            presentation = get_queue_item_presentation(queue_obj, item) if queue_obj else {}
+            item.ui_state = presentation.get("state", "UNKNOWN")
+            item.ui_retryable = presentation.get("retryable", False)
+            item.ui_platforms = presentation.get("platforms", {})
+            item.ui_published_at = presentation.get("published_at")
         if status_filter != "ALL":
-            if status_filter == "READY":
+            if status_filter in ("SCHEDULED", "PUBLISHING", "SIMULATED", "PUBLISHED", "PARTIAL", "FAILED", "UNKNOWN"):
+                items = [it for it in items if it.ui_state == status_filter]
+            elif status_filter == "RETRYABLE":
+                items = [it for it in items if it.ui_retryable]
+            elif status_filter == "READY":
                 items = [it for it in items if it.status == "READY"]
-            elif status_filter == "PUBLISHED":
-                items = [it for it in items if it.status == "PUBLISHED"]
-            elif status_filter == "PARTIALLY_PUBLISHED":
-                items = [it for it in items if it.status == "PARTIALLY_PUBLISHED"]
-            elif status_filter == "FAILED":
-                items = [it for it in items if it.status in ("FAILED",) or it.validation_status == "FAILED_VALIDATION"]
 
         # Sort chronologically by scheduled date and daily slot
         items = sorted(items, key=lambda x: (x.scheduled_date or "9999-99-99", x.daily_slot or 0, x.queue_item_id))

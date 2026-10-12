@@ -6,7 +6,7 @@
 <div class="page-header">
   <div>
     <h1 class="page-title">Products Directory</h1>
-    <p class="help-text">Overview of discovered, cached, generated, and scheduled Amazon affiliate products.</p>
+    <p class="help-text">Validated products, scheduled slots, and evidence-backed publishing outcomes.</p>
   </div>
   <div class="page-actions">
     <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Products</a>
@@ -24,9 +24,12 @@
       <label for="status">Filter by Status</label>
       <select id="status" name="status">
         <option value="all" {% if current_filter == 'all' %}selected{% endif %}>All Products</option>
-        <option value="ready" {% if current_filter == 'ready' %}selected{% endif %}>Ready in Queue</option>
-        <option value="queued" {% if current_filter == 'queued' %}selected{% endif %}>Queued / Scheduled</option>
+        <option value="scheduled" {% if current_filter == 'scheduled' %}selected{% endif %}>Scheduled</option>
+        <option value="publishing" {% if current_filter == 'publishing' %}selected{% endif %}>Publishing</option>
+        <option value="simulated" {% if current_filter == 'simulated' %}selected{% endif %}>Simulated</option>
         <option value="published" {% if current_filter == 'published' %}selected{% endif %}>Published</option>
+        <option value="partial" {% if current_filter == 'partial' %}selected{% endif %}>Partial</option>
+        <option value="retryable" {% if current_filter == 'retryable' %}selected{% endif %}>Retryable</option>
         <option value="valid" {% if current_filter == 'valid' %}selected{% endif %}>Validated (PASS)</option>
         <option value="failed" {% if current_filter == 'failed' %}selected{% endif %}>Validation / Queue Failed</option>
       </select>
@@ -50,7 +53,8 @@
         <th>Facts</th>
         <th>Content</th>
         <th>Validation</th>
-        <th>Queue Status</th>
+        <th>Publishing state</th>
+        <th>Platform results</th>
         <th>Scheduled (Europe/Budapest)</th>
         <th>Action</th>
       </tr>
@@ -91,19 +95,19 @@
             {% endif %}
           </td>
           <td>
-            {% if p.queue_status == 'READY' %}
-              <span class="badge badge-info">READY</span>
-            {% elif p.queue_status == 'PUBLISHED' %}
-              <span class="badge badge-success">CLOUD PUBLISHED</span>
-            {% elif p.queue_status == 'FAILED' %}
-              <span class="badge badge-danger">FAILED</span>
-            {% else %}
-              <span class="badge badge-muted">{{ p.queue_status }}</span>
-            {% endif %}
+            <span class="state-pill state-{{ p.publishing_status|lower|replace('_', '-') }}">{{ p.publishing_status }}</span>
+            {% if p.retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
+          </td>
+          <td><div class="platform-result-list compact-results">
+            {% for p_key in ('facebook', 'pinterest', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
+              <div class="platform-result"><span>{{ p_key|capitalize }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower }}">{{ result.state if result else 'UNKNOWN' }}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% endif %}</div>
+            {% endfor %}
+          </div>
           </td>
           <td>
             {% if p.scheduled_date %}
               <span style="font-size: 0.85rem;">{{ p.scheduled_date }} &bull; Slot {{ p.daily_slot }}</span>
+              {% if p.published_at %}<div class="table-subtext">Published {{ p.published_at }}</div>{% endif %}
             {% else %}
               <span style="color: var(--text-muted); font-size: 0.8rem;">Unscheduled</span>
             {% endif %}
@@ -115,7 +119,7 @@
         {% endfor %}
       {% else %}
         <tr>
-          <td colspan="8" style="text-align: center; padding: 32px; color: var(--text-muted);">
+          <td colspan="9" style="text-align: center; padding: 32px; color: var(--text-muted);">
             No products match the selected criteria.
           </td>
         </tr>

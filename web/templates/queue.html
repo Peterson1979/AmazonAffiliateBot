@@ -1,175 +1,20 @@
 {% extends "base.html" %}
-
-{% block title %}Queue Management{% endblock %}
-
+{% block title %}Publishing Queue{% endblock %}
 {% block content %}
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Publishing Queue Schedule</h1>
-    <p class="help-text">Chronological publishing slots in <strong>Europe/Budapest</strong> (Slot 1: 12:00 &bull; Slot 2: 19:00)</p>
-  </div>
-  <div class="page-actions">
-    <form action="{{ url_for('sync_github') }}" method="POST" style="display:inline;" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='⏳ Syncing...';">
-      <button type="submit" class="btn btn-success" id="btn-sync-github" title="Synchronize queue with GitHub Actions remote repository">🔄 Sync with GitHub</button>
-    </form>
-    <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Product</a>
-    <form action="{{ url_for('queue_maintain') }}" method="POST" style="display:inline;">
-      <button type="submit" class="btn btn-secondary" title="Runs queue replenishment without live publishing">⚡ Run Queue Maintenance</button>
-    </form>
-    <form action="{{ url_for('publisher_run') }}" method="POST" style="display:inline;">
-      <button type="submit" class="btn btn-secondary" title="Simulates publishing locally. Does not affect separate cloud publisher on GitHub Actions.">🚀 Run Publisher (DRY RUN)</button>
-    </form>
-  </div>
-</div>
+<div class="page-header"><div><div class="eyebrow">Queue control</div><h1 class="page-title">Publishing queue</h1><p class="help-text">Scheduled items and evidence-backed platform outcomes in Europe/Budapest time.</p></div><div class="page-actions"><a href="{{ url_for('add_product') }}" class="btn btn-primary">Add product</a><form action="{{ url_for('publisher_run') }}" method="POST"><button type="submit" class="btn btn-secondary" title="Local dry-run only; no live posts are sent">Run local simulation</button></form></div></div>
 
-<!-- Local Simulation & Cloud Publisher Explanation Banner -->
-<div class="card" style="margin-bottom: 20px; background: rgba(37, 99, 235, 0.06); border-color: #2b4266; padding: 14px 18px;">
-  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-    <div style="font-size: 0.86rem; color: #cbd5e1;">
-      ℹ️ <strong>Execution Notice:</strong> The local dashboard publisher runs in safe <strong>DRY RUN</strong> simulation mode. Scheduled live social posting is handled separately by GitHub Actions on <code>master</code>.
-    </div>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <span class="badge {{ summary.sync.badge_class }}">{{ summary.sync.label }}</span>
-    </div>
-  </div>
-</div>
+<section class="notice-card"><div><strong>Local actions are simulated.</strong> Live publication is handled by scheduled GitHub Actions. A successful workflow run alone does not confirm a social post.</div><span class="badge badge-info">LOCAL ONLY</span></section>
 
-<!-- Queue Filter and Search Form -->
-<div class="card" style="margin-bottom: 20px;">
-  <form method="GET" action="{{ url_for('queue') }}" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 200px; max-width: 280px;">
-      <label for="status">Filter by Status</label>
-      <select id="status" name="status">
-        <option value="ALL" {% if current_filter == 'ALL' %}selected{% endif %}>All Items ({{ queue.items|length if queue else 0 }})</option>
-        <option value="READY" {% if current_filter == 'READY' %}selected{% endif %}>Ready / Scheduled</option>
-        <option value="PUBLISHED" {% if current_filter == 'PUBLISHED' %}selected{% endif %}>Published</option>
-        <option value="PARTIALLY_PUBLISHED" {% if current_filter == 'PARTIALLY_PUBLISHED' %}selected{% endif %}>Partially Published</option>
-        <option value="FAILED" {% if current_filter == 'FAILED' %}selected{% endif %}>Failed / Needs Review</option>
-      </select>
-    </div>
-    <div>
-      <button type="submit" class="btn btn-secondary">Apply Filter</button>
-      {% if current_filter != 'ALL' %}
-        <a href="{{ url_for('queue') }}" class="btn btn-sm btn-secondary" style="margin-left: 6px;">Clear Filter</a>
-      {% endif %}
-    </div>
-  </form>
-</div>
+<section class="card filter-card"><form method="GET" action="{{ url_for('queue') }}" class="filter-row"><div><label for="status">Status</label><select id="status" name="status"><option value="ALL" {% if current_filter == 'ALL' %}selected{% endif %}>All items</option><option value="SCHEDULED" {% if current_filter == 'SCHEDULED' %}selected{% endif %}>Scheduled</option><option value="PUBLISHING" {% if current_filter == 'PUBLISHING' %}selected{% endif %}>Publishing</option><option value="SIMULATED" {% if current_filter == 'SIMULATED' %}selected{% endif %}>Simulated</option><option value="PUBLISHED" {% if current_filter == 'PUBLISHED' %}selected{% endif %}>Published</option><option value="PARTIAL" {% if current_filter == 'PARTIAL' %}selected{% endif %}>Partial</option><option value="FAILED" {% if current_filter == 'FAILED' %}selected{% endif %}>Failed</option><option value="RETRYABLE" {% if current_filter == 'RETRYABLE' %}selected{% endif %}>Retryable</option><option value="UNKNOWN" {% if current_filter == 'UNKNOWN' %}selected{% endif %}>Unknown</option></select></div><button type="submit" class="btn btn-secondary">Apply filter</button>{% if current_filter != 'ALL' %}<a href="{{ url_for('queue') }}" class="btn btn-sm btn-secondary">Clear</a>{% endif %}</form></section>
 
-<!-- Queue Items Table -->
-<div class="table-responsive">
-  <table>
-    <thead>
-      <tr>
-        <th>Date &amp; Time</th>
-        <th>Slot</th>
-        <th>ASIN</th>
-        <th>Product Title</th>
-        <th>Queue Status</th>
-        <th>Content Validation</th>
-        <th>Platform Outcomes</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if items %}
-        {% for item in items %}
-        <tr>
-          <td>
-            <strong>{{ item.scheduled_date }}</strong>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">
-              {% if item.daily_slot == 1 %}12:00 Budapest{% else %}19:00 Budapest{% endif %}
-            </div>
-          </td>
-          <td>
-            {% if item.daily_slot == 1 %}
-              <span class="badge badge-info">Slot 1 (EU)</span>
-            {% else %}
-              <span class="badge badge-warning">Slot 2 (NA)</span>
-            {% endif %}
-          </td>
-          <td>
-            <strong><a href="{{ url_for('product_detail', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">{{ item.asin }}</a></strong>
-          </td>
-          <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ item.product_name }}">
-            {{ item.product_name }}
-          </td>
-          <td>
-            {% if item.status == 'READY' %}
-              <span class="badge badge-ready">READY</span>
-            {% elif item.status == 'PUBLISHED' %}
-              <span class="badge badge-published">CLOUD PUBLISHED</span>
-            {% elif item.status == 'PARTIALLY_PUBLISHED' %}
-              <span class="badge badge-partial">CLOUD PARTIAL</span>
-            {% elif item.status == 'FAILED' %}
-              <span class="badge badge-failed">FAILED</span>
-            {% else %}
-              <span class="badge badge-muted">{{ item.status }}</span>
-            {% endif %}
-          </td>
-          <td>
-            {% if item.validation_status == 'READY_FOR_REVIEW' %}
-              <span class="badge badge-success">PASS</span>
-            {% elif item.validation_status == 'FAILED_VALIDATION' %}
-              <span class="badge badge-danger">FAIL</span>
-            {% else %}
-              <span class="badge badge-muted">{{ item.validation_status or 'N/A' }}</span>
-            {% endif %}
-          </td>
-          <td>
-            {% if item.publishing_results %}
-              <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                {% for p_key, p_res in item.publishing_results.items() %}
-                  {% if p_key in ('facebook', 'pinterest', 'threads') %}
-                  {% if p_res.status == 'PUBLISHED' and p_res.mode == 'LIVE' %}
-                    <span class="badge badge-success" style="font-size: 0.68rem;" title="{{ p_res.message or 'Cloud live publication confirmed' }}">{{ p_key|upper }}: LIVE CONFIRMED</span>
-                  {% elif p_res.status == 'WOULD_PUBLISH' %}
-                    <span class="badge badge-info" style="font-size: 0.68rem;" title="Local dry-run simulation; no live post was sent">{{ p_key|upper }}: SIMULATED</span>
-                  {% elif p_res.status == 'FAILED' %}
-                    <span class="badge badge-danger" style="font-size: 0.68rem;" title="{{ p_res.error or 'Failed' }}">{{ p_key|upper }}: FAIL</span>
-                  {% else %}
-                    <span class="badge badge-muted" style="font-size: 0.68rem;">{{ p_key|upper }}</span>
-                  {% endif %}
-                  {% endif %}
-                {% endfor %}
-              </div>
-            {% elif item.status == 'PUBLISHED' %}
-              <span style="color: var(--success); font-size: 0.82rem;">Cloud publication result recorded</span>
-            {% elif item.status == 'READY' %}
-              <span style="color: var(--text-muted); font-size: 0.82rem;">Scheduled (FB, Pinterest, Threads)</span>
-            {% elif item.status == 'FAILED' %}
-              <span style="color: var(--danger); font-size: 0.82rem;" title="{{ item.errors | join('; ') if item.errors else 'Validation/Adapter error' }}">
-                {{ (item.errors[0] if item.errors else 'Validation or adapter error') | truncate(35) }}
-              </span>
-            {% else %}
-              <span style="color: var(--text-muted); font-size: 0.82rem;">Pending</span>
-            {% endif %}
-          </td>
-          <td>
-            <div style="display: flex; gap: 6px;">
-              <a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary" title="Preview generated multi-platform content">Preview</a>
-              <a href="{{ url_for('product_detail', asin=item.asin) }}" class="btn btn-sm btn-secondary" title="View product details and facts">Details</a>
-            </div>
-          </td>
-        </tr>
-        {% endfor %}
-      {% else %}
-        <tr>
-          <td colspan="8" style="text-align: center; padding: 36px; color: var(--text-muted);">
-            <div class="empty-state">
-              <div class="empty-state-icon">📋</div>
-              <div class="empty-state-title">No queue items found matching filter</div>
-              <div class="empty-state-desc">Try clearing the status filter or add new products to populate the queue.</div>
-              {% if current_filter != 'ALL' %}
-                <a href="{{ url_for('queue') }}" class="btn btn-secondary btn-sm">Reset Filter</a>
-              {% else %}
-                <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-sm">+ Add Amazon Products</a>
-              {% endif %}
-            </div>
-          </td>
-        </tr>
-      {% endif %}
-    </tbody>
-  </table>
-</div>
+<div class="table-responsive"><table class="queue-table"><thead><tr><th>Scheduled slot</th><th>Product</th><th>State</th><th>Platform results</th><th>Evidence</th><th>Actions</th></tr></thead><tbody>
+{% if items %}{% for item in items %}<tr>
+  <td><strong>{{ item.scheduled_date or '—' }}</strong><div class="table-subtext">{% if item.daily_slot == 1 %}12:00{% elif item.daily_slot == 2 %}19:00{% else %}Unscheduled{% endif %} Budapest</div></td>
+  <td><a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a><div class="table-subtext">{{ item.asin }}</div></td>
+  <td><span class="state-pill state-{{ item.ui_state|lower|replace('_', '-') }}">{{ item.ui_state }}</span>{% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}</td>
+  <td><div class="platform-result-list">{% for p_key in ('facebook', 'pinterest', 'threads') %}{% set p = item.ui_platforms.get(p_key) %}<div class="platform-result"><span>{{ p.label }}</span><span class="state-pill state-{{ p.state|lower|replace('_', '-') }}">{{ p.state }}</span>{% if p.post_url %}<a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>{% elif p.post_id %}<span class="table-subtext">ID {{ p.post_id }}</span>{% endif %}{% if p.errors %}<span class="error-detail" title="{{ p.errors|join('; ') }}">Issue</span>{% endif %}</div>{% endfor %}</div></td>
+  <td>{% if item.ui_published_at %}<div class="table-subtext">Published {{ item.ui_published_at }}</div>{% elif item.status == 'FAILED' and item.errors %}<div class="error-detail" title="{{ item.errors|join('; ') }}">{{ item.errors[0]|truncate(90) }}</div>{% else %}<span class="muted-value">No live confirmation</span>{% endif %}</td>
+  <td><div class="action-stack"><a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary">Preview</a><a href="{{ url_for('product_detail', asin=item.asin) }}" class="btn btn-sm btn-secondary">Details</a></div></td>
+</tr>{% endfor %}{% else %}<tr><td colspan="6"><div class="empty-state"><div class="empty-state-title">No matching queue items</div><div class="empty-state-desc">Adjust the filter or add a validated Amazon product.</div></div></td></tr>{% endif %}
+</tbody></table></div>
 {% endblock %}
