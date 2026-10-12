@@ -252,6 +252,9 @@ class PublishingQueue:
     total_failed: int = 0
     scheduled_posts: int = 0
     unfilled_slots: int = 0
+    # Repository-persisted claims prevent repeated scheduled runs from
+    # re-entering the same Budapest slot.  Values are keyed as YYYY-MM-DD-slot-N.
+    slot_claims: Dict[str, Dict[str, Any]] = field(default_factory=dict)
     items: List[QueueItem] = field(default_factory=list)
 
     def recalculate_counts(self) -> None:
@@ -314,6 +317,7 @@ class PublishingQueue:
             "total_failed": self.total_failed,
             "scheduled_posts": self.scheduled_posts,
             "unfilled_slots": self.unfilled_slots,
+            "slot_claims": self.slot_claims,
             "items": [item.to_dict() for item in self.items]
         }
 
@@ -333,6 +337,7 @@ class PublishingQueue:
             total_failed=data.get("total_failed", 0),
             scheduled_posts=data.get("scheduled_posts", 0),
             unfilled_slots=data.get("unfilled_slots", 0),
+            slot_claims=data.get("slot_claims", {}),
             items=items
         )
 
@@ -682,7 +687,8 @@ class QueuePublisher:
         cls,
         queue: PublishingQueue,
         current_dt: datetime,
-        slot_filter: Optional[int] = None
+        slot_filter: Optional[int] = None,
+        slot_keys: Optional[Set[str]] = None
     ) -> List[QueueItem]:
         """
         Identify queue items eligible for publishing:
@@ -702,6 +708,10 @@ class QueuePublisher:
 
             try:
                 item_dt = cls.parse_datetime(item.scheduled_at)
+                if slot_keys is not None:
+                    item_key = f"{item_dt.date().isoformat()}-slot-{item.daily_slot}"
+                    if item_key not in slot_keys:
+                        continue
                 if item_dt <= current_dt:
                     due_items.append(item)
             except Exception:
@@ -722,6 +732,7 @@ class QueuePublisher:
         slot_filter: Optional[int] = None,
         publisher: Optional[SocialPublisher] = None,
         log_file: Optional[Union[str, Path]] = None,
+        slot_keys: Optional[Set[str]] = None,
     ) -> Dict[str, Any]:
         """
         Evaluate and publish due items in the queue.
@@ -763,7 +774,7 @@ class QueuePublisher:
         cls.log_event(f"Current Europe/Budapest Time: {current_dt.isoformat()} | Mode: {mode_str}", log_file=target_log)
         cls.log_event(f"Queue File: {target_file} | Total Items in Queue: {len(queue.items)}", log_file=target_log)
 
-        due_items = cls.find_due_items(queue, current_dt, slot_filter=slot_filter)
+        due_items = cls.find_due_items(queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys)
         cls.log_event(f"Due Eligible Items Found: {len(due_items)}", log_file=target_log)
 
         if not due_items:

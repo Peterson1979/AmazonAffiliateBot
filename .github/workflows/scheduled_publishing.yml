@@ -2,11 +2,11 @@ name: Scheduled Amazon Affiliate Publishing
 
 on:
   schedule:
-    # Triggers at 10:00, 11:00, 17:00, 18:00 UTC every day.
-    # Corresponds to 12:00 and 19:00 Europe/Budapest across both:
+    # Candidate triggers at both UTC offsets for the 12:00 and 19:00
+    # Europe/Budapest slots. The runner accepts late starts and claims due
+    # slots durably before any live adapter is called.
     # - CEST (Summer, UTC+2): 10:00 UTC = 12:00 CEST, 17:00 UTC = 19:00 CEST
     # - CET  (Winter, UTC+1): 11:00 UTC = 12:00 CET,  18:00 UTC = 19:00 CET
-    # The timezone-aware runtime guard automatically filters out non-matching window hours.
     - cron: '0 10,11,17,18 * * *'
 
   workflow_dispatch:
@@ -55,6 +55,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Claim Due Budapest Slots
+        id: claim
+        if: github.event_name == 'schedule'
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          NOW_OVERRIDE: ${{ github.event.inputs.now_override }}
+        run: |
+          python scripts/run_cloud_publisher.py --claim-only
+
+      - name: Persist Slot Claims Before Publishing
+        if: steps.claim.outputs.claim_updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/queue/publishing_queue.json
+          if git diff --staged --quiet; then
+            echo "No slot claim changes to commit."
+          else
+            git commit -m "Claim scheduled publishing slot [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+
       - name: Run Cloud Publisher
         id: publisher
         env:
@@ -68,8 +91,9 @@ jobs:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' }}
         run: |
-          python scripts/run_cloud_publisher.py
+          python scripts/run_cloud_publisher.py ${{ github.event_name == 'schedule' && '--execute-claimed' || '' }}
 
       - name: Persist Queue and Logs
         if: always() && steps.publisher.outputs.queue_updated == 'true'

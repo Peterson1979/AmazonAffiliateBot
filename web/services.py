@@ -221,7 +221,7 @@ def get_platform_statuses(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         # Check credentials presence safely from environment variables
         has_creds = False
         if p == "facebook":
-            has_creds = bool(os.environ.get("META_ACCESS_TOKEN") and os.environ.get("FACEBOOK_PAGE_ID"))
+            has_creds = bool((os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN") or os.environ.get("META_ACCESS_TOKEN")) and os.environ.get("FACEBOOK_PAGE_ID"))
         elif p == "pinterest":
             has_creds = bool(os.environ.get("PINTEREST_ACCESS_TOKEN"))
         elif p == "threads":

@@ -59,13 +59,13 @@
     <div class="card-title">Execution Mode</div>
     <div class="card-value" style="font-size: 1.25rem;">
       {% if summary.dry_run %}
-        <span class="badge badge-warning" style="font-size: 0.85rem; padding: 4px 10px;">LOCAL DRY RUN</span>
+        <span class="badge badge-warning" style="font-size: 0.85rem; padding: 4px 10px;">LOCAL SIMULATION ONLY</span>
       {% else %}
         <span class="badge badge-danger" style="font-size: 0.85rem; padding: 4px 10px;">LIVE POSTING</span>
       {% endif %}
     </div>
     <div class="card-subtext">
-      Local DRY RUN simulates actions safely. Cloud publisher runs independently via GitHub Actions.
+      Local actions are simulations only. A cloud result is confirmed only when recorded by the GitHub Actions publisher.
     </div>
   </div>
 </div>
@@ -156,15 +156,15 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Published</div>
+    <div class="card-title">Cloud-confirmed Published</div>
     <div class="card-value" style="color: var(--success);">{{ summary.queue.published }}</div>
-    <div class="card-subtext">Successfully published items</div>
+    <div class="card-subtext">Live publication results recorded by the cloud runner</div>
   </div>
 
   <div class="card">
-    <div class="card-title">Partially Published</div>
+    <div class="card-title">Cloud Partial Results</div>
     <div class="card-value" style="color: var(--warning);">{{ summary.queue.partially_published }}</div>
-    <div class="card-subtext">Completed on subset of platforms</div>
+      <div class="card-subtext">Cloud-confirmed on a subset of active platforms</div>
   </div>
 
   <div class="card">
@@ -226,9 +226,9 @@
               {% if item.status == 'READY' %}
                 <span class="badge badge-ready">READY</span>
               {% elif item.status == 'PUBLISHED' %}
-                <span class="badge badge-published">PUBLISHED</span>
+                <span class="badge badge-published">CLOUD PUBLISHED</span>
               {% elif item.status == 'PARTIALLY_PUBLISHED' %}
-                <span class="badge badge-partial">PARTIAL</span>
+                <span class="badge badge-partial">CLOUD PARTIAL</span>
               {% elif item.status == 'FAILED' %}
                 <span class="badge badge-failed">FAILED</span>
               {% else %}
@@ -288,7 +288,7 @@
               {% endif %}
             </td>
             <td>
-              <span class="badge badge-info">DRY RUN</span>
+                <span class="badge badge-info">LOCAL SIMULATION</span>
             </td>
           </tr>
           {% endfor %}

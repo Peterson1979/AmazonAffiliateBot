@@ -19,8 +19,8 @@ import argparse
 import shutil
 import tempfile
 from pathlib import Path
-from datetime import datetime
-from typing import Optional, Tuple, List, Dict, Any
+from datetime import datetime, timedelta
+from typing import Optional, Tuple, List, Dict, Any, Set
 
 # Ensure project root is in sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -52,20 +52,68 @@ def get_current_budapest_time(now_override: Optional[str] = None) -> datetime:
     return datetime.now(tz)
 
 
+SLOT_CLAIM_TTL = timedelta(hours=6)
+
+
 def check_budapest_publishing_window(current_dt: datetime) -> Optional[int]:
     """
-    Check if current Budapest time falls into a scheduled slot window:
-    - Hour 12 (12:00 - 12:59) -> Slot 1
-    - Hour 19 (19:00 - 19:59) -> Slot 2
+    Return the currently recoverable Budapest slot.  Slot 1 remains eligible
+    until Slot 2 begins and Slot 2 remains eligible through the local day,
+    absorbing GitHub Actions startup delays without making either slot a
+    recurring open-ended window.
     Returns slot number (1 or 2) if in window, otherwise None.
     """
     tz = get_budapest_timezone()
     b_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
-    if b_dt.hour == 12:
+    if 12 <= b_dt.hour < 19:
         return 1
-    elif b_dt.hour == 19:
+    elif 19 <= b_dt.hour < 24:
         return 2
     return None
+
+
+def slot_key_for_item(item: Any) -> Optional[str]:
+    if not item.scheduled_at or not item.daily_slot:
+        return None
+    try:
+        item_dt = QueuePublisher.parse_datetime(item.scheduled_at)
+    except Exception:
+        return None
+    return f"{item_dt.date().isoformat()}-slot-{item.daily_slot}"
+
+
+def claim_due_slots(queue: PublishingQueue, current_dt: datetime) -> Set[str]:
+    """Claim due slots durably before any live adapter can be called."""
+    due_items = QueuePublisher.find_due_items(queue, current_dt)
+    due_keys = {key for item in due_items if (key := slot_key_for_item(item))}
+    claimed: Set[str] = set()
+    for key in sorted(due_keys):
+        claim = queue.slot_claims.get(key) or {}
+        state = claim.get("state")
+        if state == "COMPLETED":
+            continue
+        if state == "CLAIMED":
+            try:
+                claimed_at = QueuePublisher.parse_datetime(str(claim.get("claimed_at", "")))
+                if current_dt - claimed_at < SLOT_CLAIM_TTL:
+                    continue
+            except Exception:
+                pass
+        queue.slot_claims[key] = {
+            "state": "CLAIMED",
+            "claimed_at": current_dt.isoformat(),
+            "attempt": int(claim.get("attempt", 0)) + 1,
+        }
+        claimed.add(key)
+    return claimed
+
+
+def finalize_slot_claims(queue: PublishingQueue, slot_keys: Set[str], report: Dict[str, Any], current_dt: datetime) -> None:
+    """Complete successful claims; make failed/partial claims retryable."""
+    retryable = report.get("failed_count", 0) > 0 or report.get("partially_published_count", 0) > 0
+    for key in slot_keys:
+        claim = queue.slot_claims.setdefault(key, {})
+        claim.update({"state": "RETRYABLE" if retryable else "COMPLETED", "completed_at": current_dt.isoformat()})
 
 
 def validate_required_live_secrets() -> Tuple[bool, List[str]]:
@@ -237,6 +285,10 @@ def main():
                         help="Override current datetime for testing/simulation (ISO format)")
     parser.add_argument("--slot", type=int, choices=[1, 2], default=None,
                         help="Optional slot filter (1 or 2)")
+    parser.add_argument("--claim-only", action="store_true",
+                        help="Persist claims for due scheduled slots without publishing")
+    parser.add_argument("--execute-claimed", action="store_true",
+                        help="Publish only slots with a persisted repository claim")
     parser.add_argument("--queue-file", default=str(DEFAULT_QUEUE_FILE),
                         help="Path to publishing queue JSON file")
     parser.add_argument("--log-file", default=str(DEFAULT_LOG_FILE),
@@ -300,7 +352,7 @@ def main():
     if should_check_window and slot_window is None:
         msg = (
             f"[INFO] Current time ({current_dt.strftime('%H:%M %Z')}) is outside Europe/Budapest "
-            f"scheduled windows (12:00-12:59, 19:00-19:59). Skipping scheduled execution."
+            f"recoverable scheduled windows (12:00-18:59, 19:00-23:59). Skipping scheduled execution."
         )
         print(msg, flush=True)
         set_github_output("queue_updated", "false")
@@ -309,8 +361,12 @@ def main():
         set_github_output("dry_run", str(dry_run).lower())
         sys.exit(0)
 
+    # A scheduled run must have a claim committed by the preceding workflow
+    # step.  This makes late retries safe across separate Actions invocations.
+    require_claim = args.execute_claimed or os.environ.get("REQUIRE_SLOT_CLAIM", "").lower() in ("true", "1", "yes")
+
     # 2. Live Credential Validation
-    if not dry_run:
+    if not dry_run and not args.claim_only:
         creds_ok, missing_creds = validate_required_live_secrets()
         if not creds_ok:
             err_msg = (
@@ -331,7 +387,7 @@ def main():
         print(f"[ERROR] Queue file not found at: {queue_file}", file=sys.stderr, flush=True)
         sys.exit(1)
 
-    effective_slot = args.slot or (slot_window if should_check_window else None)
+    effective_slot = args.slot or (slot_window if should_check_window and not require_claim else None)
 
     try:
         raw_queue = PublishingQueue.load(queue_file)
@@ -339,6 +395,30 @@ def main():
     except Exception as e:
         print(f"[ERROR] Failed to load/audit queue: {e}", file=sys.stderr, flush=True)
         sys.exit(1)
+
+    if args.claim_only:
+        claimed = claim_due_slots(raw_queue, current_dt)
+        if claimed:
+            raw_queue.save(queue_file)
+        print(f"[INFO] Persisted scheduled slot claims: {sorted(claimed) if claimed else 'none'}", flush=True)
+        set_github_output("claim_updated", str(bool(claimed)).lower())
+        set_github_output("queue_updated", str(bool(claimed)).lower())
+        set_github_output("claimed_slot_keys", ",".join(sorted(claimed)))
+        sys.exit(0)
+
+    allowed_slot_keys: Optional[Set[str]] = None
+    if require_claim:
+        allowed_slot_keys = {
+            key for key, value in raw_queue.slot_claims.items()
+            if value.get("state") == "CLAIMED"
+        }
+        if not allowed_slot_keys:
+            print("[INFO] No persisted scheduled slot claim is available; skipping execution.", flush=True)
+            set_github_output("queue_updated", "false")
+            set_github_output("published_count", 0)
+            set_github_output("due_count", 0)
+            set_github_output("dry_run", str(dry_run).lower())
+            sys.exit(0)
 
     print("=======================================================")
     print(" QUEUE AUDIT & SCHEDULING STATUS REPORT")
@@ -384,7 +464,8 @@ def main():
             now_str=eval_now,
             dry_run=dry_run,
             slot_filter=effective_slot,
-            log_file=args.log_file
+            log_file=args.log_file,
+            slot_keys=allowed_slot_keys
         )
 
         due_count = report.get("due_items_count", 0)
@@ -410,9 +491,14 @@ def main():
                     flush=True
                 )
 
-        # In live mode, if items were processed, queue was updated and needs persistence
+        if not dry_run and allowed_slot_keys:
+            persisted_queue = PublishingQueue.load(queue_file)
+            finalize_slot_claims(persisted_queue, allowed_slot_keys, report, current_dt)
+            persisted_queue.save(queue_file)
+
+        # In live mode, if items were processed or claims were finalized, queue was updated and needs persistence
         queue_updated = False
-        if not dry_run and (published_count > 0 or partially_count > 0 or failed_count > 0):
+        if not dry_run and (published_count > 0 or partially_count > 0 or failed_count > 0 or allowed_slot_keys):
             queue_updated = True
             print(f"\n[INFO] Queue file updated on disk: {queue_file}", flush=True)
 

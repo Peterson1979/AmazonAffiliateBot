@@ -98,9 +98,9 @@
             {% if item.status == 'READY' %}
               <span class="badge badge-ready">READY</span>
             {% elif item.status == 'PUBLISHED' %}
-              <span class="badge badge-published">PUBLISHED</span>
+              <span class="badge badge-published">CLOUD PUBLISHED</span>
             {% elif item.status == 'PARTIALLY_PUBLISHED' %}
-              <span class="badge badge-partial">PARTIALLY PUBLISHED</span>
+              <span class="badge badge-partial">CLOUD PARTIAL</span>
             {% elif item.status == 'FAILED' %}
               <span class="badge badge-failed">FAILED</span>
             {% else %}
@@ -120,19 +120,21 @@
             {% if item.publishing_results %}
               <div style="display: flex; gap: 4px; flex-wrap: wrap;">
                 {% for p_key, p_res in item.publishing_results.items() %}
-                  {% if p_res.status == 'PUBLISHED' %}
-                    <span class="badge badge-success" style="font-size: 0.68rem;" title="{{ p_res.message or 'Live published' }}">{{ p_key|upper }}: OK</span>
+                  {% if p_key in ('facebook', 'pinterest', 'threads') %}
+                  {% if p_res.status == 'PUBLISHED' and p_res.mode == 'LIVE' %}
+                    <span class="badge badge-success" style="font-size: 0.68rem;" title="{{ p_res.message or 'Cloud live publication confirmed' }}">{{ p_key|upper }}: LIVE CONFIRMED</span>
                   {% elif p_res.status == 'WOULD_PUBLISH' %}
-                    <span class="badge badge-info" style="font-size: 0.68rem;" title="Simulated publish in DRY RUN">{{ p_key|upper }}: SIM</span>
+                    <span class="badge badge-info" style="font-size: 0.68rem;" title="Local dry-run simulation; no live post was sent">{{ p_key|upper }}: SIMULATED</span>
                   {% elif p_res.status == 'FAILED' %}
                     <span class="badge badge-danger" style="font-size: 0.68rem;" title="{{ p_res.error or 'Failed' }}">{{ p_key|upper }}: FAIL</span>
                   {% else %}
                     <span class="badge badge-muted" style="font-size: 0.68rem;">{{ p_key|upper }}</span>
                   {% endif %}
+                  {% endif %}
                 {% endfor %}
               </div>
             {% elif item.status == 'PUBLISHED' %}
-              <span style="color: var(--success); font-size: 0.82rem;">Simulated (DRY RUN)</span>
+              <span style="color: var(--success); font-size: 0.82rem;">Cloud publication result recorded</span>
             {% elif item.status == 'READY' %}
               <span style="color: var(--text-muted); font-size: 0.82rem;">Scheduled (FB, Pinterest, Threads)</span>
             {% elif item.status == 'FAILED' %}
