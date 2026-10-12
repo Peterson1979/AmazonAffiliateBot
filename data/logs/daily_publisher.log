@@ -5734,3 +5734,16 @@
 [2026-10-11 09:17:53 CEST] [INFO] Queue state saved to: C:\Users\opeti\AppData\Local\Temp\cloud_pub_dryrun_3m0hxms6\temp_queue.json
 [2026-10-11 09:17:53 CEST] [INFO] Execution Summary: Processed=1, Published=1, Partially=0, Failed=0
 [2026-10-11 09:17:53 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-10-12 21:25:18 CEST] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-10-12 21:25:18 CEST] [INFO] Current Europe/Budapest Time: 2026-10-12T21:25:18.408322+02:00 | Mode: LIVE
+[2026-10-12 21:25:18 CEST] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 20
+[2026-10-12 21:25:18 CEST] [INFO] Due Eligible Items Found: 3
+[2026-10-12 21:25:18 CEST] [INFO] Processing Item 'item_019_B095NXXP8C' | ASIN: B095NXXP8C | Slot 2 (2026-10-11T19:00:00+02:00)
+[2026-10-12 21:25:18 CEST] [INFO] Item 'item_019_B095NXXP8C' Platform Results: [facebook=SKIPPED, pinterest=FAILED, threads=SKIPPED] -> Status: FAILED
+[2026-10-12 21:25:18 CEST] [INFO] Processing Item 'item_006_B08GH41N87' | ASIN: B08GH41N87 | Slot 1 (2026-10-12T12:00:00+02:00)
+[2026-10-12 21:25:18 CEST] [INFO] Item 'item_006_B08GH41N87' Platform Results: [facebook=SKIPPED, pinterest=FAILED, threads=SKIPPED] -> Status: FAILED
+[2026-10-12 21:25:18 CEST] [INFO] Processing Item 'item_007_B09SH38JRR' | ASIN: B09SH38JRR | Slot 2 (2026-10-12T19:00:00+02:00)
+[2026-10-12 21:25:18 CEST] [INFO] Item 'item_007_B09SH38JRR' Platform Results: [facebook=SKIPPED, pinterest=FAILED, threads=SKIPPED] -> Status: FAILED
+[2026-10-12 21:25:18 CEST] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-10-12 21:25:18 CEST] [INFO] Execution Summary: Processed=3, Published=0, Partially=0, Failed=3
+[2026-10-12 21:25:18 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
