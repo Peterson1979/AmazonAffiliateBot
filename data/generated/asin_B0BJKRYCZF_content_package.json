@@ -23,7 +23,8 @@
         "status": "VALID",
         "retry_count": 1,
         "errors": []
-      }
+      },
+      "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg"
     },
     "pinterest": {
       "status": "VALID",
@@ -34,16 +35,19 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg"
     },
     "threads": {
       "status": "VALID",
-      "content": "Crafted from resin, these statues come in different heights\u20145.98\", 6.57\", and 6.37\" tall\u2014with a unified width of 2.1\".\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "content": "Crafted from resin, these statues come in different heights—5.98\", 6.57\", and 6.37\" tall—with a unified width of 2.1\".\n\nLink: https://link.amazon/B00j5slzz\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
       "validation": {
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg"
     }
-  }
+  },
+  "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg"
 }

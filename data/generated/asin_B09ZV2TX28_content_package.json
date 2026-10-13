@@ -23,7 +23,8 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg"
     },
     "pinterest": {
       "status": "VALID",
@@ -34,7 +35,8 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg"
     },
     "threads": {
       "status": "VALID",
@@ -43,7 +45,9 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg"
     }
-  }
+  },
+  "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg"
 }

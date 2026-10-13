@@ -7,30 +7,11 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 20,
-  "total_ready": 11,
-  "total_failed": 6,
-  "scheduled_posts": 11,
-  "unfilled_slots": 49,
-  "slot_claims": {
-    "2026-10-11-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-12T21:25:16.631576+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-12T21:25:18.407239+02:00"
-    },
-    "2026-10-12-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-12T21:25:16.631576+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-12T21:25:18.407239+02:00"
-    },
-    "2026-10-12-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-12T21:25:16.631576+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-12T21:25:18.407239+02:00"
-    }
-  },
+  "total_ready": 14,
+  "total_failed": 3,
+  "scheduled_posts": 14,
+  "unfilled_slots": 46,
+  "slot_claims": {},
   "items": [
     {
       "queue_item_id": "item_001_B0GNGTN7TV",
@@ -42,8 +23,8 @@
       "scheduled_at": "2026-10-07T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GNGTN7TV_content_package.json",
-      "status": "FAILED",
-      "validation_status": "FAILED_VALIDATION",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-06T09:36:21.758206+00:00",
       "published_at": null,
@@ -218,46 +199,12 @@
       "scheduled_at": "2026-10-12T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B08GH41N87_content_package.json",
-      "status": "FAILED",
+      "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Skipped because item image preflight was blocked.",
-        "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-      ],
+      "errors": [],
       "created_at": "2026-10-10T17:56:45.924523+00:00",
-      "published_at": "2026-10-12T21:25:18.408322+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "SKIPPED",
-          "errors": [
-            "Skipped because item image preflight was blocked."
-          ]
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "errors": [
-            "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-          ]
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "SKIPPED",
-          "errors": [
-            "Skipped because item image preflight was blocked."
-          ]
-        }
-      }
+      "published_at": null,
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_007_B09SH38JRR",
@@ -269,46 +216,12 @@
       "scheduled_at": "2026-10-12T19:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09SH38JRR_content_package.json",
-      "status": "FAILED",
+      "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Skipped because item image preflight was blocked.",
-        "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-      ],
+      "errors": [],
       "created_at": "2026-10-10T17:56:45.927679+00:00",
-      "published_at": "2026-10-12T21:25:18.408322+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "SKIPPED",
-          "errors": [
-            "Skipped because item image preflight was blocked."
-          ]
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "errors": [
-            "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-          ]
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "SKIPPED",
-          "errors": [
-            "Skipped because item image preflight was blocked."
-          ]
-        }
-      }
+      "published_at": null,
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_008_B09ZV2TX28",
@@ -514,13 +427,13 @@
         "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
       ],
       "created_at": "2026-10-11T04:37:34.455206+00:00",
-      "published_at": "2026-10-12T21:25:18.408322+02:00",
+      "published_at": "2026-10-11T19:00:05.636575+02:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
           "action": "PUBLISH",
-          "mode": "LIVE",
+          "mode": "DRY_RUN",
           "status": "SKIPPED",
           "errors": [
             "Skipped because item image preflight was blocked."
@@ -530,7 +443,7 @@
           "platform": "pinterest",
           "account": "dailyideasforyou",
           "action": "PUBLISH",
-          "mode": "LIVE",
+          "mode": "DRY_RUN",
           "status": "FAILED",
           "errors": [
             "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
@@ -540,7 +453,7 @@
           "platform": "threads",
           "account": "lifemodehq",
           "action": "PUBLISH",
-          "mode": "LIVE",
+          "mode": "DRY_RUN",
           "status": "SKIPPED",
           "errors": [
             "Skipped because item image preflight was blocked."
