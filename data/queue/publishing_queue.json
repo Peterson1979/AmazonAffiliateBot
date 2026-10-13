@@ -11,7 +11,33 @@
   "total_failed": 3,
   "scheduled_posts": 14,
   "unfilled_slots": 46,
-  "slot_claims": {},
+  "slot_claims": {
+    "2026-10-07-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
+      "attempt": 1
+    },
+    "2026-10-12-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
+      "attempt": 1
+    },
+    "2026-10-12-slot-2": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
+      "attempt": 1
+    },
+    "2026-10-13-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
+      "attempt": 1
+    },
+    "2026-10-13-slot-2": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
+      "attempt": 1
+    }
+  },
   "items": [
     {
       "queue_item_id": "item_001_B0GNGTN7TV",
