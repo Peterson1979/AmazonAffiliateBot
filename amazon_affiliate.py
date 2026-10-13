@@ -22,7 +22,7 @@ if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from dotenv import load_dotenv
-from amazon.scraper import Product, scrape_amazon_product, extract_asin_from_url
+from amazon.scraper import Product, scrape_amazon_product, extract_asin_from_url, is_valid_image_url
 from ai.ollama import OllamaClient
 from content.generator import ContentGenerator
 from content.package import ContentPackage
@@ -92,7 +92,7 @@ def load_cached_product(url: str, asin: str = None) -> Tuple[bool, Optional[Prod
             with open(cache_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 cached_prod = Product.from_dict(data)
-                if cached_prod.title:
+                if cached_prod.title and is_valid_image_url(cached_prod.image_url):
                     # Verify ASIN consistency if key is asin-based
                     if key.startswith("asin_") and cached_prod.asin:
                         expected_asin = key.split("_", 1)[1].upper()
@@ -116,7 +116,7 @@ def load_cached_product(url: str, asin: str = None) -> Tuple[bool, Optional[Prod
                     data = json.load(f)
                     if data.get("affiliate_url") == url or data.get("source_url") == url:
                         cached_prod = Product.from_dict(data)
-                        if cached_prod.title:
+                        if cached_prod.title and is_valid_image_url(cached_prod.image_url):
                             if file.stem.startswith("asin_") and cached_prod.asin:
                                 expected_asin = file.stem.split("_", 1)[1].upper()
                                 if cached_prod.asin.upper() != expected_asin:
@@ -132,6 +132,11 @@ def load_cached_product(url: str, asin: str = None) -> Tuple[bool, Optional[Prod
 
 def save_product_cache(product: Product, cache_key: Optional[str] = None) -> Path:
     """Save normalized product dictionary as a JSON file."""
+    if not is_valid_image_url(product.image_url):
+        raise ValueError(
+            f"Cannot cache product '{product.asin or product.title}': "
+            "no verified HTTPS image URL was extracted."
+        )
     PRODUCTS_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     if product.asin:
         key = f"asin_{product.asin.upper()}"
@@ -411,6 +416,15 @@ def main():
 
         # Normalize product data
         print("[OK] Product data normalized", flush=True)
+
+        if not is_valid_image_url(product.image_url):
+            print(
+                "[ERROR] Amazon product did not provide a verified HTTPS image URL; "
+                "the product was not cached or queued.",
+                file=sys.stderr,
+                flush=True,
+            )
+            sys.exit(1)
 
         # Determine definitive cache key with scraped ASIN
         cache_key = get_cache_key(affiliate_url, product.asin)

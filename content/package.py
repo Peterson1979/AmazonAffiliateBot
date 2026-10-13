@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import json
 
-from amazon.scraper import Product
+from amazon.scraper import Product, is_valid_image_url
 
 
 SUPPORTED_PLATFORMS = ("facebook", "pinterest", "threads")
@@ -66,6 +66,7 @@ class ContentPackage:
         validation_meta = platform_validation_metadata or social_data.get("validation_metadata", {})
         packaged_platforms: Dict[str, Any] = {}
         all_platforms_valid = True
+        product_image_url = getattr(product, "image_url", None)
 
         for p_name in SUPPORTED_PLATFORMS:
             p_data = platforms_input.get(p_name)
@@ -100,7 +101,10 @@ class ContentPackage:
                 # Content presence check
                 if p_name == "pinterest":
                     has_content = bool(p_data.get("title", "").strip() and p_data.get("description", "").strip())
-                    if not p_data.get("image_url"):
+                    verified_image_url = product_image_url
+                    if not is_valid_image_url(verified_image_url):
+                        verified_image_url = p_data.get("image_url")
+                    if not is_valid_image_url(verified_image_url):
                         p_errors.append("Pinterest requires a verified product image URL.")
                         has_content = False
                 else:
@@ -122,8 +126,10 @@ class ContentPackage:
             if p_name == "pinterest":
                 platform_entry["title"] = p_data.get("title", "")
                 platform_entry["description"] = p_data.get("description", "")
-                if getattr(product, "image_url", None):
-                    platform_entry["image_url"] = product.image_url
+                if is_valid_image_url(product_image_url):
+                    platform_entry["image_url"] = product_image_url
+                elif is_valid_image_url(p_data.get("image_url")):
+                    platform_entry["image_url"] = p_data["image_url"]
                 if getattr(product, "affiliate_url", None):
                     platform_entry["link"] = product.affiliate_url
             else:
@@ -179,3 +185,15 @@ class ContentPackage:
             json.dump(package, f, indent=2, ensure_ascii=False)
 
         return out_path
+
+    @staticmethod
+    def attach_verified_image(package: Dict[str, Any], image_url: str) -> bool:
+        """Attach one verified image to every active platform entry in a package."""
+        if not is_valid_image_url(image_url):
+            return False
+        package["image_url"] = image_url.strip()
+        for platform_name in SUPPORTED_PLATFORMS:
+            platform_entry = package.get("platforms", {}).get(platform_name)
+            if isinstance(platform_entry, dict):
+                platform_entry["image_url"] = image_url.strip()
+        return True

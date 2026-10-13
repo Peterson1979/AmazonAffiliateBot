@@ -15,7 +15,7 @@ import os
 
 from zoneinfo import ZoneInfo
 
-from amazon.scraper import Product, extract_asin_from_url
+from amazon.scraper import Product, extract_asin_from_url, is_valid_image_url
 from ai.ollama import OllamaClient
 from content.generator import ContentGenerator
 from content.package import ContentPackage, STATUS_READY_FOR_REVIEW, STATUS_FAILED_VALIDATION
@@ -27,6 +27,7 @@ from publishing.publisher import (
     STATUS_FAILED as PLATFORM_STATUS_FAILED,
     STATUS_SKIPPED as PLATFORM_STATUS_SKIPPED,
 )
+from publishing.images import recover_verified_image_url
 
 
 DEFAULT_QUEUE_DIR = Path("data/queue")
@@ -96,6 +97,15 @@ def resolve_product_for_url(
                         return False, prod, pfile.stem, [f"Product for '{url_clean}' has empty title."]
                     if not prod.features or len(prod.features) == 0:
                         return False, prod, pfile.stem, [f"Product for '{url_clean}' has insufficient/empty features."]
+                    if not is_valid_image_url(prod.image_url):
+                        image_error = (
+                            f"Product for '{url_clean}' has no verified HTTPS image URL in the same-ASIN cache; "
+                            "re-scraping is required before publishing."
+                        )
+                        if not allow_scrape:
+                            return False, prod, pfile.stem, [image_error]
+                        # Ignore the stale cache entry and let the scrape path recover the image.
+                        continue
                     return True, prod, pfile.stem, []
             except Exception:
                 continue
@@ -110,6 +120,11 @@ def resolve_product_for_url(
                 return False, prod, None, [f"Scraped product for '{url_clean}' has missing ASIN."]
             if not prod.title or not prod.features:
                 return False, prod, None, [f"Scraped product for '{url_clean}' has insufficient title or features."]
+            if not is_valid_image_url(prod.image_url):
+                return False, prod, None, [
+                    f"Scraped product for '{url_clean}' has no verified HTTPS image URL; "
+                    "the product was not cached or queued."
+                ]
             key = f"asin_{prod.asin.upper()}"
             save_file = pdir / f"{key}.json"
             save_file.parent.mkdir(parents=True, exist_ok=True)
@@ -120,6 +135,138 @@ def resolve_product_for_url(
             return False, None, None, [f"Scraping failed for '{url_clean}': {e}"]
 
     return False, None, None, [f"No verified product found in local cache for '{url_clean}'."]
+
+
+def recover_pending_queue_images(
+    queue: "PublishingQueue",
+    products_dir: Optional[Union[str, Path]] = None,
+    generated_dir: Optional[Union[str, Path]] = None,
+    allow_scrape: bool = False,
+) -> Dict[str, Any]:
+    """Repair image-blocked unpublished queue items without retrying publications."""
+    pdir = Path(products_dir) if products_dir else Path("data/products")
+    gdir = Path(generated_dir) if generated_dir else Path("data/generated")
+    report: Dict[str, Any] = {
+        "examined": 0,
+        "already_valid": [],
+        "recovered": [],
+        "already_published": [],
+        "intentionally_skipped": [],
+        "permanently_failed": [],
+        "unresolved": [],
+    }
+
+    for item in queue.items:
+        if not item.asin or item.asin.upper() == "UNKNOWN":
+            if item.status == STATUS_FAILED:
+                report["permanently_failed"].append(item.asin or "UNKNOWN")
+            continue
+
+        if item.status in (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED):
+            report["already_published"].append(item.asin.upper())
+            continue
+        if item.status == STATUS_SKIPPED and not item.published_at:
+            # Preserve intentional skips. Only image-preflight skips are eligible
+            # for automatic recovery; an empty error list is intentional state.
+            image_preflight_skip = any(
+                isinstance(error, str)
+                and ("image" in error.lower() or "pinterest" in error.lower())
+                for error in (item.errors or [])
+            )
+            if not image_preflight_skip:
+                report["intentionally_skipped"].append(item.asin.upper())
+                continue
+        elif item.status not in (STATUS_READY, STATUS_FAILED, STATUS_SKIPPED):
+            continue
+
+        report["examined"] += 1
+        asin = item.asin.upper()
+        product_path = pdir / f"asin_{asin}.json"
+        package_path = gdir / f"asin_{asin}_content_package.json"
+        package: Dict[str, Any] = {}
+        if package_path.exists():
+            try:
+                with package_path.open("r", encoding="utf-8") as handle:
+                    package = json.load(handle)
+            except (OSError, ValueError, TypeError):
+                package = {}
+
+        image_url = recover_verified_image_url(package, products_dir=pdir) if package else None
+        product: Optional[Product] = None
+        if product_path.exists():
+            try:
+                with product_path.open("r", encoding="utf-8") as handle:
+                    product = Product.from_dict(json.load(handle))
+            except (OSError, ValueError, TypeError):
+                product = None
+
+        if not image_url and item.original_url:
+            ok, resolved, _, errors = resolve_product_for_url(
+                item.original_url,
+                products_dir=pdir,
+                allow_scrape=allow_scrape,
+            )
+            if ok and resolved:
+                product = resolved
+                image_url = resolved.image_url
+            elif not package.get("platforms"):
+                report["unresolved"].append({"asin": asin, "reason": errors[0] if errors else "No verified image found."})
+                continue
+
+        if not is_valid_image_url(image_url):
+            report["unresolved"].append({
+                "asin": asin,
+                "reason": "No verified HTTPS image URL in package, same-ASIN cache, or recovery scrape.",
+            })
+            continue
+
+        package_pin = (package.get("platforms", {}).get("pinterest") or {}) if package else {}
+        if (
+            product is not None
+            and is_valid_image_url(product.image_url)
+            and is_valid_image_url(package_pin.get("image_url"))
+            and package.get("status") == STATUS_READY_FOR_REVIEW
+        ):
+            report["already_valid"].append(asin)
+            continue
+
+        if package.get("status") != STATUS_READY_FOR_REVIEW:
+            report["unresolved"].append({
+                "asin": asin,
+                "reason": f"Content package status is '{package.get('status')}', so it was not requeued.",
+            })
+            continue
+
+        # Persist a recovered package image and cache image before changing queue state.
+        if product is not None:
+            product.image_url = image_url
+            product_path.parent.mkdir(parents=True, exist_ok=True)
+            with product_path.open("w", encoding="utf-8") as handle:
+                json.dump(product.to_dict(), handle, indent=2, ensure_ascii=False)
+        if not package:
+            report["unresolved"].append({"asin": asin, "reason": "Content package is missing; image recovery cannot safely requeue it."})
+            continue
+        if not ContentPackage.attach_verified_image(package, image_url):
+            report["unresolved"].append({"asin": asin, "reason": "Recovered image failed verified HTTPS validation."})
+            continue
+        package_path.parent.mkdir(parents=True, exist_ok=True)
+        with package_path.open("w", encoding="utf-8") as handle:
+            json.dump(package, handle, indent=2, ensure_ascii=False)
+
+        has_published_platform = any(
+            isinstance(result, dict) and result.get("status") == PLATFORM_STATUS_PUBLISHED
+            for result in (item.publishing_results or {}).values()
+        )
+        if not has_published_platform and item.status in (STATUS_FAILED, STATUS_SKIPPED):
+            item.status = STATUS_READY
+            item.validation_status = STATUS_READY_FOR_REVIEW
+            item.errors = []
+            item.published_at = None
+            item.publishing_results = None
+        report["recovered"].append(asin)
+
+    queue.recalculate_counts()
+    return report
 
 
 def parse_affiliate_urls(

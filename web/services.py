@@ -33,7 +33,7 @@ from content.package import (
     STATUS_VALID,
     SUPPORTED_PLATFORMS
 )
-from publishing.images import recover_verified_image_url
+from publishing.images import recover_verified_image_url, is_valid_image_url
 from publishing.queue import (
     PublishingQueue,
     QueueItem,
@@ -342,6 +342,36 @@ def get_next_publishing_slot_time() -> Dict[str, Any]:
         return {"slot": 1, "time": "12:00", "date": tomorrow.strftime("%Y-%m-%d"), "dt": next_dt.isoformat(), "is_today": False}
 
 
+def get_next_publishing_slots(queue: Optional[PublishingQueue], count: int = 4) -> List[Dict[str, Any]]:
+    """Return the next scheduler slots using the configured Budapest-local times."""
+    tz = get_budapest_timezone()
+    now_dt = datetime.now(tz)
+    slots = ((1, SLOT_1_TIME), (2, SLOT_2_TIME))
+    candidates: List[Tuple[datetime, int]] = []
+    for day_offset in range(0, 4):
+        day = now_dt.date() + timedelta(days=day_offset)
+        for slot_number, slot_time in slots:
+            slot_dt = datetime.combine(day, slot_time, tzinfo=tz)
+            if slot_dt >= now_dt:
+                candidates.append((slot_dt, slot_number))
+
+    claims = (queue.slot_claims if queue else {}) or {}
+    result = []
+    for slot_dt, slot_number in candidates[:count]:
+        claim_key = f"{slot_dt.date().isoformat()}-slot-{slot_number}"
+        claim = claims.get(claim_key) or {}
+        claim_state = claim.get("state")
+        result.append({
+            "slot": slot_number,
+            "date": slot_dt.date().isoformat(),
+            "time": slot_dt.strftime("%H:%M"),
+            "timezone": DEFAULT_TIMEZONE,
+            "dt": slot_dt.isoformat(),
+            "status": claim_state if claim_state in ("CLAIMED", "RETRYABLE") else "AVAILABLE",
+        })
+    return result
+
+
 def get_git_sync_status() -> Dict[str, Any]:
     """Check lightweight local git status for queue synchronization visibility."""
     repo_root = Path(__file__).resolve().parent.parent
@@ -428,6 +458,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
     validation_failures = 0
     next_scheduled_item = None
     upcoming_items: List[Dict[str, Any]] = []
+    activity_items: List[Dict[str, Any]] = []
 
     if queue:
         # Sort items chronologically to find next item
@@ -435,6 +466,15 @@ def get_dashboard_summary() -> Dict[str, Any]:
         for it in queue.items:
             presentation = get_queue_item_presentation(queue, it)
             ui_state = presentation["state"]
+            activity_items.append({
+                "asin": it.asin,
+                "product_name": it.product_name,
+                "scheduled_date": it.scheduled_date,
+                "scheduled_at": it.scheduled_at,
+                "ui_state": ui_state,
+                "published_at": presentation.get("published_at"),
+                "platforms": presentation["platforms"],
+            })
             if ui_state == "PUBLISHED":
                 published_count += 1
             elif ui_state == "PARTIAL":
@@ -662,7 +702,13 @@ def get_dashboard_summary() -> Dict[str, Any]:
             "days_of_coverage": days_of_coverage,
             "next_scheduled_item": next_scheduled_item,
             "upcoming_items": upcoming_items,
-            "next_slot": next_slot
+            "next_slot": next_slot,
+            "next_slots": get_next_publishing_slots(queue),
+            "activity_items": sorted(
+                activity_items,
+                key=lambda item: item.get("scheduled_at") or "",
+                reverse=True,
+            )[:8],
         },
         "inventory": {
             "manually_submitted": manual_submitted_count,
@@ -1086,7 +1132,12 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
                 with open(pkg_file, "r", encoding="utf-8") as pf:
                     loaded_pkg = json.load(pf)
                 if loaded_pkg.get("status") == STATUS_READY_FOR_REVIEW:
-                    pkg = loaded_pkg
+                    package_image = (loaded_pkg.get("platforms", {}).get("pinterest") or {}).get("image_url")
+                    if is_valid_image_url(package_image):
+                        pkg = loaded_pkg
+                    elif is_valid_image_url(product.image_url) and ContentPackage.attach_verified_image(loaded_pkg, product.image_url):
+                        pkg = loaded_pkg
+                        ContentPackage.save_content_package(loaded_pkg, cache_key, target_dir=GENERATED_DIR)
             except Exception:
                 pass
 

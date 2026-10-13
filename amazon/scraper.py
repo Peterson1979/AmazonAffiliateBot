@@ -5,9 +5,12 @@ Extracts product information and normalizes it into a Python dataclass.
 
 from dataclasses import dataclass, field, asdict
 import json
+import os
 import re
 import time
+from pathlib import Path
 from typing import List, Optional, Dict, Any
+from urllib.parse import urlparse
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -70,10 +73,59 @@ def extract_asin_from_url(url: str) -> Optional[str]:
     return None
 
 
+def is_valid_image_url(value: Any) -> bool:
+    """Accept only a non-empty HTTPS URL suitable for an image API."""
+    if not isinstance(value, str) or not value.strip():
+        return False
+    parsed = urlparse(value.strip())
+    return parsed.scheme == "https" and bool(parsed.netloc) and bool(parsed.path)
+
+
+def _resolve_local_firefox_binary() -> Optional[Path]:
+    """Find an installed Firefox binary without invoking Selenium Manager."""
+    configured = os.environ.get("AMAZON_FIREFOX_BINARY", "").strip()
+    candidates = [
+        Path(configured) if configured else None,
+        Path(r"C:\Program Files\Mozilla Firefox\firefox.exe"),
+        Path(r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe"),
+    ]
+    return next((path for path in candidates if path and path.is_file()), None)
+
+
+def _resolve_local_geckodriver() -> Optional[Path]:
+    """Find a local geckodriver; never trigger Selenium Manager downloads."""
+    configured = os.environ.get("AMAZON_GECKODRIVER", "").strip()
+    if configured:
+        path = Path(configured)
+        return path if path.is_file() else None
+
+    candidates = [
+        Path.home() / ".cache" / "selenium" / "geckodriver" / "win64" / "0.37.1" / "geckodriver.exe",
+        Path.home() / ".cache" / "selenium" / "geckodriver.exe",
+    ]
+    cache_root = Path.home() / ".cache" / "selenium" / "geckodriver"
+    if cache_root.is_dir():
+        candidates.extend(cache_root.glob("**/geckodriver.exe"))
+    existing = [path for path in candidates if path.is_file()]
+    return max(existing, key=lambda path: path.stat().st_mtime) if existing else None
+
+
 def init_firefox_driver(headless: bool = False, firefox_profile: str = "") -> webdriver.Firefox:
     """Initialize Selenium Firefox WebDriver with robust options."""
     try:
+        firefox_binary = _resolve_local_firefox_binary()
+        geckodriver = _resolve_local_geckodriver()
+        if not firefox_binary:
+            raise RuntimeError(
+                "Firefox executable not found. Install Firefox or set AMAZON_FIREFOX_BINARY."
+            )
+        if not geckodriver:
+            raise RuntimeError(
+                "geckodriver executable not found. Install geckodriver or set AMAZON_GECKODRIVER."
+            )
+
         options = Options()
+        options.binary_location = str(firefox_binary)
         if headless:
             options.add_argument("--headless")
         
@@ -85,7 +137,7 @@ def init_firefox_driver(headless: bool = False, firefox_profile: str = "") -> we
             from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
             options.profile = FirefoxProfile(firefox_profile.strip())
 
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Firefox(service=Service(executable_path=str(geckodriver)), options=options)
         driver.set_page_load_timeout(45)
         return driver
     except Exception as e:
@@ -279,7 +331,7 @@ def scrape_amazon_product(
                             dyn_dict = j_mod.loads(dyn_data)
                             if dyn_dict:
                                 img_src = list(dyn_dict.keys())[-1]
-                    if img_src and "media-amazon.com" in img_src:
+                    if is_valid_image_url(img_src) and "media-amazon.com" in img_src:
                         image_url = img_src
                         break
                 except Exception:

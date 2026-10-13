@@ -2,16 +2,9 @@
 
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
-from urllib.parse import urlparse
 import json
 
-
-def is_valid_image_url(value: Any) -> bool:
-    """Accept only a non-empty HTTPS URL suitable for an image API."""
-    if not isinstance(value, str) or not value.strip():
-        return False
-    parsed = urlparse(value.strip())
-    return parsed.scheme == "https" and bool(parsed.netloc) and bool(parsed.path)
+from amazon.scraper import is_valid_image_url
 
 
 def _package_image_candidates(package: Dict[str, Any]) -> Iterable[str]:

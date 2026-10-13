@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 import json
 import os
 
-from amazon.scraper import Product, extract_asin_from_url
+from amazon.scraper import Product, extract_asin_from_url, is_valid_image_url
 from amazon.discovery import (
     AmazonDiscoveryEngine,
     DiscoveryHistory,
@@ -38,6 +38,7 @@ from publishing.queue import (
     STATUS_FAILED,
     STATUS_PUBLISHED,
     STATUS_PARTIALLY_PUBLISHED,
+    recover_pending_queue_images,
 )
 from ai.ollama import OllamaClient
 
@@ -319,6 +320,7 @@ class QueueReplenisher:
         target_qfile = Path(queue_file) if queue_file else DEFAULT_QUEUE_FILE
         target_log = Path(log_file) if log_file else DEFAULT_MAINTENANCE_LOG_FILE
         target_history = Path(history_file) if history_file else None
+        target_products_dir = Path(products_dir) if products_dir else Path("data/products")
 
         cls.log_event("=== QUEUE MAINTENANCE RUN START ===", log_file=target_log)
 
@@ -336,6 +338,24 @@ class QueueReplenisher:
                 products_per_day=2,
                 target_capacity=60
             )
+
+        # Repair stale/missing images before capacity evaluation or slot assignment.
+        # This is ingestion-time recovery; publishing never performs a blind retry.
+        image_recovery = recover_pending_queue_images(
+            queue,
+            products_dir=products_dir,
+            generated_dir=generated_dir,
+            allow_scrape=candidate_provider is None,
+        )
+        if image_recovery["recovered"]:
+            queue.save(target_qfile)
+        cls.log_event(
+            "Image recovery: "
+            f"recovered={len(image_recovery['recovered'])}, "
+            f"unresolved={len(image_recovery['unresolved'])}, "
+            f"already_published={len(image_recovery['already_published'])}",
+            log_file=target_log,
+        )
 
         # Time evaluation
         tz = get_budapest_timezone()
@@ -527,6 +547,19 @@ class QueueReplenisher:
                 if not product.affiliate_url:
                     product.affiliate_url = cand.affiliate_url
 
+                # Persist the verified image with the same-ASIN product cache before
+                # package generation so later queue maintenance can recover safely.
+                if not is_valid_image_url(product.image_url):
+                    candidates_rejected += 1
+                    rejection_counts["MISSING_OR_INVALID_IMAGE"] = rejection_counts.get("MISSING_OR_INVALID_IMAGE", 0) + 1
+                    history.record_candidate(cand, status="REJECTED", rejection_reason="MISSING_OR_INVALID_IMAGE")
+                    cls.log_event(f"Candidate rejected: ASIN={cand.asin} Reason=MISSING_OR_INVALID_IMAGE", log_file=target_log)
+                    continue
+                target_products_dir.mkdir(parents=True, exist_ok=True)
+                product_cache_path = target_products_dir / f"asin_{product.asin.upper()}.json"
+                with product_cache_path.open("w", encoding="utf-8") as handle:
+                    json.dump(product.to_dict(), handle, indent=2, ensure_ascii=False)
+
                 # 3. Canonical Fact Extraction
                 facts = FactExtractor.extract_canonical_facts(product)
                 if not facts.is_sufficient():
@@ -551,7 +584,7 @@ class QueueReplenisher:
                 pkg = ContentPackage.build_package(
                     product=product,
                     social_data=social_data,
-                    cache_file_path=f"data/products/{cache_key}.json",
+                    cache_file_path=str(target_products_dir / f"{cache_key}.json"),
                     model_name=model_name
                 )
 
