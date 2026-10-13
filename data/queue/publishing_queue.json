@@ -7,35 +7,40 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 20,
-  "total_ready": 14,
+  "total_ready": 9,
   "total_failed": 3,
-  "scheduled_posts": 14,
-  "unfilled_slots": 46,
+  "scheduled_posts": 9,
+  "unfilled_slots": 51,
   "slot_claims": {
     "2026-10-07-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-13T19:10:53.559231+02:00"
     },
     "2026-10-12-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-13T19:10:53.559231+02:00"
     },
     "2026-10-12-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-13T19:10:53.559231+02:00"
     },
     "2026-10-13-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-13T19:10:53.559231+02:00"
     },
     "2026-10-13-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-13T19:10:53.559231+02:00"
     }
   },
   "items": [
@@ -49,12 +54,57 @@
       "scheduled_at": "2026-10-07T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GNGTN7TV_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-06T09:36:21.758206+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-13T19:10:53.560789+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551998924347",
+          "pin_url": "https://www.pinterest.com/pin/1033646551998924347/",
+          "title": "Electactic 15 Bar Espresso Machine with Grinder and Steam Bar",
+          "link": "https://link.amazon/B0bXBNrkK",
+          "image_url": "https://m.media-amazon.com/images/I/716AFeA66pL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551998924347 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983241547139258",
+          "post_id": "17987049575882000",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DecUGlVmwfK",
+          "image_url": "https://m.media-amazon.com/images/I/716AFeA66pL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 17987049575882000 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_002_B0GKGBWRTR",
@@ -225,12 +275,57 @@
       "scheduled_at": "2026-10-12T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B08GH41N87_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-10T17:56:45.924523+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-13T19:10:53.560789+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551998924355",
+          "pin_url": "https://www.pinterest.com/pin/1033646551998924355/",
+          "title": "THE BEER VALLEY Chindi Woven Rug 2x3 Feet - Yellow",
+          "link": "https://link.amazon/B02bkZwVE",
+          "image_url": "https://m.media-amazon.com/images/I/912NPqKUTZL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551998924355 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983241580139258",
+          "post_id": "18271001371306492",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DecUH9yG8Jo",
+          "image_url": "https://m.media-amazon.com/images/I/912NPqKUTZL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 18271001371306492 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_007_B09SH38JRR",
@@ -242,12 +337,57 @@
       "scheduled_at": "2026-10-12T19:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09SH38JRR_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-10T17:56:45.927679+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-13T19:10:53.560789+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551998924358",
+          "pin_url": "https://www.pinterest.com/pin/1033646551998924358/",
+          "title": "WLIVE Rustic Brown 4 Drawer Nightstand with Multifunction Cabinet",
+          "link": "https://link.amazon/B0aLCB05n",
+          "image_url": "https://m.media-amazon.com/images/I/81wEshft9lL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551998924358 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983241613139258",
+          "post_id": "18131001442744997",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DecUJU4m4jW",
+          "image_url": "https://m.media-amazon.com/images/I/81wEshft9lL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 18131001442744997 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_008_B09ZV2TX28",
@@ -259,12 +399,57 @@
       "scheduled_at": "2026-10-13T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09ZV2TX28_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-10T17:56:45.929299+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-13T19:10:53.560789+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551998924372",
+          "pin_url": "https://www.pinterest.com/pin/1033646551998924372/",
+          "title": "Lifewit 6-Pack 60L Foldable Under-Bed Storage Bags",
+          "link": "https://link.amazon/B0arzMCtg",
+          "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551998924372 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983241649139258",
+          "post_id": "18122285866905947",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DecUKlGmziE",
+          "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 18122285866905947 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_009_B0BJKRYCZF",
@@ -276,12 +461,57 @@
       "scheduled_at": "2026-10-13T19:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0BJKRYCZF_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-10T17:56:45.930477+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-13T19:10:53.560789+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551998924409",
+          "pin_url": "https://www.pinterest.com/pin/1033646551998924409/",
+          "title": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture - Modern Home Decoration",
+          "link": "https://link.amazon/B00j5slzz",
+          "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551998924409 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983241694139258",
+          "post_id": "18153107746536754",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DecUL36mzzo",
+          "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 18153107746536754 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_010_B0C235GNV9",

@@ -5747,3 +5747,20 @@
 [2026-10-12 21:25:18 CEST] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-10-12 21:25:18 CEST] [INFO] Execution Summary: Processed=3, Published=0, Partially=0, Failed=3
 [2026-10-12 21:25:18 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-10-13 19:10:53 CEST] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-10-13 19:10:53 CEST] [INFO] Current Europe/Budapest Time: 2026-10-13T19:10:53.560789+02:00 | Mode: LIVE
+[2026-10-13 19:10:53 CEST] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 20
+[2026-10-13 19:10:53 CEST] [INFO] Due Eligible Items Found: 5
+[2026-10-13 19:10:53 CEST] [INFO] Processing Item 'item_001_B0GNGTN7TV' | ASIN: B0GNGTN7TV | Slot 1 (2026-10-07T12:00:00+02:00)
+[2026-10-13 19:11:04 CEST] [INFO] Item 'item_001_B0GNGTN7TV' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-13 19:11:04 CEST] [INFO] Processing Item 'item_006_B08GH41N87' | ASIN: B08GH41N87 | Slot 1 (2026-10-12T12:00:00+02:00)
+[2026-10-13 19:11:16 CEST] [INFO] Item 'item_006_B08GH41N87' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-13 19:11:16 CEST] [INFO] Processing Item 'item_007_B09SH38JRR' | ASIN: B09SH38JRR | Slot 2 (2026-10-12T19:00:00+02:00)
+[2026-10-13 19:11:26 CEST] [INFO] Item 'item_007_B09SH38JRR' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-13 19:11:26 CEST] [INFO] Processing Item 'item_008_B09ZV2TX28' | ASIN: B09ZV2TX28 | Slot 1 (2026-10-13T12:00:00+02:00)
+[2026-10-13 19:11:37 CEST] [INFO] Item 'item_008_B09ZV2TX28' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-13 19:11:37 CEST] [INFO] Processing Item 'item_009_B0BJKRYCZF' | ASIN: B0BJKRYCZF | Slot 2 (2026-10-13T19:00:00+02:00)
+[2026-10-13 19:11:47 CEST] [INFO] Item 'item_009_B0BJKRYCZF' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-13 19:11:47 CEST] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-10-13 19:11:47 CEST] [INFO] Execution Summary: Processed=5, Published=0, Partially=5, Failed=0
+[2026-10-13 19:11:47 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
