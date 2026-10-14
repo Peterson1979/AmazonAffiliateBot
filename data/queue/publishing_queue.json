@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 20,
-  "total_ready": 8,
+  "total_ready": 7,
   "total_failed": 3,
-  "scheduled_posts": 8,
-  "unfilled_slots": 52,
+  "scheduled_posts": 7,
+  "unfilled_slots": 53,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -49,9 +49,10 @@
       "completed_at": "2026-10-14T16:44:16.445987+02:00"
     },
     "2026-10-14-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-14T22:21:48.943418+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-14T22:21:51.215699+02:00"
     }
   },
   "items": [
@@ -612,12 +613,73 @@
       "scheduled_at": "2026-10-14T19:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0C51CZJ83_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-10T17:56:45.933524+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-14T22:21:51.216904+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551998956954",
+          "pin_url": "https://www.pinterest.com/pin/1033646551998956954/",
+          "title": "Twin Size Sheet Set",
+          "link": "https://link.amazon/B079VepZB",
+          "image_url": "https://m.media-amazon.com/images/I/81ym31kVh2L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551998956954 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018160539",
+          "pin_url": "https://www.pinterest.com/pin/495607134018160539/",
+          "title": "Twin Size Sheet Set",
+          "link": "https://link.amazon/B079VepZB",
+          "image_url": "https://m.media-amazon.com/images/I/81ym31kVh2L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 495607134018160539 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983419753139258",
+          "post_id": "18347785033264127",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DefOwXXCTpR",
+          "image_url": "https://m.media-amazon.com/images/I/81ym31kVh2L._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 18347785033264127 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_012_B0C65T7727",

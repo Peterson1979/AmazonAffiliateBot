@@ -5773,3 +5773,12 @@
 [2026-10-14 16:44:30 CEST] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-10-14 16:44:30 CEST] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
 [2026-10-14 16:44:30 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-10-14 22:21:51 CEST] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-10-14 22:21:51 CEST] [INFO] Current Europe/Budapest Time: 2026-10-14T22:21:51.216904+02:00 | Mode: LIVE
+[2026-10-14 22:21:51 CEST] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 20
+[2026-10-14 22:21:51 CEST] [INFO] Due Eligible Items Found: 1
+[2026-10-14 22:21:51 CEST] [INFO] Processing Item 'item_011_B0C51CZJ83' | ASIN: B0C51CZJ83 | Slot 2 (2026-10-14T19:00:00+02:00)
+[2026-10-14 22:22:10 CEST] [INFO] Item 'item_011_B0C51CZJ83' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, pinterest_lifemodehq=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-14 22:22:10 CEST] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-10-14 22:22:10 CEST] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
+[2026-10-14 22:22:10 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
