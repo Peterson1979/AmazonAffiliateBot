@@ -993,7 +993,11 @@ class QueuePublisher:
 
             # 3. Publish via SocialPublisher
             try:
-                pub_report = publisher.publish_package(package_data, dry_run=is_dry_run)
+                pub_report = publisher.publish_package(
+                    package_data,
+                    dry_run=is_dry_run,
+                    prior_results=item.publishing_results,
+                )
                 platform_results = pub_report.get("results", {})
 
                 # Check active platform results

@@ -118,13 +118,14 @@ def finalize_slot_claims(queue: PublishingQueue, slot_keys: Set[str], report: Di
 
 def validate_required_live_secrets() -> Tuple[bool, List[str]]:
     """
-    Check presence of required environment secrets for live publishing (Facebook, Threads, Pinterest).
+    Check presence of required environment secrets for live publishing.
     """
     fb_token = os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN") or os.environ.get("META_ACCESS_TOKEN")
     fb_page = os.environ.get("FACEBOOK_PAGE_ID")
     th_token = os.environ.get("THREADS_ACCESS_TOKEN")
     th_user = os.environ.get("THREADS_USER_ID")
     pin_token = os.environ.get("PINTEREST_ACCESS_TOKEN")
+    life_pin_token = os.environ.get("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN")
 
     missing = []
     if not fb_token:
@@ -137,6 +138,8 @@ def validate_required_live_secrets() -> Tuple[bool, List[str]]:
         missing.append("THREADS_USER_ID")
     if not pin_token:
         missing.append("PINTEREST_ACCESS_TOKEN")
+    if not life_pin_token:
+        missing.append("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN")
 
     return len(missing) == 0, missing
 

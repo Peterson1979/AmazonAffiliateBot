@@ -42,11 +42,16 @@ class SocialPublisher:
             "pinterest": PinterestAdapter(credentials=self.config.credentials.get("pinterest")),
             "threads": ThreadsAdapter(credentials=self.config.credentials.get("threads")),
         }
+        self.pinterest_adapters: Dict[str, PinterestAdapter] = {}
+        for account_key, account_cfg in self.config.pinterest_accounts.items():
+            credentials = self.config.credentials.get("pinterest_accounts", {}).get(account_key, {})
+            self.pinterest_adapters[account_key] = PinterestAdapter(credentials=credentials)
 
     def publish_package(
         self,
         package: Dict[str, Any],
-        dry_run: Optional[bool] = None
+        dry_run: Optional[bool] = None,
+        prior_results: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Publish a validated Content Package across all configured platforms.
@@ -72,6 +77,7 @@ class SocialPublisher:
             )
 
         platforms_dict = package.get("platforms", {})
+        prior_results = prior_results or {}
         results: Dict[str, Any] = {}
         all_succeeded = True
 
@@ -85,9 +91,14 @@ class SocialPublisher:
                 pinterest_content["image_url"] = recovered
         if not is_valid_image_url(pinterest_content.get("image_url")):
             reason = "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-            for platform_name in SUPPORTED_PLATFORMS:
-                account_cfg = self.config.accounts.get(platform_name, {})
-                results[platform_name] = {
+            preflight_targets = [
+                ("facebook", "facebook", self.config.accounts.get("facebook", {})),
+                ("pinterest", "pinterest", self.config.pinterest_accounts.get("dailyideasforyou", self.config.accounts.get("pinterest", {}))),
+                ("pinterest_lifemodehq", "pinterest", self.config.pinterest_accounts.get("lifemodehq", {})),
+                ("threads", "threads", self.config.accounts.get("threads", {})),
+            ]
+            for result_key, platform_name, account_cfg in preflight_targets:
+                results[result_key] = {
                     "platform": platform_name,
                     "account": account_cfg.get("account", ""),
                     "action": "PUBLISH",
@@ -103,13 +114,25 @@ class SocialPublisher:
                 "results": results,
             }
 
-        for platform_name in SUPPORTED_PLATFORMS:
-            adapter = self.adapters.get(platform_name)
+        targets = [
+            ("facebook", "facebook", self.adapters.get("facebook"), self.config.accounts.get("facebook", {})),
+            ("pinterest", "pinterest", self.pinterest_adapters.get("dailyideasforyou", self.adapters.get("pinterest")), self.config.pinterest_accounts.get("dailyideasforyou", self.config.accounts.get("pinterest", {}))),
+            ("pinterest_lifemodehq", "pinterest", self.pinterest_adapters.get("lifemodehq"), self.config.pinterest_accounts.get("lifemodehq", {})),
+            ("threads", "threads", self.adapters.get("threads"), self.config.accounts.get("threads", {})),
+        ]
+
+        for result_key, platform_name, adapter, account_cfg in targets:
             p_content = platforms_dict.get(platform_name)
-            account_cfg = self.config.accounts.get(platform_name, {})
+
+            previous = prior_results.get(result_key) or {}
+            if previous.get("status") == STATUS_PUBLISHED:
+                duplicate_safe_result = dict(previous)
+                duplicate_safe_result["action"] = "SKIP_DUPLICATE"
+                results[result_key] = duplicate_safe_result
+                continue
 
             if not adapter or not p_content:
-                results[platform_name] = {
+                results[result_key] = {
                     "platform": platform_name,
                     "account": account_cfg.get("account", ""),
                     "action": "PUBLISH",
@@ -122,7 +145,7 @@ class SocialPublisher:
 
             # Verify that individual platform is marked VALID in package
             if p_content.get("status") != "VALID":
-                results[platform_name] = {
+                results[result_key] = {
                     "platform": platform_name,
                     "account": account_cfg.get("account", ""),
                     "action": "PUBLISH",
@@ -142,7 +165,7 @@ class SocialPublisher:
             if platform_name == "pinterest":
                 from publishing.images import is_valid_image_url
                 if not is_valid_image_url(p_content.get("image_url")):
-                    results[platform_name] = {
+                    results[result_key] = {
                         "platform": platform_name,
                         "account": account_cfg.get("account", ""),
                         "action": "PUBLISH",
@@ -161,7 +184,7 @@ class SocialPublisher:
                 account_config=account_cfg_to_use,
                 dry_run=is_dry_run
             )
-            results[platform_name] = pub_res
+            results[result_key] = pub_res
 
             if pub_res.get("status") not in (STATUS_WOULD_PUBLISH, STATUS_PUBLISHED):
                 all_succeeded = False
@@ -179,3 +202,30 @@ class SocialPublisher:
             "status": overall_status,
             "results": results
         }
+
+    def publish_pinterest_account(
+        self,
+        package: Dict[str, Any],
+        account_key: str,
+        dry_run: Optional[bool] = None,
+        prior_result: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Publish only one configured Pinterest account, with retry-safe result tracking."""
+        account_cfg = self.config.pinterest_accounts.get(account_key)
+        adapter = self.pinterest_adapters.get(account_key)
+        if not account_cfg or not adapter:
+            return {"status": STATUS_FAILED, "errors": [f"Unknown Pinterest account '{account_key}'."]}
+        if (prior_result or {}).get("status") == STATUS_PUBLISHED:
+            result = dict(prior_result)
+            result["action"] = "SKIP_DUPLICATE"
+            return result
+        if package.get("status") != "READY_FOR_REVIEW":
+            return {"status": STATUS_FAILED, "errors": ["Content package is not READY_FOR_REVIEW."]}
+        pin_content = package.get("platforms", {}).get("pinterest") or {}
+        from publishing.images import is_valid_image_url, recover_verified_image_url
+        image_url = pin_content.get("image_url") or recover_verified_image_url(package)
+        if not is_valid_image_url(image_url):
+            return {"status": STATUS_FAILED, "errors": ["Pinterest requires a verified HTTPS image URL."]}
+        pin_content = dict(pin_content)
+        pin_content["image_url"] = image_url
+        return adapter.publish(pin_content, account_cfg, dry_run=self.config.dry_run if dry_run is None else dry_run)

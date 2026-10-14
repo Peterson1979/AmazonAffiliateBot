@@ -75,7 +75,7 @@ class TestPublisher(unittest.TestCase):
 
         self.assertEqual(report["mode"], "DRY_RUN")
         self.assertEqual(report["status"], STATUS_WOULD_PUBLISH)
-        self.assertEqual(len(report["results"]), 3)
+        self.assertEqual(len(report["results"]), 4)
 
         for p_name in SUPPORTED_PLATFORMS:
             res = report["results"][p_name]
@@ -86,6 +86,8 @@ class TestPublisher(unittest.TestCase):
         # Check Pinterest board
         self.assertEqual(report["results"]["pinterest"]["board"], "Shopping ideas")
         self.assertEqual(report["results"]["pinterest"]["account"], "dailyideasforyou")
+        self.assertEqual(report["results"]["pinterest_lifemodehq"]["account"], "LifeModeHQ")
+        self.assertEqual(report["results"]["pinterest_lifemodehq"]["board"], "Home & Everyday Living")
 
     def test_publisher_rejects_non_ready_package(self):
         """Verify publisher refuses to publish if package status is not READY_FOR_REVIEW."""

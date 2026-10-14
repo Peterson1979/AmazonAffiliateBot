@@ -108,6 +108,7 @@ class TestCloudPublishingMigration(unittest.TestCase):
             self.assertIn("THREADS_ACCESS_TOKEN", missing)
             self.assertIn("THREADS_USER_ID", missing)
             self.assertIn("PINTEREST_ACCESS_TOKEN", missing)
+            self.assertIn("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN", missing)
 
     def test_validate_required_live_secrets_present_without_x(self):
         """Verify validation succeeds when FB, Threads, and Pinterest are present (X optional)."""
@@ -117,6 +118,7 @@ class TestCloudPublishingMigration(unittest.TestCase):
             "THREADS_ACCESS_TOKEN": "mock_threads_token",
             "THREADS_USER_ID": "mock_threads_user",
             "PINTEREST_ACCESS_TOKEN": "mock_pin_token",
+            "PINTEREST_LIFEMODEHQ_ACCESS_TOKEN": "mock_life_pin_token",
         }
         with patch.dict(os.environ, mock_env, clear=True):
             ok, missing = validate_required_live_secrets()
@@ -292,10 +294,13 @@ class TestCloudPublishingMigration(unittest.TestCase):
         self.assertIn("THREADS_ACCESS_TOKEN", content)
         self.assertIn("THREADS_USER_ID", content)
         self.assertIn("PINTEREST_ACCESS_TOKEN", content)
+        self.assertIn("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN", content)
 
         # Verify git commit occurs before git pull --rebase in persistence step
-        commit_idx = content.find('git commit -m "Automated publishing update [skip ci]"')
-        rebase_idx = content.find("git pull --rebase origin")
+        persistence_idx = content.find("Persist Queue and Logs")
+        self.assertNotEqual(persistence_idx, -1)
+        commit_idx = content.find('git commit -m "Automated publishing update [skip ci]"', persistence_idx)
+        rebase_idx = content.find("git pull --rebase origin", persistence_idx)
         self.assertTrue(commit_idx != -1 and rebase_idx != -1)
         self.assertLess(commit_idx, rebase_idx, "git commit must occur before git pull --rebase to prevent index failure")
 

@@ -91,6 +91,7 @@ jobs:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          PINTEREST_LIFEMODEHQ_ACCESS_TOKEN: ${{ secrets.PINTEREST_LIFEMODEHQ_ACCESS_TOKEN }}
           REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' }}
         run: |
           python scripts/run_cloud_publisher.py ${{ github.event_name == 'schedule' && '--execute-claimed' || '' }}

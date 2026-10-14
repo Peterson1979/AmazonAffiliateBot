@@ -29,6 +29,18 @@ DEFAULT_TARGET_ACCOUNTS = {
     }
 }
 
+DEFAULT_PINTEREST_ACCOUNTS = {
+    "dailyideasforyou": {
+        "account": "dailyideasforyou",
+        "board": "Shopping ideas",
+        "board_id": "1033646620665866548",
+    },
+    "lifemodehq": {
+        "account": "LifeModeHQ",
+        "board": "Home & Everyday Living",
+    },
+}
+
 
 @dataclass
 class PublishingConfig:
@@ -36,6 +48,9 @@ class PublishingConfig:
     dry_run: bool = True
     accounts: Dict[str, Dict[str, Any]] = field(default_factory=lambda: dict(DEFAULT_TARGET_ACCOUNTS))
     credentials: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    pinterest_accounts: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {key: dict(value) for key, value in DEFAULT_PINTEREST_ACCOUNTS.items()}
+    )
 
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any], dry_run_override: Optional[bool] = None) -> "PublishingConfig":
@@ -59,6 +74,15 @@ class PublishingConfig:
             if platform in accounts and isinstance(acc_cfg, dict):
                 accounts[platform].update(acc_cfg)
 
+        pinterest_accounts = {
+            key: dict(value) for key, value in DEFAULT_PINTEREST_ACCOUNTS.items()
+        }
+        configured_pinterest_accounts = pub_section.get("pinterest_accounts", {})
+        if isinstance(configured_pinterest_accounts, dict):
+            for account_key, account_cfg in configured_pinterest_accounts.items():
+                if isinstance(account_cfg, dict):
+                    pinterest_accounts.setdefault(account_key, {}).update(account_cfg)
+
         # Load credentials securely from environment variables only
         credentials = {
             "facebook": {
@@ -74,4 +98,16 @@ class PublishingConfig:
             }
         }
 
-        return cls(dry_run=dry_run, accounts=accounts, credentials=credentials)
+        credentials["pinterest_accounts"] = {
+            "dailyideasforyou": {"access_token": credentials["pinterest"]["access_token"]},
+            "lifemodehq": {
+                "access_token": os.environ.get("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN", "")
+            },
+        }
+
+        return cls(
+            dry_run=dry_run,
+            accounts=accounts,
+            credentials=credentials,
+            pinterest_accounts=pinterest_accounts,
+        )

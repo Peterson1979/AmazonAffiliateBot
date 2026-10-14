@@ -29,6 +29,18 @@
       "threads": {
         "account": "lifemodehq"
       }
+    },
+    "pinterest_accounts": {
+      "dailyideasforyou": {
+        "account": "dailyideasforyou",
+        "board": "Shopping ideas",
+        "board_id": "1033646620665866548"
+      },
+      "lifemodehq": {
+        "account": "LifeModeHQ",
+        "board": "Home & Everyday Living",
+        "board_id": "495607202683261042"
+      }
     }
   },
   "discovery": {
