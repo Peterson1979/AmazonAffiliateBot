@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 20,
-  "total_ready": 5,
+  "total_ready": 4,
   "total_failed": 3,
-  "scheduled_posts": 5,
-  "unfilled_slots": 55,
+  "scheduled_posts": 4,
+  "unfilled_slots": 56,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -67,9 +67,10 @@
       "completed_at": "2026-10-15T22:05:25.217061+02:00"
     },
     "2026-10-16-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-16T16:22:08.030910+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-16T16:22:09.949586+02:00"
     }
   },
   "items": [
@@ -864,12 +865,73 @@
       "scheduled_at": "2026-10-16T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0D6G5S35J_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-10T17:56:45.937569+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-16T16:22:09.950600+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999007361",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999007361/",
+          "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
+          "link": "https://link.amazon/B09PbfKuR",
+          "image_url": "https://m.media-amazon.com/images/I/71L3IRMyLbL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551999007361 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018173460",
+          "pin_url": "https://www.pinterest.com/pin/495607134018173460/",
+          "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
+          "link": "https://link.amazon/B09PbfKuR",
+          "image_url": "https://m.media-amazon.com/images/I/71L3IRMyLbL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 495607134018173460 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983740846139258",
+          "post_id": "17871489417649167",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DejvLrYHEBz",
+          "image_url": "https://m.media-amazon.com/images/I/71L3IRMyLbL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 17871489417649167 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
     },
     {
       "queue_item_id": "item_015_B0D9TCFRJ5",
