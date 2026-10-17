@@ -1025,14 +1025,16 @@ class QueuePublisher:
                     item.status = STATUS_FAILED
                     failed_count += 1
 
-                if item.status == STATUS_FAILED:
-                    failure_messages = []
-                    for result in platform_results.values():
+                # Preserve actionable platform failures for both fully failed
+                # and partially published items. Successful platforms remain
+                # in publishing_results so retries can skip them safely.
+                failure_messages = []
+                for result in platform_results.values():
+                    if result.get("status") not in (STATUS_WOULD_PUBLISH, PLATFORM_STATUS_PUBLISHED):
                         failure_messages.extend(result.get("errors", []))
-                    if failure_messages:
-                        for message in failure_messages:
-                            if message not in item.errors:
-                                item.errors.append(message)
+                for message in failure_messages:
+                    if message not in item.errors:
+                        item.errors.append(message)
 
                 item.published_at = current_dt.isoformat()
                 item.publishing_results = platform_results

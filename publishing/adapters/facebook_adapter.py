@@ -5,8 +5,37 @@ Publishes posts to Facebook Page feed via Meta Graph API v19.0.
 """
 
 from typing import Dict, Any, List, Tuple
+import logging
 import requests
 from .base import BasePlatformAdapter, STATUS_PUBLISHED, STATUS_FAILED
+
+LOGGER = logging.getLogger(__name__)
+
+
+def _safe_graph_error_message(value: Any, access_token: str = "") -> str:
+    """Return a bounded, single-line Graph error message with secrets redacted."""
+    message = " ".join(str(value or "").split())
+    if access_token:
+        message = message.replace(access_token, "[REDACTED]")
+    return message[:500]
+
+
+def _log_graph_failure(http_status: int, error: Any, access_token: str = "") -> None:
+    """Log safe Facebook diagnostics without tokens or request headers."""
+    if isinstance(error, dict):
+        code = error.get("code")
+        subcode = error.get("error_subcode", error.get("subcode"))
+        message = error.get("message", "")
+    else:
+        code = subcode = None
+        message = error
+    LOGGER.error(
+        "Facebook Graph API failure: http_status=%s code=%s subcode=%s message=%s",
+        http_status,
+        code,
+        subcode,
+        _safe_graph_error_message(message, access_token),
+    )
 
 
 class FacebookAdapter(BasePlatformAdapter):
@@ -65,6 +94,7 @@ class FacebookAdapter(BasePlatformAdapter):
             payload = {
                 "url": image_url,
                 "caption": text,
+                "published": True,
                 "access_token": access_token
             }
         else:
@@ -76,12 +106,30 @@ class FacebookAdapter(BasePlatformAdapter):
 
         try:
             resp = requests.post(url, data=payload, timeout=30)
-            if resp.status_code == 200:
+            if 200 <= resp.status_code < 300:
                 resp_data = resp.json()
-                photo_id = resp_data.get("id", "")
-                post_id = resp_data.get("post_id") or photo_id
+                if not isinstance(resp_data, dict):
+                    raise ValueError("Facebook API returned a non-object JSON response.")
+                if resp_data.get("error"):
+                    graph_error = resp_data["error"]
+                    _log_graph_failure(resp.status_code, graph_error, access_token)
+                    error_detail = graph_error.get("message") if isinstance(graph_error, dict) else str(graph_error)
+                    return {
+                        "platform": self.platform_name,
+                        "account": account_name,
+                        "page_id": page_id,
+                        "action": "PUBLISH",
+                        "mode": "LIVE",
+                        "status": STATUS_FAILED,
+                        "http_status": resp.status_code,
+                        "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {error_detail}"],
+                        "message": "Facebook Graph API returned an error response."
+                    }
 
-                if photo_id or post_id:
+                photo_id = resp_data.get("id") if image_url else ""
+                post_id = resp_data.get("post_id") or (resp_data.get("id") if not image_url else "")
+
+                if isinstance(photo_id, str) and isinstance(post_id, str) and (photo_id or post_id):
                     # Authenticated verification read from Graph API when photo is published
                     photo_link = None
                     verified_image = False
@@ -123,16 +171,19 @@ class FacebookAdapter(BasePlatformAdapter):
                         "mode": "LIVE",
                         "status": STATUS_FAILED,
                         "http_status": resp.status_code,
-                        "errors": ["Facebook API returned HTTP 200 but response missing post ID."],
+                        "errors": [f"Facebook API returned HTTP {resp.status_code} but response missing post ID."],
                         "message": "Facebook post confirmation failed: missing post ID in response."
                     }
             else:
                 error_detail = resp.text
+                graph_error = None
                 try:
-                    err_json = resp.json().get("error", {})
-                    error_detail = err_json.get("message") or resp.text
+                    response_json = resp.json()
+                    graph_error = response_json.get("error", {}) if isinstance(response_json, dict) else {}
+                    error_detail = graph_error.get("message") or resp.text
                 except Exception:
                     pass
+                _log_graph_failure(resp.status_code, graph_error or error_detail, access_token)
                 return {
                     "platform": self.platform_name,
                     "account": account_name,

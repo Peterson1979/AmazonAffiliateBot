@@ -268,6 +268,48 @@ class TestPublisher(unittest.TestCase):
         self.assertIn("missing post ID", res["errors"][0])
 
     @unittest.mock.patch("requests.post")
+    def test_facebook_adapter_rejects_success_http_with_api_error_body(self, mock_post):
+        """A 2xx response containing a Graph API error is not a publication."""
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "error": {"message": "Permissions error", "code": 200}
+        }
+        mock_post.return_value = mock_resp
+
+        adapter = FacebookAdapter(credentials={"access_token": "token", "page_id": "226949230493910"})
+        res = adapter._execute_live_publish({"content": "Test Facebook Post"}, {"account": "LifeModeHQ"})
+
+        self.assertEqual(res["status"], STATUS_FAILED)
+        self.assertIn("Permissions error", res["errors"][0])
+
+    @unittest.mock.patch("publishing.adapters.facebook_adapter.LOGGER")
+    @unittest.mock.patch("requests.post")
+    def test_facebook_error_diagnostics_are_redacted(self, mock_post, mock_logger):
+        """Facebook diagnostics include safe API fields but never the access token."""
+        token = "fb_secret_token"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 400
+        mock_resp.text = "ignored"
+        mock_resp.json.return_value = {
+            "error": {
+                "message": f"Invalid token {token}",
+                "code": 190,
+                "error_subcode": 467,
+            }
+        }
+        mock_post.return_value = mock_resp
+
+        adapter = FacebookAdapter(credentials={"access_token": token, "page_id": "226949230493910"})
+        result = adapter._execute_live_publish({"content": "Test Facebook Post"}, {"account": "LifeModeHQ"})
+
+        self.assertEqual(result["status"], STATUS_FAILED)
+        logged = " ".join(str(arg) for call in mock_logger.error.call_args_list for arg in call.args)
+        self.assertIn("190", logged)
+        self.assertIn("467", logged)
+        self.assertNotIn(token, logged)
+
+    @unittest.mock.patch("requests.post")
     def test_facebook_adapter_live_publish_network_exception(self, mock_post):
         """Verify Facebook adapter safely catches network timeouts and exceptions."""
         mock_post.side_effect = TimeoutError("Connection timed out after 30s")
@@ -430,6 +472,7 @@ class TestPublisher(unittest.TestCase):
         self.assertIn("https://graph.facebook.com/v19.0/226949230493910/photos", call_args[0])
         self.assertEqual(call_kwargs["data"]["url"], "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg")
         self.assertEqual(call_kwargs["data"]["caption"], content["content"])
+        self.assertTrue(call_kwargs["data"]["published"])
         self.assertEqual(call_kwargs["data"]["access_token"], "fb_token")
 
     @unittest.mock.patch("requests.post")

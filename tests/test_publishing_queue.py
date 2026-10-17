@@ -801,7 +801,7 @@ class TestQueuePublisher(unittest.TestCase):
                 self.mode = mode
                 self.config = PublishingConfig(dry_run=True)
 
-            def publish_package(self, package, dry_run=True):
+            def publish_package(self, package, dry_run=True, prior_results=None):
                 if self.mode == "all_fail":
                     return {
                         "mode": "DRY_RUN",
@@ -837,6 +837,8 @@ class TestQueuePublisher(unittest.TestCase):
 
         # Reset item status to READY for partial failure test
         reloaded_fail.items[0].status = STATUS_READY
+        reloaded_fail.items[0].errors = []
+        reloaded_fail.items[0].publishing_results = None
         reloaded_fail.save(self.queue_file)
 
         # Test Partial Failure
@@ -850,6 +852,7 @@ class TestQueuePublisher(unittest.TestCase):
         self.assertEqual(report_partial["published_count"], 0)
         reloaded_partial = PublishingQueue.load(self.queue_file)
         self.assertEqual(reloaded_partial.items[0].status, STATUS_PARTIALLY_PUBLISHED)
+        self.assertIn("Pinterest API down", reloaded_partial.items[0].errors)
 
     # ==================== 12. INSTAGRAM EXCLUSION ====================
 
