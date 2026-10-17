@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 20,
-  "total_ready": 2,
+  "total_ready": 1,
   "total_failed": 3,
-  "scheduled_posts": 2,
-  "unfilled_slots": 58,
+  "scheduled_posts": 1,
+  "unfilled_slots": 59,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -85,9 +85,10 @@
       "completed_at": "2026-10-17T15:17:21.731606+02:00"
     },
     "2026-10-17-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-17T20:54:04.972122+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-17T20:54:06.691693+02:00"
     }
   },
   "items": [
@@ -1118,12 +1119,78 @@
       "scheduled_at": "2026-10-17T19:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0DTHHK2S1_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-10T17:56:45.941662+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-17T20:54:06.693599+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999044762",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999044762/",
+          "title": "IUV Western Wooden Heel Cowgirl Boots",
+          "link": "https://link.amazon/B07zWpUB4",
+          "image_url": "https://m.media-amazon.com/images/I/81rnKuAcLJL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 1033646551999044762 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-17T20:54:06.693599+02:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018182184",
+          "pin_url": "https://www.pinterest.com/pin/495607134018182184/",
+          "title": "IUV Western Wooden Heel Cowgirl Boots",
+          "link": "https://link.amazon/B07zWpUB4",
+          "image_url": "https://m.media-amazon.com/images/I/81rnKuAcLJL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "message": "Successfully created pin 495607134018182184 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-17T20:54:06.693599+02:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17983953546139258",
+          "post_id": "18133367923663189",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DemzGQSHXZG",
+          "image_url": "https://m.media-amazon.com/images/I/81rnKuAcLJL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "message": "Successfully published image post 18133367923663189 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-17T20:54:06.693599+02:00"
+        }
+      }
     },
     {
       "queue_item_id": "item_018_B0H1W18KGL",
