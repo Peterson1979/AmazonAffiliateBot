@@ -1477,6 +1477,152 @@ def execute_publisher_run(now_override: Optional[str] = None) -> Dict[str, Any]:
         }
 
 
+def execute_live_publish_item(
+    queue_item_id: str,
+    confirmed: bool = False,
+    config: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Explicitly publish one validated queue item through the real adapters.
+
+    This operation is never called during app startup or by the local dry-run
+    action.  The confirmation guard is enforced in the service as well as in
+    the form so callers cannot accidentally turn a preview into a live post.
+    """
+    if not confirmed:
+        return {
+            "success": False,
+            "error": "Explicit live-publication confirmation is required.",
+            "requires_confirmation": True,
+        }
+
+    if not QUEUE_FILE.exists():
+        return {"success": False, "error": f"Publishing queue not found at {QUEUE_FILE}."}
+
+    try:
+        queue = PublishingQueue.load(QUEUE_FILE)
+    except Exception as exc:
+        return {"success": False, "error": f"Could not load publishing queue: {exc}"}
+
+    item = next((candidate for candidate in queue.items if candidate.queue_item_id == queue_item_id), None)
+    if item is None:
+        return {"success": False, "error": f"Queue item '{queue_item_id}' was not found."}
+
+    presentation = get_queue_item_presentation(queue, item)
+    if presentation["state"] == "PUBLISHED":
+        return {
+            "success": True,
+            "skipped": True,
+            "message": "All active platforms already have confirmed live publication evidence.",
+            "item_id": item.queue_item_id,
+            "status": presentation["state"],
+            "platforms": presentation["platforms"],
+        }
+
+    package_path = Path(item.package_reference) if item.package_reference else None
+    if package_path and not package_path.exists():
+        package_path = PROJECT_ROOT / item.package_reference
+    if not package_path or not package_path.exists():
+        return {
+            "success": False,
+            "error": f"Content package is unavailable for ASIN {item.asin}; fix the product/content preflight first.",
+            "error_type": "product_preflight",
+        }
+
+    try:
+        with package_path.open("r", encoding="utf-8") as handle:
+            package = json.load(handle)
+    except Exception as exc:
+        return {"success": False, "error": f"Could not read content package: {exc}", "error_type": "product_preflight"}
+
+    if package.get("status") != STATUS_READY_FOR_REVIEW:
+        return {
+            "success": False,
+            "error": f"Content package is '{package.get('status')}', not READY_FOR_REVIEW.",
+            "error_type": "product_preflight",
+        }
+
+    cfg = config or load_application_config()
+    publisher = SocialPublisher(
+        config=PublishingConfig.from_dict(cfg, dry_run_override=False)
+    )
+    try:
+        report = publisher.publish_package(
+            package,
+            dry_run=False,
+            prior_results=item.publishing_results,
+        )
+    except Exception as exc:
+        return {"success": False, "error": f"Live publisher failed before platform execution: {exc}", "error_type": "publisher"}
+
+    platform_results = report.get("results", {})
+
+    def confirmed_live(result: Dict[str, Any]) -> bool:
+        return (
+            result.get("status") == "PUBLISHED"
+            and result.get("mode") == "LIVE"
+            and bool(
+                result.get("post_id")
+                or result.get("pin_id")
+                or result.get("photo_id")
+                or result.get("permalink")
+                or result.get("permalink_url")
+                or result.get("pin_url")
+            )
+        )
+
+    # Preserve confirmed successes even if a retry report omits that target or
+    # returns a contradictory failure.  The existing publisher normally emits
+    # SKIP_DUPLICATE itself; this defensive merge keeps persistence idempotent.
+    for key, previous in (item.publishing_results or {}).items():
+        if confirmed_live(previous):
+            current = platform_results.get(key)
+            if not isinstance(current, dict) or not confirmed_live(current):
+                preserved = dict(previous)
+                preserved["action"] = "SKIP_DUPLICATE"
+                platform_results[key] = preserved
+
+    active_results = {
+        key: value for key, value in platform_results.items()
+        if key in ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
+        and isinstance(value, dict)
+    }
+    now_dt = datetime.now(get_budapest_timezone()).isoformat()
+    for result in active_results.values():
+        if confirmed_live(result):
+            result.setdefault("published_at", now_dt)
+
+    confirmed_count = sum(1 for result in active_results.values() if confirmed_live(result))
+    failed_count = sum(1 for result in active_results.values() if result.get("status") == "FAILED")
+    if active_results and confirmed_count == len(active_results):
+        item.status = STATUS_PUBLISHED
+    elif confirmed_count > 0:
+        item.status = STATUS_PARTIALLY_PUBLISHED
+    else:
+        item.status = STATUS_FAILED
+
+    errors = []
+    for result in active_results.values():
+        if not confirmed_live(result):
+            errors.extend(result.get("errors") or [])
+    item.errors = list(dict.fromkeys(errors))
+    if confirmed_count:
+        item.published_at = now_dt
+    item.publishing_results = platform_results
+    queue.recalculate_counts()
+    queue.save(QUEUE_FILE)
+
+    return {
+        "success": True,
+        "item_id": item.queue_item_id,
+        "asin": item.asin,
+        "mode": "LIVE",
+        "status": item.status,
+        "confirmed_platforms": confirmed_count,
+        "failed_platforms": failed_count,
+        "platforms": get_queue_item_presentation(queue, item)["platforms"],
+    }
+
+
 def get_log_content(log_type: str = "publisher", max_lines: int = 150) -> List[str]:
     """Fetch sanitized log file lines."""
     log_file = DEFAULT_MAINTENANCE_LOG_FILE if log_type == "maintenance" else DEFAULT_LOG_FILE

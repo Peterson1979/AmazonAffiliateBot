@@ -34,6 +34,7 @@ from web.services import (
     regenerate_content,
     execute_discovery_run,
     execute_publisher_run,
+    execute_live_publish_item,
     get_log_content,
     check_windows_tasks_status,
     get_platform_statuses,
@@ -43,7 +44,7 @@ from web.services import (
     DEFAULT_TARGET_FUTURE_CAPACITY,
     DEFAULT_MIN_FUTURE_CAPACITY
 )
-from publishing.queue import PublishingQueue, DEFAULT_QUEUE_FILE
+from publishing.queue import PublishingQueue, DEFAULT_QUEUE_FILE, STATUS_PUBLISHED
 
 
 def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
@@ -65,7 +66,7 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
         workflow_configured = (PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml").exists()
         return {
             "dry_run": dry_run,
-            "execution_mode": "SIMULATED (local dry-run)" if dry_run else "LIVE (local publisher)",
+            "execution_mode": "DEFAULT DRY-RUN · explicit LIVE action available" if dry_run else "LIVE publisher configured",
             "cloud_scheduling_configured": workflow_configured,
             "timezone": "Europe/Budapest",
             "app_name": "AmazonAffiliateBot Control Center"
@@ -320,6 +321,25 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
             flash(f"Publisher executed (DRY RUN): Processed {due_count} due items ({pub_count} simulated).", "success")
         else:
             flash(f"Publisher failed: {res.get('error')}", "error")
+        return redirect(url_for("queue"))
+
+    @app.route("/queue/<queue_item_id>/publish", methods=["POST"])
+    def publish_queue_item(queue_item_id: str):
+        """Explicitly confirm and execute one live publication."""
+        confirmed = request.form.get("confirm_live") == "yes"
+        result = execute_live_publish_item(queue_item_id, confirmed=confirmed)
+        if result.get("success"):
+            if result.get("skipped"):
+                flash(result.get("message", "Already published; no action taken."), "info")
+            else:
+                flash(
+                    f"Live publication finished for {result.get('asin')}: {result.get('status')}. "
+                    f"Confirmed platforms: {result.get('confirmed_platforms', 0)}; "
+                    f"failed platforms: {result.get('failed_platforms', 0)}.",
+                    "success" if result.get("status") == STATUS_PUBLISHED else "warning",
+                )
+        else:
+            flash(result.get("error", "Live publication was not executed."), "error")
         return redirect(url_for("queue"))
 
     # -------------------------------------------------------------
