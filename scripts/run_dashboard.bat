@@ -48,8 +48,6 @@ if !errorlevel! NEQ 0 (
     )
 )
 
-REM 4. Execute Management Dashboard
-echo [INFO] Starting AmazonAffiliateBot Management Dashboard on http://127.0.0.1:5000...
-!PYTHON_EXE! amazon_affiliate.py --dashboard %*
-
+REM 4. Start/reuse the dashboard, verify HTTP readiness, then open browser.
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_dashboard.ps1" -OpenBrowser %*
 exit /b !errorlevel!

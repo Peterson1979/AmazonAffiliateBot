@@ -1005,14 +1005,30 @@ class QueuePublisher:
                     res.get("status") for res in platform_results.values()
                 ]
 
+                def confirmed_live(result: Dict[str, Any]) -> bool:
+                    return (
+                        result.get("status") == PLATFORM_STATUS_PUBLISHED
+                        and result.get("mode") == "LIVE"
+                        and bool(
+                            result.get("post_id")
+                            or result.get("pin_id")
+                            or result.get("photo_id")
+                            or result.get("permalink")
+                            or result.get("permalink_url")
+                            or result.get("pin_url")
+                        )
+                    )
+
                 all_ok = all(
-                    s in (STATUS_WOULD_PUBLISH, PLATFORM_STATUS_PUBLISHED)
-                    for s in active_statuses
+                    (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
+                    or confirmed_live(result)
+                    for result in platform_results.values()
                 ) and len(active_statuses) > 0
 
                 any_ok = any(
-                    s in (STATUS_WOULD_PUBLISH, PLATFORM_STATUS_PUBLISHED)
-                    for s in active_statuses
+                    (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
+                    or confirmed_live(result)
+                    for result in platform_results.values()
                 )
 
                 if all_ok:
@@ -1036,7 +1052,15 @@ class QueuePublisher:
                     if message not in item.errors:
                         item.errors.append(message)
 
-                item.published_at = current_dt.isoformat()
+                # A dry-run is not a publication and must not create a fake
+                # publication timestamp.  Persist a timestamp only alongside
+                # evidence-backed live responses.
+                if not is_dry_run:
+                    for result in platform_results.values():
+                        if confirmed_live(result):
+                            result.setdefault("published_at", current_dt.isoformat())
+                    if any(confirmed_live(result) for result in platform_results.values()):
+                        item.published_at = current_dt.isoformat()
                 item.publishing_results = platform_results
 
                 plat_status_summary = ", ".join([f"{p}={r.get('status')}" for p, r in platform_results.items()])

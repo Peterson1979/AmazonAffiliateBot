@@ -62,8 +62,11 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
         """Inject safety notice and timezone into all templates."""
         cfg = load_application_config()
         dry_run = cfg.get("publishing", {}).get("dry_run", True)
+        workflow_configured = (PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml").exists()
         return {
             "dry_run": dry_run,
+            "execution_mode": "SIMULATED (local dry-run)" if dry_run else "LIVE (local publisher)",
+            "cloud_scheduling_configured": workflow_configured,
             "timezone": "Europe/Budapest",
             "app_name": "AmazonAffiliateBot Control Center"
         }
@@ -71,6 +74,11 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
     # -------------------------------------------------------------
     # 1. Dashboard Overview
     # -------------------------------------------------------------
+    @app.route("/healthz")
+    def healthz():
+        """Fast local readiness endpoint used by the desktop launcher."""
+        return jsonify({"status": "ok", "service": "amazon-affiliate-dashboard"})
+
     @app.route("/")
     def index():
         summary = get_dashboard_summary()

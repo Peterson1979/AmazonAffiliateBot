@@ -93,9 +93,39 @@ def _slot_claim_for_item(queue: PublishingQueue, item: QueueItem) -> Dict[str, A
 
 def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str, Any]:
     """Normalize one active platform result for truthful UI rendering."""
-    result = (item.publishing_results or {}).get(platform)
-    if not isinstance(result, dict):
+    raw_results = item.publishing_results or {}
+    if platform == "pinterest":
+        # Pinterest may have more than one configured account.  The dashboard
+        # exposes one platform column, but must not hide a failed account.
+        candidates = [
+            value for key, value in raw_results.items()
+            if key == "pinterest" or key.startswith("pinterest_")
+            if isinstance(value, dict)
+        ]
         result = None
+        if candidates:
+            result = dict(candidates[0])
+            result["account_results"] = candidates
+            statuses = {value.get("status") for value in candidates}
+            confirmed = [value for value in candidates if _is_confirmed_live_result(value)]
+            if len(confirmed) == len(candidates):
+                result["status"] = "PUBLISHED"
+            elif "FAILED" in statuses:
+                result["status"] = "FAILED"
+            else:
+                result["status"] = next(iter(statuses)) if statuses else None
+            errors = []
+            for value in candidates:
+                errors.extend(value.get("errors") or [])
+            if errors:
+                result["errors"] = errors
+            result["_all_accounts_confirmed"] = len(confirmed) == len(candidates)
+        else:
+            result = None
+    else:
+        result = raw_results.get(platform)
+        if not isinstance(result, dict):
+            result = None
 
     state = "UNKNOWN"
     if result:
@@ -103,7 +133,7 @@ def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str,
         mode = result.get("mode")
         if result_status == "WOULD_PUBLISH" or mode == "DRY_RUN":
             state = "SIMULATED"
-        elif result_status == "PUBLISHED" and mode == "LIVE":
+        elif result.get("_all_accounts_confirmed", _is_confirmed_live_result(result)):
             state = "PUBLISHED"
         elif result_status == "FAILED":
             state = "FAILED"
@@ -118,11 +148,30 @@ def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str,
         "label": platform.capitalize(),
         "state": state,
         "mode": result.get("mode"),
-        "timestamp": item.published_at if live_confirmed else None,
+        # Historical queue records may contain one batch-level item timestamp.
+        # Do not reuse it for every platform; only a platform-specific
+        # timestamp is safe to display as its publication time.
+        "timestamp": result.get("published_at") if live_confirmed else None,
         "post_id": result.get("post_id") or result.get("pin_id") or result.get("photo_id"),
         "post_url": result.get("permalink_url") or result.get("pin_url") or result.get("permalink"),
         "errors": result.get("errors") or ([result.get("message")] if state == "FAILED" and result.get("message") else []),
     }
+
+
+def _is_confirmed_live_result(result: Dict[str, Any]) -> bool:
+    """A live success requires both the live mode and platform evidence."""
+    if not isinstance(result, dict):
+        return False
+    if result.get("status") != "PUBLISHED" or result.get("mode") != "LIVE":
+        return False
+    return bool(
+        result.get("post_id")
+        or result.get("pin_id")
+        or result.get("photo_id")
+        or result.get("permalink")
+        or result.get("permalink_url")
+        or result.get("pin_url")
+    )
 
 
 def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict[str, Any]:
@@ -134,7 +183,8 @@ def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict
         for platform in ACTIVE_PUBLISHING_PLATFORMS
     }
     states = {result["state"] for result in platform_results.values()}
-    if item.status in (STATUS_READY, STATUS_QUEUED):
+    has_persisted_results = any(isinstance(value, dict) for value in (item.publishing_results or {}).values())
+    if item.status in (STATUS_READY, STATUS_QUEUED) and not has_persisted_results:
         state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
     elif "SIMULATED" in states and not ({"PUBLISHED", "FAILED"} & states):
         state = "SIMULATED"
@@ -154,7 +204,10 @@ def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict
     return {
         "state": state,
         "retryable": claim.get("state") == "RETRYABLE",
-        "published_at": item.published_at if state == "PUBLISHED" or state == "PARTIAL" else None,
+        "published_at": max(
+            (result.get("timestamp") for result in platform_results.values() if result.get("timestamp")),
+            default=None,
+        ) if state in ("PUBLISHED", "PARTIAL") else None,
         "platforms": platform_results,
         "errors": item.errors or [],
     }
