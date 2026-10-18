@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 20,
-  "total_ready": 1,
+  "total_ready": 0,
   "total_failed": 3,
-  "scheduled_posts": 1,
-  "unfilled_slots": 59,
+  "scheduled_posts": 0,
+  "unfilled_slots": 60,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -91,9 +91,10 @@
       "completed_at": "2026-10-17T20:54:06.691693+02:00"
     },
     "2026-10-18-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-18T15:38:13.189909+02:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-18T15:38:14.890572+02:00"
     }
   },
   "items": [
@@ -1207,12 +1208,185 @@
       "scheduled_at": "2026-10-18T12:00:00+02:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0H1W18KGL_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-10T17:56:45.944187+00:00",
-      "published_at": null,
-      "publishing_results": null
+      "published_at": "2026-10-18T15:38:14.892863+02:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "A6SEsWDr_e7SSrbDiHvSZaE"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999064746",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999064746/",
+          "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+          "link": "https://link.amazon/B0isaIph6",
+          "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "parent_pin_id": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 987,
+                  "url": "https://i.pinimg.com/564x/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                },
+                "1200x": {
+                  "width": 857,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                }
+              }
+            },
+            "board_id": "1033646620665866548",
+            "id": "1033646551999064746",
+            "is_product": false,
+            "is_owner": true,
+            "product_tags": [],
+            "alt_text": null,
+            "description": "Crafted from soft, flowy white tulle and featuring a detachable black witch hat, this glowing ghost can be styled as a classic plain ghost or a spooky witch ghost. Built-in warm white LED lights illuminate the sheer fabric from within, casting a soft eerie glow after dusk to create an unforgettable haunted house atmosphere. https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "has_been_promoted": false,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "link": "https://link.amazon/B0isaIph6",
+            "dominant_color": "#fefefe",
+            "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+            "is_standard": true,
+            "pin_metrics": null,
+            "is_removable": false,
+            "board_section_id": null,
+            "created_at": "2026-10-18T13:38:15",
+            "creative_type": "REGULAR"
+          },
+          "message": "Successfully created pin 1033646551999064746 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-18T15:38:14.892863+02:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018188127",
+          "pin_url": "https://www.pinterest.com/pin/495607134018188127/",
+          "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+          "link": "https://link.amazon/B0isaIph6",
+          "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "link": "https://link.amazon/B0isaIph6",
+            "description": "Crafted from soft, flowy white tulle and featuring a detachable black witch hat, this glowing ghost can be styled as a classic plain ghost or a spooky witch ghost. Built-in warm white LED lights illuminate the sheer fabric from within, casting a soft eerie glow after dusk to create an unforgettable haunted house atmosphere. https://link.amazon/B0isaIph6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "created_at": "2026-10-18T13:38:16",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 987,
+                  "url": "https://i.pinimg.com/564x/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                },
+                "1200x": {
+                  "width": 857,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/7b/64/73/7b6473b20ad255d371c2223211d5d2c6.jpg"
+                }
+              }
+            },
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "product_tags": [],
+            "pin_metrics": null,
+            "board_section_id": null,
+            "is_product": false,
+            "has_been_promoted": false,
+            "parent_pin_id": null,
+            "is_owner": true,
+            "title": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+            "is_standard": true,
+            "creative_type": "REGULAR",
+            "dominant_color": "#fefefe",
+            "id": "495607134018188127",
+            "alt_text": null,
+            "is_removable": false,
+            "board_id": "495607202683261042"
+          },
+          "message": "Successfully created pin 495607134018188127 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-18T15:38:14.892863+02:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17984084301139258",
+          "post_id": "18113724248104688",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DeozvlulB5C",
+          "image_url": "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18113724248104688"
+          },
+          "message": "Successfully published image post 18113724248104688 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-18T15:38:14.892863+02:00"
+        }
+      }
     },
     {
       "queue_item_id": "item_019_B095NXXP8C",
