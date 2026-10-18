@@ -123,14 +123,16 @@ class FacebookAdapter(BasePlatformAdapter):
                         "status": STATUS_FAILED,
                         "http_status": resp.status_code,
                         "api_response": resp_data,
-                        "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {error_detail}"],
+                        "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {_safe_graph_error_message(error_detail, access_token)}"],
                         "message": "Facebook Graph API returned an error response."
                     }
 
                 photo_id = resp_data.get("id") if image_url else ""
                 post_id = resp_data.get("post_id") or (resp_data.get("id") if not image_url else "")
 
-                if isinstance(photo_id, str) and isinstance(post_id, str) and (photo_id or post_id):
+                # A photo ID alone is not sufficient confirmation that the
+                # Page post exists. Persist success only with a returned post ID.
+                if isinstance(post_id, str) and post_id:
                     # Authenticated verification read from Graph API when photo is published
                     photo_link = None
                     verified_image = False
@@ -173,6 +175,8 @@ class FacebookAdapter(BasePlatformAdapter):
                         "mode": "LIVE",
                         "status": STATUS_FAILED,
                         "http_status": resp.status_code,
+                        "api_response": resp_data,
+                        "photo_id": photo_id if image_url else None,
                         "errors": [f"Facebook API returned HTTP {resp.status_code} but response missing post ID."],
                         "message": "Facebook post confirmation failed: missing post ID in response."
                     }
@@ -196,7 +200,7 @@ class FacebookAdapter(BasePlatformAdapter):
                     "status": STATUS_FAILED,
                     "http_status": resp.status_code,
                     "api_response": response_json if isinstance(response_json, dict) else None,
-                    "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {error_detail}"],
+                    "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {_safe_graph_error_message(error_detail, access_token)}"],
                     "message": f"Facebook Graph API rejected post with HTTP {resp.status_code}."
                 }
         except Exception as e:
@@ -207,7 +211,7 @@ class FacebookAdapter(BasePlatformAdapter):
                 "action": "PUBLISH",
                 "mode": "LIVE",
                 "status": STATUS_FAILED,
-                "errors": [f"Network exception calling Facebook Graph API: {str(e)}"],
-                "message": f"Facebook Graph API request failed: {str(e)}"
+                "errors": [f"Network exception calling Facebook Graph API: {_safe_graph_error_message(e, access_token)}"],
+                "message": f"Facebook Graph API request failed: {_safe_graph_error_message(e, access_token)}"
             }
 

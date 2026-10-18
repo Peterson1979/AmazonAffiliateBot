@@ -91,38 +91,7 @@ class SocialPublisher:
         results: Dict[str, Any] = {}
         all_succeeded = True
 
-        # Fail closed before routing anything: a missing Pinterest image must
-        # not result in a partial live publication on another platform.
         from publishing.images import is_valid_image_url, recover_verified_image_url
-        pinterest_content = platforms_dict.get("pinterest") or {}
-        if not pinterest_content.get("image_url"):
-            recovered = recover_verified_image_url(package)
-            if recovered:
-                pinterest_content["image_url"] = recovered
-        if not is_valid_image_url(pinterest_content.get("image_url")):
-            reason = "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-            preflight_targets = [
-                ("facebook", "facebook", self.config.accounts.get("facebook", {})),
-                ("pinterest", "pinterest", self.config.pinterest_accounts.get("dailyideasforyou", self.config.accounts.get("pinterest", {}))),
-                ("pinterest_lifemodehq", "pinterest", self.config.pinterest_accounts.get("lifemodehq", {})),
-                ("threads", "threads", self.config.accounts.get("threads", {})),
-            ]
-            for result_key, platform_name, account_cfg in preflight_targets:
-                results[result_key] = {
-                    "platform": platform_name,
-                    "account": account_cfg.get("account", ""),
-                    "action": "PUBLISH",
-                    "mode": mode,
-                    "status": STATUS_FAILED if platform_name == "pinterest" else STATUS_SKIPPED,
-                    "errors": [reason] if platform_name == "pinterest" else ["Skipped because item image preflight was blocked."],
-                }
-            return {
-                "asin": package.get("asin", ""),
-                "package_status": package_status,
-                "mode": mode,
-                "status": STATUS_FAILED,
-                "results": results,
-            }
 
         targets = [
             ("facebook", "facebook", self.adapters.get("facebook"), self.config.accounts.get("facebook", {})),
@@ -172,8 +141,7 @@ class SocialPublisher:
                 if img_candidate:
                     p_content["image_url"] = img_candidate
 
-            if platform_name == "pinterest":
-                from publishing.images import is_valid_image_url
+            if platform_name in ("pinterest", "threads"):
                 if not is_valid_image_url(p_content.get("image_url")):
                     results[result_key] = {
                         "platform": platform_name,
@@ -181,14 +149,18 @@ class SocialPublisher:
                         "action": "PUBLISH",
                         "mode": mode,
                         "status": STATUS_FAILED,
-                        "errors": ["Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."],
+                        "errors": [
+                            f"Blocked: {platform_name.capitalize()} requires a verified HTTPS image URL from the product package or same-ASIN cache."
+                        ],
                     }
                     all_succeeded = False
                     continue
 
             # Route to platform adapter
             account_cfg_to_use = dict(account_cfg)
-            account_cfg_to_use["require_image"] = True
+            # Facebook supports a text-only Page feed post when no verified
+            # image is available. Pinterest and Threads require an image.
+            account_cfg_to_use["require_image"] = platform_name in ("pinterest", "threads")
             pub_res = adapter.publish(
                 content=p_content,
                 account_config=account_cfg_to_use,

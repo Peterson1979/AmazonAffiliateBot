@@ -476,6 +476,42 @@ class TestPublisher(unittest.TestCase):
         self.assertEqual(call_kwargs["data"]["access_token"], "fb_token")
 
     @unittest.mock.patch("requests.post")
+    def test_facebook_photo_without_post_id_is_not_confirmed(self, mock_post):
+        """A photo response containing only a photo ID cannot be marked live."""
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"id": "photo_only"}
+        mock_post.return_value = mock_resp
+
+        adapter = FacebookAdapter(credentials={"access_token": "fb_token", "page_id": "226949230493910"})
+        result = adapter._execute_live_publish(
+            {"content": "Photo post", "image_url": "https://m.media-amazon.com/images/I/test.jpg"},
+            {"account": "LifeModeHQ"},
+        )
+
+        self.assertEqual(result["status"], STATUS_FAILED)
+        self.assertIn("missing post ID", result["errors"][0])
+
+    def test_missing_pinterest_image_does_not_skip_facebook(self):
+        """Facebook remains independently routable when Pinterest image preflight fails."""
+        package = {
+            "asin": "B0NOIMAGE01",
+            "status": "READY_FOR_REVIEW",
+            "platforms": {
+                "facebook": {"status": "VALID", "content": "Facebook text"},
+                "pinterest": {"status": "VALID", "title": "Pin", "description": "Pin"},
+                "threads": {"status": "VALID", "content": "Threads text"},
+            },
+        }
+        report = SocialPublisher(dry_run=True).publish_package(package)
+
+        self.assertEqual(report["results"]["facebook"]["status"], STATUS_WOULD_PUBLISH)
+        self.assertEqual(report["results"]["pinterest"]["status"], STATUS_FAILED)
+        self.assertEqual(report["results"]["pinterest_lifemodehq"]["status"], STATUS_FAILED)
+        self.assertEqual(report["results"]["threads"]["status"], STATUS_FAILED)
+        self.assertNotIn("Skipped because item image preflight was blocked.", report["results"]["facebook"].get("errors", []))
+
+    @unittest.mock.patch("requests.post")
     def test_threads_adapter_live_image_publish_success(self, mock_post):
         """Verify Threads adapter uses media_type=IMAGE when image_url is provided."""
         resp1 = MagicMock()
