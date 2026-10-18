@@ -7,11 +7,6 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <div class="dry-run-banner">
-    <!-- DRY RUN remains explicit for compatibility and auditability. -->
-    <span>Execution mode: <strong>{{ execution_mode }}</strong> · Cloud scheduling: <strong>{{ "configured" if cloud_scheduling_configured else "not configured" }}</strong> · Localhost only. A platform is shown as PUBLISHED only when a live response contains post evidence.</span>
-  </div>
-
   <nav class="navbar">
     <a href="{{ url_for('index') }}" class="brand">
       🚀 AmazonAffiliateBot <span class="tag">Control Center</span>

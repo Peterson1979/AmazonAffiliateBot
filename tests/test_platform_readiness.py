@@ -70,7 +70,7 @@ def audit_platform_readiness():
     print(f"  -> Simulation Status: {res.get('status')} (Mode: {res.get('mode')})")
     assert res.get("mode") == "DRY_RUN"
     assert res.get("status") == "WOULD_PUBLISH"
-    assert set(res["results"]) == {"facebook", "pinterest", "threads"}
+    assert set(res["results"]) == {"facebook", "pinterest", "pinterest_lifemodehq", "threads"}
 
     # Image provenance is fail-closed and Pinterest cannot fall back to text-only.
     assert is_valid_image_url("https://m.media-amazon.com/images/I/example.jpg")

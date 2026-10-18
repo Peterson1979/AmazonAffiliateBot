@@ -1,0 +1,1147 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-18T09:22:41.639904+00:00",
+  "evidence_policy": "Only LIVE results with a platform ID or permalink are platform_verified; dry-run records remain SIMULATED unless separately reconciled.",
+  "destinations": [
+    "facebook",
+    "pinterest",
+    "pinterest_lifemodehq",
+    "threads"
+  ],
+  "products": {
+    "B0GNGTN7TV": {
+      "queue_item_id": "item_001_B0GNGTN7TV",
+      "product_name": "Electactic - Espresso machine with 15 bars with grinder, espresso maker with milk steam/frother/brewing tool/espresso machine with grinder",
+      "original_url": "https://link.amazon/B0bXBNrkK",
+      "source_published_at": "2026-10-13T09:44:40.062062+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122326115084197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122326115060197726&set=a.122110416488197726&type=3",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published photo 122326115060197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551998912978",
+          "post_url": "https://www.pinterest.com/pin/1033646551998912978/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 1033646551998912978 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018148683",
+          "post_url": "https://www.pinterest.com/pin/495607134018148683/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 495607134018148683 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18079555697448529",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DebTUQFDiVf",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published image post 18079555697448529 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0GKGBWRTR": {
+      "queue_item_id": "item_002_B0GKGBWRTR",
+      "product_name": "17.3-inch Laptop Stand Aluminum Adjustable",
+      "original_url": "https://link.amazon/B0hwa4Nkm",
+      "source_published_at": "2026-10-09T19:00:02.724757+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "PUBLISHED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0TESTADD1": {
+      "queue_item_id": "item_003_B0TESTADD1",
+      "product_name": "Professional Ergonomic Aluminum Laptop Stand",
+      "original_url": "https://www.amazon.com/dp/B0TESTADD1?tag=lifemode-20",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B01NBJEKX2": {
+      "queue_item_id": "item_004_B01NBJEKX2",
+      "product_name": "TRULY SOFT Everyday Sheet Set White Polyester 4-Piece Full Sheet Set, Solid Color Themed, Adult Bedding, Oeko-TEX Certified",
+      "original_url": "https://link.amazon/B08rC9igT",
+      "source_published_at": "2026-10-11T07:36:29.948577+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122325680834197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122325680732197726&set=a.122110416488197726&type=3",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published and verified photo 122325680732197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551998850640",
+          "post_url": "https://www.pinterest.com/pin/1033646551998850640/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 1033646551998850640 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18144904363600584",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DeV7BpvjeNJ",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published image post 18144904363600584 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B08CRPWQHB": {
+      "queue_item_id": "item_005_B08CRPWQHB",
+      "product_name": "BigFoot Shower Curtain Liner – 72 x 72 PEVA Heavy Duty Shower Curtain with Rustproof Metal Grommet and 3 Magnetic Weights – Odor Free and Compatible with Standard Showers, Clear",
+      "original_url": "https://link.amazon/B08OcbzJJ",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "SKIPPED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "SKIPPED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "SKIPPED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "SKIPPED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B08GH41N87": {
+      "queue_item_id": "item_006_B08GH41N87",
+      "product_name": "THE BEER VALLEY Chindi Woven Rug 2x3 Feet - Yellow",
+      "original_url": "https://link.amazon/B02bkZwVE",
+      "source_published_at": "2026-10-13T09:44:40.062062+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122326115210197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122326115186197726&set=a.122110416488197726&type=3",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published photo 122326115186197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551998912985",
+          "post_url": "https://www.pinterest.com/pin/1033646551998912985/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 1033646551998912985 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018148684",
+          "post_url": "https://www.pinterest.com/pin/495607134018148684/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 495607134018148684 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18112267298611139",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DebTW1_jrfF",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published image post 18112267298611139 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B09SH38JRR": {
+      "queue_item_id": "item_007_B09SH38JRR",
+      "product_name": "WLIVE Small Dresser Nightstand for Bedroom, 4 Drawers, Rustic Brown",
+      "original_url": "https://link.amazon/B0aLCB05n",
+      "source_published_at": "2026-10-13T09:44:40.062062+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122326115336197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122326115312197726&set=a.122110416488197726&type=3",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published photo 122326115312197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551998912988",
+          "post_url": "https://www.pinterest.com/pin/1033646551998912988/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 1033646551998912988 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018148685",
+          "post_url": "https://www.pinterest.com/pin/495607134018148685/",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully created pin 495607134018148685 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "17921897304441616",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DebTY_KDjUS",
+          "published_at": null,
+          "errors": [],
+          "message": "Successfully published image post 17921897304441616 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B09ZV2TX28": {
+      "queue_item_id": "item_008_B09ZV2TX28",
+      "product_name": "Lifewit 60L Clothes Storage Bags, Foldable Under-Bed Storage Bags,6 Pack",
+      "original_url": "https://link.amazon/B0arzMCtg",
+      "source_published_at": "2026-10-13T12:00:12.166866+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0BJKRYCZF": {
+      "queue_item_id": "item_009_B0BJKRYCZF",
+      "product_name": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture Modern Home Decoration Desktop Decoration Christmas New Year Gift (3 Pcs Gold)",
+      "original_url": "https://link.amazon/B00j5slzz",
+      "source_published_at": "2026-10-13T19:00:07.136768+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0C235GNV9": {
+      "queue_item_id": "item_010_B0C235GNV9",
+      "product_name": "KOZYFLY Washable Area Rug 5x7 ft Rubber Backed Non Slip Rugs for Living Room Braided Cotton Bedroom Rug Woven Office Rugs Indoor Floor Carpets for Dining Bedroom Living Room, Tan/Orange/Brown",
+      "original_url": "https://link.amazon/B0eFc8pa5",
+      "source_published_at": "2026-10-16T16:30:23.136115+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0C51CZJ83": {
+      "queue_item_id": "item_011_B0C51CZJ83",
+      "product_name": "Twin Size Sheet Set - 4 Piece - Hotel Luxury Bed Sheets - Extra Soft - Deep Pockets - Easy Fit - Breathable & Cooling - Wrinkle Free - Comfy - Steel Blue Bed Sheets - Twins Sheets - 4 PC",
+      "original_url": "https://link.amazon/B079VepZB",
+      "source_published_at": "2026-10-16T16:30:23.136115+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0C65T7727": {
+      "queue_item_id": "item_012_B0C65T7727",
+      "product_name": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025 Pullover Sweaters Winter Clothes",
+      "original_url": "https://link.amazon/B0bUpIGar",
+      "source_published_at": "2026-10-16T16:30:23.136115+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0CNCL35CH": {
+      "queue_item_id": "item_013_B0CNCL35CH",
+      "product_name": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick – Under Eye & Face Wrinkle Care, Firming & Hydrating Balm with Collagen, Smooth Makeup Prep & Instant Glow – Korean Skincare (9g)",
+      "original_url": "https://link.amazon/B0exefrmH",
+      "source_published_at": "2026-10-16T16:30:23.136115+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0D6G5S35J": {
+      "queue_item_id": "item_014_B0D6G5S35J",
+      "product_name": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
+      "original_url": "https://link.amazon/B09PbfKuR",
+      "source_published_at": "2026-10-16T16:30:23.136115+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0D9TCFRJ5": {
+      "queue_item_id": "item_015_B0D9TCFRJ5",
+      "product_name": "Travertine Tray,Bathroom Vanity Tray",
+      "original_url": "https://link.amazon/B0dycBsOk",
+      "source_published_at": "2026-10-16T19:00:03.723931+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0DHKSF81K": {
+      "queue_item_id": "item_016_B0DHKSF81K",
+      "product_name": "celimax Pore Dark Spot Brightening Cream With Niacinamide, Tranexamic Acid, Txa Cream, Pore Minimizer, Non-Irritating, Hydrating, For Sensitive Skin, 35Ml",
+      "original_url": "https://link.amazon/B054USqXz",
+      "source_published_at": "2026-10-17T12:00:05.662033+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0DTHHK2S1": {
+      "queue_item_id": "item_017_B0DTHHK2S1",
+      "product_name": "IUV",
+      "original_url": "https://link.amazon/B07zWpUB4",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "user_reported",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent.",
+          "reported_outcome": "not_visible",
+          "evidence_note": "User reports that the Facebook post was not visible; no platform evidence is stored."
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "user_reported",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
+          "reported_outcome": "published",
+          "evidence_note": "User reports publication; no platform ID, permalink or read-only verification is stored."
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "user_reported",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "reported_outcome": "published",
+          "evidence_note": "User reports publication; no platform ID, permalink or read-only verification is stored."
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "user_reported",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent.",
+          "reported_outcome": "published",
+          "evidence_note": "User reports publication; no platform ID, permalink or read-only verification is stored."
+        }
+      }
+    },
+    "B0H1W18KGL": {
+      "queue_item_id": "item_018_B0H1W18KGL",
+      "product_name": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
+      "original_url": "https://link.amazon/B0isaIph6",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B095NXXP8C": {
+      "queue_item_id": "item_019_B095NXXP8C",
+      "product_name": "Nintiue 【Upgraded】 Dimmable Floor Lamp, 1000 Lumens LED Bulb Included, Arc Floor Lamps for Living Room Modern Standing Lamp with Linen Shade, Tall Lamp for Bedroom Office Reading Dining Room- Black",
+      "original_url": "https://link.amazon/B0amY6llW",
+      "source_published_at": "2026-10-11T19:00:05.636575+02:00",
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "FAILED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [
+            "Skipped because item image preflight was blocked."
+          ],
+          "message": null
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "FAILED",
+          "account": "dailyideasforyou",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [
+            "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
+          ],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "FAILED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [
+            "Skipped because item image preflight was blocked."
+          ],
+          "message": null
+        }
+      }
+    },
+    "UNKNOWN": {
+      "queue_item_id": "item_020_UNKNOWN",
+      "product_name": "Alpine Corporation Indoor/Outdoor Fountain (Unverified)",
+      "original_url": "https://link.amazon/B04Kl1BNM",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "FAILED",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    }
+  }
+}

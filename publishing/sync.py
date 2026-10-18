@@ -352,16 +352,36 @@ def sync_with_github(
         # 2. Load remote queue from git show
         remote_ref = f"{remote_name}/{branch_name}"
         show_res = _run_git(["show", f"{remote_ref}:data/queue/publishing_queue.json"])
-        if show_res.returncode == 0:
-            try:
-                remote_queue_data = json.loads(show_res.stdout)
-            except Exception as e:
-                return {
-                    "success": False,
-                    "error": f"Failed to parse remote queue JSON from {remote_ref}: {str(e)}"
-                }
-        else:
-            remote_queue_data = None
+        if show_res is None:
+            return {
+                "success": False,
+                "error": f"Git did not return the remote queue from {remote_ref}; no local data was changed."
+            }
+        if show_res.returncode != 0:
+            err_text = (show_res.stderr or show_res.stdout or "remote queue file is unavailable").strip()
+            return {
+                "success": False,
+                "error": f"Could not read data/queue/publishing_queue.json from {remote_ref}: {err_text}. No local data was changed."
+            }
+
+        remote_payload = show_res.stdout
+        if not isinstance(remote_payload, (str, bytes, bytearray)) or not remote_payload.strip():
+            return {
+                "success": False,
+                "error": f"The remote queue from {remote_ref} was empty or unavailable. No local data was changed."
+            }
+        try:
+            remote_queue_data = json.loads(remote_payload)
+        except (TypeError, json.JSONDecodeError) as e:
+            return {
+                "success": False,
+                "error": f"Failed to parse remote queue JSON from {remote_ref}: {e}. No local data was changed."
+            }
+        if not isinstance(remote_queue_data, dict) or not isinstance(remote_queue_data.get("items"), list):
+            return {
+                "success": False,
+                "error": f"Remote queue from {remote_ref} is invalid: expected a JSON object with an items list. No local data was changed."
+            }
 
         # 3. Load local queue from disk
         if not queue_path.exists():
@@ -386,7 +406,7 @@ def sync_with_github(
         try:
             merged_queue_data, summary = merge_publishing_queues(
                 local_data=local_queue_data,
-                remote_data=remote_queue_data if remote_queue_data else local_queue_data
+                remote_data=remote_queue_data
             )
         except Exception as e:
             return {

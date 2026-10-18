@@ -199,6 +199,7 @@ class ThreadsAdapter(BasePlatformAdapter):
                         "mode": "LIVE",
                         "status": STATUS_PUBLISHED,
                         "http_status": resp2.status_code,
+                        "api_response": resp2_data,
                         "message": f"Successfully published {'image' if image_url else 'text'} post {post_id} to Threads account '{account_name}' ({user_id})."
                     }
                 else:
@@ -216,8 +217,10 @@ class ThreadsAdapter(BasePlatformAdapter):
                     }
             else:
                 err_msg = resp2.text
+                err_json = None
                 try:
-                    err_json = resp2.json().get("error", {})
+                    err_json = resp2.json()
+                    err_json = err_json.get("error", {}) if isinstance(err_json, dict) else {}
                     err_msg = err_json.get("message") or resp2.text
                 except Exception:
                     pass
@@ -230,6 +233,7 @@ class ThreadsAdapter(BasePlatformAdapter):
                     "mode": "LIVE",
                     "status": STATUS_FAILED,
                     "http_status": resp2.status_code,
+                    "api_response": err_json,
                     "errors": [f"Threads Step 2 (Container Publish) error (HTTP {resp2.status_code}): {err_msg}"],
                     "message": f"Threads container publishing rejected with HTTP {resp2.status_code}."
                 }

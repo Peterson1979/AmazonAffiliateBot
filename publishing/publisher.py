@@ -21,6 +21,16 @@ from .adapters import (
 SUPPORTED_PLATFORMS = ("facebook", "pinterest", "threads")
 
 
+def _confirmed_live_result(result: Dict[str, Any]) -> bool:
+    """Only live responses with platform evidence are safe to reuse as success."""
+    return bool(
+        isinstance(result, dict)
+        and result.get("status") == STATUS_PUBLISHED
+        and result.get("mode") == "LIVE"
+        and any(result.get(key) for key in ("post_id", "pin_id", "photo_id", "permalink", "permalink_url", "pin_url"))
+    )
+
+
 class SocialPublisher:
     """
     Publishing orchestrator that consumes validated V3/V4 Content Packages
@@ -125,7 +135,7 @@ class SocialPublisher:
             p_content = platforms_dict.get(platform_name)
 
             previous = prior_results.get(result_key) or {}
-            if previous.get("status") == STATUS_PUBLISHED:
+            if _confirmed_live_result(previous):
                 duplicate_safe_result = dict(previous)
                 duplicate_safe_result["action"] = "SKIP_DUPLICATE"
                 results[result_key] = duplicate_safe_result

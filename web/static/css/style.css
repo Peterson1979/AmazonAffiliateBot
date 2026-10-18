@@ -621,7 +621,11 @@ footer {
 .detail-list dt { color: var(--text-muted); font-size: .82rem; }
 .detail-list dd { color: #fff; font-size: .82rem; text-align: right; }
 .card-note, .table-subtext, .muted-value { color: var(--text-muted); font-size: .78rem; }
-.metric-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; margin-bottom: 20px; }
+
+.activity-card { margin-top: 18px; }
+.activity-table table { min-width: 920px; }
+.activity-table td strong { color: #fff; }
 .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 15px; min-width: 0; }
 .metric-card strong, .metric-card span { display: block; }
 .metric-card strong { color: #fff; font-size: 1.65rem; line-height: 1.1; margin: 8px 0 6px; }

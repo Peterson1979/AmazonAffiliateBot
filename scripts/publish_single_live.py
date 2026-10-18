@@ -90,14 +90,21 @@ def publish_first_eligible():
         if p_res.get("message"):
             print(f"  Message: {p_res.get('message')}")
 
-    # Update item in queue
+    # Update item in queue only from evidence-backed live responses.
     now_dt = datetime.now(get_budapest_timezone())
-    target_item.published_at = now_dt.isoformat()
+    def confirmed_live(result):
+        return (
+            result.get("status") == STATUS_PUBLISHED
+            and result.get("mode") == "LIVE"
+            and any(result.get(key) for key in ("post_id", "pin_id", "photo_id", "permalink", "permalink_url", "pin_url"))
+        )
+
     target_item.publishing_results = platform_results
 
-    active_statuses = [r.get("status") for r in platform_results.values()]
-    all_succeeded = all(s == STATUS_PUBLISHED for s in active_statuses) and len(active_statuses) > 0
-    any_succeeded = any(s == STATUS_PUBLISHED for s in active_statuses)
+    required = {"facebook", "pinterest", "pinterest_lifemodehq", "threads"}
+    active_results = {k: v for k, v in platform_results.items() if k in required}
+    all_succeeded = set(active_results) == required and all(confirmed_live(r) for r in active_results.values())
+    any_succeeded = any(confirmed_live(r) for r in active_results.values())
 
     if all_succeeded:
         target_item.status = STATUS_PUBLISHED
@@ -105,6 +112,8 @@ def publish_first_eligible():
         target_item.status = STATUS_PARTIALLY_PUBLISHED
     else:
         target_item.status = STATUS_FAILED
+    if any_succeeded:
+        target_item.published_at = now_dt.isoformat()
 
     queue.recalculate_counts()
     queue.save(queue_file)

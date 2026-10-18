@@ -122,6 +122,7 @@ class FacebookAdapter(BasePlatformAdapter):
                         "mode": "LIVE",
                         "status": STATUS_FAILED,
                         "http_status": resp.status_code,
+                        "api_response": resp_data,
                         "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {error_detail}"],
                         "message": "Facebook Graph API returned an error response."
                     }
@@ -160,6 +161,7 @@ class FacebookAdapter(BasePlatformAdapter):
                         "mode": "LIVE",
                         "status": STATUS_PUBLISHED,
                         "http_status": resp.status_code,
+                        "api_response": resp_data,
                         "message": f"Successfully published {'photo' if image_url else 'post'} {photo_id or post_id} to Facebook Page '{account_name}' ({page_id})."
                     }
                 else:
@@ -177,6 +179,7 @@ class FacebookAdapter(BasePlatformAdapter):
             else:
                 error_detail = resp.text
                 graph_error = None
+                response_json = None
                 try:
                     response_json = resp.json()
                     graph_error = response_json.get("error", {}) if isinstance(response_json, dict) else {}
@@ -192,6 +195,7 @@ class FacebookAdapter(BasePlatformAdapter):
                     "mode": "LIVE",
                     "status": STATUS_FAILED,
                     "http_status": resp.status_code,
+                    "api_response": response_json if isinstance(response_json, dict) else None,
                     "errors": [f"Facebook Graph API error (HTTP {resp.status_code}): {error_detail}"],
                     "message": f"Facebook Graph API rejected post with HTTP {resp.status_code}."
                 }

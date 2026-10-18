@@ -99,8 +99,8 @@
             {% if p.retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
           </td>
           <td><div class="platform-result-list compact-results">
-            {% for p_key in ('facebook', 'pinterest', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
-              <div class="platform-result"><span>{{ p_key|capitalize }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower }}">{{ result.state if result else 'UNKNOWN' }}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% endif %}</div>
+            {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
+              <div class="platform-result"><span>{{ {'facebook': 'Facebook', 'pinterest': 'Pinterest', 'pinterest_lifemodehq': 'Pinterest LifeModeHQ', 'threads': 'Threads'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{{ result.state if result else 'UNKNOWN' }}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
             {% endfor %}
           </div>
           </td>

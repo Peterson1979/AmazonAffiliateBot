@@ -62,7 +62,7 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
     def inject_global_context():
         """Inject safety notice and timezone into all templates."""
         cfg = load_application_config()
-        dry_run = cfg.get("publishing", {}).get("dry_run", True)
+        dry_run = cfg.get("publishing", {}).get("dry_run", False)
         workflow_configured = (PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml").exists()
         return {
             "dry_run": dry_run,
@@ -326,7 +326,13 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
     @app.route("/queue/<queue_item_id>/publish", methods=["POST"])
     def publish_queue_item(queue_item_id: str):
         """Explicitly confirm and execute one live publication."""
-        confirmed = request.form.get("confirm_live") == "yes"
+        # The checkbox is acknowledgement only; the named submit control is
+        # the server-side action boundary.  A crafted checkbox-only POST must
+        # not be able to trigger live publication.
+        confirmed = (
+            request.form.get("confirm_live") == "yes"
+            and request.form.get("publish_live") == "confirm"
+        )
         result = execute_live_publish_item(queue_item_id, confirmed=confirmed)
         if result.get("success"):
             if result.get("skipped"):
@@ -419,7 +425,8 @@ def main():
     print(f"\n========================================================")
     print(f" AmazonAffiliateBot Management Dashboard")
     print(f" Address: http://127.0.0.1:{args.port}")
-    print(f" Safety: DRY RUN ENABLED (No social posts published)")
+    print(f" Mode: Production-first; explicit live queue actions require confirmation")
+    print(f" Safety: Previews and local maintenance never publish")
     print(f" Localhost only (Strictly binds to 127.0.0.1)")
     print(f"========================================================\n", flush=True)
 

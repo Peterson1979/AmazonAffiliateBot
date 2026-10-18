@@ -63,6 +63,7 @@ from publishing.replenisher import (
 )
 from publishing.config import PublishingConfig, DEFAULT_TARGET_ACCOUNTS
 from publishing.publisher import SocialPublisher, STATUS_WOULD_PUBLISH
+from publishing.reconciliation import get_historical_destination_report
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -74,7 +75,7 @@ QUEUE_FILE = DATA_DIR / "queue" / "publishing_queue.json"
 LOGS_DIR = DATA_DIR / "logs"
 DISCOVERY_HISTORY_FILE = DATA_DIR / "discovery" / "discovery_history.json"
 SCHEDULED_WORKFLOW_FILE = PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml"
-ACTIVE_PUBLISHING_PLATFORMS = ("facebook", "pinterest", "threads")
+ACTIVE_PUBLISHING_PLATFORMS = ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
 
 DEFAULT_AFFILIATE_DISCLOSURE = "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
 
@@ -94,46 +95,22 @@ def _slot_claim_for_item(queue: PublishingQueue, item: QueueItem) -> Dict[str, A
 def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str, Any]:
     """Normalize one active platform result for truthful UI rendering."""
     raw_results = item.publishing_results or {}
-    if platform == "pinterest":
-        # Pinterest may have more than one configured account.  The dashboard
-        # exposes one platform column, but must not hide a failed account.
-        candidates = [
-            value for key, value in raw_results.items()
-            if key == "pinterest" or key.startswith("pinterest_")
-            if isinstance(value, dict)
-        ]
+    # Each destination is independent.  In particular, do not merge the two
+    # Pinterest accounts into one result or hide a failure in the other account.
+    result = raw_results.get(platform)
+    if not isinstance(result, dict):
         result = None
-        if candidates:
-            result = dict(candidates[0])
-            result["account_results"] = candidates
-            statuses = {value.get("status") for value in candidates}
-            confirmed = [value for value in candidates if _is_confirmed_live_result(value)]
-            if len(confirmed) == len(candidates):
-                result["status"] = "PUBLISHED"
-            elif "FAILED" in statuses:
-                result["status"] = "FAILED"
-            else:
-                result["status"] = next(iter(statuses)) if statuses else None
-            errors = []
-            for value in candidates:
-                errors.extend(value.get("errors") or [])
-            if errors:
-                result["errors"] = errors
-            result["_all_accounts_confirmed"] = len(confirmed) == len(candidates)
-        else:
-            result = None
-    else:
-        result = raw_results.get(platform)
-        if not isinstance(result, dict):
-            result = None
 
     state = "UNKNOWN"
+    historical_dry_run_ambiguous = _has_ambiguous_historical_dry_run(item)
     if result:
         result_status = result.get("status")
         mode = result.get("mode")
-        if result_status == "WOULD_PUBLISH" or mode == "DRY_RUN":
+        if historical_dry_run_ambiguous and (result_status == "WOULD_PUBLISH" or mode == "DRY_RUN"):
+            state = "UNKNOWN"
+        elif result_status == "WOULD_PUBLISH" or mode == "DRY_RUN":
             state = "SIMULATED"
-        elif result.get("_all_accounts_confirmed", _is_confirmed_live_result(result)):
+        elif _is_confirmed_live_result(result):
             state = "PUBLISHED"
         elif result_status == "FAILED":
             state = "FAILED"
@@ -141,11 +118,19 @@ def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str,
         claim = (item._ui_claim if hasattr(item, "_ui_claim") else {}) or {}
         state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
 
+    historical_report = get_historical_destination_report(item.asin, platform)
+    if historical_report.get("reported_outcome") and state != "PUBLISHED":
+        state = "UNKNOWN"
     live_confirmed = state == "PUBLISHED"
     result = result or {}
     return {
         "platform": platform,
-        "label": platform.capitalize(),
+        "label": {
+            "facebook": "Facebook",
+            "pinterest": "Pinterest",
+            "pinterest_lifemodehq": "Pinterest LifeModeHQ",
+            "threads": "Threads",
+        }.get(platform, platform.capitalize()),
         "state": state,
         "mode": result.get("mode"),
         # Historical queue records may contain one batch-level item timestamp.
@@ -155,6 +140,17 @@ def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str,
         "post_id": result.get("post_id") or result.get("pin_id") or result.get("photo_id"),
         "post_url": result.get("permalink_url") or result.get("pin_url") or result.get("permalink"),
         "errors": result.get("errors") or ([result.get("message")] if state == "FAILED" and result.get("message") else []),
+        "evidence_note": (
+            historical_report.get("evidence_note")
+            if historical_report.get("reported_outcome") and state == "UNKNOWN"
+            else (
+            "Historical queue status was PUBLISHED, but the persisted platform result is DRY_RUN-only; "
+            "no live platform ID, permalink or API confirmation is available."
+            if state == "UNKNOWN" and historical_dry_run_ambiguous else None
+            )
+        ),
+        "evidence_status": historical_report.get("evidence_status"),
+        "reported_outcome": historical_report.get("reported_outcome"),
     }
 
 
@@ -174,6 +170,16 @@ def _is_confirmed_live_result(result: Dict[str, Any]) -> bool:
     )
 
 
+def _has_ambiguous_historical_dry_run(item: QueueItem) -> bool:
+    """Detect legacy records marked PUBLISHED from dry-run-only executions."""
+    results = [value for value in (item.publishing_results or {}).values() if isinstance(value, dict)]
+    if not results or item.status != STATUS_PUBLISHED or not item.published_at:
+        return False
+    if any(_is_confirmed_live_result(value) for value in results):
+        return False
+    return all(value.get("mode") == "DRY_RUN" or value.get("status") == "WOULD_PUBLISH" for value in results)
+
+
 def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict[str, Any]:
     """Expose only evidence-backed queue and platform states to the UI."""
     claim = _slot_claim_for_item(queue, item)
@@ -190,12 +196,15 @@ def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict
         state = "SIMULATED"
     elif "PUBLISHED" in states and "FAILED" in states:
         state = "PARTIAL"
+    elif states and all(s == "PUBLISHED" for s in states):
+        # Legacy queue records may carry an excluded X/Twitter failure in the
+        # item-level status.  The active dashboard scope is Facebook,
+        # Pinterest and Threads only.
+        state = "PUBLISHED"
     elif item.status == STATUS_PARTIALLY_PUBLISHED:
         state = "PARTIAL"
     elif item.status == STATUS_FAILED:
         state = "FAILED"
-    elif states and all(s == "PUBLISHED" for s in states):
-        state = "PUBLISHED"
     elif "SIMULATED" in states:
         state = "SIMULATED"
     else:
@@ -231,7 +240,7 @@ def load_application_config(config_path: Path = CONFIG_PATH) -> Dict[str, Any]:
             "firefox_profile": ""
         },
         "publishing": {
-            "dry_run": True,
+            "dry_run": False,
             "accounts": {
                 "facebook": {"account": "LifeModeHQ"},
                 "pinterest": {"account": "dailyideasforyou", "board": "Shopping ideas", "board_id": "1033646620665866548"},
@@ -346,13 +355,18 @@ def get_platform_statuses(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     Never exposes raw secrets or tokens.
     """
     pub_cfg = PublishingConfig.from_dict(config)
-    platforms = ["facebook", "pinterest", "threads"]
+    platforms = ["facebook", "pinterest", "pinterest_lifemodehq", "threads"]
     res = {}
 
     for p in platforms:
-        acc_info = pub_cfg.accounts.get(p, {})
+        if p == "pinterest":
+            acc_info = pub_cfg.pinterest_accounts.get("dailyideasforyou", {})
+        elif p == "pinterest_lifemodehq":
+            acc_info = pub_cfg.pinterest_accounts.get("lifemodehq", {})
+        else:
+            acc_info = pub_cfg.accounts.get(p, {})
         account_name = acc_info.get("account", "Not configured")
-        board_name = acc_info.get("board", "") if p == "pinterest" else ""
+        board_name = acc_info.get("board", "") if p in ("pinterest", "pinterest_lifemodehq") else ""
         
         # Check credentials presence safely from environment variables
         has_creds = False
@@ -360,11 +374,13 @@ def get_platform_statuses(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             has_creds = bool((os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN") or os.environ.get("META_ACCESS_TOKEN")) and os.environ.get("FACEBOOK_PAGE_ID"))
         elif p == "pinterest":
             has_creds = bool(os.environ.get("PINTEREST_ACCESS_TOKEN"))
+        elif p == "pinterest_lifemodehq":
+            has_creds = bool(os.environ.get("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN"))
         elif p == "threads":
             has_creds = bool(os.environ.get("THREADS_ACCESS_TOKEN"))
 
         res[p] = {
-            "name": p.capitalize(),
+            "name": {"facebook": "Facebook", "pinterest": "Pinterest", "pinterest_lifemodehq": "Pinterest LifeModeHQ", "threads": "Threads"}[p],
             "account": account_name,
             "board": board_name,
             "credentials_status": "Configured" if has_creds else "Missing",
@@ -688,7 +704,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
     discovery_status_text = "ENABLED (Automatic Quota)" if discovery_enabled else "DISABLED (Manual Only)"
 
     # Determine accurate overall system health
-    is_dry_run = config.get("publishing", {}).get("dry_run", True)
+    is_dry_run = config.get("publishing", {}).get("dry_run", False)
     workflow_configured = SCHEDULED_WORKFLOW_FILE.exists()
     if not ollama_info["online"] or not ollama_info["target_model_available"]:
         system_health = "ATTENTION (Ollama Offline or Model Missing)"

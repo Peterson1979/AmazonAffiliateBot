@@ -83,7 +83,7 @@ class TestDashboard(unittest.TestCase):
         html = response.get_data(as_text=True)
         self.assertIn("Operations & Management Dashboard", html)
         self.assertIn("Europe/Budapest", html)
-        self.assertIn("DRY RUN", html)
+        self.assertIn("PRODUCTION READY", html)
 
     def test_02_products_page_200(self):
         """Products directory '/products' returns 200 OK."""
@@ -122,7 +122,7 @@ class TestDashboard(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
         self.assertIn("Multi-Platform Content Preview", html)
-        self.assertIn("DRY RUN — NOTHING WILL BE PUBLISHED", html)
+        self.assertIn("Preview only — this page never publishes", html)
 
     def test_07_automation_page_200(self):
         """Automation page '/automation' returns 200 OK and shows setup command."""

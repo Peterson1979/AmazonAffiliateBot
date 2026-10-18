@@ -134,10 +134,12 @@ class PinterestAdapter(BasePlatformAdapter):
                     "mode": "LIVE",
                     "status": STATUS_PUBLISHED,
                     "http_status": resp.status_code,
+                    "api_response": pin_data,
                     "message": f"Successfully created pin {pin_id} on Pinterest board '{board_name}' ({account_name})."
                 }
             else:
                 error_detail = resp.text
+                err_json = None
                 try:
                     err_json = resp.json()
                     error_detail = err_json.get("message") or resp.text
@@ -152,6 +154,7 @@ class PinterestAdapter(BasePlatformAdapter):
                     "mode": "LIVE",
                     "status": STATUS_FAILED,
                     "http_status": resp.status_code,
+                    "api_response": err_json if isinstance(err_json, dict) else None,
                     "errors": [f"Pinterest API error (HTTP {resp.status_code}): {error_detail}"],
                     "message": f"Pinterest API rejected pin with HTTP {resp.status_code}."
                 }

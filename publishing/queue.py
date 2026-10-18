@@ -1019,11 +1019,15 @@ class QueuePublisher:
                         )
                     )
 
-                all_ok = all(
-                    (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
-                    or confirmed_live(result)
-                    for result in platform_results.values()
-                ) and len(active_statuses) > 0
+                required_destinations = {"facebook", "pinterest", "pinterest_lifemodehq", "threads"}
+                all_ok = (
+                    set(platform_results) == required_destinations
+                    and all(
+                        (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
+                        or confirmed_live(result)
+                        for result in platform_results.values()
+                    )
+                )
 
                 any_ok = any(
                     (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
@@ -1031,7 +1035,12 @@ class QueuePublisher:
                     for result in platform_results.values()
                 )
 
-                if all_ok:
+                if is_dry_run:
+                    # A simulation is not a publication and must not consume
+                    # or overwrite live publication state.
+                    item.status = STATUS_READY
+                    item.published_at = None
+                elif all_ok:
                     item.status = STATUS_PUBLISHED
                     published_count += 1
                 elif any_ok:
@@ -1046,7 +1055,7 @@ class QueuePublisher:
                 # in publishing_results so retries can skip them safely.
                 failure_messages = []
                 for result in platform_results.values():
-                    if result.get("status") not in (STATUS_WOULD_PUBLISH, PLATFORM_STATUS_PUBLISHED):
+                    if result.get("status") == PLATFORM_STATUS_FAILED:
                         failure_messages.extend(result.get("errors", []))
                 for message in failure_messages:
                     if message not in item.errors:

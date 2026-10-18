@@ -44,7 +44,7 @@
       <div class="form-group">
         <label for="tracking_tag">Amazon Affiliate Tracking Tag</label>
         <input type="text" id="tracking_tag" name="tracking_tag" value="{{ tracking_tag }}">
-        <div class="help-text">Appended to discovered Amazon product URLs.</div>
+        <div class="help-text">Used only when Discovery constructs a new Amazon URL. Submitted affiliate URLs keep their exact tracking parameters and are never rewritten.</div>
       </div>
 
       <button type="submit" class="btn btn-secondary">Save Discovery Settings</button>
@@ -68,7 +68,7 @@
 
       <form action="{{ url_for('discovery_run') }}" method="POST">
         <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-          ⚡ Trigger Manual Discovery (DRY RUN)
+          ⚡ Run product discovery (adds validated queue items; never publishes)
         </button>
       </form>
     </div>

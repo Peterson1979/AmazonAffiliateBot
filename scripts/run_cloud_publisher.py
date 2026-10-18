@@ -7,8 +7,8 @@ Handles:
 1. Europe/Budapest timezone evaluation across CET (UTC+1) and CEST (UTC+2) DST shifts.
 2. Window check: Only triggers publishing during 12:00-12:59 and 19:00-19:59 Budapest time for scheduled runs.
    Manual dry-run runs bypass the window restriction for evaluation only.
-3. Safe Dry-Run: Evaluates queue, reports scheduled items, due items, and reasons for skipped items.
-   Does not modify real queue on disk during simulation.
+3. Explicit Simulation: A manual dry-run evaluates the queue without sending posts; ordinary
+   scheduled and manual runs are live and persist only evidence-backed outcomes.
 4. Live Validation: Validates that Facebook, Threads, and Pinterest credentials are present before live publishing.
 5. Idempotency & Persistence: Only processes eligible READY items; reports queue update status for Git persistence.
 """
