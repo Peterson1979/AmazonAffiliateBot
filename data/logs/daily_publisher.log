@@ -5845,3 +5845,12 @@
 [2026-10-18 15:38:23 CEST] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-10-18 15:38:23 CEST] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
 [2026-10-18 15:38:23 CEST] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-10-29 23:26:05 CET] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-10-29 23:26:05 CET] [INFO] Current Europe/Budapest Time: 2026-10-29T23:26:05.849635+01:00 | Mode: LIVE
+[2026-10-29 23:26:05 CET] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 31
+[2026-10-29 23:26:05 CET] [INFO] Due Eligible Items Found: 1
+[2026-10-29 23:26:05 CET] [INFO] Processing Item 'item_027_B0BZYCJK89' | ASIN: B0BZYCJK89 | Slot 2 (2026-10-29T19:00:00+01:00)
+[2026-10-29 23:26:05 CET] [ERROR] ERROR on Item 'item_027_B0BZYCJK89': ContentPackage file not found for ASIN 'B0BZYCJK89' at 'data/generated/asin_B0BZYCJK89_content_package.json'.
+[2026-10-29 23:26:05 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-10-29 23:26:05 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=0, Failed=1
+[2026-10-29 23:26:05 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
