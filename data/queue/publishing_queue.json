@@ -6,11 +6,11 @@
   "products_per_day": 2,
   "target_capacity": 60,
   "total_submitted": 16,
-  "total_processed": 20,
-  "total_ready": 0,
+  "total_processed": 31,
+  "total_ready": 9,
   "total_failed": 3,
-  "scheduled_posts": 0,
-  "unfilled_slots": 60,
+  "scheduled_posts": 9,
+  "unfilled_slots": 51,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -1457,6 +1457,649 @@
       "created_at": "2026-10-11T04:57:40.819852+00:00",
       "published_at": null,
       "publishing_results": null
+    },
+    {
+      "queue_item_id": "item_021_B07BBW1DD1",
+      "original_url": "https://link.amazon/B0aRh5mdE",
+      "asin": "B07BBW1DD1",
+      "product_name": "Sage the Smart Toast toaster 2 slice(s) Silver",
+      "scheduled_date": "2026-10-26",
+      "daily_slot": 2,
+      "scheduled_at": "2026-10-26T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B07BBW1DD1_content_package.json",
+      "status": "PUBLISHED",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T11:31:47.162444+00:00",
+      "published_at": "2026-10-26T13:33:22.560444+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122328291116197726",
+          "post_id": "226949230493910_122328291140197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122328291116197726&set=a.122110416488197726&type=3",
+          "image_url": "https://m.media-amazon.com/images/I/615BSy01s+L._AC_SL1500_.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122328291116197726",
+            "post_id": "226949230493910_122328291140197726"
+          },
+          "message": "Successfully published photo 122328291116197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-10-26T13:33:22.560444+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999315437",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999315437/",
+          "title": "Sage Smart Toast 2‑Slice Toaster – Silver",
+          "link": "https://link.amazon/B0aRh5mdE",
+          "image_url": "https://m.media-amazon.com/images/I/615BSy01s+L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "product_tags": [],
+            "id": "1033646551999315437",
+            "is_product": false,
+            "is_owner": true,
+            "title": "Sage Smart Toast 2‑Slice Toaster – Silver",
+            "pin_metrics": null,
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "created_at": "2026-10-26T12:33:02",
+            "description": "The toaster features extra wide slots that accommodate artisan bread, bagels, and pastries. It includes variable browning control with an indicator light and automatic lowering with a front crumb tray. https://link.amazon/B0aRh5mdE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "alt_text": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 676,
+                  "url": "https://i.pinimg.com/564x/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1438,
+                  "url": "https://i.pinimg.com/1200x/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                }
+              }
+            },
+            "is_removable": false,
+            "board_section_id": null,
+            "board_id": "1033646620665866548",
+            "has_been_promoted": false,
+            "is_standard": true,
+            "parent_pin_id": null,
+            "dominant_color": null,
+            "link": "https://link.amazon/B0aRh5mdE"
+          },
+          "message": "Successfully created pin 1033646551999315437 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-26T13:33:22.560444+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018247269",
+          "pin_url": "https://www.pinterest.com/pin/495607134018247269/",
+          "title": "Sage Smart Toast 2‑Slice Toaster – Silver",
+          "link": "https://link.amazon/B0aRh5mdE",
+          "image_url": "https://m.media-amazon.com/images/I/615BSy01s+L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "description": "The toaster features extra wide slots that accommodate artisan bread, bagels, and pastries. It includes variable browning control with an indicator light and automatic lowering with a front crumb tray. https://link.amazon/B0aRh5mdE\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "parent_pin_id": null,
+            "board_id": "495607202683261042",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 676,
+                  "url": "https://i.pinimg.com/564x/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1438,
+                  "url": "https://i.pinimg.com/1200x/df/07/94/df07944b64482cbf625796996f81ffc5.jpg"
+                }
+              }
+            },
+            "created_at": "2026-10-26T12:33:04",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "alt_text": null,
+            "has_been_promoted": false,
+            "creative_type": "REGULAR",
+            "dominant_color": "#c8c8c8",
+            "is_standard": true,
+            "pin_metrics": null,
+            "link": "https://link.amazon/B0aRh5mdE",
+            "is_owner": true,
+            "is_product": false,
+            "id": "495607134018247269",
+            "is_removable": false,
+            "product_tags": [],
+            "title": "Sage Smart Toast 2‑Slice Toaster – Silver",
+            "board_section_id": null
+          },
+          "message": "Successfully created pin 495607134018247269 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-26T13:33:22.560444+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17985499914139258",
+          "post_id": "18109675970245113",
+          "permalink": "https://www.threads.com/@lifemodehq/post/De9Sph2Dl8p",
+          "image_url": "https://m.media-amazon.com/images/I/615BSy01s+L._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18109675970245113"
+          },
+          "message": "Successfully published image post 18109675970245113 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-26T13:33:22.560444+01:00"
+        }
+      },
+      "batch_id": "batch_20261026T123121051979_2b53ae9e"
+    },
+    {
+      "queue_item_id": "item_022_B0DF472VMZ",
+      "original_url": "https://link.amazon/B0cTv18Gi",
+      "asin": "B0DF472VMZ",
+      "product_name": "Owala SmoothSip Slider Stainless Steel Coffee Tumbler, 355ml, Vanilla Bean",
+      "scheduled_date": "2026-10-27",
+      "daily_slot": 1,
+      "scheduled_at": "2026-10-27T12:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0DF472VMZ_content_package.json",
+      "status": "PUBLISHED",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T12:40:26.943692+00:00",
+      "published_at": "2026-10-26T13:42:01.822911+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122328292574197726",
+          "post_id": "226949230493910_122328292604197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122328292574197726&set=a.122110416488197726&type=3",
+          "image_url": "https://m.media-amazon.com/images/I/51MJKovj3JL._AC_SL1500_.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122328292574197726",
+            "post_id": "226949230493910_122328292604197726"
+          },
+          "message": "Successfully published photo 122328292574197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-10-26T13:42:01.822911+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999315591",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999315591/",
+          "title": "Owala SmoothSip Slider Stainless Steel Tumbler 355ml",
+          "link": "https://link.amazon/B0cTv18Gi",
+          "image_url": "https://m.media-amazon.com/images/I/51MJKovj3JL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "description": "The 12 oz insulated stainless‑steel tumbler includes a completely leak‑proof lid and a slide‑top spout that prevents splashes or spills. Double‑wall insulation keeps drinks hot for 6 hours and cold for up to 24 hours. https://link.amazon/B0cTv18Gi\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "dominant_color": "#c2c1bf",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "parent_pin_id": null,
+            "alt_text": null,
+            "id": "1033646551999315591",
+            "pin_metrics": null,
+            "created_at": "2026-10-26T12:41:45",
+            "has_been_promoted": false,
+            "product_tags": [],
+            "creative_type": "REGULAR",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 998,
+                  "url": "https://i.pinimg.com/564x/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                },
+                "1200x": {
+                  "width": 618,
+                  "height": 1094,
+                  "url": "https://i.pinimg.com/1200x/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                }
+              }
+            },
+            "link": "https://link.amazon/B0cTv18Gi",
+            "board_id": "1033646620665866548",
+            "is_standard": true,
+            "is_removable": false,
+            "is_product": false,
+            "board_section_id": null,
+            "is_owner": true,
+            "title": "Owala SmoothSip Slider Stainless Steel Tumbler 355ml"
+          },
+          "message": "Successfully created pin 1033646551999315591 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-26T13:42:01.822911+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018247315",
+          "pin_url": "https://www.pinterest.com/pin/495607134018247315/",
+          "title": "Owala SmoothSip Slider Stainless Steel Tumbler 355ml",
+          "link": "https://link.amazon/B0cTv18Gi",
+          "image_url": "https://m.media-amazon.com/images/I/51MJKovj3JL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "dominant_color": "#c2c1bf",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "is_removable": false,
+            "description": "The 12 oz insulated stainless‑steel tumbler includes a completely leak‑proof lid and a slide‑top spout that prevents splashes or spills. Double‑wall insulation keeps drinks hot for 6 hours and cold for up to 24 hours. https://link.amazon/B0cTv18Gi\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "created_at": "2026-10-26T12:41:47",
+            "is_product": false,
+            "is_owner": true,
+            "link": "https://link.amazon/B0cTv18Gi",
+            "creative_type": "REGULAR",
+            "is_standard": true,
+            "alt_text": null,
+            "title": "Owala SmoothSip Slider Stainless Steel Tumbler 355ml",
+            "parent_pin_id": null,
+            "product_tags": [],
+            "id": "495607134018247315",
+            "pin_metrics": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 998,
+                  "url": "https://i.pinimg.com/564x/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                },
+                "1200x": {
+                  "width": 618,
+                  "height": 1094,
+                  "url": "https://i.pinimg.com/1200x/bc/9b/cd/bc9bcdec3657bb8e68176ecfc18ad341.jpg"
+                }
+              }
+            },
+            "has_been_promoted": false,
+            "board_id": "495607202683261042",
+            "board_section_id": null
+          },
+          "message": "Successfully created pin 495607134018247315 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-26T13:42:01.822911+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17985501267139258",
+          "post_id": "17928973368186495",
+          "permalink": "https://www.threads.com/@lifemodehq/post/De9TpE0DqpX",
+          "image_url": "https://m.media-amazon.com/images/I/51MJKovj3JL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17928973368186495"
+          },
+          "message": "Successfully published image post 17928973368186495 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-26T13:42:01.822911+01:00"
+        }
+      },
+      "batch_id": "batch_20261026T133953003275_551bddb4"
+    },
+    {
+      "queue_item_id": "item_023_B00JUM4CT4",
+      "original_url": "https://link.amazon/B0hlXFzOe",
+      "asin": "B00JUM4CT4",
+      "product_name": "Hanes Zip-up Hoodie, EcoSmart Fleece Full-Zip Hoodie for Men, Men's Hooded Sweatshirt Jacket (Pack of 1)",
+      "scheduled_date": "2026-10-27",
+      "daily_slot": 2,
+      "scheduled_at": "2026-10-27T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B00JUM4CT4_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:02:01.522170+00:00",
+      "published_at": null,
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
+          "board": "Shopping ideas"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "board": "Home & Everyday Living"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      },
+      "batch_id": "batch_20261026T140135413250_40b713fc"
+    },
+    {
+      "queue_item_id": "item_024_B08BRJHJF9",
+      "original_url": "https://link.amazon/B0bPi8P7o",
+      "asin": "B08BRJHJF9",
+      "product_name": "USANOOKS Microfiber Cleaning Cloth Grey - 12 Packs 12.6\"x12.6\" - High Performance - 1200 Washes, Ultra Absorbent Towels Weave Grime & Liquid for Streak-Free Mirror Shine - Car Washing Cloth",
+      "scheduled_date": "2026-10-28",
+      "daily_slot": 1,
+      "scheduled_at": "2026-10-28T13:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B08BRJHJF9_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:17:01.948429+00:00",
+      "published_at": null,
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
+          "board": "Shopping ideas"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "board": "Home & Everyday Living"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      },
+      "batch_id": "batch_20261026T141635592098_27945101"
+    },
+    {
+      "queue_item_id": "item_025_B0FJN3BTPV",
+      "original_url": "https://link.amazon/B06KC469E",
+      "asin": "B0FJN3BTPV",
+      "product_name": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Black Cherry",
+      "scheduled_date": "2026-10-28",
+      "daily_slot": 2,
+      "scheduled_at": "2026-10-28T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0FJN3BTPV_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:18:03.800796+00:00",
+      "published_at": null,
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
+          "board": "Shopping ideas"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "board": "Home & Everyday Living"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      },
+      "batch_id": "batch_20261026T141635592098_27945101"
+    },
+    {
+      "queue_item_id": "item_026_B09X5BQ969",
+      "original_url": "https://link.amazon/B0g3KMMBy",
+      "asin": "B09X5BQ969",
+      "product_name": "Bellavita Luxury Honey Oud Eau de Parfum Perfume Unisex, 3.4 fl oz (100 ml)",
+      "scheduled_date": "2026-10-29",
+      "daily_slot": 1,
+      "scheduled_at": "2026-10-29T13:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B09X5BQ969_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:19:11.352264+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261026T141635592098_27945101"
+    },
+    {
+      "queue_item_id": "item_027_B0BZYCJK89",
+      "original_url": "https://link.amazon/B01k4qcKc",
+      "asin": "B0BZYCJK89",
+      "product_name": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Denim",
+      "scheduled_date": "2026-10-29",
+      "daily_slot": 2,
+      "scheduled_at": "2026-10-29T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0BZYCJK89_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:20:52.251634+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261026T141635592098_27945101"
+    },
+    {
+      "queue_item_id": "item_028_B07H9PZDQW",
+      "original_url": "https://link.amazon/B0b08ATBA",
+      "asin": "B07H9PZDQW",
+      "product_name": "Gaiam Essentials Thick Yoga Mat Fitness & Exercise Mat with Easy-Cinch Yoga Mat Carrier Strap, 72\"L x 24\"W x 2/5 Inch Thick",
+      "scheduled_date": "2026-10-30",
+      "daily_slot": 1,
+      "scheduled_at": "2026-10-30T13:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B07H9PZDQW_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:24:21.526414+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261026T142353075489_ae63c4db"
+    },
+    {
+      "queue_item_id": "item_029_B0FL6Q8NFQ",
+      "original_url": "https://link.amazon/B05RcKpuU",
+      "asin": "B0FL6Q8NFQ",
+      "product_name": "Titanium Cutting Board for Kitchen, Cutting Board Set Double Sided Food Grade, Pure Titanium and Wheat Straw PP, Easy to Clean[15.5”*10.5”+12”*8.5”]",
+      "scheduled_date": "2026-10-30",
+      "daily_slot": 2,
+      "scheduled_at": "2026-10-30T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0FL6Q8NFQ_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:26:34.983862+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+    },
+    {
+      "queue_item_id": "item_030_B07PBXXNCY",
+      "original_url": "https://link.amazon/B03NM8ggp",
+      "asin": "B07PBXXNCY",
+      "product_name": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette, Eczema Association Accepted, Makeup Remover Dry Wipes, Ultra Soft, 1 Pack, 50 Ct",
+      "scheduled_date": "2026-10-31",
+      "daily_slot": 1,
+      "scheduled_at": "2026-10-31T13:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B07PBXXNCY_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:26:55.352825+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+    },
+    {
+      "queue_item_id": "item_031_B0BW93676T",
+      "original_url": "https://link.amazon/B01JvH5z4",
+      "asin": "B0BW93676T",
+      "product_name": "Trendy Queen Trd1361022 Women's T-Shirt",
+      "scheduled_date": "2026-10-31",
+      "daily_slot": 2,
+      "scheduled_at": "2026-10-31T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0BW93676T_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-27T11:29:05.011677+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261027T122840231670_da1691ba"
     }
   ]
 }
