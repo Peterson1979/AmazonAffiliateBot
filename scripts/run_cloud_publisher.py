@@ -82,10 +82,25 @@ def slot_key_for_item(item: Any) -> Optional[str]:
     return f"{item_dt.date().isoformat()}-slot-{item.daily_slot}"
 
 
-def claim_due_slots(queue: PublishingQueue, current_dt: datetime) -> Set[str]:
-    """Claim due slots durably before any live adapter can be called."""
+def claim_due_slots(
+    queue: PublishingQueue,
+    current_dt: datetime,
+    window_slot: Optional[int] = None,
+) -> Set[str]:
+    """
+    Claim due slots durably before any live adapter can be called.
+
+    The active Budapest window slot is always claimed, even when no queue item
+    is currently due.  Slot claims are what makes a scheduled run safe across
+    separate Actions invocations, so the claim must exist for a valid window
+    run regardless of the queue's current contents.
+    """
     due_items = QueuePublisher.find_due_items(queue, current_dt)
     due_keys = {key for item in due_items if (key := slot_key_for_item(item))}
+    if window_slot in (1, 2):
+        tz = get_budapest_timezone()
+        local_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
+        due_keys.add(f"{local_dt.date().isoformat()}-slot-{window_slot}")
     claimed: Set[str] = set()
     for key in sorted(due_keys):
         claim = queue.slot_claims.get(key) or {}
@@ -108,12 +123,44 @@ def claim_due_slots(queue: PublishingQueue, current_dt: datetime) -> Set[str]:
     return claimed
 
 
-def finalize_slot_claims(queue: PublishingQueue, slot_keys: Set[str], report: Dict[str, Any], current_dt: datetime) -> None:
-    """Complete successful claims; make failed/partial claims retryable."""
+def finalize_slot_claims(queue: PublishingQueue, slot_keys: Set[str], report: Dict[str, Any], current_dt: datetime) -> bool:
+    """
+    Complete successful claims; make failed/partial claims retryable.
+
+    Only slots that actually processed an item are finalized. A run that
+    processed no due items (for example, a window-only claim) leaves its claim
+    CLAIMED so a later run in the same Budapest window can still recover it.
+    Returns True when the persisted claim state changed.
+    """
+    processed_keys: Set[str] = set()
+    for item in report.get("items_processed", []):
+        slot = item.get("slot")
+        scheduled_at = item.get("scheduled_at")
+        if slot not in (1, 2) or not scheduled_at:
+            continue
+        try:
+            item_dt = QueuePublisher.parse_datetime(str(scheduled_at))
+        except Exception:
+            continue
+        processed_keys.add(f"{item_dt.date().isoformat()}-slot-{slot}")
+
+    final_keys = slot_keys & processed_keys
+    if not final_keys:
+        return False
+
     retryable = report.get("failed_count", 0) > 0 or report.get("partially_published_count", 0) > 0
-    for key in slot_keys:
+    new_state = "RETRYABLE" if retryable else "COMPLETED"
+    completed_at = current_dt.isoformat()
+    changed = False
+    for key in final_keys:
         claim = queue.slot_claims.setdefault(key, {})
-        claim.update({"state": "RETRYABLE" if retryable else "COMPLETED", "completed_at": current_dt.isoformat()})
+        if claim.get("state") != new_state:
+            claim["state"] = new_state
+            changed = True
+        if claim.get("completed_at") != completed_at:
+            claim["completed_at"] = completed_at
+            changed = True
+    return changed
 
 
 def validate_required_live_secrets() -> Tuple[bool, List[str]]:
@@ -400,7 +447,7 @@ def main():
         sys.exit(1)
 
     if args.claim_only:
-        claimed = claim_due_slots(raw_queue, current_dt)
+        claimed = claim_due_slots(raw_queue, current_dt, window_slot=slot_window)
         if claimed:
             raw_queue.save(queue_file)
         print(f"[INFO] Persisted scheduled slot claims: {sorted(claimed) if claimed else 'none'}", flush=True)
@@ -460,6 +507,7 @@ def main():
         exec_queue_file = Path(temp_dir) / "temp_queue.json"
         shutil.copyfile(queue_file, exec_queue_file)
 
+    claims_changed = False
     try:
         report = QueuePublisher.publish_due_items(
             queue_file=exec_queue_file,
@@ -496,12 +544,13 @@ def main():
 
         if not dry_run and allowed_slot_keys:
             persisted_queue = PublishingQueue.load(queue_file)
-            finalize_slot_claims(persisted_queue, allowed_slot_keys, report, current_dt)
-            persisted_queue.save(queue_file)
+            claims_changed = finalize_slot_claims(persisted_queue, allowed_slot_keys, report, current_dt)
+            if claims_changed:
+                persisted_queue.save(queue_file)
 
-        # In live mode, if items were processed or claims were finalized, queue was updated and needs persistence
+        # In live mode, if items were processed or claim state changed, the queue needs persistence.
         queue_updated = False
-        if not dry_run and (published_count > 0 or partially_count > 0 or failed_count > 0 or allowed_slot_keys):
+        if not dry_run and (published_count > 0 or partially_count > 0 or failed_count > 0 or claims_changed):
             queue_updated = True
             print(f"\n[INFO] Queue file updated on disk: {queue_file}", flush=True)
 
