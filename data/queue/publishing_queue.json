@@ -95,6 +95,11 @@
       "claimed_at": "2026-10-18T15:38:13.189909+02:00",
       "attempt": 1,
       "completed_at": "2026-10-18T15:38:14.890572+02:00"
+    },
+    "2026-10-29-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-29T18:18:31.850992+01:00",
+      "attempt": 1
     }
   },
   "items": [
@@ -1643,8 +1648,7 @@
           "message": "Successfully published image post 18109675970245113 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-10-26T13:33:22.560444+01:00"
         }
-      },
-      "batch_id": "batch_20261026T123121051979_2b53ae9e"
+      }
     },
     {
       "queue_item_id": "item_022_B0DF472VMZ",
@@ -1831,8 +1835,7 @@
           "message": "Successfully published image post 17928973368186495 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-10-26T13:42:01.822911+01:00"
         }
-      },
-      "batch_id": "batch_20261026T133953003275_551bddb4"
+      }
     },
     {
       "queue_item_id": "item_023_B00JUM4CT4",
@@ -1884,8 +1887,7 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      },
-      "batch_id": "batch_20261026T140135413250_40b713fc"
+      }
     },
     {
       "queue_item_id": "item_024_B08BRJHJF9",
@@ -1937,8 +1939,7 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      },
-      "batch_id": "batch_20261026T141635592098_27945101"
+      }
     },
     {
       "queue_item_id": "item_025_B0FJN3BTPV",
@@ -1990,8 +1991,7 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      },
-      "batch_id": "batch_20261026T141635592098_27945101"
+      }
     },
     {
       "queue_item_id": "item_026_B09X5BQ969",
@@ -2008,8 +2008,7 @@
       "errors": [],
       "created_at": "2026-10-26T13:19:11.352264+00:00",
       "published_at": null,
-      "publishing_results": null,
-      "batch_id": "batch_20261026T141635592098_27945101"
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_027_B0BZYCJK89",
@@ -2026,8 +2025,7 @@
       "errors": [],
       "created_at": "2026-10-26T13:20:52.251634+00:00",
       "published_at": null,
-      "publishing_results": null,
-      "batch_id": "batch_20261026T141635592098_27945101"
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_028_B07H9PZDQW",
@@ -2044,8 +2042,7 @@
       "errors": [],
       "created_at": "2026-10-26T13:24:21.526414+00:00",
       "published_at": null,
-      "publishing_results": null,
-      "batch_id": "batch_20261026T142353075489_ae63c4db"
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_029_B0FL6Q8NFQ",
@@ -2062,8 +2059,7 @@
       "errors": [],
       "created_at": "2026-10-26T13:26:34.983862+00:00",
       "published_at": null,
-      "publishing_results": null,
-      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_030_B07PBXXNCY",
@@ -2080,8 +2076,7 @@
       "errors": [],
       "created_at": "2026-10-26T13:26:55.352825+00:00",
       "published_at": null,
-      "publishing_results": null,
-      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+      "publishing_results": null
     },
     {
       "queue_item_id": "item_031_B0BW93676T",
@@ -2098,8 +2093,7 @@
       "errors": [],
       "created_at": "2026-10-27T11:29:05.011677+00:00",
       "published_at": null,
-      "publishing_results": null,
-      "batch_id": "batch_20261027T122840231670_da1691ba"
+      "publishing_results": null
     }
   ]
 }
