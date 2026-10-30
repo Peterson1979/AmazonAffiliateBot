@@ -159,10 +159,16 @@ class ContentPackage:
             "generated_at": generated_at,
             "model": model,
             "source": {
-                "product_cache": cache_file_path
+                "product_cache": cache_file_path,
+                # Immutable user-supplied affiliate URL. source_url remains
+                # available in the product cache for the resolved page URL.
+                "affiliate_url": getattr(product, "original_affiliate_url", "") or product.affiliate_url or ""
             },
             "platforms": packaged_platforms
         }
+        provider_diagnostics = social_data.get("provider_diagnostics")
+        if isinstance(provider_diagnostics, list) and provider_diagnostics:
+            package["provider_diagnostics"] = provider_diagnostics[-20:]
 
         return package
 

@@ -73,7 +73,8 @@ class TestDiscoveryAndReplenishment(unittest.TestCase):
             affiliate_url=f"https://www.amazon.com/dp/{asin}?tag=lifemode-20",
             source_url=f"https://www.amazon.com/dp/{asin}",
             price="$49.99",
-            asin=asin
+            asin=asin,
+            image_url="https://m.media-amazon.com/images/I/synthetic_test_image.jpg"
         )
 
     # ==================== 1. DISCOVERY CANDIDATE FILTERING ====================
@@ -229,7 +230,7 @@ class TestDiscoveryAndReplenishment(unittest.TestCase):
             product_name="Existing Coffee Machine",
             scheduled_date="2026-10-08",
             daily_slot=1,
-            scheduled_at="2026-10-08T12:00:00+02:00",
+            scheduled_at="2026-10-08T13:00:00+02:00",
             timezone="Europe/Budapest",
             status=STATUS_READY
         )
@@ -331,7 +332,7 @@ class TestDiscoveryAndReplenishment(unittest.TestCase):
         self.assertEqual(reloaded.items[2].asin, "B0NEW00003")
         self.assertEqual(reloaded.items[2].scheduled_date, "2026-10-09")
         self.assertEqual(reloaded.items[2].daily_slot, 1)
-        self.assertEqual(reloaded.items[2].scheduled_at, "2026-10-09T12:00:00+02:00")
+        self.assertEqual(reloaded.items[2].scheduled_at, "2026-10-09T13:00:00+02:00")
 
         self.assertEqual(reloaded.items[3].asin, "B0NEW00004")
         self.assertEqual(reloaded.items[3].scheduled_date, "2026-10-09")

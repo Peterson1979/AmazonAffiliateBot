@@ -23,7 +23,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 from dotenv import load_dotenv
 from amazon.scraper import Product, scrape_amazon_product, extract_asin_from_url, is_valid_image_url
-from ai.ollama import OllamaClient
+from ai.provider import create_content_provider
 from content.generator import ContentGenerator
 from content.package import ContentPackage
 from publishing import SocialPublisher, PublishingConfig
@@ -45,6 +45,16 @@ def load_config(config_path: Path = DEFAULT_CONFIG_PATH) -> Dict[str, Any]:
             "num_predict": 120,
             "num_ctx": 1024
         },
+        "content_generation": {"provider": "groq", "timeout": 30, "max_attempts": 2},
+        "groq": {
+            "base_url": "https://api.groq.com/openai/v1",
+            "model": "openai/gpt-oss-120b",
+            "api_key_env": "GROQ_API_KEY",
+            "timeout": 30,
+            "max_attempts": 2,
+            "num_predict": 120,
+            "reasoning_effort": "low"
+        },
         "affiliate": {
             "disclosure": "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         },
@@ -60,7 +70,7 @@ def load_config(config_path: Path = DEFAULT_CONFIG_PATH) -> Dict[str, Any]:
     try:
         with open(config_path, "r", encoding="utf-8") as f:
             user_config = json.load(f)
-            for section in ("ollama", "affiliate", "browser"):
+            for section in ("ollama", "content_generation", "groq", "affiliate", "browser"):
                 if section in user_config:
                     defaults[section].update(user_config[section])
             return defaults
@@ -233,11 +243,6 @@ def main():
     config = load_config(Path(args.config))
     headless_setting = args.headless or config.get("browser", {}).get("headless", False)
     firefox_profile = config.get("browser", {}).get("firefox_profile", "")
-    ollama_base_url = config.get("ollama", {}).get("base_url", "http://localhost:11434")
-    ollama_model = config.get("ollama", {}).get("model", "qwen2.5:7b")
-    ollama_timeout = config.get("ollama", {}).get("timeout", 300)
-    ollama_num_predict = config.get("ollama", {}).get("num_predict", 120)
-    ollama_num_ctx = config.get("ollama", {}).get("num_ctx", 1024)
     disclosure_text = config.get("affiliate", {}).get(
         "disclosure",
         "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
@@ -432,20 +437,14 @@ def main():
         save_product_cache(product, cache_key)
         print("[OK] Product cached", flush=True)
 
-    # 3. Setup Ollama Client
-    ollama = OllamaClient(
-        base_url=ollama_base_url,
-        model=ollama_model,
-        timeout=ollama_timeout,
-        num_predict=ollama_num_predict,
-        num_ctx=ollama_num_ctx
-    )
+    # 3. Setup configured content provider
+    provider = create_content_provider(config)
 
     # 4. Generate Content
     if args.v1:
         # Legacy V1 flow
         try:
-            generated_content = ollama.generate_recommendation(
+            generated_content = provider.generate_recommendation(
                 product=product,
                 disclosure=disclosure_text
             )
@@ -472,7 +471,7 @@ def main():
             sys.exit(1)
     else:
         # Active multi-platform flow (Facebook, Pinterest, Threads)
-        generator = ContentGenerator(ollama_client=ollama)
+        generator = ContentGenerator(ollama_client=provider)
         try:
             if args.platform == "all":
                 print("[INFO] Generating platform-specific content (Facebook, Pinterest, Threads)...", flush=True)
@@ -494,7 +493,7 @@ def main():
                     product=product,
                     social_data=social_data,
                     cache_file_path=f"data/products/{cache_key}.json",
-                    model_name=ollama.model
+                    model_name=provider.model
                 )
                 package_path = ContentPackage.save_content_package(
                     package=package,
@@ -534,7 +533,7 @@ def main():
                 single_social_data = {
                     "asin": product.asin or "",
                     "product_title": product.title,
-                    "generated_with": ollama.model,
+                    "generated_with": provider.model,
                     "platforms": {platform_choice: content}
                 }
                 saved_path = ContentGenerator.save_social_content(

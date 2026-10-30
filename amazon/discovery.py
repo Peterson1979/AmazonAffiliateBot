@@ -38,7 +38,7 @@ DEFAULT_CONFIG_QUERIES = [
     "espresso machine accessories",
     "portable tech accessories"
 ]
-DEFAULT_TRACKING_TAG = "lifemode-20"
+DEFAULT_TRACKING_TAG = "homeideas4a01-20"
 
 
 @dataclass

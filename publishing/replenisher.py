@@ -2,7 +2,7 @@
 Publishing Queue Replenishment and Automatic Product Maintenance Module for AmazonAffiliateBot.
 Calculates future publishing capacity, coordinates Amazon product discovery,
 extracts canonical facts, generates validated content packages,
-and appends new products to future available daily slots (12:00 & 19:00 Europe/Budapest).
+and appends new products to future available daily slots (13:00 & 19:00 Europe/Budapest).
 """
 
 from typing import Dict, Any, List, Optional, Tuple, Set, Union, Callable
@@ -39,8 +39,9 @@ from publishing.queue import (
     STATUS_PUBLISHED,
     STATUS_PARTIALLY_PUBLISHED,
     recover_pending_queue_images,
+    next_queue_item_id,
 )
-from ai.ollama import OllamaClient
+from ai.provider import create_content_provider
 
 
 DEFAULT_TARGET_FUTURE_CAPACITY = 28   # 14 days @ 2 products/day
@@ -107,7 +108,7 @@ class QueueReplenisher:
         Determine the next concrete available (date, slot, scheduled_at) in Europe/Budapest.
         Preserves all existing slots and advances consecutively:
         - If latest slot in queue is (Date D, Slot 1) -> next is (Date D, Slot 2 at 19:00).
-        - If latest slot in queue is (Date D, Slot 2) -> next is (Date D+1, Slot 1 at 12:00).
+        - If latest slot in queue is (Date D, Slot 2) -> next is (Date D+1, Slot 1 at 13:00).
         - If queue has no scheduled items or all slots are in the past -> starts next future slot relative to current_dt.
         """
         tz = get_budapest_timezone()
@@ -244,8 +245,9 @@ class QueueReplenisher:
                     continue
 
                 next_slot_info = cls.find_next_available_slot(queue, current_dt)
-                item_idx = len(queue.items) + 1
-                item_id = f"item_{item_idx:03d}_{asin}"
+                # Max existing numeric suffix + 1: never reuses an ID that
+                # local/remote queue divergence may already occupy.
+                item_id = next_queue_item_id(queue.items, asin)
                 pkg_path_str = str(pkg_file).replace("\\", "/")
 
                 new_queue_item = QueueItem(
@@ -345,7 +347,7 @@ class QueueReplenisher:
             queue,
             products_dir=products_dir,
             generated_dir=generated_dir,
-            allow_scrape=candidate_provider is None,
+            allow_scrape=candidate_provider is None and not dry_run,
         )
         if image_recovery["recovered"]:
             queue.save(target_qfile)
@@ -462,13 +464,9 @@ class QueueReplenisher:
 
         # Ingestion dependencies
         if generator is None:
-            ollama = OllamaClient(
-                base_url=cfg.get("ollama", {}).get("base_url", "http://localhost:11434"),
-                model=cfg.get("ollama", {}).get("model", "qwen2.5:7b"),
-                timeout=cfg.get("ollama", {}).get("timeout", 300)
-            )
-            gen = ContentGenerator(ollama_client=ollama)
-            model_name = ollama.model
+            provider = create_content_provider(cfg)
+            gen = ContentGenerator(ollama_client=provider)
+            model_name = provider.model
         else:
             gen = generator
             model_name = getattr(generator, "model_name", "qwen2.5:7b")
@@ -601,8 +599,7 @@ class QueueReplenisher:
 
                 # 6. Allocate Next Available Slot
                 next_slot_info = cls.find_next_available_slot(queue, current_dt)
-                item_idx = len(queue.items) + 1
-                item_id = f"item_{item_idx:03d}_{product.asin.upper()}"
+                item_id = next_queue_item_id(queue.items, product.asin.upper())
 
                 new_queue_item = QueueItem(
                     queue_item_id=item_id,

@@ -82,6 +82,19 @@ jobs:
             git push origin HEAD:${{ github.ref_name }}
           fi
 
+      # Safety gate: fails the workflow before any publishing starts when a
+      # due item is missing its content package, so no item can be marked
+      # FAILED by a missing package and no other item publishes either.
+      # Read-only: it never mutates the queue or triggers publishing.
+      - name: Verify content packages before publishing
+        id: preflight
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          NOW_OVERRIDE: ${{ github.event.inputs.now_override }}
+          REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' }}
+        run: |
+          python scripts/preflight_content_packages.py
+
       - name: Run Cloud Publisher
         id: publisher
         env:

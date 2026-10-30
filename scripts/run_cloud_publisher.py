@@ -33,6 +33,7 @@ from publishing.queue import (
     DEFAULT_QUEUE_FILE,
     DEFAULT_LOG_FILE,
     get_budapest_timezone,
+    is_item_overdue_held,
     STATUS_READY,
 )
 from publishing.config import PublishingConfig
@@ -214,6 +215,7 @@ def audit_queue_items(
     total = len(queue.items)
     scheduled_items = []
     due_items = []
+    overdue_held_items = []
     skipped_items = []
     next_upcoming = None
     min_future_diff = None
@@ -266,6 +268,21 @@ def audit_queue_items(
 
         scheduled_items.append(item)
 
+        if is_item_overdue_held(item, current_dt):
+            overdue_held_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "item_dt": item_dt,
+                "status": status,
+                "reason": (
+                    "Overdue READY item from an earlier Budapest day; held for explicit "
+                    "review (overdue policy: same_day) and not published automatically"
+                )
+            })
+            continue
+
         if slot_filter is not None and slot != slot_filter:
             skipped_items.append({
                 "item_id": item_id,
@@ -314,8 +331,10 @@ def audit_queue_items(
         "total_items": total,
         "scheduled_items_count": len(scheduled_items),
         "due_items_count": len(due_items),
+        "overdue_held_count": len(overdue_held_items),
         "skipped_items_count": len(skipped_items),
         "due_items": due_items,
+        "overdue_held_items": overdue_held_items,
         "skipped_items": skipped_items,
         "next_upcoming": next_upcoming,
     }
@@ -460,7 +479,7 @@ def main():
     if require_claim:
         allowed_slot_keys = {
             key for key, value in raw_queue.slot_claims.items()
-            if value.get("state") == "CLAIMED"
+            if isinstance(value, dict) and value.get("state") in ("CLAIMED", "RETRYABLE")
         }
         if not allowed_slot_keys:
             print("[INFO] No persisted scheduled slot claim is available; skipping execution.", flush=True)
@@ -476,6 +495,7 @@ def main():
     print(f" Total Queue Items            : {audit['total_items']}")
     print(f" Scheduled (Active Future)    : {audit['scheduled_items_count']}")
     print(f" Currently Due Now            : {audit['due_items_count']}")
+    print(f" Overdue Held For Review      : {audit.get('overdue_held_count', 0)}")
     print(f" Skipped / Ineligible Items   : {audit['skipped_items_count']}")
     print("=======================================================\n", flush=True)
 
@@ -485,6 +505,14 @@ def main():
         sched_str = f"({s_item['scheduled_at']}) " if s_item.get("scheduled_at") else ""
         print(f"  - [{s_item['item_id']}] ASIN: {s_item['asin']} | {slot_str}{sched_str}| Status: {s_item['status']}")
         print(f"      -> Reason: {s_item['reason']}")
+
+    if audit.get("overdue_held_items"):
+        print(f"\n--- OVERDUE ITEMS HELD FOR REVIEW ({len(audit['overdue_held_items'])}) ---", flush=True)
+        for h_item in audit["overdue_held_items"]:
+            print(
+                f"  ! [{h_item['item_id']}] ASIN: {h_item['asin']} | Slot {h_item['slot']} "
+                f"({h_item['scheduled_at']}) -> HELD (not published automatically)"
+            )
 
     if audit["due_items"]:
         print(f"\n--- DUE ITEMS FOR PUBLISHING ({len(audit['due_items'])}) ---", flush=True)
@@ -528,6 +556,7 @@ def main():
         print(f"Mode                 : {report.get('mode')}", flush=True)
         print(f"Evaluated At         : {report.get('evaluated_at')}", flush=True)
         print(f"Due Items Processed  : {due_count}", flush=True)
+        print(f"Overdue Held         : {report.get('overdue_held_count', 0)}", flush=True)
         print(f"Published (All OK)   : {published_count}", flush=True)
         print(f"Partially Published  : {partially_count}", flush=True)
         print(f"Failed               : {failed_count}", flush=True)

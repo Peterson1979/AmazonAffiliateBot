@@ -219,7 +219,41 @@ def stem_word(w: str) -> str:
     for suffix in ("ing", "tion", "able", "ible", "ment", "ness", "ies", "es", "ed", "ly", "s"):
         if len(w) > len(suffix) + 2 and w.endswith(suffix):
             return w[:-len(suffix)]
+    # Align silent-e variants of the same word ("sleeve" vs "sleeved"/"sleeves").
+    # Applied to source text and generated text alike, so a generated word still
+    # has to stem to a word that is genuinely present in the source.
+    if len(w) > 4 and w.endswith("e"):
+        return w[:-1]
     return w
+
+
+def is_keyword_stuffed_text(text: Optional[str]) -> bool:
+    """
+    Detect SEO keyword lists, search-phrase dumps, or repeated keyword text instead of
+    real descriptive prose.
+
+    Deterministic and category-independent. It is only used to decide whether an
+    *existing* source field may be treated as a description or as a factual supporting
+    attribute; it never creates, edits, or invents source content.
+
+    Signals:
+    - repeated comma-separated fragments (the same phrase pasted several times)
+    - long chains of short fragments (6+ fragments where most are 8 words or fewer)
+    """
+    value = (text or "").strip()
+    if not value:
+        return False
+    fragments = [p.strip() for p in re.split(r"[,;|/]+", value) if p.strip()]
+    if len(fragments) < 2:
+        return False
+    lowered = [f.lower() for f in fragments]
+    if len(set(lowered)) < len(lowered):
+        return True
+    if len(fragments) >= 6:
+        short = sum(1 for f in fragments if len(f.split()) <= 8)
+        if short >= max(3, int(len(fragments) * 0.75)):
+            return True
+    return False
 
 
 @dataclass
@@ -281,6 +315,7 @@ class CanonicalProductFacts:
     price: Optional[str] = None
     image_url: Optional[str] = None
     source_url: Optional[str] = None
+    description: Optional[str] = None
     
     # Atomic facts list
     atomic_facts: List[SourceFact] = field(default_factory=list)
@@ -314,20 +349,73 @@ class CanonicalProductFacts:
         """Verify that minimal authoritative information is available for safe generation."""
         return bool(self.title and self.title.strip())
 
+    def primary_description(self) -> str:
+        """
+        The actual product description, only when it really is descriptive prose.
+
+        Returns an empty string when the source data has no description, or when the
+        field is a keyword list / search-phrase dump. Keyword-stuffed text is never
+        treated as the product description.
+        """
+        description = (self.description or "").strip()
+        if not description or is_keyword_stuffed_text(description):
+            return ""
+        return description
+
+    def supporting_attributes(self) -> List[str]:
+        """Factual supporting attributes, excluding SEO keyword lists and search phrases."""
+        return [
+            f.strip()
+            for f in self.features
+            if f and f.strip() and not is_keyword_stuffed_text(f)
+        ]
+
     def format_for_prompt(self) -> str:
         """
         Format canonical source facts into a clean, numbered, delimited block for prompt consumption.
-        Contains verified source statements preserving entity relationships and exact specifications.
+
+        The actual product title and the actual product description are the primary
+        generation inputs and are emitted first. Keyword lists and search-phrase dumps
+        are excluded; remaining factual attributes are labelled as optional supporting
+        attributes only.
         """
         lines = [
             "SOURCE FACTS:",
             f"FACT 1: {self.title}",
+            "PRIMARY SOURCE (product title): summarize or rewrite the actual product "
+            "title above into short, natural copy.",
         ]
-        if self.features:
-            for idx, feat in enumerate(self.features, start=2):
-                lines.append(f"FACT {idx}: {feat}")
+        fact_index = 2
+
+        description = self.primary_description()
+        if description:
+            lines.append(f"FACT {fact_index}: {description}")
+            lines.append(
+                "PRIMARY SOURCE (product description): summarize or rewrite the actual "
+                "product description above into short, natural copy."
+            )
+            fact_index += 1
         else:
-            lines.append("FACT 2: (No additional feature bullets; rely strictly on FACT 1)")
+            lines.append(
+                "PRODUCT DESCRIPTION: not available in the source data - do not invent one."
+            )
+
+        lines.append(
+            "SUPPORTING ATTRIBUTES (optional - use only when genuinely needed; never "
+            "treat keyword lists, keyword dumps, search phrases, or repeated keyword "
+            "text as the product description):"
+        )
+        supporting = self.supporting_attributes()
+        if supporting:
+            for feat in supporting:
+                lines.append(f"FACT {fact_index}: {feat}")
+                fact_index += 1
+        else:
+            rely_on = "FACT 1 and FACT 2" if description else "FACT 1"
+            lines.append(
+                f"FACT {fact_index}: (No additional factual attributes; rely strictly on {rely_on})"
+            )
+
         lines.append("-------------------")
         return "\n".join(lines)
 
@@ -335,6 +423,7 @@ class CanonicalProductFacts:
         """Convert canonical facts to a serializable dictionary."""
         return {
             "title": self.title,
+            "description": self.description,
             "features": self.features,
             "affiliate_url": self.affiliate_url,
             "asin": self.asin,
@@ -517,7 +606,18 @@ class FactExtractor:
             if sf and len(sf) > 3:
                 sanitized_features.append(sf)
 
+        # The actual product description, when present and not a keyword dump, is real
+        # source text: it must reach the prompt and the grounding concept set.
+        raw_description = (getattr(product, "description", "") or "").strip()
+        description = (
+            raw_description
+            if raw_description and not is_keyword_stuffed_text(raw_description)
+            else ""
+        )
+
         all_text = [raw_title] + sanitized_features
+        if description:
+            all_text.append(description)
         combined_lower = " ".join(all_text).lower()
 
         # 1. Title measurements & unit extraction (Highest Authoritative Precedence)
@@ -619,8 +719,15 @@ class FactExtractor:
         explicit_modifiers.update(explicit_properties)
 
         # 8. Entity-modifier binding extraction
+        # Bind only from real source statements: title + factual attributes. SEO keyword
+        # lists invent entities (e.g. "sleeved top") and would bind real modifiers to them.
+        binding_text = [
+            text
+            for text in all_text
+            if text == raw_title or not is_keyword_stuffed_text(text)
+        ]
         entity_modifiers: Dict[str, Set[str]] = {}
-        for text_clause in all_text:
+        for text_clause in binding_text:
             clause_bindings = cls._extract_modifier_bindings(text_clause)
             for mod, entity in clause_bindings:
                 is_real_mod = (
@@ -673,6 +780,8 @@ class FactExtractor:
         grounded_concepts: Set[str] = set()
         if raw_title:
             grounded_concepts.update(cls._tokenize_concepts(raw_title))
+        if description:
+            grounded_concepts.update(cls._tokenize_concepts(description))
         for feat in sanitized_features:
             grounded_concepts.update(cls._tokenize_concepts(feat))
         grounded_concepts.update(explicit_materials)
@@ -746,8 +855,9 @@ class FactExtractor:
 
         return CanonicalProductFacts(
             title=raw_title,
+            description=description or None,
             features=sanitized_features if sanitized_features else raw_features,
-            affiliate_url=product.affiliate_url or "",
+            affiliate_url=getattr(product, "original_affiliate_url", "") or product.affiliate_url or "",
             asin=product.asin,
             price=product.price,
             image_url=product.image_url,
