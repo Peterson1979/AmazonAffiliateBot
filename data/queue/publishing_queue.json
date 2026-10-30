@@ -112,6 +112,11 @@
       "claimed_at": "2026-10-30T17:56:28.334080+01:00",
       "attempt": 1,
       "completed_at": "2026-10-30T17:56:30.710700+01:00"
+    },
+    "2026-10-30-slot-2": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-10-30T22:24:06.972217+01:00",
+      "attempt": 1
     }
   },
   "items": [
@@ -175,7 +180,8 @@
           "http_status": 200,
           "message": "Successfully published image post 17987049575882000 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_002_B0GKGBWRTR",
@@ -226,7 +232,8 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_003_B0TESTADD1",
@@ -243,7 +250,8 @@
       "errors": [],
       "created_at": "2026-10-06T10:54:42.393772+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_004_B01NBJEKX2",
@@ -317,7 +325,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18144904363600584 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_005_B08CRPWQHB",
@@ -334,7 +343,8 @@
       "errors": [],
       "created_at": "2026-10-10T17:56:45.922820+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_006_B08GH41N87",
@@ -396,7 +406,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18271001371306492 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_007_B09SH38JRR",
@@ -458,7 +469,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18131001442744997 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_008_B09ZV2TX28",
@@ -520,7 +532,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18122285866905947 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_009_B0BJKRYCZF",
@@ -582,7 +595,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18153107746536754 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_010_B0C235GNV9",
@@ -660,7 +674,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18145720240597157 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_011_B0C51CZJ83",
@@ -738,7 +753,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18347785033264127 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_012_B0C65T7727",
@@ -816,7 +832,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18039865895645635 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_013_B0CNCL35CH",
@@ -894,7 +911,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18145291876601591 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_014_B0D6G5S35J",
@@ -972,7 +990,8 @@
           "http_status": 200,
           "message": "Successfully published image post 17871489417649167 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_015_B0D9TCFRJ5",
@@ -1050,7 +1069,8 @@
           "http_status": 200,
           "message": "Successfully published image post 17976884819930501 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_016_B0DHKSF81K",
@@ -1130,7 +1150,8 @@
           "http_status": 200,
           "message": "Successfully published image post 18133508788669228 to Threads account 'lifemodehq' (28272717349017680)."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_017_B0DTHHK2S1",
@@ -1213,7 +1234,8 @@
           "message": "Successfully published image post 18133367923663189 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-10-17T20:54:06.693599+02:00"
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_018_B0H1W18KGL",
@@ -1403,7 +1425,8 @@
           "message": "Successfully published image post 18113724248104688 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-10-18T15:38:14.892863+02:00"
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_019_B095NXXP8C",
@@ -1454,7 +1477,8 @@
             "Skipped because item image preflight was blocked."
           ]
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_020_UNKNOWN",
@@ -1473,7 +1497,8 @@
       ],
       "created_at": "2026-10-11T04:57:40.819852+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_021_B07BBW1DD1",
@@ -1660,7 +1685,8 @@
           "message": "Successfully published image post 18109675970245113 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-10-26T13:33:22.560444+01:00"
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_022_B0DF472VMZ",
@@ -1847,7 +1873,8 @@
           "message": "Successfully published image post 17928973368186495 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-10-26T13:42:01.822911+01:00"
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_023_B00JUM4CT4",
@@ -1899,7 +1926,8 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_024_B08BRJHJF9",
@@ -1951,7 +1979,8 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_025_B0FJN3BTPV",
@@ -2003,7 +2032,8 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      }
+      },
+      "batch_id": null
     },
     {
       "queue_item_id": "item_026_B09X5BQ969",
@@ -2020,7 +2050,8 @@
       "errors": [],
       "created_at": "2026-10-26T13:19:11.352264+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_027_B0BZYCJK89",
@@ -2039,7 +2070,8 @@
       ],
       "created_at": "2026-10-26T13:20:52.251634+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_028_B07H9PZDQW",
@@ -2058,7 +2090,8 @@
       ],
       "created_at": "2026-10-26T13:24:21.526414+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_029_B0FL6Q8NFQ",
@@ -2075,7 +2108,8 @@
       "errors": [],
       "created_at": "2026-10-26T13:26:34.983862+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_030_B07PBXXNCY",
@@ -2092,7 +2126,8 @@
       "errors": [],
       "created_at": "2026-10-26T13:26:55.352825+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     },
     {
       "queue_item_id": "item_031_B0BW93676T",
@@ -2109,7 +2144,8 @@
       "errors": [],
       "created_at": "2026-10-27T11:29:05.011677+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": null
     }
   ]
 }
