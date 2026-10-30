@@ -193,7 +193,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         ]
         for bad_text in bad_claims:
             is_val, issues = ClaimValidator.validate_platform_content(
-                platform="x",
+                platform="threads",
                 content={"text": bad_text},
                 product=self.facts,
                 disclosure=self.disclosure
@@ -215,7 +215,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"This espresso machine offers a 20 bar pump.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 20 bar is not supported when source specifies 15 bar.")
         self.assertTrue(any("20" in iss or "unit mismatch" in iss.lower() or "unsupported" in iss.lower() for iss in issues))
 
@@ -230,7 +230,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"Features a removable 3 litre water tank.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 3 litre is not supported when source specifies 2.3 litre.")
         self.assertTrue(any("3" in iss for iss in issues))
 
@@ -245,7 +245,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"Includes a 30% wider polished channel.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 30% is not supported when source specifies 20%.")
         self.assertTrue(any("30" in iss for iss in issues))
 
@@ -260,7 +260,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"Features 15 bar pressure for better taste.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 'for better taste' is an unsupported outcome claim.")
         self.assertTrue(any("better" in iss.lower() or "outcome" in iss.lower() or "taste" in iss.lower() for iss in issues))
 
@@ -275,7 +275,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"Features 15 bar pressure to extract the maximum aroma.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 'extract the maximum aroma' is an unsupported sensory outcome.")
         self.assertTrue(len(issues) > 0)
 
@@ -305,7 +305,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"The machine includes a reinforced spiral drill for interference-free function.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 'interference-free function' is an unsupported operational claim.")
         self.assertTrue(len(issues) > 0)
 
@@ -320,7 +320,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"This espresso machine features a powerful pump and 15 bar pressure.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 'powerful' is an ungrounded modifier.")
         self.assertTrue(any("powerful" in iss.lower() for iss in issues))
 
@@ -335,7 +335,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         bad_post = {"text": f"The espresso machine delivers professional results.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", bad_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", bad_post, facts, self.disclosure)
         self.assertFalse(is_val, "Must FAIL: 'professional results' is an unsupported outcome claim.")
         self.assertTrue(len(issues) > 0)
 
@@ -352,13 +352,13 @@ class TestContentQualityImprovement(unittest.TestCase):
         
         # Test case A: durable glass cup
         bad_post_a = {"text": f"Includes a durable glass cup.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val_a, issues_a = ClaimValidator.validate_platform_content("x", bad_post_a, facts, self.disclosure)
+        is_val_a, issues_a = ClaimValidator.validate_platform_content("threads", bad_post_a, facts, self.disclosure)
         self.assertFalse(is_val_a, "Must FAIL: 'durable' was bound to steel frame in source, not glass cup.")
         self.assertTrue(any("modifier mismatch" in iss.lower() or "durable" in iss.lower() for iss in issues_a))
 
         # Test case B: fragile steel frame
         bad_post_b = {"text": f"Features a fragile steel frame.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val_b, issues_b = ClaimValidator.validate_platform_content("x", bad_post_b, facts, self.disclosure)
+        is_val_b, issues_b = ClaimValidator.validate_platform_content("threads", bad_post_b, facts, self.disclosure)
         self.assertFalse(is_val_b, "Must FAIL: 'fragile' was bound to glass cup in source, not steel frame.")
         self.assertTrue(any("modifier mismatch" in iss.lower() or "fragile" in iss.lower() for iss in issues_b))
 
@@ -373,7 +373,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         valid_post = {"text": f"The machine features 15 bar pressure.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", valid_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", valid_post, facts, self.disclosure)
         self.assertTrue(is_val, f"Must PASS: '15 bar pressure' is fully grounded. Issues: {issues}")
         self.assertEqual(len(issues), 0)
 
@@ -388,7 +388,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         )
         facts = FactExtractor.extract_canonical_facts(product)
         valid_post = {"text": f"The machine features 15-bar pressure.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"}
-        is_val, issues = ClaimValidator.validate_platform_content("x", valid_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", valid_post, facts, self.disclosure)
         self.assertTrue(is_val, f"Must PASS: '15-bar pressure' is fully grounded. Issues: {issues}")
         self.assertEqual(len(issues), 0)
 
@@ -405,7 +405,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         valid_post = {
             "text": f"The espresso machine features an integrated grinder with 15-bar extraction pressure and a steam frother.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"
         }
-        is_val, issues = ClaimValidator.validate_platform_content("x", valid_post, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", valid_post, facts, self.disclosure)
         self.assertTrue(is_val, f"Must PASS: Paraphrase preserves verified facts. Issues: {issues}")
         self.assertEqual(len(issues), 0)
 
@@ -454,7 +454,7 @@ class TestContentQualityImprovement(unittest.TestCase):
         valid_x = {
             "text": f"The Electactic espresso machine features 15 bar pressure and an integrated grinder.\n\nLink: {product.affiliate_url}\n\n{self.disclosure}"
         }
-        is_val, issues = ClaimValidator.validate_platform_content("x", valid_x, facts, self.disclosure)
+        is_val, issues = ClaimValidator.validate_platform_content("threads", valid_x, facts, self.disclosure)
         self.assertTrue(is_val, f"Must PASS: Concise version omitting other facts is valid. Issues: {issues}")
         self.assertEqual(len(issues), 0)
 

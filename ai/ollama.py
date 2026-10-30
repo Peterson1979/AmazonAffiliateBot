@@ -9,6 +9,20 @@ import os
 import requests
 from amazon.scraper import Product
 
+class OllamaProviderError(RuntimeError):
+    """A bounded, actionable failure communicating with the local provider."""
+
+class OllamaGenerationTimeout(OllamaProviderError):
+    """The provider did not finish a generation within the configured limit."""
+
+class OllamaEmptyResponse(OllamaProviderError):
+    """The provider answered but returned no generated content.
+
+    This is an explicit, distinguishable content failure: it is not a transport
+    failure, so callers must not treat it as a provider-wide outage, and it must
+    never be mistaken for valid content.
+    """
+
 
 class OllamaClient:
     """Client for interacting with local Ollama API for text and recommendation generation."""
@@ -17,15 +31,17 @@ class OllamaClient:
         self,
         base_url: str = "http://localhost:11434",
         model: str = "qwen2.5:7b",
-        timeout: int = 300,
+        timeout: int = 60,
         num_predict: int = 120,
         num_ctx: int = 1024,
+        max_attempts: int = 2,
     ):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout
         self.num_predict = num_predict
         self.num_ctx = num_ctx
+        self.max_attempts = max(1, int(max_attempts))
         self.num_thread = min(os.cpu_count() or 4, 10)
 
     def check_connection(self) -> bool:
@@ -115,10 +131,9 @@ class OllamaClient:
             payload["format"] = "json"
 
         import time
-        max_attempts = 3
         last_error = None
 
-        for attempt in range(max_attempts):
+        for attempt in range(self.max_attempts):
             try:
                 response = requests.post(
                     f"{self.base_url}/api/generate",
@@ -126,7 +141,7 @@ class OllamaClient:
                     timeout=self.timeout
                 )
                 if response.status_code >= 500:
-                    if attempt < max_attempts - 1:
+                    if attempt < self.max_attempts - 1:
                         time.sleep(1.0)
                         continue
                     response.raise_for_status()
@@ -136,32 +151,41 @@ class OllamaClient:
                 generated_text = data.get("response", "").strip()
 
                 if not generated_text:
-                    raise RuntimeError("Ollama returned an empty response.")
+                    # Explicit signal (not a generic error) so generation code can
+                    # retry this platform within its existing regeneration budget
+                    # instead of aborting every remaining platform.
+                    raise OllamaEmptyResponse("Ollama returned an empty response.")
 
                 return generated_text
 
             except requests.exceptions.ConnectionError as e:
                 last_error = e
-                if attempt < max_attempts - 1:
+                if attempt < self.max_attempts - 1:
                     time.sleep(1.0)
                     continue
-                raise RuntimeError(f"Ollama connection error: {e}") from e
+                raise OllamaProviderError(f"Ollama connection error: {e}") from e
             except requests.exceptions.Timeout as e:
                 last_error = e
-                if attempt < max_attempts - 1:
+                if attempt < self.max_attempts - 1:
                     time.sleep(1.0)
                     continue
-                raise RuntimeError(f"Ollama generation timed out after {self.timeout} seconds.") from e
+                raise OllamaGenerationTimeout(
+                    f"Ollama generation timed out after {self.timeout} seconds "
+                    f"({self.max_attempts} attempt(s))."
+                ) from e
             except requests.exceptions.HTTPError as e:
                 last_error = e
-                if attempt < max_attempts - 1:
+                if attempt < self.max_attempts - 1:
                     time.sleep(1.0)
                     continue
-                raise RuntimeError(f"Ollama generation failed: {e}") from e
+                raise OllamaProviderError(f"Ollama generation failed: {e}") from e
+            except OllamaProviderError:
+                # Preserve the explicit failure type (e.g. OllamaEmptyResponse).
+                raise
             except Exception as e:
-                raise RuntimeError(f"Ollama generation failed: {e}") from e
+                raise OllamaProviderError(f"Ollama generation failed: {e}") from e
 
-        raise RuntimeError(f"Ollama generation failed after {max_attempts} attempts: {last_error}")
+        raise OllamaProviderError(f"Ollama generation failed after {self.max_attempts} attempts: {last_error}")
 
     def generate_recommendation(
         self,

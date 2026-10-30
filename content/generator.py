@@ -11,8 +11,8 @@ import re
 from pathlib import Path
 
 from amazon.scraper import Product
-from ai.ollama import OllamaClient
-from content.facts import FactExtractor, CanonicalProductFacts
+from ai.ollama import OllamaClient, OllamaEmptyResponse, OllamaProviderError
+from content.facts import FactExtractor, CanonicalProductFacts, is_keyword_stuffed_text
 from content.prompts import (
     PLATFORM_PROMPTS,
     COMMON_CONTENT_RULES,
@@ -32,6 +32,42 @@ PLATFORM_PREDICT_TOKENS = {
     "pinterest": 180,
     "threads": 120,
 }
+
+
+def recommended_num_ctx(prompt: str, num_predict: int, configured_num_ctx: int = 1024) -> int:
+    """Choose a bounded context window that can contain this prompt and its output.
+
+    Ollama's configured default remains the floor. Long, fact-heavy Amazon prompts
+    must not be forced into the 1024-token window, which can make prompt evaluation
+    disproportionately slow on the local model. This is only request sizing; it
+    does not alter the provider, model, timeout, or source facts.
+    """
+    prompt_tokens = max(1, (len(prompt) + 2) // 3)  # conservative for mixed text
+    required = prompt_tokens + max(1, int(num_predict)) + 64
+    context = max(int(configured_num_ctx), required)
+    context = ((context + 255) // 256) * 256
+    return min(context, 4096)
+
+
+def effective_num_predict(platform_key: str, configured_num_predict: object = None) -> int:
+    """Respect the configured provider output budget when it is lower."""
+    platform_budget = PLATFORM_PREDICT_TOKENS.get(platform_key, 160)
+    if isinstance(configured_num_predict, int) and configured_num_predict > 0:
+        return min(platform_budget, configured_num_predict)
+    return platform_budget
+
+
+def is_empty_response_error(error: BaseException) -> bool:
+    """True only for an explicit "provider returned no content" failure.
+
+    Transport failures (connection refused, timeout, HTTP error) stay
+    provider-wide and keep their existing short-circuit behavior. An empty
+    completion proves only that this one platform produced no content, so it is
+    handled per platform and must never be accepted as valid content.
+    """
+    if isinstance(error, OllamaEmptyResponse):
+        return True
+    return getattr(error, "category", None) == "empty_response"
 
 
 def clean_markdown_fences(text: str) -> str:
@@ -313,6 +349,10 @@ def extract_grounded_platform_content(
             p2 = ""
             for fact in facts.atomic_facts:
                 if fact.fact_type in ("specification", "component", "material", "feature"):
+                    # SEO keyword lists and search-phrase dumps are never real content:
+                    # skip them instead of splicing a keyword blob into the post.
+                    if is_keyword_stuffed_text(fact.text):
+                        continue
                     cand = re.split(r'\s+-\s+|\bfor\b', fact.text, flags=re.IGNORECASE)[0].strip()
                     cand = clean_formatting(cand).rstrip(".")
                     if cand and len(cand) > 3 and cand.lower() not in p1.lower():
@@ -322,7 +362,9 @@ def extract_grounded_platform_content(
                             p2 = cand_sentence
                             break
             if not p2:
-                p2 = p1
+                # Never duplicate the same sentence into both paragraphs: when only
+                # one grounded sentence exists, return that single sentence.
+                return {"text": p1}
             return {"text": f"{p1}\n\n{p2}"}
     else:
         # Threads
@@ -433,24 +475,49 @@ class ContentGenerator:
             raise RuntimeError("INSUFFICIENT_SOURCE_FACTS: Product title or features are insufficient to safely generate content.")
 
         prompt = prompt_builder(facts)
-        num_predict = PLATFORM_PREDICT_TOKENS.get(platform_key, 160)
+        num_predict = effective_num_predict(
+            platform_key,
+            getattr(self.ollama, "num_predict", None),
+        )
+        num_ctx = recommended_num_ctx(
+            prompt,
+            num_predict,
+            getattr(self.ollama, "num_ctx", 1024),
+        )
         # 1. First Generation Attempt
         retry_count = 0
-        raw_output = self.ollama.generate_text(
-            prompt=prompt,
-            num_predict=num_predict,
-            num_ctx=1024,
-            temperature=0.0,
-            json_format=False
-        )
+        first_error: Optional[BaseException] = None
+        try:
+            raw_output = self.ollama.generate_text(
+                prompt=prompt,
+                num_predict=num_predict,
+                num_ctx=num_ctx,
+                temperature=0.0,
+                json_format=False
+            )
+        except OllamaProviderError as exc:
+            if not is_empty_response_error(exc):
+                raise
+            raw_output = ""
+            first_error = exc
 
-        extracted = extract_grounded_platform_content(platform_key, raw_output, facts, disclosure)
-        if extracted is not None:
-            result = self._ensure_compliance(platform_key, extracted, facts, disclosure)
-            is_valid, issues = self.validate_platform_content(platform_key, result, facts, disclosure)
-        else:
+        if first_error is not None:
+            # An empty response is a per-platform content failure: it consumes
+            # this platform's single allowed regeneration instead of aborting
+            # the whole multi-platform run.
             is_valid = False
-            issues = ClaimValidator.validate_content_claims(raw_output, facts, disclosure=disclosure) or ["Output contains unsupported claims."]
+            issues = [
+                f"Content provider returned an empty response for '{platform_key}' "
+                f"on the first generation attempt."
+            ]
+        else:
+            extracted = extract_grounded_platform_content(platform_key, raw_output, facts, disclosure)
+            if extracted is not None:
+                result = self._ensure_compliance(platform_key, extracted, facts, disclosure)
+                is_valid, issues = self.validate_platform_content(platform_key, result, facts, disclosure)
+            else:
+                is_valid = False
+                issues = ClaimValidator.validate_content_claims(raw_output, facts, disclosure=disclosure) or ["Output contains unsupported claims."]
 
         # 2. Validate First Output & If invalid, attempt regeneration EXACTLY ONCE
         if not is_valid:
@@ -497,13 +564,38 @@ class ContentGenerator:
                     f"Post:"
                 )
 
-            retry_output = self.ollama.generate_text(
-                prompt=retry_prompt,
-                num_predict=num_predict,
-                num_ctx=1024,
-                temperature=0.0,
-                json_format=False
+            retry_num_ctx = recommended_num_ctx(
+                retry_prompt,
+                num_predict,
+                getattr(self.ollama, "num_ctx", 1024),
             )
+
+            try:
+                retry_output = self.ollama.generate_text(
+                    prompt=retry_prompt,
+                    num_predict=num_predict,
+                    num_ctx=retry_num_ctx,
+                    temperature=0.0,
+                    json_format=False
+                )
+            except OllamaProviderError as exc:
+                if not is_empty_response_error(exc):
+                    raise
+                # Both allowed attempts returned no content: fail closed with an
+                # explicit error. Empty output is never marked valid.
+                empty_issues = [
+                    f"Content provider returned an empty response for '{platform_key}' "
+                    f"after 1 regeneration attempt."
+                ]
+                self.last_validation_metadata[platform_key] = {
+                    "status": "FAILED_VALIDATION",
+                    "retry_count": 1,
+                    "errors": empty_issues
+                }
+                raise RuntimeError(
+                    f"Content generation for '{platform_key}' failed validation after 1 regeneration attempt: "
+                    f"{'; '.join(empty_issues)}"
+                ) from exc
 
             retry_extracted = extract_grounded_platform_content(platform_key, retry_output, facts, disclosure)
             if retry_extracted is not None:
@@ -558,18 +650,40 @@ class ContentGenerator:
                     product=facts,
                     disclosure=disclosure
                 )
+            except OllamaProviderError as e:
+                platforms_results[platform_key] = {"error": str(e)}
+                if is_empty_response_error(e):
+                    # One platform returning no content does not prove the shared
+                    # provider is down: record the failure for this platform and
+                    # keep generating the remaining platforms.
+                    self.last_validation_metadata[platform_key] = {
+                        "status": "FAILED_VALIDATION",
+                        "retry_count": self.last_validation_metadata.get(platform_key, {}).get("retry_count", 0),
+                        "errors": [str(e)]
+                    }
+                    continue
+                # Provider failures are shared by all platforms; stop instead of
+                # spending another full model timeout on each platform.
+                for remaining in ("facebook", "pinterest", "threads"):
+                    if remaining not in platforms_results:
+                        platforms_results[remaining] = {
+                            "error": f"Not attempted because {getattr(self.ollama, 'provider_name', 'content provider')} failed at {platform_key}: {e}"
+                        }
+                break
             except Exception as e:
-                platforms_results[platform_key] = {
-                    "error": str(e)
-                }
+                platforms_results[platform_key] = {"error": str(e)}
 
-        return {
+        provider_diagnostics = getattr(self.ollama, "response_metadata_history", None)
+        result = {
             "asin": facts.asin or "",
             "affiliate_url": facts.affiliate_url or "",
             "platforms": platforms_results,
             "validation_metadata": self.last_validation_metadata,
             "generated_with": self.ollama.model
         }
+        if isinstance(provider_diagnostics, list) and provider_diagnostics:
+            result["provider_diagnostics"] = provider_diagnostics[-20:]
+        return result
 
     @staticmethod
     def save_social_content(

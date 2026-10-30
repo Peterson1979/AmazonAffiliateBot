@@ -27,10 +27,15 @@ class Product:
     title: str
     features: List[str] = field(default_factory=list)
     affiliate_url: str = ""
+    # Immutable provenance value for the user-supplied tracking URL.  The
+    # legacy affiliate_url field remains for backward compatibility, but all
+    # new ingestion paths keep these values identical.
+    original_affiliate_url: str = ""
     source_url: str = ""
     price: Optional[str] = None
     asin: Optional[str] = None
     image_url: Optional[str] = None
+    description: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert product dataclass to a JSON-serializable dictionary."""
@@ -41,8 +46,10 @@ class Product:
         """Instantiate Product from a dictionary."""
         return cls(
             title=data.get("title", ""),
+            description=data.get("description"),
             features=data.get("features", []),
             affiliate_url=data.get("affiliate_url", ""),
+            original_affiliate_url=data.get("original_affiliate_url") or data.get("affiliate_url", ""),
             source_url=data.get("source_url", ""),
             price=data.get("price"),
             asin=data.get("asin"),
@@ -70,6 +77,50 @@ def extract_asin_from_url(url: str) -> Optional[str]:
     if match_query:
         return match_query.group(1).upper()
         
+    return None
+
+
+def _normalize_asin(value: Any) -> Optional[str]:
+    """Return value as an ASIN only if it is exactly 10 alphanumeric characters.
+
+    Mirrors the project-wide ASIN rule (amazon/discovery.py: non-empty,
+    10-character, alphanumeric). Short-link tokens such as the 9-character
+    'B01JvH5z4' can never match and are never accepted.
+    """
+    if not isinstance(value, str):
+        return None
+    candidate = value.strip().upper()
+    return candidate if re.fullmatch(r"[A-Z0-9]{10}", candidate) else None
+
+
+def _extract_asin_from_page(driver) -> Optional[str]:
+    """Fallback ASIN extraction from already-loaded page data.
+
+    Used only when URL-based extraction fails. Prefers the canonical product
+    URL (re-validated by extract_asin_from_url's strict 10-character rules),
+    then the explicit product ASIN fields already present in the DOM. Generic
+    '[data-asin]' lists (search results, recommendations, carousels) are
+    deliberately not consulted: they can belong to other products. Returns
+    None when no valid ASIN exists; never invents one from a path token.
+    """
+    # 1. <link rel="canonical" href="https://www.amazon.<tld>/dp/B0XXXXXXXX...">
+    try:
+        for element in driver.find_elements(By.CSS_SELECTOR, 'link[rel="canonical"]'):
+            asin = extract_asin_from_url(str(element.get_attribute("href") or ""))
+            if asin:
+                return asin
+    except Exception:
+        pass
+
+    # 2. Explicit product ASIN inputs rendered on the detail page
+    for selector in ("input#ASIN", 'input[name="ASIN"]'):
+        try:
+            for element in driver.find_elements(By.CSS_SELECTOR, selector):
+                asin = _normalize_asin(element.get_attribute("value"))
+                if asin:
+                    return asin
+        except Exception:
+            continue
     return None
 
 
@@ -192,8 +243,12 @@ def scrape_amazon_product(
 
         final_url = str(driver.current_url)
 
-        # Extract ASIN
+        # Extract ASIN from the URL first; if neither the post-redirect URL nor
+        # the submitted affiliate URL carries a 10-character ASIN (short links,
+        # interstitial landings), fall back to explicit ASIN data on the page.
         asin = extract_asin_from_url(final_url) or extract_asin_from_url(affiliate_url)
+        if not asin:
+            asin = _extract_asin_from_page(driver)
 
         # --- 1. Product Title Extraction ---
         title = ""
@@ -342,6 +397,7 @@ def scrape_amazon_product(
             title=str(title),
             features=[str(f) for f in features],
             affiliate_url=str(affiliate_url),
+            original_affiliate_url=str(affiliate_url),
             source_url=str(final_url),
             price=str(price) if price else None,
             asin=str(asin) if asin else None,

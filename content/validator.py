@@ -549,7 +549,7 @@ class ClaimValidator:
             if disclosure and disclosure.strip() not in description:
                 issues.append("Affiliate disclosure is missing from Pinterest description.")
 
-        elif platform_key in ("facebook", "threads"):
+        elif platform_key in ("x", "facebook", "threads"):
             text = content.get("text", "").strip()
             if not text:
                 issues.append(f"{platform_key.upper()} post text is empty.")

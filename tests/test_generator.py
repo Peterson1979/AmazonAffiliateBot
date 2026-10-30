@@ -14,8 +14,10 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from amazon.scraper import Product
+from content.facts import FactExtractor
 from content.generator import (
     ContentGenerator,
+    extract_grounded_platform_content,
     parse_pinterest_response,
     clean_markdown_fences,
     sanitize_generated_text
@@ -752,7 +754,7 @@ class TestGeneratorAndValidator(unittest.TestCase):
         ]
 
         gen = ContentGenerator(ollama_client=mock_ollama)
-        result = gen.generate_for_platform("x", self.sample_product, self.disclosure)
+        result = gen.generate_for_platform("threads", self.sample_product, self.disclosure)
 
         self.assertEqual(mock_ollama.generate_text.call_count, 2)
         self.assertIn("7 inches", result["text"])
@@ -770,7 +772,7 @@ class TestGeneratorAndValidator(unittest.TestCase):
 
         gen = ContentGenerator(ollama_client=mock_ollama)
         with self.assertRaises(RuntimeError) as ctx:
-            gen.generate_for_platform("x", self.sample_product, self.disclosure)
+            gen.generate_for_platform("threads", self.sample_product, self.disclosure)
 
         self.assertEqual(mock_ollama.generate_text.call_count, 2)
         self.assertIn("failed validation after 1 regeneration attempt", str(ctx.exception))
@@ -782,10 +784,104 @@ class TestGeneratorAndValidator(unittest.TestCase):
         mock_ollama.generate_text.return_value = "Adjustable aluminum laptop stand with up to 7 inches height adjustment."
 
         gen = ContentGenerator(ollama_client=mock_ollama)
-        result = gen.generate_for_platform("x", self.sample_product, self.disclosure)
+        result = gen.generate_for_platform("threads", self.sample_product, self.disclosure)
 
         self.assertEqual(mock_ollama.generate_text.call_count, 1)
         self.assertIn("7 inches", result["text"])
+
+    def test_facebook_fallback_never_splices_keyword_stuffed_facts(self):
+        """The second-paragraph fallback must skip SEO keyword lists and use a genuine fact."""
+        keyword_blob = (
+            "Great laptop stand, best laptop stand, amazing laptop stand, "
+            "wonderful laptop stand, superb laptop stand, top laptop stand"
+        )
+        product = Product(
+            title="Foldable Laptop Stand for 17.3 Inch Laptops",
+            features=[
+                keyword_blob,
+                "Folds flat to 10 x 8.7 x 1.8 inches for easy storage",
+            ],
+            affiliate_url="https://link.amazon/B0KEYWORDTEST",
+            source_url="https://www.amazon.co.uk/dp/B0KEYWORDTEST",
+            asin="B0KEYWORDTEST",
+        )
+        facts = FactExtractor.extract_canonical_facts(product)
+
+        # Exactly one valid sentence forces the single-paragraph fallback path.
+        result = extract_grounded_platform_content(
+            "facebook", "Foldable laptop stand for 17.3 inch laptops.", facts, ""
+        )
+
+        self.assertIsNotNone(result)
+        text = result["text"].lower()
+        self.assertNotIn("great laptop stand", text)
+        self.assertNotIn("best laptop stand", text)
+        self.assertNotIn("superb laptop stand", text)
+        self.assertIn("10 x 8.7 x 1.8", result["text"])
+
+    def test_facebook_fallback_returns_single_sentence_without_duplication(self):
+        """When only one grounded sentence exists, the fallback must not duplicate it."""
+        product = Product(
+            title="Womens Cotton Long-Sleeved Shirt",
+            features=[
+                "Great shirt, best shirt, amazing shirt, wonderful shirt, superb shirt, top shirt"
+            ],
+            affiliate_url="https://link.amazon/B0NODUP001",
+            source_url="https://www.amazon.co.uk/dp/B0NODUP001",
+            asin="B0NODUP001",
+        )
+        facts = FactExtractor.extract_canonical_facts(product)
+
+        result = extract_grounded_platform_content(
+            "facebook", "Cotton long-sleeved shirt for women.", facts, ""
+        )
+
+        self.assertIsNotNone(result)
+        self.assertNotIn("\n\n", result["text"], "single grounded sentence must not be repeated")
+        self.assertEqual(result["text"].count("."), 1)
+
+    def test_sleeve_and_sleeved_are_recognized_as_related_forms(self):
+        """A generated 'sleeve' is grounded when the source says 'Long-Sleeved',
+        while words absent from the source stay rejected."""
+        product = Product(
+            title="Womens Long-Sleeved Cotton Shirt",
+            features=[],
+            affiliate_url="https://link.amazon/B0SLEEVE01",
+            source_url="https://www.amazon.co.uk/dp/B0SLEEVE01",
+            asin="B0SLEEVE01",
+        )
+        facts = FactExtractor.extract_canonical_facts(product)
+
+        grounded_issues = ClaimValidator.validate_content_claims(
+            "Cotton shirt with a long sleeve.", facts, disclosure=""
+        )
+        self.assertEqual(grounded_issues, [], grounded_issues)
+
+        unsupported_issues = ClaimValidator.validate_content_claims(
+            "Waterproof fleece lining.", facts, disclosure=""
+        )
+        self.assertTrue(unsupported_issues, "unsupported claim must still be rejected")
+
+    def test_keyword_lists_do_not_invent_entity_bindings(self):
+        """SEO keyword text must not bind modifiers to invented entities (e.g. 'sleeved top'),
+        which would reject copy grounded in the real title."""
+        product = Product(
+            title="Womens Cotton Long-Sleeved Shirt",
+            features=[
+                "women's long-sleeved top, women's tops, women's long-sleeved top, "
+                "women's tops, women's long-sleeved top, women's tops"
+            ],
+            affiliate_url="https://link.amazon/B0BIND0001",
+            source_url="https://www.amazon.co.uk/dp/B0BIND0001",
+            asin="B0BIND0001",
+        )
+        facts = FactExtractor.extract_canonical_facts(product)
+
+        self.assertNotIn("sleeved top", facts.entity_modifiers)
+        issues = ClaimValidator.validate_content_claims(
+            "The shirt is a cotton long-sleeved top.", facts, disclosure=""
+        )
+        self.assertEqual(issues, [], issues)
 
     def test_generate_all_platforms_mocked(self, tmp_path=None):
         """Mocked full test verifying all 3 active platforms are generated."""

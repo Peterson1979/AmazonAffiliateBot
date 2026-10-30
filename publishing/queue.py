@@ -16,7 +16,7 @@ import os
 from zoneinfo import ZoneInfo
 
 from amazon.scraper import Product, extract_asin_from_url, is_valid_image_url
-from ai.ollama import OllamaClient
+from ai.provider import create_content_provider
 from content.generator import ContentGenerator
 from content.package import ContentPackage, STATUS_READY_FOR_REVIEW, STATUS_FAILED_VALIDATION
 from publishing.publisher import (
@@ -59,6 +59,40 @@ def get_budapest_timezone() -> ZoneInfo:
     return ZoneInfo(DEFAULT_TIMEZONE)
 
 
+# Identifier format: item_<numeric suffix>_<ASIN>, e.g. item_031_B0BW93676T.
+QUEUE_ITEM_ID_PATTERN = re.compile(r"^item_(\d+)_")
+
+
+def queue_item_id_number(queue_item_id: Any) -> int:
+    """Return the numeric suffix of a queue item ID, or 0 when unparseable."""
+    match = QUEUE_ITEM_ID_PATTERN.match(str(queue_item_id or ""))
+    return int(match.group(1)) if match else 0
+
+
+def next_queue_item_id(existing_items: Any, asin: str = "") -> str:
+    """Allocate a fresh queue item ID as max(existing numeric suffix) + 1.
+
+    Deriving the suffix from ``len(items) + 1`` reuses an identifier as soon as
+    local and remote queues have diverged (items removed or added on either
+    side), which lets a merge treat a genuinely new product as a duplicate and
+    drop it.  Taking the highest suffix already present never reuses an ID.
+
+    ``existing_items`` may contain ``QueueItem`` objects, ``dict`` records, or
+    plain identifier strings.  The existing ``item_<n>_<ASIN>`` format is kept.
+    """
+    highest = 0
+    for candidate in existing_items or []:
+        if isinstance(candidate, str):
+            item_id = candidate
+        elif isinstance(candidate, dict):
+            item_id = candidate.get("queue_item_id")
+        else:
+            item_id = getattr(candidate, "queue_item_id", "")
+        highest = max(highest, queue_item_id_number(item_id))
+    asin_clean = str(asin or "").strip() or "unknown"
+    return f"item_{highest + 1:03d}_{asin_clean}"
+
+
 def get_authoritative_urls_file() -> Path:
     """Return the authoritative Amazon affiliate URLs source file path."""
     if AUTHORITATIVE_SOURCE_FILE.exists():
@@ -69,7 +103,8 @@ def get_authoritative_urls_file() -> Path:
 def resolve_product_for_url(
     url: str,
     products_dir: Optional[Union[str, Path]] = None,
-    allow_scrape: bool = False
+    allow_scrape: bool = False,
+    creators_api_client: Optional[Any] = None,
 ) -> Tuple[bool, Optional[Product], Optional[str], List[str]]:
     """
     Reliably resolve a product on disk or via scraper strictly attached to the given URL.
@@ -79,17 +114,20 @@ def resolve_product_for_url(
     pdir = Path(products_dir) if products_dir else Path("data/products")
     url_clean = url.strip()
 
-    # 1. Search cached products for matching affiliate_url or source_url
+    # 1. Search cached products by the immutable affiliate URL only. The
+    # scraper's source_url is the post-redirect product page and must never be
+    # treated as (or overwrite) the user's tracking URL.
     if pdir.exists():
         for pfile in sorted(pdir.glob("*.json")):
             try:
                 with open(pfile, "r", encoding="utf-8") as f:
                     pdata = json.load(f)
                 aff_url = (pdata.get("affiliate_url") or "").strip()
-                src_url = (pdata.get("source_url") or "").strip()
-                if aff_url == url_clean or src_url == url_clean:
+                if aff_url == url_clean:
                     prod = Product.from_dict(pdata)
+                    # Keep the supplied URL; do not derive it from source_url.
                     prod.affiliate_url = url_clean
+                    prod.original_affiliate_url = url_clean
                     asin = (prod.asin or "").upper()
                     if not asin or asin == "UNKNOWN":
                         return False, prod, pfile.stem, [f"Product for '{url_clean}' has unresolvable ASIN."]
@@ -110,12 +148,59 @@ def resolve_product_for_url(
             except Exception:
                 continue
 
-    # 2. If not found in cache and scraping is allowed
+    # 1b. Same-ASIN cache fallback. Re-pasted affiliate links carry fresh tracking
+    # parameters, so an exact-URL miss must still reuse existing fallback data for
+    # that ASIN before any network provider is contacted (the Creators API may be
+    # unavailable). The pasted URL always wins byte-for-byte.
+    asin_guess = extract_asin_from_url(url_clean)
+    if asin_guess:
+        asin_file = pdir / f"asin_{asin_guess.upper()}.json"
+        if asin_file.exists():
+            try:
+                with asin_file.open("r", encoding="utf-8") as handle:
+                    cached = Product.from_dict(json.load(handle))
+                if (
+                    (cached.asin or "").upper() == asin_guess.upper()
+                    and cached.title
+                    and cached.features
+                    and is_valid_image_url(cached.image_url)
+                ):
+                    cached.affiliate_url = url_clean
+                    cached.original_affiliate_url = url_clean
+                    return True, cached, f"asin_{asin_guess.upper()}", []
+            except (OSError, ValueError, TypeError):
+                pass
+
+    # 2. If not found in cache, prefer an explicitly configured Creators API
+    # lookup for an ASIN. API failures never fabricate or overwrite a cache;
+    # the legacy scraper remains the safe fallback.
+    api_errors: List[str] = []
+    if allow_scrape and creators_api_client:
+        asin = extract_asin_from_url(url_clean)
+        if asin:
+            try:
+                from amazon.creators_api import product_from_item
+                product = product_from_item(creators_api_client.get_item(asin), url_clean)
+                if product.title and product.features and is_valid_image_url(product.image_url):
+                    key = f"asin_{product.asin.upper()}"
+                    save_file = pdir / f"{key}.json"
+                    save_file.parent.mkdir(parents=True, exist_ok=True)
+                    with open(save_file, "w", encoding="utf-8") as f:
+                        json.dump(product.to_dict(), f, indent=2, ensure_ascii=False)
+                    return True, product, key, []
+                api_errors.append(f"Creators API returned insufficient product fields for ASIN {asin.upper()}.")
+            except Exception as exc:
+                api_errors.append(str(exc))
+
+    # 3. If not found in cache and scraping is allowed
     if allow_scrape:
         try:
             from amazon.scraper import scrape_amazon_product
             prod = scrape_amazon_product(url_clean, headless=True)
+            # Scraping may follow redirects, but the input tracking URL is the
+            # source for all downstream content and publishing.
             prod.affiliate_url = url_clean
+            prod.original_affiliate_url = url_clean
             if not prod.asin or prod.asin == "UNKNOWN":
                 return False, prod, None, [f"Scraped product for '{url_clean}' has missing ASIN."]
             if not prod.title or not prod.features:
@@ -132,9 +217,9 @@ def resolve_product_for_url(
                 json.dump(prod.to_dict(), f, indent=2, ensure_ascii=False)
             return True, prod, key, []
         except Exception as e:
-            return False, None, None, [f"Scraping failed for '{url_clean}': {e}"]
+            return False, None, None, api_errors + [f"Scraping failed for '{url_clean}': {e}"]
 
-    return False, None, None, [f"No verified product found in local cache for '{url_clean}'."]
+    return False, None, None, api_errors + [f"No verified product found in local cache for '{url_clean}'."]
 
 
 def recover_pending_queue_images(
@@ -271,7 +356,8 @@ def recover_pending_queue_images(
 
 def parse_affiliate_urls(
     source: Union[str, Path],
-    is_file_path: bool = True
+    is_file_path: bool = True,
+    deduplicate: bool = True
 ) -> List[str]:
     """
     Parse a list of Amazon affiliate URLs from a file or multiline string.
@@ -297,7 +383,7 @@ def parse_affiliate_urls(
         cleaned = raw_line.strip()
         if not cleaned or cleaned.startswith("#"):
             continue
-        if cleaned not in seen:
+        if not deduplicate or cleaned not in seen:
             seen.add(cleaned)
             unique_urls.append(cleaned)
 
@@ -325,6 +411,9 @@ class QueueItem:
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     published_at: Optional[str] = None
     publishing_results: Optional[Dict[str, Any]] = None
+    # Dashboard import-run identity. Optional for backward compatibility with
+    # queue records created before batch management existed.
+    batch_id: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -343,6 +432,7 @@ class QueueItem:
             "created_at": self.created_at,
             "published_at": self.published_at,
             "publishing_results": self.publishing_results,
+            "batch_id": self.batch_id,
         }
 
     @classmethod
@@ -379,7 +469,170 @@ class QueueItem:
             created_at=data.get("created_at", datetime.now(timezone.utc).isoformat()),
             published_at=data.get("published_at"),
             publishing_results=data.get("publishing_results"),
+            batch_id=data.get("batch_id"),
         )
+
+
+def resolve_content_package_path(item: QueueItem) -> Optional[Path]:
+    """Resolve the content package file required by a queue item.
+
+    Reuses the publisher's existing resolution order:
+    1. ``package_reference`` as written (absolute, or relative to the CWD).
+    2. ``package_reference`` relative to the repository root (this is what
+       makes repository-relative references such as
+       ``data/generated/asin_<ASIN>_content_package.json`` portable).
+    3. ``data/generated/asin_<ASIN>_content_package.json`` under the
+       repository root as the ASIN-based fallback.
+
+    Returns ``None`` when no candidate exists on disk.
+    """
+    if getattr(item, "package_reference", None):
+        candidate = Path(item.package_reference)
+        if candidate.exists():
+            return candidate
+        root_candidate = Path(__file__).resolve().parent.parent / item.package_reference
+        if root_candidate.exists():
+            return root_candidate
+
+    asin = (getattr(item, "asin", "") or "").upper()
+    if asin:
+        fallback_candidate = Path(__file__).resolve().parent.parent / "data" / "generated" / f"asin_{asin}_content_package.json"
+        if fallback_candidate.exists():
+            return fallback_candidate
+    return None
+
+
+QUEUE_REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# Overdue publishing policy. Only items scheduled for the *current*
+# Europe/Budapest day are eligible for automatic publishing. READY items from
+# earlier Budapest days are held for review instead of being published in a
+# backlog burst; their status, schedule and publication history stay untouched.
+OVERDUE_POLICY = "same_day"
+
+
+def parse_iso_datetime(value: Optional[str]) -> Optional[datetime]:
+    """Parse an ISO-8601 schedule value into an aware datetime (or ``None``)."""
+    if not value:
+        return None
+    text = str(value).strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except (TypeError, ValueError):
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=get_budapest_timezone())
+    return parsed
+
+
+def scheduled_budapest_date(item: "QueueItem") -> Optional[date]:
+    """Return the item's scheduled date in Europe/Budapest, or ``None``."""
+    item_dt = parse_iso_datetime(getattr(item, "scheduled_at", None))
+    if item_dt is None:
+        return None
+    return item_dt.astimezone(get_budapest_timezone()).date()
+
+
+def is_item_overdue_held(item: "QueueItem", current_dt: Optional[datetime] = None) -> bool:
+    """True when a READY item belongs to an earlier Budapest day than ``current_dt``.
+
+    Such an item is deliberately *not* published automatically; it stays READY
+    (no status mutation) and is surfaced for explicit review/retry.
+    """
+    if getattr(item, "status", None) != STATUS_READY:
+        return False
+    item_date = scheduled_budapest_date(item)
+    if item_date is None:
+        return False
+    now = current_dt or datetime.now(get_budapest_timezone())
+    return item_date < now.astimezone(get_budapest_timezone()).date()
+
+
+def find_overdue_held_items(
+    queue: "PublishingQueue",
+    current_dt: datetime,
+) -> List["QueueItem"]:
+    """Return READY items from an earlier Budapest day, in schedule order.
+
+    The overdue policy is deliberately non-destructive: these records keep
+    their status, slot, scheduled_at and publication history, and are only
+    reported for explicit human review instead of being published in a
+    backlog burst after downtime or a skipped run.
+    """
+    held = [item for item in queue.items if is_item_overdue_held(item, current_dt)]
+    held.sort(
+        key=lambda item: (
+            item.scheduled_at or "",
+            item.daily_slot or 0,
+            item.queue_item_id,
+        )
+    )
+    return held
+
+
+def _is_retry_candidate(item: "QueueItem", current_dt: datetime, slot_keys: Set[str]) -> bool:
+    """True when a partially/failed item may safely retry within its claimed slot.
+
+    Automatic retries are limited to the same Budapest day and to slots that an
+    explicit persisted claim marked as retryable/claimed.  Anything older stays
+    untouched and visible as a normal failed/partial record.
+    """
+    if getattr(item, "status", None) not in (STATUS_PARTIALLY_PUBLISHED, STATUS_FAILED):
+        return False
+    item_date = scheduled_budapest_date(item)
+    if item_date is None or item_date != current_dt.astimezone(get_budapest_timezone()).date():
+        return False
+    if not item.daily_slot or not item.scheduled_at:
+        return False
+    try:
+        item_dt = QueuePublisher.parse_datetime(item.scheduled_at)
+    except Exception:
+        return False
+    if item_dt > current_dt:
+        return False
+    return f"{item_date.isoformat()}-slot-{item.daily_slot}" in slot_keys
+
+
+def portable_package_reference(
+    package_reference: Optional[str],
+    asin: str = "",
+    repo_dir: Optional[Path] = None,
+) -> Optional[str]:
+    """Return the most portable repository reference for a content package.
+
+    Preference order:
+    1. The reference rewritten relative to the repository root when the file is
+       inside the repository (valid on any checkout, including the Linux
+       GitHub Actions runner).
+    2. ``data/generated/asin_<ASIN>_content_package.json`` when that file exists.
+    3. The reference unchanged when it already resolves, so information is
+       never lost for legacy/out-of-repository entries.
+    """
+    root = (repo_dir or QUEUE_REPO_ROOT).resolve()
+    ref = str(package_reference).strip().replace("\\", "/") if package_reference else ""
+
+    candidates: List[Path] = []
+    if ref:
+        candidates.append(Path(ref))
+        candidates.append(root / ref)
+    asin_clean = (asin or "").upper().strip()
+    if asin_clean:
+        candidates.append(root / "data" / "generated" / f"asin_{asin_clean}_content_package.json")
+
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except OSError:
+            continue
+        if not resolved.exists():
+            continue
+        try:
+            return resolved.relative_to(root).as_posix()
+        except ValueError:
+            return str(candidate).replace("\\", "/")
+    return package_reference
 
 
 @dataclass
@@ -645,7 +898,6 @@ class QueueBuilder:
                 is_valid, prod, package, pkg_path, errs = product_processor(url)
             else:
                 from amazon_affiliate import load_config
-                from ai.ollama import OllamaClient
                 from content.generator import ContentGenerator
 
                 is_valid_prod, prod, found_key, prod_errs = resolve_product_for_url(url, allow_scrape=False)
@@ -674,12 +926,8 @@ class QueueBuilder:
                     if not package:
                         try:
                             config = load_config()
-                            ollama = OllamaClient(
-                                base_url=config.get("ollama", {}).get("base_url", "http://localhost:11434"),
-                                model=config.get("ollama", {}).get("model", "qwen2.5:7b"),
-                                timeout=config.get("ollama", {}).get("timeout", 300)
-                            )
-                            generator = ContentGenerator(ollama_client=ollama)
+                            provider = create_content_provider(config)
+                            generator = ContentGenerator(ollama_client=provider)
                             disclosure = config.get("affiliate", {}).get(
                                 "disclosure",
                                 "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
@@ -690,7 +938,7 @@ class QueueBuilder:
                                 product=prod,
                                 social_data=social_data,
                                 cache_file_path=f"data/products/{asin_key}.json",
-                                model_name=ollama.model
+                                model_name=provider.model
                             )
                             pkg_file = ContentPackage.save_content_package(package, asin_key)
                             pkg_path = str(pkg_file).replace("\\", "/")
@@ -838,16 +1086,19 @@ class QueuePublisher:
         slot_keys: Optional[Set[str]] = None
     ) -> List[QueueItem]:
         """
-        Identify queue items eligible for publishing:
-        - status == STATUS_READY
-        - scheduled_at <= current_dt
-        - slot_filter match if specified
-        Sorted chronologically by (scheduled_at, daily_slot).
+        Identify queue items eligible for publishing under the overdue policy:
+        - status == STATUS_READY on the *current* Budapest day, or
+        - a same-day PARTIALLY_PUBLISHED/FAILED item whose slot is explicitly
+          included in ``slot_keys`` (safe retry of a claimed slot),
+        - scheduled_at <= current_dt,
+        - slot_filter match if specified.
+        READY items from earlier Budapest days are intentionally held back and
+        reported by ``find_overdue_held_items`` instead of publishing a backlog
+        burst. Sorted chronologically by (scheduled_at, daily_slot).
         """
         due_items: List[QueueItem] = []
+        current_date = current_dt.astimezone(get_budapest_timezone()).date()
         for item in queue.items:
-            if item.status != STATUS_READY:
-                continue
             if not item.scheduled_at:
                 continue
             if slot_filter is not None and item.daily_slot != slot_filter:
@@ -855,10 +1106,21 @@ class QueuePublisher:
 
             try:
                 item_dt = cls.parse_datetime(item.scheduled_at)
-                if slot_keys is not None:
-                    item_key = f"{item_dt.date().isoformat()}-slot-{item.daily_slot}"
-                    if item_key not in slot_keys:
+                item_date = item_dt.astimezone(get_budapest_timezone()).date()
+                item_key = f"{item_date.isoformat()}-slot-{item.daily_slot}"
+
+                if item.status == STATUS_READY:
+                    # Same-day only: earlier READY days are held, never burst-published.
+                    if item_date != current_date:
                         continue
+                elif slot_keys is not None and _is_retry_candidate(item, current_dt, slot_keys):
+                    # Retry is explicitly authorised by a persisted slot claim.
+                    pass
+                else:
+                    continue
+
+                if slot_keys is not None and item_key not in slot_keys:
+                    continue
                 if item_dt <= current_dt:
                     due_items.append(item)
             except Exception:
@@ -867,6 +1129,52 @@ class QueuePublisher:
         # Deterministic sort
         due_items.sort(key=lambda x: (x.scheduled_at or "", x.daily_slot or 0, x.queue_item_id))
         return due_items
+
+    @classmethod
+    def preflight_due_content_packages(
+        cls,
+        queue: PublishingQueue,
+        current_dt: datetime,
+        slot_filter: Optional[int] = None,
+        slot_keys: Optional[Set[str]] = None,
+    ) -> Dict[str, Any]:
+        """Verify that every due item still has its content package on disk.
+
+        Read-only safety gate for the scheduled GitHub Actions workflow: it
+        must run *before* ``publish_due_items`` so a missing package can fail
+        the whole execution instead of permanently marking one item FAILED.
+        The queue item is never mutated here, and no package is published.
+
+        Returns a report with ``ok``, the resolved packages and a diagnostic
+        per missing package identifying the affected queue item.
+        """
+        due_items = cls.find_due_items(
+            queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys
+        )
+        resolved: List[Dict[str, Any]] = []
+        missing: List[Dict[str, Any]] = []
+        for item in due_items:
+            entry = {
+                "item_id": item.queue_item_id,
+                "asin": item.asin,
+                "slot": item.daily_slot,
+                "scheduled_at": item.scheduled_at,
+                "package_reference": item.package_reference,
+            }
+            pkg_path = resolve_content_package_path(item)
+            if pkg_path is None:
+                missing.append(entry)
+            else:
+                entry["package_path"] = str(pkg_path)
+                resolved.append(entry)
+
+        return {
+            "ok": not missing,
+            "evaluated_at": current_dt.isoformat(),
+            "due_count": len(due_items),
+            "checked": resolved,
+            "missing": missing,
+        }
 
     @classmethod
     def publish_due_items(
@@ -922,7 +1230,20 @@ class QueuePublisher:
         cls.log_event(f"Queue File: {target_file} | Total Items in Queue: {len(queue.items)}", log_file=target_log)
 
         due_items = cls.find_due_items(queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys)
+        overdue_held = find_overdue_held_items(queue, current_dt)
         cls.log_event(f"Due Eligible Items Found: {len(due_items)}", log_file=target_log)
+        cls.log_event(
+            f"Overdue READY Items Held For Review: {len(overdue_held)}"
+            f" (policy: {OVERDUE_POLICY}; records unchanged)",
+            log_file=target_log,
+        )
+        for held_item in overdue_held:
+            cls.log_event(
+                f"HELD overdue item '{held_item.queue_item_id}' | ASIN: {held_item.asin} | "
+                f"Slot {held_item.daily_slot} ({held_item.scheduled_at})",
+                log_file=target_log,
+                level="WARNING",
+            )
 
         if not due_items:
             cls.log_event("No items due for publishing at this time.", log_file=target_log)
@@ -938,22 +1259,8 @@ class QueuePublisher:
                 log_file=target_log
             )
 
-            # 1. Resolve content package path
-            pkg_path = None
-            if item.package_reference:
-                candidate_path = Path(item.package_reference)
-                if candidate_path.exists():
-                    pkg_path = candidate_path
-                else:
-                    # Try relative to project root
-                    root_candidate = Path(__file__).resolve().parent.parent / item.package_reference
-                    if root_candidate.exists():
-                        pkg_path = root_candidate
-
-            if not pkg_path and item.asin:
-                fallback_candidate = Path(__file__).resolve().parent.parent / "data" / "generated" / f"asin_{item.asin.upper()}_content_package.json"
-                if fallback_candidate.exists():
-                    pkg_path = fallback_candidate
+            # 1. Resolve content package path (shared with the preflight check)
+            pkg_path = resolve_content_package_path(item)
 
             if not pkg_path or not pkg_path.exists():
                 item.status = STATUS_FAILED
@@ -1121,6 +1428,18 @@ class QueuePublisher:
             "mode": mode_str,
             "total_items_in_queue": len(queue.items),
             "due_items_count": len(due_items),
+            "overdue_policy": OVERDUE_POLICY,
+            "overdue_held_count": len(overdue_held),
+            "overdue_held_items": [
+                {
+                    "item_id": item.queue_item_id,
+                    "asin": item.asin,
+                    "slot": item.daily_slot,
+                    "scheduled_at": item.scheduled_at,
+                    "status": item.status,
+                }
+                for item in overdue_held
+            ],
             "published_count": published_count,
             "partially_published_count": partially_published_count,
             "failed_count": failed_count,
