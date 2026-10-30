@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 31,
-  "total_ready": 8,
-  "total_failed": 4,
-  "scheduled_posts": 8,
-  "unfilled_slots": 52,
+  "total_ready": 7,
+  "total_failed": 5,
+  "scheduled_posts": 7,
+  "unfilled_slots": 53,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -108,9 +108,10 @@
       "completed_at": "2026-10-29T23:26:05.847669+01:00"
     },
     "2026-10-30-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-30T17:56:28.334080+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-30T17:56:30.710700+01:00"
     }
   },
   "items": [
@@ -2050,9 +2051,11 @@
       "scheduled_at": "2026-10-30T13:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B07H9PZDQW_content_package.json",
-      "status": "READY",
+      "status": "FAILED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "ContentPackage file not found for ASIN 'B07H9PZDQW' at 'data/generated/asin_B07H9PZDQW_content_package.json'."
+      ],
       "created_at": "2026-10-26T13:24:21.526414+00:00",
       "published_at": null,
       "publishing_results": null
