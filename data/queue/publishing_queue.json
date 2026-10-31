@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 31,
-  "total_ready": 7,
+  "total_ready": 6,
   "total_failed": 5,
-  "scheduled_posts": 7,
-  "unfilled_slots": 53,
+  "scheduled_posts": 6,
+  "unfilled_slots": 54,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -2144,12 +2144,185 @@
       "scheduled_at": "2026-10-31T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0BW93676T_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-27T11:29:05.011677+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-10-31T21:05:00+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "Av5_iEEVNxc5ElEH4cUO4D5"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999474875",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999474875/",
+          "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+          "link": "https://link.amazon/B01JvH5z4",
+          "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "description": "The shirt is made from 88% polyester and 12% spandex, providing an ultra‑soft, breathable, high‑stretch fabric. It features a slim‑fit crew neck design that hugs the body while maintaining shape. https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "product_tags": [],
+            "is_owner": true,
+            "created_at": "2026-10-31T19:20:16",
+            "creative_type": "REGULAR",
+            "link": "https://link.amazon/B01JvH5z4",
+            "is_standard": true,
+            "is_product": false,
+            "board_section_id": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 822,
+                  "url": "https://i.pinimg.com/564x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "1200x": {
+                  "width": 1029,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                }
+              }
+            },
+            "is_removable": false,
+            "dominant_color": null,
+            "id": "1033646551999474875",
+            "has_been_promoted": false,
+            "parent_pin_id": null,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+            "board_id": "1033646620665866548",
+            "alt_text": null,
+            "pin_metrics": null
+          },
+          "message": "Successfully created pin 1033646551999474875 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-31T21:05:00+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018287979",
+          "pin_url": "https://www.pinterest.com/pin/495607134018287979/",
+          "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+          "link": "https://link.amazon/B01JvH5z4",
+          "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_product": false,
+            "board_id": "495607202683261042",
+            "pin_metrics": null,
+            "id": "495607134018287979",
+            "is_owner": true,
+            "product_tags": [],
+            "board_section_id": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 822,
+                  "url": "https://i.pinimg.com/564x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "1200x": {
+                  "width": 1029,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                }
+              }
+            },
+            "alt_text": null,
+            "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+            "parent_pin_id": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "created_at": "2026-10-31T19:20:17",
+            "creative_type": "REGULAR",
+            "is_standard": true,
+            "dominant_color": "#e8e9ef",
+            "is_removable": false,
+            "has_been_promoted": false,
+            "description": "The shirt is made from 88% polyester and 12% spandex, providing an ultra‑soft, breathable, high‑stretch fabric. It features a slim‑fit crew neck design that hugs the body while maintaining shape. https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "link": "https://link.amazon/B01JvH5z4"
+          },
+          "message": "Successfully created pin 495607134018287979 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-31T21:05:00+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986518708139258",
+          "post_id": "17906645697350440",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfK5OCPlHsM",
+          "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17906645697350440"
+          },
+          "message": "Successfully published image post 17906645697350440 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-31T21:05:00+01:00"
+        }
+      },
       "batch_id": null
     }
   ]

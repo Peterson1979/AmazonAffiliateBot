@@ -5863,3 +5863,14 @@
 [2026-10-30 17:56:30 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-10-30 17:56:30 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=0, Failed=1
 [2026-10-30 17:56:30 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-10-31 20:20:15 CET] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-10-31 20:20:15 CET] [INFO] Current Europe/Budapest Time: 2026-10-31T21:05:00+01:00 | Mode: LIVE
+[2026-10-31 20:20:15 CET] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 31
+[2026-10-31 20:20:15 CET] [INFO] Due Eligible Items Found: 1
+[2026-10-31 20:20:15 CET] [INFO] Overdue READY Items Held For Review: 1 (policy: same_day; records unchanged)
+[2026-10-31 20:20:15 CET] [WARNING] HELD overdue item 'item_029_B0FL6Q8NFQ' | ASIN: B0FL6Q8NFQ | Slot 2 (2026-10-30T19:00:00+01:00)
+[2026-10-31 20:20:15 CET] [INFO] Processing Item 'item_031_B0BW93676T' | ASIN: B0BW93676T | Slot 2 (2026-10-31T21:00:00+01:00)
+[2026-10-31 20:20:27 CET] [INFO] Item 'item_031_B0BW93676T' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, pinterest_lifemodehq=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-10-31 20:20:27 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-10-31 20:20:27 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
+[2026-10-31 20:20:27 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
