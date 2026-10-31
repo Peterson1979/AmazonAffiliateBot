@@ -132,8 +132,8 @@ class TestDashboard(unittest.TestCase):
         self.assertIn("Automation & Windows Task Scheduler", html)
         self.assertIn("scripts\\setup_windows_tasks.ps1", html)
         self.assertIn("08:30", html)
-        self.assertIn("12:00", html)
-        self.assertIn("19:00", html)
+        self.assertIn("15:00", html)
+        self.assertIn("21:00", html)
 
     def test_08_logs_page_200(self):
         """Logs page '/logs' returns 200 OK for publisher and maintenance logs."""

@@ -512,14 +512,14 @@ class TestPublishingQueue(unittest.TestCase):
 class TestQueuePublisher(unittest.TestCase):
     """
     Comprehensive tests for the QueuePublisher and Daily Scheduled Publishing pipeline:
-    1. Slot 1 = 13:00 Europe/Budapest
-    2. Slot 2 = 19:00 Europe/Budapest
+    1. Slot 1 = 15:00 Europe/Budapest
+    2. Slot 2 = 21:00 Europe/Budapest
     3. Exactly 6-hour separation
     4. Correct IANA Europe/Budapest timezone identifier
     5. DST-safe scheduling across Spring and Autumn transitions
-    6. Before 13:00 -> 0 items eligible/published
-    7. Between 13:00 and 19:00 -> Only Slot 1 eligible/published
-    8. After 19:00 -> Both slots eligible if Slot 1 was unprocessed
+    6. Before 15:00 -> 0 items eligible/published
+    7. Between 15:00 and 21:00 -> Only Slot 1 eligible/published
+    8. After 21:00 -> Both slots eligible if Slot 1 was unprocessed
     9. Repeated execution -> strictly idempotent (no duplicate publishing)
     10. Queue persistence after publishing
     11. Partial / Total failure handling (never falsely marked successful)
@@ -609,40 +609,40 @@ class TestQueuePublisher(unittest.TestCase):
         queue.save(self.queue_file)
         return queue
 
-    # ==================== 1. SLOT 1 = 13:00 EUROPE/BUDAPEST ====================
+    # ==================== 1. SLOT 1 = 15:00 EUROPE/BUDAPEST ====================
 
-    def test_01_slot_1_is_1300_europe_budapest(self):
-        """Slot 1 is scheduled at exactly 13:00 in Europe/Budapest."""
+    def test_01_slot_1_is_1500_europe_budapest(self):
+        """Slot 1 is scheduled at exactly 15:00 in Europe/Budapest."""
         slots = QueueBuilder.compute_schedule_slots("2026-10-07", total_days=1, products_per_day=2)
         slot1 = slots[0]
         self.assertEqual(slot1["slot"], 1)
         self.assertEqual(slot1["timezone"], "Europe/Budapest")
-        self.assertIn("T13:00:00", slot1["scheduled_at"])
+        self.assertIn("T15:00:00", slot1["scheduled_at"])
 
         dt1 = QueuePublisher.parse_datetime(slot1["scheduled_at"])
-        self.assertEqual(dt1.hour, 13)
+        self.assertEqual(dt1.hour, 15)
         self.assertEqual(dt1.minute, 0)
         self.assertEqual(dt1.second, 0)
 
-    # ==================== 2. SLOT 2 = 19:00 EUROPE/BUDAPEST ====================
+    # ==================== 2. SLOT 2 = 21:00 EUROPE/BUDAPEST ====================
 
-    def test_02_slot_2_is_1900_europe_budapest(self):
-        """Slot 2 is scheduled at exactly 19:00 in Europe/Budapest."""
+    def test_02_slot_2_is_2100_europe_budapest(self):
+        """Slot 2 is scheduled at exactly 21:00 in Europe/Budapest."""
         slots = QueueBuilder.compute_schedule_slots("2026-10-07", total_days=1, products_per_day=2)
         slot2 = slots[1]
         self.assertEqual(slot2["slot"], 2)
         self.assertEqual(slot2["timezone"], "Europe/Budapest")
-        self.assertIn("T19:00:00", slot2["scheduled_at"])
+        self.assertIn("T21:00:00", slot2["scheduled_at"])
 
         dt2 = QueuePublisher.parse_datetime(slot2["scheduled_at"])
-        self.assertEqual(dt2.hour, 19)
+        self.assertEqual(dt2.hour, 21)
         self.assertEqual(dt2.minute, 0)
         self.assertEqual(dt2.second, 0)
 
     # ==================== 3. SIX-HOUR SEPARATION ====================
 
     def test_03_exact_six_hour_separation(self):
-        """Difference between daily Slot 1 (13:00) and Slot 2 (19:00) is strictly 6 hours (21600 seconds)."""
+        """Difference between daily Slot 1 (15:00) and Slot 2 (21:00) is strictly 6 hours (21600 seconds)."""
         slots = QueueBuilder.compute_schedule_slots("2026-10-07", total_days=5, products_per_day=2)
         for day_idx in range(5):
             slot1_dt = QueuePublisher.parse_datetime(slots[day_idx * 2]["scheduled_at"])
@@ -694,14 +694,14 @@ class TestQueuePublisher(unittest.TestCase):
         dt_post_autumn = QueuePublisher.parse_datetime(autumn_slots[4]["scheduled_at"])
         self.assertEqual(dt_post_autumn.utcoffset(), timedelta(hours=1))
 
-    # ==================== 6. BEFORE SLOT 1 (13:00) -> NEITHER ITEM PUBLISHED ====================
+    # ==================== 6. BEFORE SLOT 1 (15:00) -> NEITHER ITEM PUBLISHED ====================
 
     def test_06_before_1200_neither_item_eligible_nor_published(self):
-        """When evaluated before Slot 1 (13:00), e.g. 11:59, 0 items are due, 0 are published."""
+        """When evaluated before Slot 1 (15:00), e.g. 14:30, 0 items are due, 0 are published."""
         self._create_sample_queue("2026-10-07")
         report = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
-            now_str="2026-10-07T11:59:00+02:00",
+            now_str="2026-10-07T14:30:00+02:00",
             dry_run=True
         )
         self.assertEqual(report["due_items_count"], 0)
@@ -712,18 +712,18 @@ class TestQueuePublisher(unittest.TestCase):
         self.assertEqual(reloaded.items[0].status, STATUS_READY)
         self.assertEqual(reloaded.items[1].status, STATUS_READY)
 
-    # ==================== 7. BETWEEN SLOT 1 (13:00) AND SLOT 2 (19:00) -> ONLY SLOT 1 ELIGIBLE ====================
+    # ==================== 7. BETWEEN SLOT 1 (15:00) AND SLOT 2 (21:00) -> ONLY SLOT 1 ELIGIBLE ====================
 
     def test_07_between_1200_and_1900_only_slot_1_eligible_and_published(self):
         """
-        When evaluated between Slot 1 (13:00) and Slot 2 (19:00) (e.g. 14:30),
+        When evaluated between Slot 1 (15:00) and Slot 2 (21:00) (e.g. 16:30),
         ONLY Slot 1 is eligible and published.
         Slot 2 remains STATUS_READY and un-published.
         """
         self._create_sample_queue("2026-10-07")
         report = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
-            now_str="2026-10-07T14:30:00+02:00",
+            now_str="2026-10-07T16:30:00+02:00",
             publisher=MockLivePublisher(),
             dry_run=False
         )
@@ -740,16 +740,16 @@ class TestQueuePublisher(unittest.TestCase):
         self.assertEqual(reloaded.items[1].daily_slot, 2)
         self.assertIsNone(reloaded.items[1].published_at)
 
-    # ==================== 8. AFTER 19:00 -> BOTH SLOTS ELIGIBLE IF OVERDUE ====================
+    # ==================== 8. AFTER 21:00 -> BOTH SLOTS ELIGIBLE IF OVERDUE ====================
 
     def test_08_after_1900_both_slots_eligible_if_slot_1_unprocessed(self):
         """
-        If system was offline until after 19:00 (e.g. 20:15), both Slot 1 and Slot 2 are processed in order.
+        If system was offline until after 21:00 (e.g. 21:15), both Slot 1 and Slot 2 are processed in order.
         """
         self._create_sample_queue("2026-10-07")
         report = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
-            now_str="2026-10-07T20:15:00+02:00",
+            now_str="2026-10-07T21:15:00+02:00",
             publisher=MockLivePublisher(),
             dry_run=False
         )
@@ -765,35 +765,35 @@ class TestQueuePublisher(unittest.TestCase):
     def test_09_repeated_execution_is_strictly_idempotent(self):
         """
         Running publish_due_items repeatedly never duplicates publications.
-        Run 1 at 14:00 -> Slot 1 published
-        Run 2 at 14:00 -> 0 items published
-        Run 3 at 14:05 -> 0 items published
-        Run 4 at 19:30 -> Slot 2 published (Slot 1 not re-published)
-        Run 5 at 19:35 -> 0 items published
+        Run 1 at 16:00 -> Slot 1 published
+        Run 2 at 16:00 -> 0 items published
+        Run 3 at 16:05 -> 0 items published
+        Run 4 at 21:30 -> Slot 2 published (Slot 1 not re-published)
+        Run 5 at 21:35 -> 0 items published
         """
         self._create_sample_queue("2026-10-07")
         live_pub = MockLivePublisher()
 
-        # Run 1: 14:00 -> Publishes Slot 1
-        r1 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T14:00:00+02:00", publisher=live_pub, dry_run=False)
+        # Run 1: 16:00 -> Publishes Slot 1
+        r1 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T16:00:00+02:00", publisher=live_pub, dry_run=False)
         self.assertEqual(r1["published_count"], 1)
 
-        # Run 2: 14:00 immediate repeat -> 0 published
-        r2 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T14:00:00+02:00", publisher=live_pub, dry_run=False)
+        # Run 2: 16:00 immediate repeat -> 0 published
+        r2 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T16:00:00+02:00", publisher=live_pub, dry_run=False)
         self.assertEqual(r2["published_count"], 0)
         self.assertEqual(r2["due_items_count"], 0)
 
-        # Run 3: 14:05 later same window -> 0 published
-        r3 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T14:05:00+02:00", publisher=live_pub, dry_run=False)
+        # Run 3: 16:05 later same window -> 0 published
+        r3 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T16:05:00+02:00", publisher=live_pub, dry_run=False)
         self.assertEqual(r3["published_count"], 0)
 
-        # Run 4: 19:30 -> Publishes Slot 2 ONLY
-        r4 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T19:30:00+02:00", publisher=live_pub, dry_run=False)
+        # Run 4: 21:30 -> Publishes Slot 2 ONLY
+        r4 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T21:30:00+02:00", publisher=live_pub, dry_run=False)
         self.assertEqual(r4["published_count"], 1)
         self.assertEqual(r4["items_processed"][0]["slot"], 2)
 
-        # Run 5: 19:35 -> 0 published
-        r5 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T19:35:00+02:00", publisher=live_pub, dry_run=False)
+        # Run 5: 21:35 -> 0 published
+        r5 = QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T21:35:00+02:00", publisher=live_pub, dry_run=False)
         self.assertEqual(r5["published_count"], 0)
         self.assertEqual(r5["due_items_count"], 0)
 
@@ -802,12 +802,12 @@ class TestQueuePublisher(unittest.TestCase):
     def test_10_queue_persistence_after_publishing(self):
         """Queue file on disk accurately reflects published state, published_at timestamp, and platform results."""
         self._create_sample_queue("2026-10-07")
-        QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T13:30:00+02:00", publisher=MockLivePublisher(), dry_run=False)
+        QueuePublisher.publish_due_items(self.queue_file, now_str="2026-10-07T15:30:00+02:00", publisher=MockLivePublisher(), dry_run=False)
 
         reloaded = PublishingQueue.load(self.queue_file)
         item = reloaded.items[0]
         self.assertEqual(item.status, STATUS_PUBLISHED)
-        self.assertEqual(item.published_at, "2026-10-07T13:30:00+02:00")
+        self.assertEqual(item.published_at, "2026-10-07T15:30:00+02:00")
         self.assertIsNotNone(item.publishing_results)
         self.assertIn("facebook", item.publishing_results)
         self.assertIn("pinterest", item.publishing_results)
@@ -857,7 +857,7 @@ class TestQueuePublisher(unittest.TestCase):
         fail_pub = MockFailingPublisher("all_fail")
         report_fail = QueuePublisher.publish_due_items(
             self.queue_file,
-            now_str="2026-10-07T13:15:00+02:00",
+            now_str="2026-10-07T15:15:00+02:00",
             publisher=fail_pub,
             dry_run=False
         )
@@ -876,7 +876,7 @@ class TestQueuePublisher(unittest.TestCase):
         partial_pub = MockFailingPublisher("partial_fail")
         report_partial = QueuePublisher.publish_due_items(
             self.queue_file,
-            now_str="2026-10-07T13:15:00+02:00",
+            now_str="2026-10-07T15:15:00+02:00",
             publisher=partial_pub,
             dry_run=False
         )
@@ -902,7 +902,7 @@ class TestQueuePublisher(unittest.TestCase):
         self._create_sample_queue("2026-10-07")
         report = QueuePublisher.publish_due_items(
             self.queue_file,
-            now_str="2026-10-07T13:30:00+02:00",
+            now_str="2026-10-07T15:30:00+02:00",
             dry_run=True
         )
         self.assertEqual(report["mode"], "DRY_RUN")
@@ -938,7 +938,7 @@ class TestQueuePublisher(unittest.TestCase):
         custom_log_file = self.temp_dir / "test_publisher.log"
         report = QueuePublisher.publish_due_items(
             self.queue_file,
-            now_str="2026-10-07T13:30:00+02:00",
+            now_str="2026-10-07T15:30:00+02:00",
             dry_run=True,
             log_file=custom_log_file
         )

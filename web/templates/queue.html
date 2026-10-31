@@ -9,7 +9,7 @@
 
 <div class="table-responsive"><table class="queue-table"><thead><tr><th>Scheduled slot</th><th>Product</th><th>State</th><th>Platform results</th><th>Evidence</th><th>Actions</th></tr></thead><tbody>
 {% if items %}{% for item in items %}<tr>
-  <td><strong>{{ item.scheduled_date or '—' }}</strong><div class="table-subtext">{% if item.daily_slot == 1 %}12:00{% elif item.daily_slot == 2 %}19:00{% else %}Unscheduled{% endif %} Budapest</div></td>
+  <td><strong>{{ item.scheduled_date or '—' }}</strong><div class="table-subtext">{% if item.daily_slot == 1 %}15:00{% elif item.daily_slot == 2 %}21:00{% else %}Unscheduled{% endif %} Budapest</div></td>
   <td><a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a><div class="table-subtext">{{ item.asin }}</div></td>
   <td><span class="state-pill state-{{ item.ui_state|lower|replace('_', '-') }}">{{ item.ui_state }}</span>{% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}</td>
   <td><div class="platform-result-list">{% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set p = item.ui_platforms.get(p_key) %}<div class="platform-result"><span>{{ p.label }}</span><span class="state-pill state-{{ p.state|lower|replace('_', '-') }}">{{ p.state }}</span>{% if p.post_url %}<a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>{% elif p.post_id %}<span class="table-subtext">ID {{ p.post_id }}</span>{% endif %}{% if p.errors %}<span class="error-detail" title="{{ p.errors|join('; ') }}">Issue</span>{% elif p.evidence_note %}<span class="error-detail" title="{{ p.evidence_note }}">Evidence note</span>{% endif %}</div>{% endfor %}</div></td>

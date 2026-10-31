@@ -1,0 +1,228 @@
+{
+  "asin": "B07PBXXNCY",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-26T13:26:55.350957+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B07PBXXNCY.json",
+    "affiliate_url": "https://link.amazon/B03NM8ggp"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The towels are dermatologist tested, vegan and cruelty‑free, and feature advanced cellulose fiber technology.\n\nIncludes 1 pack of Clean Skin Club ORIGINAL Clean Towels XL.\n\nLink: https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+      "description": "The pack contains 50 single-use dry facial towels made from 100% USDA biobased cellulose fiber. https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B03NM8ggp",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Clean Skin Club Clean Towels XL includes 50 single‑use dry facial towels that are 100 % USDA biobased, vegan and cruelty‑free. The towels are dermatologist tested, ultra soft, and made with advanced cellulose fiber technology.\n\nLink: https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "959",
+        "x-ratelimit-reset-requests": "59m2.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6048",
+        "x-ratelimit-reset-tokens": "14.64s"
+      },
+      "id": "chatcmpl-5d01c7c7-49a7-4cb2-b63e-0e67fc8750b6",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.300065488,
+        "prompt_tokens": 1572,
+        "prompt_time": 0.00509569,
+        "completion_tokens": 253,
+        "completion_time": 0.558283856,
+        "total_tokens": 1825,
+        "total_time": 0.563379546
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "958",
+        "x-ratelimit-reset-requests": "1h0m28.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5831",
+        "x-ratelimit-reset-tokens": "16.267s"
+      },
+      "id": "chatcmpl-b849bfd7-adc5-4148-b4e6-e7aa9199dd3d",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.415521918,
+        "prompt_tokens": 1738,
+        "prompt_time": 0.599605861,
+        "completion_tokens": 249,
+        "completion_time": 0.522329755,
+        "total_tokens": 1987,
+        "total_time": 1.121935616
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "957",
+        "x-ratelimit-reset-requests": "1h1m55.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4240",
+        "x-ratelimit-reset-tokens": "28.2s"
+      },
+      "id": "chatcmpl-c537136b-077c-47c2-9daf-3fe164db47a5",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.018517488,
+        "prompt_tokens": 1649,
+        "prompt_time": 0.025563501,
+        "completion_tokens": 285,
+        "completion_time": 0.672877462,
+        "total_tokens": 1934,
+        "total_time": 0.698440963
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "956",
+        "x-ratelimit-reset-requests": "1h3m21.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3939",
+        "x-ratelimit-reset-tokens": "30.457s"
+      },
+      "id": "chatcmpl-bcaa536d-cda1-42e0-ab4f-a749b2e330cc",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.209465107,
+        "prompt_tokens": 1567,
+        "prompt_time": 0.350991485,
+        "completion_tokens": 181,
+        "completion_time": 0.380333585,
+        "total_tokens": 1748,
+        "total_time": 0.73132507
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "955",
+        "x-ratelimit-reset-requests": "1h4m48s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5940",
+        "x-ratelimit-reset-tokens": "15.45s"
+      },
+      "id": "chatcmpl-94e9f913-015a-420e-a800-932d0a31d952",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.300638326,
+        "prompt_tokens": 1488,
+        "prompt_time": 0.0576935,
+        "completion_tokens": 255,
+        "completion_time": 0.5303021,
+        "total_tokens": 1743,
+        "total_time": 0.5879956
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "954",
+        "x-ratelimit-reset-requests": "1h6m14.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4501",
+        "x-ratelimit-reset-tokens": "26.242s"
+      },
+      "id": "chatcmpl-8235c649-7069-460f-9aa1-d5c1c536acfe",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.018517101,
+        "prompt_tokens": 1565,
+        "prompt_time": 0.025925993,
+        "completion_tokens": 240,
+        "completion_time": 0.499448716,
+        "total_tokens": 1805,
+        "total_time": 0.525374709
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "953",
+        "x-ratelimit-reset-requests": "1h7m40.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4301",
+        "x-ratelimit-reset-tokens": "27.742s"
+      },
+      "id": "chatcmpl-43496bd1-b342-4545-9be0-059d0c629128",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.211413728,
+        "prompt_tokens": 1483,
+        "prompt_time": 0.059202846,
+        "completion_tokens": 185,
+        "completion_time": 0.384439033,
+        "total_tokens": 1668,
+        "total_time": 0.443641879
+      }
+    }
+  ]
+}

@@ -7,9 +7,9 @@
     Creates three scheduled tasks in Windows Task Scheduler:
     1. AmazonAffiliateBot_DailyMaintenance (Runs at 08:30 Europe/Budapest daily)
        -> Executes scripts\run_daily_maintenance.bat (--maintain-queue)
-    2. AmazonAffiliateBot_PublishSlot1 (Runs at 12:00 Europe/Budapest daily)
+    2. AmazonAffiliateBot_PublishSlot1 (Runs at 15:00 Europe/Budapest daily)
        -> Executes scripts\run_daily_publisher.bat (--publish-queue)
-    3. AmazonAffiliateBot_PublishSlot2 (Runs at 19:00 Europe/Budapest daily)
+    3. AmazonAffiliateBot_PublishSlot2 (Runs at 21:00 Europe/Budapest daily)
        -> Executes scripts\run_daily_publisher.bat (--publish-queue)
 
 .NOTES
@@ -58,18 +58,18 @@ $SettingsMaint = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStop
 Register-ScheduledTask -TaskName $TaskMaintenanceName -Action $ActionMaint -Trigger $TriggerMaint -Settings $SettingsMaint -Description "AmazonAffiliateBot Daily Discovery and Queue Replenishment at 08:30" -Force | Out-Null
 Write-Host "[OK] Registered: $TaskMaintenanceName (Daily at 08:30)" -ForegroundColor Green
 
-# 2. Register Slot 1 Publishing Task (12:00)
+# 2. Register Slot 1 Publishing Task (15:00)
 $ActionSlot1 = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c `"$PublisherBat`"" -WorkingDirectory $ProjectRoot
-$TriggerSlot1 = New-ScheduledTaskTrigger -Daily -At "12:00"
+$TriggerSlot1 = New-ScheduledTaskTrigger -Daily -At "15:00"
 $SettingsSlot1 = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-Register-ScheduledTask -TaskName $TaskSlot1Name -Action $ActionSlot1 -Trigger $TriggerSlot1 -Settings $SettingsSlot1 -Description "AmazonAffiliateBot Daily Slot 1 Publishing at 12:00" -Force | Out-Null
-Write-Host "[OK] Registered: $TaskSlot1Name (Daily at 12:00)" -ForegroundColor Green
+Register-ScheduledTask -TaskName $TaskSlot1Name -Action $ActionSlot1 -Trigger $TriggerSlot1 -Settings $SettingsSlot1 -Description "AmazonAffiliateBot Daily Slot 1 Publishing at 15:00" -Force | Out-Null
+Write-Host "[OK] Registered: $TaskSlot1Name (Daily at 15:00)" -ForegroundColor Green
 
-# 3. Register Slot 2 Publishing Task (19:00)
+# 3. Register Slot 2 Publishing Task (21:00)
 $ActionSlot2 = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c `"$PublisherBat`"" -WorkingDirectory $ProjectRoot
-$TriggerSlot2 = New-ScheduledTaskTrigger -Daily -At "19:00"
+$TriggerSlot2 = New-ScheduledTaskTrigger -Daily -At "21:00"
 $SettingsSlot2 = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-Register-ScheduledTask -TaskName $TaskSlot2Name -Action $ActionSlot2 -Trigger $TriggerSlot2 -Settings $SettingsSlot2 -Description "AmazonAffiliateBot Daily Slot 2 Publishing at 19:00" -Force | Out-Null
-Write-Host "[OK] Registered: $TaskSlot2Name (Daily at 19:00)" -ForegroundColor Green
+Register-ScheduledTask -TaskName $TaskSlot2Name -Action $ActionSlot2 -Trigger $TriggerSlot2 -Settings $SettingsSlot2 -Description "AmazonAffiliateBot Daily Slot 2 Publishing at 21:00" -Force | Out-Null
+Write-Host "[OK] Registered: $TaskSlot2Name (Daily at 21:00)" -ForegroundColor Green
 
 Write-Host "`n[SUCCESS] Windows Task Scheduler configuration is complete!" -ForegroundColor Cyan
