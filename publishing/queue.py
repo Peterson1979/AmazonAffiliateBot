@@ -43,8 +43,8 @@ DEFAULT_PRODUCTS_PER_DAY = 2
 DEFAULT_TIMEZONE = "Europe/Budapest"
 
 # Slot times in Europe/Budapest
-SLOT_1_TIME = time(13, 0, 0)  # 13:00 (European audience focus)
-SLOT_2_TIME = time(19, 0, 0)  # 19:00 (North American audience / Pinterest focus)
+SLOT_1_TIME = time(15, 0, 0)  # 15:00 (European audience focus)
+SLOT_2_TIME = time(21, 0, 0)  # 21:00 (North American audience / Pinterest focus)
 
 STATUS_QUEUED = "QUEUED"
 STATUS_READY = "READY"
@@ -401,8 +401,8 @@ class QueueItem:
     asin: str = ""
     product_name: str = ""
     scheduled_date: Optional[str] = None       # YYYY-MM-DD
-    daily_slot: Optional[int] = None           # 1 (13:00) or 2 (19:00)
-    scheduled_at: Optional[str] = None         # ISO 8601 string e.g. 2026-10-07T13:00:00+02:00
+    daily_slot: Optional[int] = None           # 1 (15:00) or 2 (21:00)
+    scheduled_at: Optional[str] = None         # ISO 8601 string e.g. 2026-10-07T15:00:00+02:00
     timezone: str = DEFAULT_TIMEZONE           # Europe/Budapest
     package_reference: Optional[str] = None
     status: str = STATUS_QUEUED                # READY, FAILED, PUBLISHED, PARTIALLY_PUBLISHED, QUEUED, SKIPPED
@@ -775,8 +775,8 @@ class QueueBuilder:
     ) -> List[Dict[str, Any]]:
         """
         Generate deterministic list of slot dictionaries:
-        - Slot 1: 13:00 Europe/Budapest
-        - Slot 2: 19:00 Europe/Budapest (6-hour separation)
+        - Slot 1: 15:00 Europe/Budapest
+        - Slot 2: 21:00 Europe/Budapest (6-hour separation)
         Handles DST transitions accurately through Europe/Budapest.
         """
         base_date = datetime.strptime(start_date, "%Y-%m-%d").date()
@@ -787,7 +787,7 @@ class QueueBuilder:
             current_date = base_date + timedelta(days=day_idx)
             current_date_str = current_date.strftime("%Y-%m-%d")
 
-            # Slot 1: 13:00 Europe/Budapest
+            # Slot 1: 15:00 Europe/Budapest
             dt_slot1 = datetime(current_date.year, current_date.month, current_date.day, SLOT_1_TIME.hour, SLOT_1_TIME.minute, SLOT_1_TIME.second, tzinfo=tz)
             slots.append({
                 "date": current_date_str,
@@ -796,7 +796,7 @@ class QueueBuilder:
                 "timezone": tz_name,
             })
 
-            # Slot 2: 19:00 Europe/Budapest (if products_per_day >= 2)
+            # Slot 2: 21:00 Europe/Budapest (if products_per_day >= 2)
             if products_per_day >= 2:
                 dt_slot2 = datetime(current_date.year, current_date.month, current_date.day, SLOT_2_TIME.hour, SLOT_2_TIME.minute, SLOT_2_TIME.second, tzinfo=tz)
                 slots.append({
@@ -808,7 +808,7 @@ class QueueBuilder:
 
             # Additional slots if configured
             for extra_slot in range(3, products_per_day + 1):
-                extra_hour = min(23, 19 + (extra_slot - 2))
+                extra_hour = min(23, 21 + (extra_slot - 2))
                 dt_extra = datetime(current_date.year, current_date.month, current_date.day, extra_hour, 0, 0, tzinfo=tz)
                 slots.append({
                     "date": current_date_str,

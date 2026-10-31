@@ -2,7 +2,7 @@
 Publishing Queue Replenishment and Automatic Product Maintenance Module for AmazonAffiliateBot.
 Calculates future publishing capacity, coordinates Amazon product discovery,
 extracts canonical facts, generates validated content packages,
-and appends new products to future available daily slots (13:00 & 19:00 Europe/Budapest).
+and appends new products to future available daily slots (15:00 & 21:00 Europe/Budapest).
 """
 
 from typing import Dict, Any, List, Optional, Tuple, Set, Union, Callable
@@ -107,8 +107,8 @@ class QueueReplenisher:
         """
         Determine the next concrete available (date, slot, scheduled_at) in Europe/Budapest.
         Preserves all existing slots and advances consecutively:
-        - If latest slot in queue is (Date D, Slot 1) -> next is (Date D, Slot 2 at 19:00).
-        - If latest slot in queue is (Date D, Slot 2) -> next is (Date D+1, Slot 1 at 13:00).
+        - If latest slot in queue is (Date D, Slot 1) -> next is (Date D, Slot 2 at 21:00).
+        - If latest slot in queue is (Date D, Slot 2) -> next is (Date D+1, Slot 1 at 15:00).
         - If queue has no scheduled items or all slots are in the past -> starts next future slot relative to current_dt.
         """
         tz = get_budapest_timezone()

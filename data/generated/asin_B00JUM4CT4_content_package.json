@@ -1,0 +1,124 @@
+{
+  "asin": "B00JUM4CT4",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-26T13:02:01.507159+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B00JUM4CT4.json",
+    "affiliate_url": "https://link.amazon/B0hlXFzOe"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "Hanes EcoSmart Fleece Full‑Zip Hoodie.\n\nIncludes FLEECE TO FEEL GOOD ABOUT – EcoSmart mid-weight cotton/poly fleece with up to 5% of the poly fibers.\n\nLink: https://link.amazon/B0hlXFzOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
+      "description": "The hoodie is made from EcoSmart mid‑weight cotton/poly fleece with up to 5% poly fibers. It features a full‑zip front, drawstring hood, front pockets, ribbed cuffs and hem, and double‑needle stitching at the neck and armhole seams. https://link.amazon/B0hlXFzOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0hlXFzOe",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Hanes EcoSmart Fleece Full‑Zip Hoodie for Men features mid‑weight cotton/poly fleece with up to 5 % poly fibers and a full‑zip front with a drawstring hood and front pockets. It includes double‑needle stitching at the neck and armhole seams and ribbed cuffs and hem.\n\nLink: https://link.amazon/B0hlXFzOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6226",
+        "x-ratelimit-reset-tokens": "13.305s"
+      },
+      "id": "chatcmpl-52115a58-2cf0-412e-8966-85e09ee56aaa",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.049925413,
+        "prompt_tokens": 1510,
+        "prompt_time": 0.089287592,
+        "completion_tokens": 192,
+        "completion_time": 0.401748325,
+        "total_tokens": 1702,
+        "total_time": 0.491035917
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4644",
+        "x-ratelimit-reset-tokens": "25.17s"
+      },
+      "id": "chatcmpl-4374a543-8ddf-49c4-94b4-874b165d6c93",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.049264209,
+        "prompt_tokens": 1587,
+        "prompt_time": 0.079823674,
+        "completion_tokens": 168,
+        "completion_time": 0.353195194,
+        "total_tokens": 1755,
+        "total_time": 0.433018868
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3157",
+        "x-ratelimit-reset-tokens": "36.322s"
+      },
+      "id": "chatcmpl-37fbe75e-8d72-4c00-a592-c6db81e74a02",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.207136037,
+        "prompt_tokens": 1505,
+        "prompt_time": 0.075888613,
+        "completion_tokens": 142,
+        "completion_time": 0.33161608,
+        "total_tokens": 1647,
+        "total_time": 0.407504693
+      }
+    }
+  ]
+}

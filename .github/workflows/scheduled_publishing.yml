@@ -2,12 +2,12 @@ name: Scheduled Amazon Affiliate Publishing
 
 on:
   schedule:
-    # Candidate triggers at both UTC offsets for the 13:00 and 19:00
+    # Candidate triggers at both UTC offsets for the 15:00 and 21:00
     # Europe/Budapest slots. The runner accepts late starts and claims due
     # slots durably before any live adapter is called.
-    # - CEST (Summer, UTC+2): 11:00 UTC = 13:00 CEST, 17:00 UTC = 19:00 CEST
-    # - CET  (Winter, UTC+1): 12:00 UTC = 13:00 CET,  18:00 UTC = 19:00 CET
-    - cron: '0 11,12,17,18 * * *'
+    # - CEST (Summer, UTC+2): 13:00 UTC = 15:00 CEST, 19:00 UTC = 21:00 CEST
+    # - CET  (Winter, UTC+1): 14:00 UTC = 15:00 CET,  20:00 UTC = 21:00 CET
+    - cron: '0 13,14,19,20 * * *'
 
   workflow_dispatch:
     inputs:

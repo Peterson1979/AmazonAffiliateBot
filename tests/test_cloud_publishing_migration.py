@@ -54,55 +54,55 @@ class TestCloudPublishingMigration(unittest.TestCase):
 
     def test_cest_summer_window_detection(self):
         """Verify window detection during CEST (Summer, UTC+2)."""
-        # In CEST: 10:00 UTC = 12:00 CEST (Before Slot 1 -> None)
-        dt_10_utc = datetime.fromisoformat("2026-07-15T10:00:00+00:00")
-        self.assertIsNone(check_budapest_publishing_window(dt_10_utc))
+        # In CEST: 12:00 UTC = 14:00 CEST (Before Slot 1 -> None)
+        dt_12_utc = datetime.fromisoformat("2026-07-15T12:00:00+00:00")
+        self.assertIsNone(check_budapest_publishing_window(dt_12_utc))
 
-        # In CEST: 11:00 UTC = 13:00 CEST (Slot 1 opens)
-        dt_11_utc = datetime.fromisoformat("2026-07-15T11:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_11_utc), 1)
+        # In CEST: 13:00 UTC = 15:00 CEST (Slot 1 opens)
+        dt_13_utc = datetime.fromisoformat("2026-07-15T13:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_13_utc), 1)
 
-        # In CEST: 16:59 UTC = 18:59 CEST (Slot 1 last eligible minute)
-        dt_1659_utc = datetime.fromisoformat("2026-07-15T16:59:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_1659_utc), 1)
+        # In CEST: 18:59 UTC = 20:59 CEST (Slot 1 last eligible minute)
+        dt_1859_utc = datetime.fromisoformat("2026-07-15T18:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_1859_utc), 1)
 
-        # In CEST: 17:00 UTC = 19:00 CEST (Slot 2 opens)
-        dt_17_utc = datetime.fromisoformat("2026-07-15T17:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_17_utc), 2)
+        # In CEST: 19:00 UTC = 21:00 CEST (Slot 2 opens)
+        dt_19_utc = datetime.fromisoformat("2026-07-15T19:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_19_utc), 2)
 
-        # In CEST: 18:00 UTC = 20:00 CEST (Slot 2 late-start recovery)
-        dt_18_utc = datetime.fromisoformat("2026-07-15T18:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_18_utc), 2)
+        # In CEST: 20:00 UTC = 22:00 CEST (Slot 2 late-start recovery)
+        dt_20_utc = datetime.fromisoformat("2026-07-15T20:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_20_utc), 2)
 
     def test_cet_winter_window_detection(self):
         """Verify window detection during CET (Winter, UTC+1)."""
-        # In CET: 10:00 UTC = 11:00 CET (Before Slot 1 -> None)
-        dt_10_utc = datetime.fromisoformat("2026-12-15T10:00:00+00:00")
-        self.assertIsNone(check_budapest_publishing_window(dt_10_utc))
-
-        # In CET: 11:00 UTC = 12:00 CET (Before Slot 1 -> None)
-        dt_11_utc = datetime.fromisoformat("2026-12-15T11:00:00+00:00")
-        self.assertIsNone(check_budapest_publishing_window(dt_11_utc))
-
-        # In CET: 12:00 UTC = 13:00 CET (Slot 1 opens)
+        # In CET: 12:00 UTC = 13:00 CET (Before Slot 1 -> None)
         dt_12_utc = datetime.fromisoformat("2026-12-15T12:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_12_utc), 1)
+        self.assertIsNone(check_budapest_publishing_window(dt_12_utc))
 
-        # In CET: 17:00 UTC = 18:00 CET (Slot 1 late-start recovery)
-        dt_17_utc = datetime.fromisoformat("2026-12-15T17:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_17_utc), 1)
+        # In CET: 13:00 UTC = 14:00 CET (Before Slot 1 -> None)
+        dt_13_utc = datetime.fromisoformat("2026-12-15T13:00:00+00:00")
+        self.assertIsNone(check_budapest_publishing_window(dt_13_utc))
 
-        # In CET: 18:00 UTC = 19:00 CET (Slot 2)
-        dt_18_utc = datetime.fromisoformat("2026-12-15T18:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_18_utc), 2)
+        # In CET: 14:00 UTC = 15:00 CET (Slot 1 opens)
+        dt_14_utc = datetime.fromisoformat("2026-12-15T14:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_14_utc), 1)
+
+        # In CET: 19:00 UTC = 20:00 CET (Slot 1 late-start recovery)
+        dt_19_utc = datetime.fromisoformat("2026-12-15T19:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_19_utc), 1)
+
+        # In CET: 20:00 UTC = 21:00 CET (Slot 2)
+        dt_20_utc = datetime.fromisoformat("2026-12-15T20:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_20_utc), 2)
 
     def test_publishing_window_boundaries(self):
-        """Exact boundaries: Slot 1 13:00-18:59, Slot 2 19:00-23:59, else None."""
+        """Exact boundaries: Slot 1 15:00-20:59, Slot 2 21:00-23:59, else None."""
         cases = [
-            ("2026-07-15T12:59:00", None),   # one minute before Slot 1
-            ("2026-07-15T13:00:00", 1),      # Slot 1 opens
-            ("2026-07-15T18:59:00", 1),      # Slot 1 last eligible minute
-            ("2026-07-15T19:00:00", 2),      # Slot 2 opens
+            ("2026-07-15T14:59:00", None),   # one minute before Slot 1
+            ("2026-07-15T15:00:00", 1),      # Slot 1 opens
+            ("2026-07-15T20:59:00", 1),      # Slot 1 last eligible minute
+            ("2026-07-15T21:00:00", 2),      # Slot 2 opens
             ("2026-07-15T23:59:00", 2),      # Slot 2 last eligible minute
             ("2026-07-16T00:00:00", None),   # next day, outside both windows
         ]
@@ -297,8 +297,8 @@ class TestCloudPublishingMigration(unittest.TestCase):
 
         content = workflow_path.read_text(encoding="utf-8")
 
-        # Verify cron schedule covers CET/CEST shifts for the 13:00/19:00 slots
-        self.assertIn("0 11,12,17,18 * * *", content)
+        # Verify cron schedule covers CET/CEST shifts for the 15:00/21:00 slots
+        self.assertIn("0 13,14,19,20 * * *", content)
 
         # Verify workflow_dispatch dry_run default is preserved (existing behavior: false)
         self.assertIn("workflow_dispatch:", content)
@@ -426,7 +426,7 @@ class TestCloudPublishingMigration(unittest.TestCase):
                 "items": []
             }, f)
 
-        # Current time outside 13:00/19:00 window (10:00 AM)
+        # Current time outside 15:00/21:00 window (10:00 AM)
         test_args = [
             "run_cloud_publisher.py",
             "--dry-run",
@@ -441,7 +441,7 @@ class TestCloudPublishingMigration(unittest.TestCase):
                 cloud_main()
 
     def test_scheduled_event_enforces_window_check(self):
-        """Verify scheduled event enforces window check and skips outside 13:00/19:00 hours."""
+        """Verify scheduled event enforces window check and skips outside 15:00/21:00 hours."""
         from scripts.run_cloud_publisher import main as cloud_main
 
         with open(self.queue_file, "w", encoding="utf-8") as f:
@@ -450,7 +450,7 @@ class TestCloudPublishingMigration(unittest.TestCase):
                 "items": []
             }, f)
 
-        # Current time outside 13:00/19:00 window (10:00 AM)
+        # Current time outside 15:00/21:00 window (10:00 AM)
         test_args = [
             "run_cloud_publisher.py",
             "--now", "2026-10-11T10:00:00+02:00",

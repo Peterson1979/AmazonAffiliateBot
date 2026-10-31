@@ -5,7 +5,7 @@ scripts/run_cloud_publisher.py - GitHub Actions Cloud Publishing Runner
 Executes the AmazonAffiliateBot publishing queue in the cloud (GitHub Actions).
 Handles:
 1. Europe/Budapest timezone evaluation across CET (UTC+1) and CEST (UTC+2) DST shifts.
-2. Window check: Only triggers publishing during 13:00-18:59 and 19:00-23:59 Budapest time for scheduled runs.
+2. Window check: Only triggers publishing during 15:00-20:59 and 21:00-23:59 Budapest time for scheduled runs.
    Manual dry-run runs bypass the window restriction for evaluation only.
 3. Explicit Simulation: A manual dry-run evaluates the queue without sending posts; ordinary
    scheduled and manual runs are live and persist only evidence-backed outcomes.
@@ -58,17 +58,17 @@ SLOT_CLAIM_TTL = timedelta(hours=6)
 
 def check_budapest_publishing_window(current_dt: datetime) -> Optional[int]:
     """
-    Return the currently recoverable Budapest slot.  Slot 1 (13:00-18:59)
-    remains eligible until Slot 2 begins at 19:00, and Slot 2 (19:00-23:59)
+    Return the currently recoverable Budapest slot.  Slot 1 (15:00-20:59)
+    remains eligible until Slot 2 begins at 21:00, and Slot 2 (21:00-23:59)
     remains eligible through the local day, absorbing GitHub Actions startup
     delays without making either slot a recurring open-ended window.
     Returns slot number (1 or 2) if in window, otherwise None.
     """
     tz = get_budapest_timezone()
     b_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
-    if 13 <= b_dt.hour < 19:
+    if 15 <= b_dt.hour < 21:
         return 1
-    elif 19 <= b_dt.hour < 24:
+    elif 21 <= b_dt.hour < 24:
         return 2
     return None
 
@@ -347,7 +347,7 @@ def main():
     parser.add_argument("--live", action="store_true", default=False,
                         help="Explicitly enable live publishing mode")
     parser.add_argument("--check-window", action="store_true", default=False,
-                        help="Enforce Europe/Budapest publish window check (13:00 or 19:00 hours)")
+                        help="Enforce Europe/Budapest publish window check (15:00 or 21:00 hours)")
     parser.add_argument("--ignore-window", action="store_true", default=False,
                         help="Bypass Europe/Budapest publish window check")
     parser.add_argument("--now", default=None,
@@ -421,7 +421,7 @@ def main():
     if should_check_window and slot_window is None:
         msg = (
             f"[INFO] Current time ({current_dt.strftime('%H:%M %Z')}) is outside Europe/Budapest "
-            f"recoverable scheduled windows (13:00-18:59, 19:00-23:59). Skipping scheduled execution."
+            f"recoverable scheduled windows (15:00-20:59, 21:00-23:59). Skipping scheduled execution."
         )
         print(msg, flush=True)
         set_github_output("queue_updated", "false")

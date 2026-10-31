@@ -402,13 +402,13 @@ def get_next_publishing_slot_time() -> Dict[str, Any]:
     slot2_dt = datetime.combine(today, SLOT_2_TIME, tzinfo=tz)
 
     if now_dt < slot1_dt:
-        return {"slot": 1, "time": "12:00", "date": today.strftime("%Y-%m-%d"), "dt": slot1_dt.isoformat(), "is_today": True}
+        return {"slot": 1, "time": SLOT_1_TIME.strftime("%H:%M"), "date": today.strftime("%Y-%m-%d"), "dt": slot1_dt.isoformat(), "is_today": True}
     elif now_dt < slot2_dt:
-        return {"slot": 2, "time": "19:00", "date": today.strftime("%Y-%m-%d"), "dt": slot2_dt.isoformat(), "is_today": True}
+        return {"slot": 2, "time": SLOT_2_TIME.strftime("%H:%M"), "date": today.strftime("%Y-%m-%d"), "dt": slot2_dt.isoformat(), "is_today": True}
     else:
         tomorrow = today + timedelta(days=1)
         next_dt = datetime.combine(tomorrow, SLOT_1_TIME, tzinfo=tz)
-        return {"slot": 1, "time": "12:00", "date": tomorrow.strftime("%Y-%m-%d"), "dt": next_dt.isoformat(), "is_today": False}
+        return {"slot": 1, "time": SLOT_1_TIME.strftime("%H:%M"), "date": tomorrow.strftime("%Y-%m-%d"), "dt": next_dt.isoformat(), "is_today": False}
 
 
 def get_next_publishing_slots(queue: Optional[PublishingQueue], count: int = 4) -> List[Dict[str, Any]]:
@@ -587,7 +587,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
                 "scheduled_date": next_it.scheduled_date,
                 "daily_slot": next_it.daily_slot,
                 "scheduled_at": next_it.scheduled_at,
-                "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
+                "slot_time": SLOT_1_TIME.strftime("%H:%M") if next_it.daily_slot == 1 else SLOT_2_TIME.strftime("%H:%M"),
                 "status": next_it.status,
                 "ui_state": get_queue_item_presentation(queue, next_it)["state"],
                 "platforms": list(ACTIVE_PUBLISHING_PLATFORMS)
@@ -598,7 +598,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
                     "product_name": it.product_name,
                     "scheduled_date": it.scheduled_date,
                     "daily_slot": it.daily_slot,
-                    "slot_time": "12:00" if it.daily_slot == 1 else "19:00",
+                    "slot_time": SLOT_1_TIME.strftime("%H:%M") if it.daily_slot == 1 else SLOT_2_TIME.strftime("%H:%M"),
                     "scheduled_at": it.scheduled_at,
                     "status": it.status,
                     "ui_state": get_queue_item_presentation(queue, it)["state"],
@@ -615,7 +615,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
                     "scheduled_date": next_it.scheduled_date,
                     "daily_slot": next_it.daily_slot,
                     "scheduled_at": next_it.scheduled_at,
-                    "slot_time": "12:00" if next_it.daily_slot == 1 else "19:00",
+                    "slot_time": SLOT_1_TIME.strftime("%H:%M") if next_it.daily_slot == 1 else SLOT_2_TIME.strftime("%H:%M"),
                     "status": next_it.status,
                     "ui_state": get_queue_item_presentation(queue, next_it)["state"],
                     "platforms": list(ACTIVE_PUBLISHING_PLATFORMS)
@@ -807,8 +807,8 @@ def get_dashboard_summary() -> Dict[str, Any]:
         },
         "schedule": [
             {"time": "08:30", "name": "Queue Maintenance & Scheduling", "description": "Ensures upcoming Budapest daily slots are filled with validated products"},
-            {"time": "12:00", "name": "Publishing Slot 1 (European Audience)", "description": "Publishes scheduled Slot 1 product"},
-            {"time": "19:00", "name": "Publishing Slot 2 (NA & Pinterest Focus)", "description": "Publishes scheduled Slot 2 product"}
+            {"time": SLOT_1_TIME.strftime("%H:%M"), "name": "Publishing Slot 1 (European Audience)", "description": "Publishes scheduled Slot 1 product"},
+            {"time": SLOT_2_TIME.strftime("%H:%M"), "name": "Publishing Slot 2 (NA & Pinterest Focus)", "description": "Publishes scheduled Slot 2 product"}
         ]
     }
 
