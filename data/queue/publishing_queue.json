@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 31,
-  "total_ready": 6,
+  "total_ready": 5,
   "total_failed": 5,
-  "scheduled_posts": 6,
-  "unfilled_slots": 54,
+  "scheduled_posts": 5,
+  "unfilled_slots": 55,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -119,14 +119,16 @@
       "attempt": 1
     },
     "2026-10-31-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-31T23:24:11.687454+01:00",
-      "attempt": 2
+      "attempt": 2,
+      "completed_at": "2026-10-31T23:24:13.738420+01:00"
     },
     "2026-10-31-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-10-31T23:24:11.687454+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-10-31T23:24:13.738420+01:00"
     }
   },
   "items": [
@@ -2131,12 +2133,185 @@
       "scheduled_at": "2026-10-31T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B07PBXXNCY_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-26T13:26:55.352825+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-10-31T23:24:13.741306+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "AKHScHcSiwszP8bInv2bplA"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999478971",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999478971/",
+          "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+          "link": "https://link.amazon/B03NM8ggp",
+          "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "parent_pin_id": null,
+            "product_tags": [],
+            "pin_metrics": null,
+            "is_product": false,
+            "is_removable": false,
+            "id": "1033646551999478971",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 674,
+                  "url": "https://i.pinimg.com/564x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1435,
+                  "url": "https://i.pinimg.com/1200x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                }
+              }
+            },
+            "has_been_promoted": false,
+            "board_section_id": null,
+            "is_owner": true,
+            "board_id": "1033646620665866548",
+            "created_at": "2026-10-31T22:24:14",
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "description": "The pack contains 50 single-use dry facial towels made from 100% USDA biobased cellulose fiber. https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "link": "https://link.amazon/B03NM8ggp",
+            "is_standard": true,
+            "dominant_color": "#e4e6e7",
+            "alt_text": null,
+            "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette"
+          },
+          "message": "Successfully created pin 1033646551999478971 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-31T23:24:13.741306+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018289044",
+          "pin_url": "https://www.pinterest.com/pin/495607134018289044/",
+          "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+          "link": "https://link.amazon/B03NM8ggp",
+          "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "link": "https://link.amazon/B03NM8ggp",
+            "board_section_id": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "description": "The pack contains 50 single-use dry facial towels made from 100% USDA biobased cellulose fiber. https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "creative_type": "REGULAR",
+            "is_removable": false,
+            "alt_text": null,
+            "id": "495607134018289044",
+            "parent_pin_id": null,
+            "board_id": "495607202683261042",
+            "has_been_promoted": false,
+            "dominant_color": "#e4e6e7",
+            "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+            "product_tags": [],
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 674,
+                  "url": "https://i.pinimg.com/564x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1435,
+                  "url": "https://i.pinimg.com/1200x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                }
+              }
+            },
+            "is_standard": true,
+            "created_at": "2026-10-31T22:24:15",
+            "is_product": false,
+            "pin_metrics": null,
+            "is_owner": true
+          },
+          "message": "Successfully created pin 495607134018289044 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-31T23:24:13.741306+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986543458139258",
+          "post_id": "17913588687493261",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfLORbrltmh",
+          "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17913588687493261"
+          },
+          "message": "Successfully published image post 17913588687493261 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-31T23:24:13.741306+01:00"
+        }
+      },
       "batch_id": null
     },
     {
@@ -2155,7 +2330,7 @@
         "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
       ],
       "created_at": "2026-10-27T11:29:05.011677+00:00",
-      "published_at": "2026-10-31T21:05:00+01:00",
+      "published_at": "2026-10-31T23:24:13.741306+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -2170,7 +2345,7 @@
               "message": "Invalid OAuth access token - Cannot parse access token",
               "type": "OAuthException",
               "code": 190,
-              "fbtrace_id": "Av5_iEEVNxc5ElEH4cUO4D5"
+              "fbtrace_id": "A9N8k4Cl8VKp-QcPAf-sqrf"
             }
           },
           "errors": [
@@ -2188,7 +2363,7 @@
           "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
           "link": "https://link.amazon/B01JvH5z4",
           "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -2253,7 +2428,7 @@
           "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
           "link": "https://link.amazon/B01JvH5z4",
           "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -2317,7 +2492,7 @@
           "permalink": "https://www.threads.com/@lifemodehq/post/DfK5OCPlHsM",
           "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
           "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 200,
