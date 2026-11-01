@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 31,
-  "total_ready": 5,
+  "total_ready": 4,
   "total_failed": 5,
-  "scheduled_posts": 5,
-  "unfilled_slots": 55,
+  "scheduled_posts": 4,
+  "unfilled_slots": 56,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -131,9 +131,10 @@
       "completed_at": "2026-10-31T23:24:13.738420+01:00"
     },
     "2026-11-01-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-01T19:22:10.735981+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-01T19:22:13.229654+01:00"
     }
   },
   "items": [
@@ -1903,45 +1904,183 @@
       "scheduled_at": "2026-11-01T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B00JUM4CT4_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-26T13:02:01.522170+00:00",
-      "published_at": null,
+      "published_at": "2026-11-01T19:22:13.232778+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
+          "page_id": "226949230493910",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "AYaQyvLLp0zdETwekMLskPx"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
         },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999503816",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999503816/",
+          "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
+          "link": "https://link.amazon/B0hlXFzOe",
+          "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
-          "board": "Shopping ideas"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "product_tags": [],
+            "is_standard": true,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 733,
+                  "url": "https://i.pinimg.com/564x/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                },
+                "1200x": {
+                  "width": 1154,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                }
+              }
+            },
+            "pin_metrics": null,
+            "is_removable": false,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "has_been_promoted": false,
+            "is_owner": true,
+            "creative_type": "REGULAR",
+            "alt_text": null,
+            "board_id": "1033646620665866548",
+            "is_product": false,
+            "parent_pin_id": null,
+            "dominant_color": "#373b43",
+            "id": "1033646551999503816",
+            "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
+            "created_at": "2026-11-01T18:22:13",
+            "description": "The hoodie is made from EcoSmart mid‑weight cotton/poly fleece with up to 5% poly fibers. It features a full‑zip front, drawstring hood, front pockets, ribbed cuffs and hem, and double‑needle stitching at the neck and armhole seams. https://link.amazon/B0hlXFzOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "board_section_id": null,
+            "link": "https://link.amazon/B0hlXFzOe"
+          },
+          "message": "Successfully created pin 1033646551999503816 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-01T19:22:13.232778+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
           "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018294283",
+          "pin_url": "https://www.pinterest.com/pin/495607134018294283/",
+          "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
+          "link": "https://link.amazon/B0hlXFzOe",
+          "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
-          "board": "Home & Everyday Living"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "link": "https://link.amazon/B0hlXFzOe",
+            "parent_pin_id": null,
+            "created_at": "2026-11-01T18:22:15",
+            "is_standard": true,
+            "alt_text": null,
+            "has_been_promoted": false,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 733,
+                  "url": "https://i.pinimg.com/564x/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                },
+                "1200x": {
+                  "width": 1154,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/11/ce/a5/11cea5c1a38667cae07cfc52f0a642ba.jpg"
+                }
+              }
+            },
+            "is_product": false,
+            "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
+            "is_owner": true,
+            "description": "The hoodie is made from EcoSmart mid‑weight cotton/poly fleece with up to 5% poly fibers. It features a full‑zip front, drawstring hood, front pockets, ribbed cuffs and hem, and double‑needle stitching at the neck and armhole seams. https://link.amazon/B0hlXFzOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "pin_metrics": null,
+            "id": "495607134018294283",
+            "product_tags": [],
+            "board_id": "495607202683261042",
+            "is_removable": false,
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "dominant_color": "#373b43",
+            "board_section_id": null
+          },
+          "message": "Successfully created pin 495607134018294283 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-01T19:22:13.232778+01:00"
         },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986724919139258",
+          "post_id": "18121287398093567",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfNXX1ym0L2",
+          "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18121287398093567"
+          },
+          "message": "Successfully published image post 18121287398093567 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-01T19:22:13.232778+01:00"
         }
       },
       "batch_id": null
