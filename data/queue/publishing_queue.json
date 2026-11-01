@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 31,
-  "total_ready": 4,
+  "total_ready": 3,
   "total_failed": 5,
-  "scheduled_posts": 4,
-  "unfilled_slots": 56,
+  "scheduled_posts": 3,
+  "unfilled_slots": 57,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -134,12 +134,13 @@
       "state": "RETRYABLE",
       "claimed_at": "2026-11-01T19:22:10.735981+01:00",
       "attempt": 1,
-      "completed_at": "2026-11-01T19:22:13.229654+01:00"
+      "completed_at": "2026-11-01T23:42:24.346835+01:00"
     },
     "2026-11-01-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-01T23:42:22.357962+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-01T23:42:24.346835+01:00"
     }
   },
   "items": [
@@ -1915,7 +1916,7 @@
         "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
       ],
       "created_at": "2026-10-26T13:02:01.522170+00:00",
-      "published_at": "2026-11-01T19:22:13.232778+01:00",
+      "published_at": "2026-11-01T23:42:24.350236+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1930,7 +1931,7 @@
               "message": "Invalid OAuth access token - Cannot parse access token",
               "type": "OAuthException",
               "code": 190,
-              "fbtrace_id": "AYaQyvLLp0zdETwekMLskPx"
+              "fbtrace_id": "AZiU6JOuvZpZtM3uHO-ygKK"
             }
           },
           "errors": [
@@ -1948,7 +1949,7 @@
           "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
           "link": "https://link.amazon/B0hlXFzOe",
           "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -2013,7 +2014,7 @@
           "title": "Hanes EcoSmart Fleece Full‑Zip Hoodie",
           "link": "https://link.amazon/B0hlXFzOe",
           "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -2077,7 +2078,7 @@
           "permalink": "https://www.threads.com/@lifemodehq/post/DfNXX1ym0L2",
           "image_url": "https://m.media-amazon.com/images/I/71QyRZzbaUL._AC_SL1500_.jpg",
           "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 200,
@@ -2100,45 +2101,183 @@
       "scheduled_at": "2026-11-01T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B08BRJHJF9_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-26T13:17:01.948429+00:00",
-      "published_at": null,
+      "published_at": "2026-11-01T23:42:24.350236+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
+          "page_id": "226949230493910",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "ALQ0UMaLW-c7yhWx7IbZVQ_"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
         },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999511824",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999511824/",
+          "title": "USANOOKS Microfiber Cleaning Cloth Grey 12‑Pack 12.6×12.6 in",
+          "link": "https://link.amazon/B0bPi8P7o",
+          "image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
-          "board": "Shopping ideas"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "pin_metrics": null,
+            "is_product": false,
+            "link": "https://link.amazon/B0bPi8P7o",
+            "has_been_promoted": false,
+            "description": "The USANOOKS cloths measure 12.6 × 12.6 in and are crafted from 300 GSM microfiber with a 2.5 mm thickness. https://link.amazon/B0bPi8P7o\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "creative_type": "REGULAR",
+            "board_id": "1033646620665866548",
+            "product_tags": [],
+            "alt_text": null,
+            "title": "USANOOKS Microfiber Cleaning Cloth Grey 12‑Pack 12.6×12.6 in",
+            "parent_pin_id": null,
+            "is_owner": true,
+            "board_section_id": null,
+            "created_at": "2026-11-01T22:42:24",
+            "is_standard": true,
+            "dominant_color": "#787878",
+            "is_removable": false,
+            "id": "1033646551999511824",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 612,
+                  "url": "https://i.pinimg.com/564x/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1303,
+                  "url": "https://i.pinimg.com/1200x/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                }
+              }
+            }
+          },
+          "message": "Successfully created pin 1033646551999511824 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-01T23:42:24.350236+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
           "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018295971",
+          "pin_url": "https://www.pinterest.com/pin/495607134018295971/",
+          "title": "USANOOKS Microfiber Cleaning Cloth Grey 12‑Pack 12.6×12.6 in",
+          "link": "https://link.amazon/B0bPi8P7o",
+          "image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
-          "board": "Home & Everyday Living"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "title": "USANOOKS Microfiber Cleaning Cloth Grey 12‑Pack 12.6×12.6 in",
+            "pin_metrics": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 612,
+                  "url": "https://i.pinimg.com/564x/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1303,
+                  "url": "https://i.pinimg.com/1200x/36/24/d1/3624d1de7b31fd5739ceece1e95d6a09.jpg"
+                }
+              }
+            },
+            "parent_pin_id": null,
+            "creative_type": "REGULAR",
+            "is_removable": false,
+            "created_at": "2026-11-01T22:42:25",
+            "link": "https://link.amazon/B0bPi8P7o",
+            "alt_text": null,
+            "is_product": false,
+            "is_standard": true,
+            "dominant_color": "#787878",
+            "has_been_promoted": false,
+            "description": "The USANOOKS cloths measure 12.6 × 12.6 in and are crafted from 300 GSM microfiber with a 2.5 mm thickness. https://link.amazon/B0bPi8P7o\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_owner": true,
+            "board_section_id": null,
+            "id": "495607134018295971",
+            "board_id": "495607202683261042",
+            "product_tags": []
+          },
+          "message": "Successfully created pin 495607134018295971 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-01T23:42:24.350236+01:00"
         },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986756548139258",
+          "post_id": "18054007241777267",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfN1JcaI5d9",
+          "image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18054007241777267"
+          },
+          "message": "Successfully published image post 18054007241777267 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-01T23:42:24.350236+01:00"
         }
       },
       "batch_id": null
