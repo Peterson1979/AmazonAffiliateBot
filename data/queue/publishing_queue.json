@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 31,
-  "total_ready": 3,
+  "total_ready": 1,
   "total_failed": 5,
-  "scheduled_posts": 3,
-  "unfilled_slots": 57,
+  "scheduled_posts": 1,
+  "unfilled_slots": 59,
   "slot_claims": {
     "2026-10-07-slot-1": {
       "state": "RETRYABLE",
@@ -143,14 +143,16 @@
       "completed_at": "2026-11-01T23:42:24.346835+01:00"
     },
     "2026-11-02-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-02T23:17:05.859506+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-02T23:17:08.187452+01:00"
     },
     "2026-11-02-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-02T23:17:05.859506+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-02T23:17:08.187452+01:00"
     }
   },
   "items": [
@@ -2302,45 +2304,183 @@
       "scheduled_at": "2026-11-02T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0FJN3BTPV_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-26T13:18:03.800796+00:00",
-      "published_at": null,
+      "published_at": "2026-11-02T23:17:08.190806+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
+          "page_id": "226949230493910",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "AzR1E-ba5WaE5Eu6As50792"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
         },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999544259",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999544259/",
+          "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+          "link": "https://link.amazon/B06KC469E",
+          "image_url": "https://m.media-amazon.com/images/I/41ZPiDU6woL._AC_SL1080_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
-          "board": "Shopping ideas"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "alt_text": null,
+            "is_owner": true,
+            "pin_metrics": null,
+            "board_section_id": null,
+            "id": "1033646551999544259",
+            "created_at": "2026-11-02T22:17:08",
+            "description": "The bottle holds 710 ml and features a FreeSip spout with a push‑button lid that locks. Double‑wall insulation keeps drinks cold for up to 24 hours and the base fits cup holders. https://link.amazon/B06KC469E\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                },
+                "400x300": {
+                  "width": 274,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                },
+                "600x": {
+                  "width": 274,
+                  "height": 924,
+                  "url": "https://i.pinimg.com/564x/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                },
+                "1200x": {
+                  "width": 274,
+                  "height": 924,
+                  "url": "https://i.pinimg.com/1200x/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                }
+              }
+            },
+            "is_standard": true,
+            "product_tags": [],
+            "parent_pin_id": null,
+            "dominant_color": "#49211f",
+            "has_been_promoted": false,
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+            "is_product": false,
+            "board_id": "1033646620665866548",
+            "is_removable": false,
+            "link": "https://link.amazon/B06KC469E"
+          },
+          "message": "Successfully created pin 1033646551999544259 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-02T23:17:08.190806+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
           "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018303970",
+          "pin_url": "https://www.pinterest.com/pin/495607134018303970/",
+          "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+          "link": "https://link.amazon/B06KC469E",
+          "image_url": "https://m.media-amazon.com/images/I/41ZPiDU6woL._AC_SL1080_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
-          "board": "Home & Everyday Living"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_removable": false,
+            "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+            "parent_pin_id": null,
+            "product_tags": [],
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                },
+                "400x300": {
+                  "width": 274,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                },
+                "600x": {
+                  "width": 274,
+                  "height": 924,
+                  "url": "https://i.pinimg.com/564x/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                },
+                "1200x": {
+                  "width": 274,
+                  "height": 924,
+                  "url": "https://i.pinimg.com/1200x/d6/cc/9e/d6cc9e471ec8b812063ce48c77414d2c.jpg"
+                }
+              }
+            },
+            "board_section_id": null,
+            "created_at": "2026-11-02T22:17:09",
+            "creative_type": "REGULAR",
+            "link": "https://link.amazon/B06KC469E",
+            "board_id": "495607202683261042",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "dominant_color": "#49211f",
+            "is_standard": true,
+            "description": "The bottle holds 710 ml and features a FreeSip spout with a push‑button lid that locks. Double‑wall insulation keeps drinks cold for up to 24 hours and the base fits cup holders. https://link.amazon/B06KC469E\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "id": "495607134018303970",
+            "is_product": false,
+            "pin_metrics": null,
+            "is_owner": true,
+            "has_been_promoted": false,
+            "alt_text": null
+          },
+          "message": "Successfully created pin 495607134018303970 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-02T23:17:08.190806+01:00"
         },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986926918139258",
+          "post_id": "18158468542518212",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfQXDMSoKN9",
+          "image_url": "https://m.media-amazon.com/images/I/41ZPiDU6woL._AC_SL1080_.jpg",
+          "verified_media_type": "IMAGE",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18158468542518212"
+          },
+          "message": "Successfully published image post 18158468542518212 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-02T23:17:08.190806+01:00"
         }
       },
       "batch_id": null
@@ -2355,12 +2495,185 @@
       "scheduled_at": "2026-11-02T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09X5BQ969_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+      ],
       "created_at": "2026-10-26T13:19:11.352264+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-02T23:17:08.190806+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "AlwS19AIUP81wwo0rw5wy_k"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999544266",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999544266/",
+          "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+          "link": "https://link.amazon/B0g3KMMBy",
+          "image_url": "https://m.media-amazon.com/images/I/61XgBmBmp3L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "description": "Bellavita Luxury Honey Oud Eau de Parfum comes in a 3.4 fl oz (100 ml) spray bottle. https://link.amazon/B0g3KMMBy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_product": false,
+            "has_been_promoted": false,
+            "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 963,
+                  "url": "https://i.pinimg.com/564x/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                },
+                "1200x": {
+                  "width": 878,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                }
+              }
+            },
+            "board_section_id": null,
+            "created_at": "2026-11-02T22:17:21",
+            "alt_text": null,
+            "link": "https://link.amazon/B0g3KMMBy",
+            "pin_metrics": null,
+            "is_owner": true,
+            "is_removable": false,
+            "board_id": "1033646620665866548",
+            "product_tags": [],
+            "creative_type": "REGULAR",
+            "dominant_color": null,
+            "id": "1033646551999544266",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "parent_pin_id": null,
+            "is_standard": true
+          },
+          "message": "Successfully created pin 1033646551999544266 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-02T23:17:08.190806+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018303975",
+          "pin_url": "https://www.pinterest.com/pin/495607134018303975/",
+          "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+          "link": "https://link.amazon/B0g3KMMBy",
+          "image_url": "https://m.media-amazon.com/images/I/61XgBmBmp3L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_section_id": null,
+            "is_removable": false,
+            "is_standard": true,
+            "id": "495607134018303975",
+            "pin_metrics": null,
+            "product_tags": [],
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 963,
+                  "url": "https://i.pinimg.com/564x/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                },
+                "1200x": {
+                  "width": 878,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/c2/50/7a/c2507af9cec312f84af949a9ae895599.jpg"
+                }
+              }
+            },
+            "board_id": "495607202683261042",
+            "parent_pin_id": null,
+            "alt_text": null,
+            "is_product": false,
+            "link": "https://link.amazon/B0g3KMMBy",
+            "is_owner": true,
+            "description": "Bellavita Luxury Honey Oud Eau de Parfum comes in a 3.4 fl oz (100 ml) spray bottle. https://link.amazon/B0g3KMMBy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+            "has_been_promoted": false,
+            "dominant_color": null,
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "created_at": "2026-11-02T22:17:22"
+          },
+          "message": "Successfully created pin 495607134018303975 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-02T23:17:08.190806+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986927032139258",
+          "post_id": "17997119721048011",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfQXEvRICXh",
+          "image_url": "https://m.media-amazon.com/images/I/61XgBmBmp3L._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17997119721048011"
+          },
+          "message": "Successfully published image post 17997119721048011 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-02T23:17:08.190806+01:00"
+        }
+      },
       "batch_id": null
     },
     {
