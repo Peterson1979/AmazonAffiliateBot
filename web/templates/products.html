@@ -13,6 +13,21 @@
   </div>
 </div>
 
+<!-- Group Summary Strip -->
+<div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+  <div class="badge badge-info" style="padding: 8px 14px; font-size: 0.9rem;">
+    Active / Requiring Attention: <strong>{{ active_count }}</strong>
+  </div>
+  <div class="badge badge-success" style="padding: 8px 14px; font-size: 0.9rem;">
+    Published: <strong>{{ published_count }}</strong>
+  </div>
+  {% if failed_count %}
+  <div class="badge badge-danger" style="padding: 8px 14px; font-size: 0.9rem;">
+    Validation / Queue Failed: <strong>{{ failed_count }}</strong>
+  </div>
+  {% endif %}
+</div>
+
 <!-- Filters and Search Form -->
 <div class="card" style="margin-bottom: 20px;">
   <form method="GET" action="{{ url_for('products') }}" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
@@ -23,10 +38,10 @@
     <div style="flex: 1; min-width: 180px;">
       <label for="status">Filter by Status</label>
       <select id="status" name="status">
-        <option value="all" {% if current_filter == 'all' %}selected{% endif %}>All Products</option>
+        <option value="all" {% if current_filter == 'all' %}selected{% endif %}>All Active Products</option>
         <option value="scheduled" {% if current_filter == 'scheduled' %}selected{% endif %}>Scheduled</option>
+        <option value="not_published" {% if current_filter in ('not_published', 'simulated') %}selected{% endif %}>Not published</option>
         <option value="publishing" {% if current_filter == 'publishing' %}selected{% endif %}>Publishing</option>
-        <option value="simulated" {% if current_filter == 'simulated' %}selected{% endif %}>Simulated</option>
         <option value="published" {% if current_filter == 'published' %}selected{% endif %}>Published</option>
         <option value="partial" {% if current_filter == 'partial' %}selected{% endif %}>Partial</option>
         <option value="retryable" {% if current_filter == 'retryable' %}selected{% endif %}>Retryable</option>
@@ -43,7 +58,85 @@
   </form>
 </div>
 
-<!-- Products Table -->
+<!-- Server-side pagination -->
+<style>
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .pagination-bar .pagination-summary { white-space: nowrap; }
+  .per-page-form { display: flex; align-items: center; gap: 6px; margin: 0; }
+  .per-page-form label { margin: 0; white-space: nowrap; }
+  .per-page-form select {
+    background: var(--bg-input, var(--bg-card));
+    border: 1px solid var(--border-color, #3a3f4a);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 0.85rem;
+    padding: 4px 6px;
+  }
+  .pagination-nav { display: flex; align-items: center; gap: 4px; }
+  .pagination-nav .page-link,
+  .pagination-nav .page-ellipsis {
+    border: 1px solid var(--border-color, #3a3f4a);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    padding: 4px 9px;
+    text-decoration: none;
+  }
+  .pagination-nav .page-link:hover { color: #fff; background: var(--bg-card); }
+  .pagination-nav .page-link.active {
+    background: var(--bg-card);
+    color: #fff;
+    font-weight: 600;
+  }
+  .pagination-nav .page-ellipsis { border-color: transparent; }
+</style>
+{% if pagination %}
+<div class="pagination-bar">
+  <div class="pagination-summary">
+    Showing {{ pagination.start_index }}–{{ pagination.end_index }} of {{ pagination.total }} product{{ '' if pagination.total == 1 else 's' }}
+    &middot; Page {{ pagination.page }} of {{ pagination.total_pages }}
+  </div>
+  <form method="GET" action="{{ url_for('products') }}" class="per-page-form">
+    <input type="hidden" name="q" value="{{ search_query }}">
+    <input type="hidden" name="status" value="{{ current_filter }}">
+    <input type="hidden" name="page" value="1">
+    <label for="per_page">Per page</label>
+    <select id="per_page" name="per_page" onchange="this.form.submit()">
+      {% for size in (25, 50, 100) %}
+      <option value="{{ size }}" {% if pagination.per_page == size %}selected{% endif %}>{{ size }}</option>
+      {% endfor %}
+    </select>
+    <noscript><button type="submit" class="btn btn-sm btn-secondary">Apply</button></noscript>
+  </form>
+  <nav class="pagination-nav" aria-label="Products pagination">
+    {% if pagination.has_prev %}
+      <a class="page-link" href="{{ url_for('products', q=search_query, status=current_filter, per_page=pagination.per_page, page=pagination.page - 1) }}">Previous</a>
+    {% endif %}
+    {% for p in pagination.pages %}
+      {% if p == '…' %}
+        <span class="page-ellipsis">…</span>
+      {% elif p == pagination.page %}
+        <span class="page-link active" aria-current="page">{{ p }}</span>
+      {% else %}
+        <a class="page-link" href="{{ url_for('products', q=search_query, status=current_filter, per_page=pagination.per_page, page=p) }}">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if pagination.has_next %}
+      <a class="page-link" href="{{ url_for('products', q=search_query, status=current_filter, per_page=pagination.per_page, page=pagination.page + 1) }}">Next</a>
+    {% endif %}
+  </nav>
+</div>
+{% endif %}
+
+<!-- Products Table (Active / Primary View) -->
 <div class="table-responsive">
   <table>
     <thead>
@@ -53,6 +146,7 @@
         <th>Facts</th>
         <th>Content</th>
         <th>Validation</th>
+        <th>Flow Creative</th>
         <th>Publishing state</th>
         <th>Platform results</th>
         <th>Scheduled (Europe/Budapest)</th>
@@ -66,7 +160,7 @@
           <td>
             <strong><a href="{{ url_for('product_detail', asin=p.asin) }}" style="color: var(--primary); text-decoration: none;">{{ p.asin }}</a></strong>
           </td>
-          <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <td style="max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
             <a href="{{ url_for('product_detail', asin=p.asin) }}" style="color: inherit; text-decoration: none;" title="{{ p.title }}">
               {{ p.title }}
             </a>
@@ -95,12 +189,22 @@
             {% endif %}
           </td>
           <td>
-            <span class="state-pill state-{{ p.publishing_status|lower|replace('_', '-') }}">{{ p.publishing_status }}</span>
+            {% if p.flow_creative %}
+              <span class="badge {{ p.flow_creative.badge_class }}">{{ p.flow_creative.label }}</span>
+              {% if p.flow_creative.selected_display %}
+                <div class="table-subtext">{{ p.flow_creative.selected_display }}</div>
+              {% endif %}
+            {% else %}
+              <span class="badge badge-muted">No Flow image</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="state-pill state-{{ p.publishing_status|lower|replace('_', '-') }}">{% if p.publishing_status_display %}{{ p.publishing_status_display }}{% elif p.publishing_status in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif p.publishing_status == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ p.publishing_status }}{% endif %}</span>
             {% if p.retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
           </td>
           <td><div class="platform-result-list compact-results">
             {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
-              <div class="platform-result"><span>{{ {'facebook': 'Facebook', 'pinterest': 'Pinterest', 'pinterest_lifemodehq': 'Pinterest LifeModeHQ', 'threads': 'Threads'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{{ result.state if result else 'UNKNOWN' }}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
+              <div class="platform-result"><span>{{ {'facebook': 'Facebook', 'pinterest': 'Pinterest', 'pinterest_lifemodehq': 'Pinterest LifeModeHQ', 'threads': 'Threads'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
             {% endfor %}
           </div>
           </td>
@@ -119,7 +223,7 @@
         {% endfor %}
       {% else %}
         <tr>
-          <td colspan="9" style="text-align: center; padding: 32px; color: var(--text-muted);">
+          <td colspan="10" style="text-align: center; padding: 32px; color: var(--text-muted);">
             No products match the selected criteria.
           </td>
         </tr>
@@ -127,4 +231,67 @@
     </tbody>
   </table>
 </div>
+
+<!-- Published Products (Collapsible section, collapsed by default) -->
+{% if published_products and current_filter != 'published' %}
+<details class="card" style="margin-top: 24px; padding: 0; overflow: hidden;">
+  <summary style="cursor: pointer; padding: 14px 18px; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); user-select: none;">
+    <span>Published Products ({{ published_count }})</span>
+    <span class="table-subtext">Collapsed by default &bull; Click to toggle</span>
+  </summary>
+  <div class="table-responsive" style="margin-top: 0;">
+    <table>
+      <thead>
+        <tr>
+          <th>ASIN</th>
+          <th>Product Title</th>
+          <th>Facts</th>
+          <th>Content</th>
+          <th>Flow Creative</th>
+          <th>Publishing state</th>
+          <th>Platform results</th>
+          <th>Published at</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in published_products %}
+        <tr>
+          <td>
+            <strong><a href="{{ url_for('product_detail', asin=p.asin) }}" style="color: var(--primary); text-decoration: none;">{{ p.asin }}</a></strong>
+          </td>
+          <td style="max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <a href="{{ url_for('product_detail', asin=p.asin) }}" style="color: inherit; text-decoration: none;" title="{{ p.title }}">
+              {{ p.title }}
+            </a>
+          </td>
+          <td><span class="badge badge-success">{{ p.facts_count }} Facts</span></td>
+          <td><span class="badge badge-success">Generated</span></td>
+          <td>
+            {% if p.flow_creative %}
+              <span class="badge {{ p.flow_creative.badge_class }}">{{ p.flow_creative.label }}</span>
+              {% if p.flow_creative.selected_display %}
+                <div class="table-subtext">{{ p.flow_creative.selected_display }}</div>
+              {% endif %}
+            {% else %}
+              <span class="badge badge-muted">No Flow image</span>
+            {% endif %}
+          </td>
+          <td><span class="state-pill state-published">Published</span></td>
+          <td>
+            <div class="platform-result-list compact-results">
+              {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
+                <div class="platform-result"><span>{{ {'facebook': 'Facebook', 'pinterest': 'Pinterest', 'pinterest_lifemodehq': 'Pinterest LifeModeHQ', 'threads': 'Threads'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% endif %}</div>
+              {% endfor %}
+            </div>
+          </td>
+          <td><div class="table-subtext">{{ p.published_at or p.scheduled_date or 'Confirmed' }}</div></td>
+          <td><a href="{{ url_for('product_detail', asin=p.asin) }}" class="btn btn-sm btn-secondary">Inspect</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</details>
+{% endif %}
 {% endblock %}

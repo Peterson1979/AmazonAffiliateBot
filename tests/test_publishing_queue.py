@@ -991,7 +991,7 @@ class TestQueuePublisher(unittest.TestCase):
 
         report = QueuePublisher.publish_due_items(
             self.queue_file,
-            now_str="2026-10-07T20:00:00+02:00",
+            now_str="2026-10-07T21:30:00+02:00",
             publisher=MockLivePublisher(),
             dry_run=False
         )

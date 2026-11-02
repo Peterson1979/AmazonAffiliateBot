@@ -28,6 +28,12 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
+      },
+      "selected_creative": {
+        "creative_type": "gift_inspiration",
+        "display_name": "Gift Inspiration",
+        "image_path": "data/creatives/B09X5BQ969/gift_inspiration_flow.jpg",
+        "image_url": "/creatives/B09X5BQ969/gift_inspiration_flow.jpg"
       }
     },
     "threads": {

@@ -1,0 +1,522 @@
+{
+  "asin": "B0BZYCJK89",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-26T13:20:52.249226+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0BZYCJK89.json",
+    "affiliate_url": "https://link.amazon/B01k4qcKc"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The Owala FreeSip Insulated Stainless Steel Water Bottle 710 ml is crafted from stainless steel and features double‑wall insulation that keeps drinks cold for 24 hours.\n\nIt includes a FreeSip spout and a push‑button lid with a lock. The bottle has a carry loop that also serves as a lock, a cup‑holder‑friendly base, and is lead, BPA and phthalate free.\n\nLink: https://link.amazon/B01k4qcKc\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51VU5d5ySHL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+      "description": "It features double‑wall insulation that keeps drinks cold. https://link.amazon/B01k4qcKc\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51VU5d5ySHL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B01k4qcKc",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg"
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "It also includes a carry loop that doubles as a lock, a wide opening for cleaning and ice, and a cup‑holder‑friendly base.\n\nLink: https://link.amazon/B01k4qcKc\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51VU5d5ySHL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "989",
+        "x-ratelimit-reset-requests": "15m50.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "33",
+        "x-ratelimit-reset-tokens": "59.752s"
+      },
+      "id": "chatcmpl-e520209c-90f8-439d-ac04-7b2156d33b54",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.210290485,
+        "prompt_tokens": 1567,
+        "prompt_time": 0.087885851,
+        "completion_tokens": 162,
+        "completion_time": 0.345104285,
+        "total_tokens": 1729,
+        "total_time": 0.432990136
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "11",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "989",
+        "x-ratelimit-reset-requests": "15m50.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "450",
+        "x-ratelimit-reset-tokens": "56.625s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7550, Requested 1805. Please try again in 10.1625s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "988",
+        "x-ratelimit-reset-requests": "17m16.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1402",
+        "x-ratelimit-reset-tokens": "49.485s"
+      },
+      "id": "chatcmpl-cf164e65-13f2-4063-8db3-4cb6326f1381",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.297028467,
+        "prompt_tokens": 1488,
+        "prompt_time": 0.073870929,
+        "completion_tokens": 241,
+        "completion_time": 0.510599629,
+        "total_tokens": 1729,
+        "total_time": 0.584470558
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "1",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "988",
+        "x-ratelimit-reset-requests": "17m16.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1911",
+        "x-ratelimit-reset-tokens": "45.667s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6089, Requested 1917. Please try again in 45ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "987",
+        "x-ratelimit-reset-requests": "18m43.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2560",
+        "x-ratelimit-reset-tokens": "40.8s"
+      },
+      "id": "chatcmpl-a2986a44-3d83-4485-b412-7672e7b323cf",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.017289357,
+        "prompt_tokens": 1564,
+        "prompt_time": 0.048787569,
+        "completion_tokens": 218,
+        "completion_time": 0.484253288,
+        "total_tokens": 1782,
+        "total_time": 0.533040857
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "986",
+        "x-ratelimit-reset-requests": "20m9.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1916",
+        "x-ratelimit-reset-tokens": "45.629s"
+      },
+      "id": "chatcmpl-67f8ed0c-f3b2-4483-900b-cfa2bcaaed60",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.017942833,
+        "prompt_tokens": 1641,
+        "prompt_time": 0.030948936,
+        "completion_tokens": 259,
+        "completion_time": 0.535393409,
+        "total_tokens": 1900,
+        "total_time": 0.566342345
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "985",
+        "x-ratelimit-reset-requests": "21m36s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1639",
+        "x-ratelimit-reset-tokens": "47.707s"
+      },
+      "id": "chatcmpl-2f6bfacb-515f-411e-bac0-5a5fd06ecee7",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.152112457,
+        "prompt_tokens": 1559,
+        "prompt_time": 0.079232354,
+        "completion_tokens": 269,
+        "completion_time": 0.573806416,
+        "total_tokens": 1828,
+        "total_time": 0.65303877
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "984",
+        "x-ratelimit-reset-requests": "23m2.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2345",
+        "x-ratelimit-reset-tokens": "42.412s"
+      },
+      "id": "chatcmpl-8a4fef64-617f-47a2-9087-b5172586cfb1",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.017128795,
+        "prompt_tokens": 1347,
+        "prompt_time": 0.027037337,
+        "completion_tokens": 174,
+        "completion_time": 0.391563891,
+        "total_tokens": 1521,
+        "total_time": 0.418601228
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "983",
+        "x-ratelimit-reset-requests": "24m28.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2028",
+        "x-ratelimit-reset-tokens": "44.79s"
+      },
+      "id": "chatcmpl-6a75c05b-0841-4433-9542-72cf671053e3",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.211245405,
+        "prompt_tokens": 1374,
+        "prompt_time": 0.070315778,
+        "completion_tokens": 94,
+        "completion_time": 0.199702399,
+        "total_tokens": 1468,
+        "total_time": 0.270018177
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "982",
+        "x-ratelimit-reset-requests": "25m55.199s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "673",
+        "x-ratelimit-reset-tokens": "54.952s"
+      },
+      "id": "chatcmpl-7a0d1771-95fb-4362-8bec-a035a8687a7c",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.297966451,
+        "prompt_tokens": 1424,
+        "prompt_time": 0.072271175,
+        "completion_tokens": 196,
+        "completion_time": 0.411495065,
+        "total_tokens": 1620,
+        "total_time": 0.48376624
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "5",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "982",
+        "x-ratelimit-reset-requests": "25m55.199s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1066",
+        "x-ratelimit-reset-tokens": "52.005s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6934, Requested 1662. Please try again in 4.47s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "981",
+        "x-ratelimit-reset-requests": "27m21.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2863",
+        "x-ratelimit-reset-tokens": "38.527s"
+      },
+      "id": "chatcmpl-b7516182-30da-468a-8414-a6bf929ef51e",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.300130892,
+        "prompt_tokens": 1747,
+        "prompt_time": 0.1569251,
+        "completion_tokens": 265,
+        "completion_time": 0.56099562,
+        "total_tokens": 2012,
+        "total_time": 0.71792072
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "980",
+        "x-ratelimit-reset-requests": "28m48s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1166",
+        "x-ratelimit-reset-tokens": "51.254s"
+      },
+      "id": "chatcmpl-6e68a17a-0fd5-40f9-87e6-9720eb60689b",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.715076265,
+        "prompt_tokens": 1824,
+        "prompt_time": 0.162071498,
+        "completion_tokens": 252,
+        "completion_time": 0.536768934,
+        "total_tokens": 2076,
+        "total_time": 0.698840432
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "4",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "980",
+        "x-ratelimit-reset-requests": "28m48s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1585",
+        "x-ratelimit-reset-tokens": "48.112s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6415, Requested 2062. Please try again in 3.577499999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "979",
+        "x-ratelimit-reset-requests": "30m14.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2124",
+        "x-ratelimit-reset-tokens": "44.07s"
+      },
+      "id": "chatcmpl-4972aca1-0905-42ca-9c4e-acc69c6178ac",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.29715677,
+        "prompt_tokens": 1584,
+        "prompt_time": 0.051470344,
+        "completion_tokens": 210,
+        "completion_time": 0.64195409,
+        "total_tokens": 1794,
+        "total_time": 0.693424434
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "978",
+        "x-ratelimit-reset-requests": "31m40.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1494",
+        "x-ratelimit-reset-tokens": "48.795s"
+      },
+      "id": "chatcmpl-436b9f35-7701-4b97-bfac-8ee2e3c148e8",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.04871961,
+        "prompt_tokens": 1661,
+        "prompt_time": 0.114383355,
+        "completion_tokens": 225,
+        "completion_time": 0.466589727,
+        "total_tokens": 1886,
+        "total_time": 0.580973082
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "1",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "978",
+        "x-ratelimit-reset-requests": "31m40.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1848",
+        "x-ratelimit-reset-tokens": "46.14s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6152, Requested 1899. Please try again in 382.499999ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "977",
+        "x-ratelimit-reset-requests": "33m7.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2072",
+        "x-ratelimit-reset-tokens": "44.46s"
+      },
+      "id": "chatcmpl-5ce96218-9201-4fbb-93b4-6384f3151ad3",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.298222666,
+        "prompt_tokens": 1561,
+        "prompt_time": 0.065761651,
+        "completion_tokens": 292,
+        "completion_time": 0.609634548,
+        "total_tokens": 1853,
+        "total_time": 0.675396199
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "976",
+        "x-ratelimit-reset-requests": "34m33.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "531",
+        "x-ratelimit-reset-tokens": "56.017s"
+      },
+      "id": "chatcmpl-817250c8-d524-40b6-bac4-9af57d0d65ae",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.04803932,
+        "prompt_tokens": 1638,
+        "prompt_time": 0.029279105,
+        "completion_tokens": 354,
+        "completion_time": 1.273776959,
+        "total_tokens": 1992,
+        "total_time": 1.303056064
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "975",
+        "x-ratelimit-reset-requests": "36m0s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "267",
+        "x-ratelimit-reset-tokens": "57.997s"
+      },
+      "id": "chatcmpl-b297d9ab-4fca-4e19-88e5-5a5dfa76dcdf",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 1.026668824,
+        "prompt_tokens": 1556,
+        "prompt_time": 0.084502073,
+        "completion_tokens": 205,
+        "completion_time": 0.433076498,
+        "total_tokens": 1761,
+        "total_time": 0.517578571
+      }
+    }
+  ]
+}

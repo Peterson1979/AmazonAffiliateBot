@@ -13,8 +13,10 @@ import os
 import re
 import urllib.request
 import subprocess
+import uuid
 
 from amazon.scraper import Product, scrape_amazon_product, extract_asin_from_url
+from amazon.creators_api import CreatorsAPIClient, marketplace_from_url
 from amazon.discovery import (
     AmazonDiscoveryEngine,
     DiscoveryHistory,
@@ -22,7 +24,7 @@ from amazon.discovery import (
     DEFAULT_CONFIG_QUERIES,
     DEFAULT_TRACKING_TAG
 )
-from ai.ollama import OllamaClient
+from ai.provider import create_content_provider
 from content.facts import FactExtractor, CanonicalProductFacts
 from content.generator import ContentGenerator
 from content.validator import ClaimValidator
@@ -33,11 +35,51 @@ from content.package import (
     STATUS_VALID,
     SUPPORTED_PLATFORMS
 )
+try:
+    from content.pinterest_creative import (
+        load_product_creatives,
+        generate_flow_creatives,
+        generate_pinterest_creatives,
+        save_uploaded_creative,
+        set_selected_creative,
+        get_selected_creative,
+        get_product_flow_creative_status,
+        get_or_download_reference_image,
+        CREATIVE_TYPES,
+        CREATIVE_TYPE_GIFT,
+        CREATIVE_TYPE_EVERYDAY,
+        CREATIVE_TYPE_LABELS,
+    )
+except ImportError:
+    CREATIVE_TYPES = ["gift_inspiration", "everyday_pick"]
+    CREATIVE_TYPE_GIFT = "gift_inspiration"
+    CREATIVE_TYPE_EVERYDAY = "everyday_pick"
+    CREATIVE_TYPE_LABELS = {
+        "gift_inspiration": "Gift Inspiration",
+        "everyday_pick": "Everyday Pick",
+    }
+    def load_product_creatives(asin, base_dir=None):
+        return {}
+    def generate_flow_creatives(product, overwrite=False):
+        return {}
+    def generate_pinterest_creatives(*args, **kwargs):
+        return {}
+    def save_uploaded_creative(*args, **kwargs):
+        return False, "Pinterest creative module not available", {}
+    def set_selected_creative(*args, **kwargs):
+        return False, "Pinterest creative module not available", {}
+    def get_selected_creative(*args, **kwargs):
+        return None
+    def get_product_flow_creative_status(*args, **kwargs):
+        return {}
+    def get_or_download_reference_image(*args, **kwargs):
+        return None
 from publishing.images import recover_verified_image_url, is_valid_image_url
 from publishing.queue import (
     PublishingQueue,
     QueueItem,
     QueuePublisher,
+    is_item_overdue_held,
     get_budapest_timezone,
     DEFAULT_QUEUE_FILE,
     DEFAULT_LOGS_DIR,
@@ -53,7 +95,8 @@ from publishing.queue import (
     STATUS_SKIPPED,
     parse_affiliate_urls,
     get_authoritative_urls_file,
-    resolve_product_for_url
+    resolve_product_for_url,
+    next_queue_item_id
 )
 from publishing.replenisher import (
     QueueReplenisher,
@@ -72,12 +115,98 @@ DATA_DIR = PROJECT_ROOT / "data"
 PRODUCTS_DIR = DATA_DIR / "products"
 GENERATED_DIR = DATA_DIR / "generated"
 QUEUE_FILE = DATA_DIR / "queue" / "publishing_queue.json"
+BATCHES_FILE = DATA_DIR / "batches" / "import_batches.json"
 LOGS_DIR = DATA_DIR / "logs"
 DISCOVERY_HISTORY_FILE = DATA_DIR / "discovery" / "discovery_history.json"
 SCHEDULED_WORKFLOW_FILE = PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml"
 ACTIVE_PUBLISHING_PLATFORMS = ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
 
 DEFAULT_AFFILIATE_DISCLOSURE = "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+
+
+def load_import_batches(path: Optional[Path] = None) -> List[Dict[str, Any]]:
+    """Load the append-only dashboard import ledger safely."""
+    path = path or BATCHES_FILE
+    if not path.exists():
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        return data if isinstance(data, list) else []
+    except (OSError, ValueError, TypeError):
+        return []
+
+
+def save_import_batches(batches: List[Dict[str, Any]], path: Optional[Path] = None) -> None:
+    """Persist import batches without changing queue or publication records."""
+    path = path or BATCHES_FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(batches, handle, indent=2, ensure_ascii=False)
+
+
+def format_batch_label(batch: Dict[str, Any]) -> str:
+    """Format a human-readable batch label instead of raw ISO timestamp."""
+    created_at = batch.get("created_at", "")
+    try:
+        dt = datetime.fromisoformat(created_at)
+        formatted_dt = dt.strftime("%b %d, %Y - %H:%M")
+    except Exception:
+        formatted_dt = created_at[:16].replace("T", " ") if created_at else "Unknown date"
+
+    submitted = batch.get("submitted_count", 0)
+    accepted = batch.get("accepted_count", 0)
+    return f"Batch {formatted_dt} ({accepted} accepted / {submitted} submitted)"
+
+
+def to_repository_relative_path(path: Union[str, Path]) -> str:
+    """Return a portable, repository-relative POSIX path for queue storage.
+
+    New queue entries must never record a machine-specific absolute Windows
+    path: GitHub Actions resolves ``data/generated/...`` from the checkout root,
+    and the publisher's package resolution already falls back to the
+    repository-root-relative candidate. Existing absolute references are left
+    untouched by this helper; it only normalises paths that live inside the
+    repository and otherwise returns the input unchanged (POSIX separators).
+    """
+    raw = Path(path)
+    try:
+        return raw.resolve().relative_to(PROJECT_ROOT).as_posix()
+    except (ValueError, OSError):
+        return str(path).replace("\\", "/")
+
+
+def get_import_batch(batch_id: Optional[str] = None, path: Optional[Path] = None) -> Optional[Dict[str, Any]]:
+    """Return a selected batch or the newest recorded batch."""
+    batches = load_import_batches(path)
+    if batch_id:
+        return next((batch for batch in batches if batch.get("batch_id") == batch_id), None)
+    return batches[-1] if batches else None
+
+
+def build_import_batch_view(
+    batch: Optional[Dict[str, Any]],
+    queue: Optional[PublishingQueue]
+) -> Dict[str, Any]:
+    """Combine immutable import outcomes with current queue/platform state."""
+    if not batch:
+        return {"batch": None, "entries": [], "items": []}
+    queue_items = {item.queue_item_id: item for item in (queue.items if queue else [])}
+    entries = []
+    items = []
+    for raw_entry in batch.get("entries", []):
+        entry = dict(raw_entry)
+        item = queue_items.get(entry.get("queue_item_id"))
+        if item:
+            presentation = get_queue_item_presentation(queue, item)
+            item.ui_state = presentation["state"]
+            item.ui_retryable = presentation["retryable"]
+            item.ui_platforms = presentation["platforms"]
+            item.ui_published_at = presentation["published_at"]
+            items.append(item)
+            entry["queue_item"] = item
+        entries.append(entry)
+    return {"batch": batch, "entries": entries, "items": items}
 
 
 def _slot_claim_for_item(queue: PublishingQueue, item: QueueItem) -> Dict[str, Any]:
@@ -92,37 +221,155 @@ def _slot_claim_for_item(queue: PublishingQueue, item: QueueItem) -> Dict[str, A
     return (queue.slot_claims or {}).get(key) or {}
 
 
-def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str, Any]:
+MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def format_scheduled_datetime(dt: datetime) -> str:
+    """Format a datetime in Europe/Budapest as 'Nov 4, 2026, 13:00'."""
+    month_name = MONTH_NAMES[dt.month - 1]
+    return f"{month_name} {dt.day}, {dt.year}, {dt.strftime('%H:%M')}"
+
+
+def parse_product_scheduled_dt(
+    scheduled_at: Optional[str] = None,
+    scheduled_date: Optional[str] = None,
+    daily_slot: Optional[int] = None,
+    tz: Optional[Any] = None,
+) -> Optional[datetime]:
+    """Parse scheduled date and time into a timezone-aware Europe/Budapest datetime."""
+    if tz is None:
+        tz = get_budapest_timezone()
+    if scheduled_at:
+        try:
+            dt = datetime.fromisoformat(scheduled_at)
+            return dt.replace(tzinfo=tz) if dt.tzinfo is None else dt.astimezone(tz)
+        except Exception:
+            pass
+    if scheduled_date:
+        try:
+            slot_hour = SLOT_1_TIME.hour if daily_slot == 1 else SLOT_2_TIME.hour
+            d = datetime.strptime(scheduled_date, "%Y-%m-%d").date()
+            return datetime(d.year, d.month, d.day, slot_hour, 0, 0, tzinfo=tz)
+        except Exception:
+            pass
+    return None
+
+
+def resolve_product_publication_status(
+    scheduled_at: Optional[str] = None,
+    scheduled_date: Optional[str] = None,
+    daily_slot: Optional[int] = None,
+    publishing_results: Optional[Dict[str, Any]] = None,
+    published_at: Optional[str] = None,
+    claimed: bool = False,
+    current_dt: Optional[datetime] = None,
+) -> Dict[str, str]:
+    """Compute the truthful, time-based publication status for any product."""
+    tz = get_budapest_timezone()
+    now_dt = current_dt or datetime.now(tz)
+    if now_dt.tzinfo is None:
+        now_dt = now_dt.replace(tzinfo=tz)
+    else:
+        now_dt = now_dt.astimezone(tz)
+
+    raw_results = [v for v in (publishing_results or {}).values() if isinstance(v, dict)]
+    has_live = any(_is_confirmed_live_result(v) for v in raw_results)
+    all_live = bool(raw_results) and all(_is_confirmed_live_result(v) for v in raw_results)
+
+    scheduled_dt = parse_product_scheduled_dt(
+        scheduled_at=scheduled_at,
+        scheduled_date=scheduled_date,
+        daily_slot=daily_slot,
+        tz=tz,
+    )
+    is_future = scheduled_dt is not None and scheduled_dt > now_dt
+    time_has_passed = scheduled_dt is not None and scheduled_dt <= now_dt
+
+    if all_live:
+        return {"state": "PUBLISHED", "ui_label": "Published"}
+    if has_live:
+        return {"state": "PARTIAL", "ui_label": "Partial"}
+    if is_future:
+        state = "PUBLISHING" if claimed else "SCHEDULED"
+        label = f"Scheduled — {format_scheduled_datetime(scheduled_dt)}"
+        return {"state": state, "ui_label": label}
+    if time_has_passed:
+        return {"state": "SIMULATED", "ui_label": "Not published"}
+
+    return {"state": "UNKNOWN", "ui_label": "Awaiting confirmation"}
+
+
+def get_platform_publication_result(
+    item: QueueItem,
+    platform: str,
+    current_dt: Optional[datetime] = None,
+) -> Dict[str, Any]:
     """Normalize one active platform result for truthful UI rendering."""
     raw_results = item.publishing_results or {}
-    # Each destination is independent.  In particular, do not merge the two
-    # Pinterest accounts into one result or hide a failure in the other account.
     result = raw_results.get(platform)
     if not isinstance(result, dict):
         result = None
+
+    tz = get_budapest_timezone()
+    now_dt = current_dt or datetime.now(tz)
+    if now_dt.tzinfo is None:
+        now_dt = now_dt.replace(tzinfo=tz)
+    else:
+        now_dt = now_dt.astimezone(tz)
+
+    scheduled_dt = parse_product_scheduled_dt(
+        scheduled_at=item.scheduled_at,
+        scheduled_date=item.scheduled_date,
+        daily_slot=item.daily_slot,
+        tz=tz,
+    )
+    is_future = scheduled_dt is not None and scheduled_dt > now_dt
+    time_has_passed = scheduled_dt is not None and scheduled_dt <= now_dt
 
     state = "UNKNOWN"
     historical_dry_run_ambiguous = _has_ambiguous_historical_dry_run(item)
     if result:
         result_status = result.get("status")
         mode = result.get("mode")
-        if historical_dry_run_ambiguous and (result_status == "WOULD_PUBLISH" or mode == "DRY_RUN"):
+        if _is_confirmed_live_result(result):
+            state = "PUBLISHED"
+        elif result_status == "FAILED" and (time_has_passed or not is_future):
+            state = "FAILED"
+        elif is_future:
+            claim = (item._ui_claim if hasattr(item, "_ui_claim") else {}) or {}
+            state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
+        elif historical_dry_run_ambiguous and (result_status == "WOULD_PUBLISH" or mode == "DRY_RUN"):
             state = "UNKNOWN"
         elif result_status == "WOULD_PUBLISH" or mode == "DRY_RUN":
             state = "SIMULATED"
-        elif _is_confirmed_live_result(result):
-            state = "PUBLISHED"
-        elif result_status == "FAILED":
-            state = "FAILED"
     elif item.status in (STATUS_READY, STATUS_QUEUED):
         claim = (item._ui_claim if hasattr(item, "_ui_claim") else {}) or {}
-        state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
+        if claim.get("state") == "CLAIMED":
+            state = "PUBLISHING"
+        elif is_future:
+            state = "SCHEDULED"
+        elif time_has_passed:
+            state = "SIMULATED"
+        else:
+            state = "SCHEDULED"
+    elif time_has_passed:
+        state = "SIMULATED"
 
     historical_report = get_historical_destination_report(item.asin, platform)
     if historical_report.get("reported_outcome") and state != "PUBLISHED":
         state = "UNKNOWN"
     live_confirmed = state == "PUBLISHED"
     result = result or {}
+
+    ui_label = {
+        "PUBLISHED": "Published",
+        "FAILED": "Failed",
+        "SIMULATED": "Not published",
+        "SCHEDULED": "Scheduled",
+        "PUBLISHING": "Publishing",
+        "UNKNOWN": "Awaiting confirmation",
+    }.get(state, state.replace("_", " ").capitalize())
+
     return {
         "platform": platform,
         "label": {
@@ -132,10 +379,8 @@ def get_platform_publication_result(item: QueueItem, platform: str) -> Dict[str,
             "threads": "Threads",
         }.get(platform, platform.capitalize()),
         "state": state,
+        "ui_label": ui_label,
         "mode": result.get("mode"),
-        # Historical queue records may contain one batch-level item timestamp.
-        # Do not reuse it for every platform; only a platform-specific
-        # timestamp is safe to display as its publication time.
         "timestamp": result.get("published_at") if live_confirmed else None,
         "post_id": result.get("post_id") or result.get("pin_id") or result.get("photo_id"),
         "post_url": result.get("permalink_url") or result.get("pin_url") or result.get("permalink"),
@@ -180,38 +425,71 @@ def _has_ambiguous_historical_dry_run(item: QueueItem) -> bool:
     return all(value.get("mode") == "DRY_RUN" or value.get("status") == "WOULD_PUBLISH" for value in results)
 
 
-def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict[str, Any]:
+def get_queue_item_presentation(
+    queue: PublishingQueue,
+    item: QueueItem,
+    current_dt: Optional[datetime] = None,
+) -> Dict[str, Any]:
     """Expose only evidence-backed queue and platform states to the UI."""
+    tz = get_budapest_timezone()
+    now_dt = current_dt or datetime.now(tz)
+    if now_dt.tzinfo is None:
+        now_dt = now_dt.replace(tzinfo=tz)
+    else:
+        now_dt = now_dt.astimezone(tz)
+
     claim = _slot_claim_for_item(queue, item)
     item._ui_claim = claim
     platform_results = {
-        platform: get_platform_publication_result(item, platform)
+        platform: get_platform_publication_result(item, platform, current_dt=now_dt)
         for platform in ACTIVE_PUBLISHING_PLATFORMS
     }
     states = {result["state"] for result in platform_results.values()}
-    has_persisted_results = any(isinstance(value, dict) for value in (item.publishing_results or {}).values())
-    if item.status in (STATUS_READY, STATUS_QUEUED) and not has_persisted_results:
-        state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
-    elif "SIMULATED" in states and not ({"PUBLISHED", "FAILED"} & states):
-        state = "SIMULATED"
-    elif "PUBLISHED" in states and "FAILED" in states:
-        state = "PARTIAL"
-    elif states and all(s == "PUBLISHED" for s in states):
-        # Legacy queue records may carry an excluded X/Twitter failure in the
-        # item-level status.  The active dashboard scope is Facebook,
-        # Pinterest and Threads only.
+    has_live = any(result["state"] == "PUBLISHED" for result in platform_results.values())
+    has_failed = any(result["state"] == "FAILED" for result in platform_results.values())
+
+    scheduled_dt = parse_product_scheduled_dt(
+        scheduled_at=item.scheduled_at,
+        scheduled_date=item.scheduled_date,
+        daily_slot=item.daily_slot,
+        tz=tz,
+    )
+    is_future = scheduled_dt is not None and scheduled_dt > now_dt
+    time_has_passed = scheduled_dt is not None and scheduled_dt <= now_dt
+    is_overdue = is_item_overdue_held(item, now_dt)
+
+    if states and all(s == "PUBLISHED" for s in states):
         state = "PUBLISHED"
+        ui_label = "Published"
+    elif has_live and (has_failed or not all(s == "PUBLISHED" for s in states)):
+        state = "PARTIAL"
+        ui_label = "Partial"
     elif item.status == STATUS_PARTIALLY_PUBLISHED:
         state = "PARTIAL"
-    elif item.status == STATUS_FAILED:
+        ui_label = "Partial"
+    elif is_future:
+        state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
+        ui_label = f"Scheduled — {format_scheduled_datetime(scheduled_dt)}"
+    elif item.status == STATUS_FAILED or (states and all(s == "FAILED" for s in states)):
         state = "FAILED"
+        ui_label = "Not published" if time_has_passed else "Failed"
+    elif time_has_passed:
+        state = "SIMULATED"
+        ui_label = "Not published"
     elif "SIMULATED" in states:
         state = "SIMULATED"
+        ui_label = "Not published"
+    elif item.status in (STATUS_READY, STATUS_QUEUED):
+        state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
+        ui_label = f"Scheduled — {format_scheduled_datetime(scheduled_dt)}" if scheduled_dt else "Scheduled"
     else:
         state = "UNKNOWN"
+        ui_label = "Awaiting confirmation"
 
     return {
         "state": state,
+        "ui_label": ui_label,
+        "is_overdue": is_overdue,
         "retryable": claim.get("state") == "RETRYABLE",
         "published_at": max(
             (result.get("timestamp") for result in platform_results.values() if result.get("timestamp")),
@@ -225,6 +503,16 @@ def get_queue_item_presentation(queue: PublishingQueue, item: QueueItem) -> Dict
 def load_application_config(config_path: Path = CONFIG_PATH) -> Dict[str, Any]:
     """Load configuration dictionary safely."""
     defaults = {
+        "content_generation": {"provider": "groq", "timeout": 30, "max_attempts": 2},
+        "groq": {
+            "base_url": "https://api.groq.com/openai/v1",
+            "model": "openai/gpt-oss-120b",
+            "api_key_env": "GROQ_API_KEY",
+            "timeout": 30,
+            "max_attempts": 2,
+            "num_predict": 120,
+            "reasoning_effort": "low"
+        },
         "ollama": {
             "base_url": "http://localhost:11434",
             "model": "qwen2.5:7b",
@@ -250,7 +538,7 @@ def load_application_config(config_path: Path = CONFIG_PATH) -> Dict[str, Any]:
         "discovery": {
             "target_future_capacity": 28,
             "min_future_capacity": 14,
-            "tracking_tag": "lifemode-20",
+            "tracking_tag": "homeideas4a01-20",
             "queries": list(DEFAULT_CONFIG_QUERIES)
         }
     }
@@ -535,12 +823,17 @@ def get_dashboard_summary() -> Dict[str, Any]:
         for it in queue.items:
             presentation = get_queue_item_presentation(queue, it)
             ui_state = presentation["state"]
+
+            ui_label = presentation.get("ui_label", ui_state)
+            is_overdue = presentation.get("is_overdue", False)
             activity_items.append({
                 "asin": it.asin,
                 "product_name": it.product_name,
                 "scheduled_date": it.scheduled_date,
                 "scheduled_at": it.scheduled_at,
                 "ui_state": ui_state,
+                "ui_label": ui_label,
+                "is_overdue": is_overdue,
                 "published_at": presentation.get("published_at"),
                 "platforms": presentation["platforms"],
             })
@@ -552,12 +845,12 @@ def get_dashboard_summary() -> Dict[str, Any]:
                 failed_count += 1
             elif ui_state == "PUBLISHING":
                 processing_count += 1
-            elif ui_state == "SIMULATED":
-                simulated_count += 1
-            elif ui_state == "UNKNOWN":
-                unknown_count += 1
             elif ui_state == "SCHEDULED":
                 scheduled_count += 1
+            elif ui_state in ("SIMULATED", "UNKNOWN"):
+                simulated_count += 1
+                unknown_count += 1
+
             if it.status == STATUS_READY:
                 ready_count += 1
             if presentation["retryable"]:
@@ -916,6 +1209,8 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                         "daily_slot": item.daily_slot,
                         "scheduled_at": item.scheduled_at,
                         "publishing_status": presentation["state"],
+                        "publishing_status_display": presentation["ui_label"],
+                        "ui_label": presentation["ui_label"],
                         "publishing_results": presentation["platforms"],
                         "published_at": presentation["published_at"],
                         "retryable": presentation["retryable"],
@@ -929,6 +1224,8 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                     products_by_asin[asin]["scheduled_at"] = item.scheduled_at
                     products_by_asin[asin]["validation_status"] = item.validation_status or products_by_asin[asin]["validation_status"]
                     products_by_asin[asin]["publishing_status"] = presentation["state"]
+                    products_by_asin[asin]["publishing_status_display"] = presentation["ui_label"]
+                    products_by_asin[asin]["ui_label"] = presentation["ui_label"]
                     products_by_asin[asin]["publishing_results"] = presentation["platforms"]
                     products_by_asin[asin]["published_at"] = presentation["published_at"]
                     products_by_asin[asin]["retryable"] = presentation["retryable"]
@@ -940,10 +1237,22 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
     # Convert to list and sort
     results = list(products_by_asin.values())
     for product_row in results:
-        if product_row.get("publishing_status") not in ("SCHEDULED", "SIMULATED", "PUBLISHING", "PUBLISHED", "PARTIAL", "FAILED", "UNKNOWN"):
+        if not product_row.get("publishing_status_display"):
+            status_info = resolve_product_publication_status(
+                scheduled_at=product_row.get("scheduled_at"),
+                scheduled_date=product_row.get("scheduled_date"),
+                daily_slot=product_row.get("daily_slot"),
+                publishing_results=product_row.get("publishing_results"),
+                published_at=product_row.get("published_at"),
+            )
+            product_row["publishing_status"] = status_info["state"]
+            product_row["publishing_status_display"] = status_info["ui_label"]
+            product_row["ui_label"] = status_info["ui_label"]
+        if product_row.get("publishing_status") not in ("SCHEDULED", "SIMULATED", "NOT_PUBLISHED", "PUBLISHING", "PUBLISHED", "PARTIAL", "FAILED", "UNKNOWN"):
             product_row["publishing_status"] = "UNKNOWN"
         product_row.setdefault("publishing_results", {})
         product_row.setdefault("retryable", False)
+        product_row["flow_creative"] = get_product_flow_creative_status(product_row["asin"])
 
     # Apply search query filter
     if query:
@@ -958,7 +1267,9 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
         sf = status_filter.upper().strip()
         if sf == "FAILED":
             results = [p for p in results if p.get("publishing_status") == "FAILED" or p["queue_status"] == STATUS_FAILED or p["validation_status"] == STATUS_FAILED_VALIDATION]
-        elif sf in ("SCHEDULED", "PUBLISHING", "SIMULATED", "PUBLISHED", "PARTIAL", "UNKNOWN"):
+        elif sf in ("NOT_PUBLISHED", "SIMULATED"):
+            results = [p for p in results if p.get("publishing_status") in ("NOT_PUBLISHED", "SIMULATED")]
+        elif sf in ("SCHEDULED", "PUBLISHING", "PUBLISHED", "PARTIAL", "UNKNOWN"):
             results = [p for p in results if p.get("publishing_status") == sf]
         elif sf == "RETRYABLE":
             results = [p for p in results if p.get("retryable")]
@@ -1022,6 +1333,7 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
             queue = PublishingQueue.load(QUEUE_FILE)
             for it in queue.items:
                 if (it.asin or "").upper() == asin_clean:
+                    pres = get_queue_item_presentation(queue, it)
                     queue_item = {
                         "queue_item_id": it.queue_item_id,
                         "scheduled_date": it.scheduled_date,
@@ -1029,6 +1341,8 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
                         "scheduled_at": it.scheduled_at,
                         "timezone": it.timezone,
                         "status": it.status,
+                        "ui_state": pres["state"],
+                        "ui_label": pres["ui_label"],
                         "validation_status": it.validation_status,
                         "published_at": it.published_at,
                         "publishing_results": it.publishing_results
@@ -1088,8 +1402,111 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
         "package": package,
         "platforms": platforms_content,
         "queue_item": queue_item,
-        "status": package.get("status") if package else (queue_item.get("status") if queue_item else "UNKNOWN")
+        "status": package.get("status") if package else (queue_item.get("status") if queue_item else "UNKNOWN"),
+        "creatives": get_product_creatives(asin_clean)
     }
+
+
+def get_product_creatives(asin: str) -> Optional[Dict[str, Any]]:
+    """Retrieve existing Pinterest marketing creative variations for a product."""
+    return load_product_creatives(asin)
+
+
+def generate_product_creatives_service(
+    asin: str,
+    count: int = 2,
+    overwrite: bool = False
+) -> Dict[str, Any]:
+    """
+    Generate Google Flow creative prompts and verified facts for a product.
+    Supports exactly two creative slots: Gift Inspiration and Everyday Pick.
+    """
+    asin_clean = asin.upper().strip()
+    prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
+    product = None
+    if prod_file.exists():
+        try:
+            with open(prod_file, "r", encoding="utf-8") as f:
+                product = Product.from_dict(json.load(f))
+        except Exception:
+            pass
+
+    if not product:
+        pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+        if pkg_file.exists():
+            try:
+                with open(pkg_file, "r", encoding="utf-8") as f:
+                    pkg = json.load(f)
+                    verified_image = recover_verified_image_url(pkg)
+                    product = Product(
+                        title=pkg.get("title", f"Product {asin_clean}"),
+                        asin=asin_clean,
+                        affiliate_url=pkg.get("source", {}).get("affiliate_url", ""),
+                        original_affiliate_url=pkg.get("source", {}).get("affiliate_url", ""),
+                        image_url=verified_image,
+                    )
+            except Exception:
+                pass
+
+    if not product:
+        return {
+            "success": False,
+            "message": f"Product for ASIN '{asin_clean}' was not found.",
+            "asin": asin_clean,
+        }
+
+    return generate_flow_creatives(product, overwrite=overwrite)
+
+
+def upload_creative_image_service(
+    asin: str,
+    creative_type: str,
+    file_storage: Any
+) -> Dict[str, Any]:
+    """Upload and validate a generated Google Flow image for a creative slot."""
+    asin_clean = asin.upper().strip()
+    if not file_storage or not getattr(file_storage, "filename", None):
+        return {"success": False, "message": "No file uploaded."}
+
+    try:
+        file_bytes = file_storage.read()
+    except Exception as exc:
+        return {"success": False, "message": f"Could not read uploaded file: {exc}"}
+
+    success, msg, manifest = save_uploaded_creative(
+        asin=asin_clean,
+        creative_type=creative_type,
+        file_bytes=file_bytes,
+        filename=file_storage.filename,
+    )
+    return {
+        "success": success,
+        "message": msg,
+        "asin": asin_clean,
+        "creative_type": creative_type,
+        "data": manifest,
+    }
+
+
+def select_creative_service(
+    asin: str,
+    creative_type: Optional[str]
+) -> Dict[str, Any]:
+    """Select or deselect a creative for Pinterest publishing (exactly one selected per ASIN)."""
+    asin_clean = asin.upper().strip()
+    success, msg, manifest = set_selected_creative(asin=asin_clean, creative_type=creative_type)
+    return {
+        "success": success,
+        "message": msg,
+        "asin": asin_clean,
+        "creative_type": creative_type,
+        "data": manifest,
+    }
+
+
+def get_reference_image_service(asin: str) -> Optional[Path]:
+    """Resolve and return path to local reference product image."""
+    return get_or_download_reference_image(asin)
 
 
 def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -1098,7 +1515,9 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
     Pipeline: URL -> Product Resolution -> CanonicalProductFacts -> ContentGenerator -> Validator -> ContentPackage -> Queue.
     """
     cfg = config or load_application_config()
-    urls = parse_affiliate_urls(urls_text, is_file_path=False)
+    # Keep duplicate lines here so the dashboard can report every submitted
+    # line independently instead of silently dropping one.
+    urls = parse_affiliate_urls(urls_text, is_file_path=False, deduplicate=False)
     
     if not urls:
         return {
@@ -1109,6 +1528,9 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             "rejected": 0,
             "results": []
         }
+
+    batch_id = f"batch_{datetime.now(get_budapest_timezone()).strftime('%Y%m%dT%H%M%S%f')}_{uuid.uuid4().hex[:8]}"
+    batch_created_at = datetime.now(get_budapest_timezone()).isoformat()
 
     PRODUCTS_DIR.mkdir(parents=True, exist_ok=True)
     GENERATED_DIR.mkdir(parents=True, exist_ok=True)
@@ -1124,17 +1546,25 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
     )
 
     existing_asins = {it.asin.upper() for it in queue.items if it.asin}
+    published_asins = {
+        it.asin.upper() for it in queue.items
+        if it.asin and (
+            it.status == STATUS_PUBLISHED
+            or any(
+                isinstance(result, dict) and result.get("status") == STATUS_PUBLISHED
+                for result in (it.publishing_results or {}).values()
+            )
+        )
+    }
+    seen_submitted_urls: Set[str] = set()
+    # Duplicate protection is queue-authoritative. A URL that merely exists in the
+    # local product cache has never been queued, so it must remain importable;
+    # queue membership (checked below by URL and by ASIN) is what prevents
+    # duplicate queue entries.
     existing_urls = {it.original_url for it in queue.items if it.original_url}
 
-    ollama_cfg = cfg.get("ollama", {})
-    ollama = OllamaClient(
-        base_url=ollama_cfg.get("base_url", "http://localhost:11434"),
-        model=ollama_cfg.get("model", "qwen2.5:7b"),
-        timeout=ollama_cfg.get("timeout", 300),
-        num_predict=ollama_cfg.get("num_predict", 90),
-        num_ctx=ollama_cfg.get("num_ctx", 1024)
-    )
-    generator = ContentGenerator(ollama_client=ollama)
+    provider = create_content_provider(cfg)
+    generator = ContentGenerator(ollama_client=provider)
     disclosure = cfg.get("affiliate", {}).get("disclosure", DEFAULT_AFFILIATE_DISCLOSURE)
 
     results: List[Dict[str, Any]] = []
@@ -1145,14 +1575,25 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
         url_clean = url.strip()
         extracted_asin = extract_asin_from_url(url_clean)
 
+        if url_clean in seen_submitted_urls:
+            rejected_count += 1
+            results.append({
+                "url": url_clean,
+                "asin": extracted_asin or "UNKNOWN",
+                "status": "DUPLICATE",
+                "reason": "The same affiliate URL was submitted more than once in this batch."
+            })
+            continue
+        seen_submitted_urls.add(url_clean)
+
         # 1. Deduplication check
-        if extracted_asin and extracted_asin.upper() in existing_asins:
+        if extracted_asin and extracted_asin.upper() in published_asins:
             rejected_count += 1
             results.append({
                 "url": url_clean,
                 "asin": extracted_asin.upper(),
                 "status": "DUPLICATE",
-                "reason": f"Product with ASIN {extracted_asin.upper()} is already present in the publishing queue."
+                "reason": f"Product with ASIN {extracted_asin.upper()} already has publication history and will not be re-imported."
             })
             continue
 
@@ -1166,31 +1607,54 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             })
             continue
 
+        if extracted_asin and extracted_asin.upper() in existing_asins:
+            rejected_count += 1
+            results.append({
+                "url": url_clean,
+                "asin": extracted_asin.upper(),
+                "status": "DUPLICATE",
+                "reason": f"Product with ASIN {extracted_asin.upper()} is already present in the publishing queue."
+            })
+            continue
+
+        marketplace = marketplace_from_url(
+            url_clean,
+            os.environ.get("AMAZON_CREATORS_API_MARKETPLACE", ""),
+        )
+        creators_api_client = None
+        if marketplace:
+            creators_api_client = CreatorsAPIClient.from_environment(
+                marketplace,
+                cfg.get("discovery", {}).get("tracking_tag", DEFAULT_TRACKING_TAG),
+            )
+
         # 2. Product resolution via cache or scraper
         is_valid, product, cache_key, errors = resolve_product_for_url(
             url_clean,
             products_dir=PRODUCTS_DIR,
-            allow_scrape=False
+            allow_scrape=False,
         )
 
         if not is_valid or not product:
             is_valid, product, cache_key, errors = resolve_product_for_url(
                 url_clean,
                 products_dir=PRODUCTS_DIR,
-                allow_scrape=True
+                allow_scrape=True,
+                creators_api_client=creators_api_client,
             )
 
         if not is_valid or not product or not product.title:
             rejected_count += 1
             results.append({
                 "url": url_clean,
-                "asin": product.asin if product else (extracted_asin or "UNKNOWN"),
+                "asin": extracted_asin if extracted_asin else "",
                 "status": "REJECTED",
-                "reason": "; ".join(errors) if errors else "Product data is insufficient or could not be resolved."
+                "reason": "; ".join(errors) if errors else ("ASIN unavailable — could not determine product ASIN from scraped data" if not extracted_asin else "Product data is insufficient or could not be resolved.")
             })
             continue
 
         product.affiliate_url = url_clean
+        product.original_affiliate_url = url_clean
         asin_final = product.asin.upper()
 
         # Check for pre-existing valid content package
@@ -1241,29 +1705,44 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
                 product=product,
                 social_data=social_data,
                 cache_file_path=f"data/products/{cache_key}.json",
-                model_name=ollama.model
+                model_name=provider.model
             )
 
             pkg_path = ContentPackage.save_content_package(pkg, cache_key, target_dir=GENERATED_DIR)
         else:
             pkg_path = pkg_file
 
-        pkg_path_str = str(pkg_path).replace("\\", "/")
+        pkg_path_str = to_repository_relative_path(pkg_path)
 
         if pkg.get("status") != STATUS_READY_FOR_REVIEW:
+            platform_errors = []
+            for platform_name, platform_data in (pkg.get("platforms") or {}).items():
+                if isinstance(platform_data, dict):
+                    validation = platform_data.get("validation") or {}
+                    platform_errors.extend(
+                        f"{platform_name}: {error}"
+                        for error in validation.get("errors", [])
+                    )
+            failure_reason = "; ".join(platform_errors) or "Generated content failed authoritative claim validation."
+            failure_status = "CONTENT_GENERATION_FAILED" if any(
+                any(marker in error.lower() for marker in ("ollama", "groq", "provider", "rate limit", "quota"))
+                for error in platform_errors
+            ) else "VALIDATION_FAILED"
             rejected_count += 1
             results.append({
                 "url": url_clean,
                 "asin": asin_final,
-                "status": "VALIDATION_FAILED",
-                "reason": "Generated content failed authoritative claim validation."
+                "status": failure_status,
+                "stage": "content_generation" if failure_status == "CONTENT_GENERATION_FAILED" else "claim_validation",
+                "reason": failure_reason
             })
             continue
 
         # 6. Allocate Next Slot and Schedule in Queue
         next_slot_info = QueueReplenisher.find_next_available_slot(queue)
-        item_idx = len(queue.items) + 1
-        item_id = f"item_{item_idx:03d}_{asin_final}"
+        # Max existing numeric suffix + 1 (not len(items) + 1): diverged local
+        # and remote queues can otherwise hand out the same identifier.
+        item_id = next_queue_item_id(queue.items, asin_final)
 
         new_queue_item = QueueItem(
             queue_item_id=item_id,
@@ -1277,7 +1756,8 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             package_reference=pkg_path_str,
             status=STATUS_READY,
             validation_status=STATUS_READY_FOR_REVIEW,
-            errors=[]
+            errors=[],
+            batch_id=batch_id
         )
 
         queue.items.append(new_queue_item)
@@ -1294,18 +1774,34 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             "scheduled_date": next_slot_info["date"],
             "daily_slot": next_slot_info["slot"],
             "scheduled_at": next_slot_info["scheduled_at"],
-            "package_path": pkg_path_str
+            "package_path": pkg_path_str,
+            "queue_item_id": item_id
         })
 
-    # Save queue to disk
+    # Save queue and append the immutable import-run record. Processing and
+    # publishing update queue state only; they never create a new batch.
     queue.save(QUEUE_FILE)
+
+    batches = load_import_batches()
+    batches.append({
+        "batch_id": batch_id,
+        "created_at": batch_created_at,
+        "submitted_count": len(urls),
+        "accepted_count": accepted_count,
+        "duplicate_count": sum(1 for row in results if row.get("status") == "DUPLICATE"),
+        "failed_count": sum(1 for row in results if row.get("status") not in ("ACCEPTED", "DUPLICATE")),
+        "entries": results
+    })
+    save_import_batches(batches)
 
     return {
         "success": True,
         "total": len(urls),
         "accepted": accepted_count,
         "rejected": rejected_count,
-        "results": results
+        "results": results,
+        "batch_id": batch_id,
+        "batch_created_at": batch_created_at
     }
 
 
@@ -1400,15 +1896,8 @@ def regenerate_content(asin: str, config: Optional[Dict[str, Any]] = None) -> Di
     if not facts.is_sufficient():
         return {"success": False, "message": f"Canonical facts for ASIN {asin_clean} are insufficient."}
 
-    ollama_cfg = cfg.get("ollama", {})
-    ollama = OllamaClient(
-        base_url=ollama_cfg.get("base_url", "http://localhost:11434"),
-        model=ollama_cfg.get("model", "qwen2.5:7b"),
-        timeout=ollama_cfg.get("timeout", 300),
-        num_predict=ollama_cfg.get("num_predict", 90),
-        num_ctx=ollama_cfg.get("num_ctx", 1024)
-    )
-    generator = ContentGenerator(ollama_client=ollama)
+    provider = create_content_provider(cfg)
+    generator = ContentGenerator(ollama_client=provider)
     disclosure = cfg.get("affiliate", {}).get("disclosure", DEFAULT_AFFILIATE_DISCLOSURE)
 
     try:
@@ -1421,7 +1910,7 @@ def regenerate_content(asin: str, config: Optional[Dict[str, Any]] = None) -> Di
         product=product,
         social_data=social_data,
         cache_file_path=f"data/products/{cache_key}.json",
-        model_name=ollama.model
+        model_name=provider.model
     )
 
     ContentPackage.save_content_package(pkg, cache_key, target_dir=GENERATED_DIR)
@@ -1443,6 +1932,121 @@ def regenerate_content(asin: str, config: Optional[Dict[str, Any]] = None) -> Di
         "asin": asin_clean,
         "package_status": pkg["status"],
         "is_ready": pkg["status"] == STATUS_READY_FOR_REVIEW
+    }
+
+
+def recover_failed_product(
+    asin: str,
+    batch_id: Optional[str] = None,
+    config: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Explicitly recover one failed import without re-importing its URL.
+
+    The failed batch entry and existing product cache are the source of truth.
+    No new batch is created, and recovery is intentionally never called by an
+    automatic maintenance path.
+    """
+    asin_clean = asin.upper().strip()
+    product_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
+    if not product_file.exists():
+        return {"success": False, "message": f"Product source data not found for ASIN {asin_clean}."}
+
+    try:
+        product_data = json.loads(product_file.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {"success": False, "message": f"Product source data for ASIN {asin_clean} is unreadable."}
+
+    original_url = product_data.get("original_affiliate_url") or product_data.get("affiliate_url")
+    if not isinstance(original_url, str) or not original_url:
+        return {"success": False, "message": f"Original affiliate URL is missing for ASIN {asin_clean}."}
+
+    batches = load_import_batches()
+    matches = []
+    for batch in batches:
+        if batch_id and batch.get("batch_id") != batch_id:
+            continue
+        for entry in batch.get("entries", []):
+            if (
+                str(entry.get("asin", "")).upper() == asin_clean
+                and entry.get("url") == original_url
+                and entry.get("status") == "CONTENT_GENERATION_FAILED"
+            ):
+                matches.append((batch, entry))
+    if len(matches) != 1:
+        if not matches:
+            return {"success": False, "message": f"No unique failed content-generation batch entry found for ASIN {asin_clean}."}
+        return {"success": False, "message": f"Multiple failed batch entries found for ASIN {asin_clean}; specify batch_id."}
+
+    failed_batch, failed_entry = matches[0]
+    source_url = product_data.get("affiliate_url")
+    if source_url != original_url:
+        return {"success": False, "message": f"Cached affiliate URL mismatch for ASIN {asin_clean}; no recovery performed."}
+
+    queue = PublishingQueue.load(QUEUE_FILE) if QUEUE_FILE.exists() else PublishingQueue(
+        queue_id=f"queue_{datetime.now(get_budapest_timezone()).strftime('%Y%m%d')}_30d",
+        created_at=datetime.now(get_budapest_timezone()).isoformat(),
+        start_date=datetime.now(get_budapest_timezone()).strftime("%Y-%m-%d"),
+        total_days=30,
+        products_per_day=2,
+        target_capacity=60,
+    )
+    existing = [
+        item for item in queue.items
+        if (item.asin or "").upper() == asin_clean or item.original_url == original_url
+    ]
+    if existing:
+        return {
+            "success": False,
+            "message": f"ASIN {asin_clean} or its original affiliate URL is already in the publishing queue.",
+            "queue_item_id": existing[0].queue_item_id,
+        }
+
+    # This is the only generation call, and it occurs only after explicit
+    # invocation of this recovery function.
+    regenerated = regenerate_content(asin_clean, config=config)
+    if not regenerated.get("success") or not regenerated.get("is_ready"):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "batch_id": failed_batch.get("batch_id"),
+            "message": regenerated.get("message", "Content was not ready for review."),
+        }
+
+    package_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+    try:
+        package = json.loads(package_file.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {"success": False, "message": f"Recovered content package for ASIN {asin_clean} is unreadable."}
+    if package.get("status") != STATUS_READY_FOR_REVIEW or package.get("source", {}).get("affiliate_url") != original_url:
+        return {"success": False, "message": f"Recovered content package for ASIN {asin_clean} failed URL/status verification."}
+
+    slot = QueueReplenisher.find_next_available_slot(queue)
+    item_id = next_queue_item_id(queue.items, asin_clean)
+    queue.items.append(QueueItem(
+        queue_item_id=item_id,
+        original_url=original_url,
+        asin=asin_clean,
+        product_name=product_data.get("title", f"Product {asin_clean}"),
+        scheduled_date=slot["date"],
+        daily_slot=slot["slot"],
+        scheduled_at=slot["scheduled_at"],
+        timezone=slot["timezone"],
+        package_reference=to_repository_relative_path(package_file),
+        status=STATUS_READY,
+        validation_status=STATUS_READY_FOR_REVIEW,
+        errors=[],
+        batch_id=failed_batch.get("batch_id"),
+    ))
+    queue.save(QUEUE_FILE)
+
+    return {
+        "success": True,
+        "asin": asin_clean,
+        "batch_id": failed_batch.get("batch_id"),
+        "queue_item_id": item_id,
+        "original_url": original_url,
+        "status": STATUS_READY,
+        "package_status": STATUS_READY_FOR_REVIEW,
     }
 
 
