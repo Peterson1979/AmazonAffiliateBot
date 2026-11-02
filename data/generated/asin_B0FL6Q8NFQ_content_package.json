@@ -1,0 +1,150 @@
+{
+  "asin": "B0FL6Q8NFQ",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-26T13:26:34.981957+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0FL6Q8NFQ.json",
+    "affiliate_url": "https://link.amazon/B05RcKpuU"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "Titanium Cutting Board.\n\nIt also contains a built‑in juice groove that can store 200 ml of liquid and a garlic grinding area.\n\nLink: https://link.amazon/B05RcKpuU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61-PAmwAG2L._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Titanium Cutting Board – Double‑Sided 99.9% Pure Titanium & Food‑Grade PP",
+      "description": "Includes a built‑in juice groove that holds 200 ml and a garlic grinding zone on the PP side. https://link.amazon/B05RcKpuU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61-PAmwAG2L._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B05RcKpuU",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "The Titanium Cutting Board set includes a 15.5″ × 10.5″ side of 99.9 % pure titanium and a 12″ × 8.5″ side of food‑grade PP with a built‑in juice groove that holds 200 ml and a garlic‑grinding zone.\n\nLink: https://link.amazon/B05RcKpuU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61-PAmwAG2L._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "959",
+        "x-ratelimit-reset-requests": "59m2.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6048",
+        "x-ratelimit-reset-tokens": "14.64s"
+      },
+      "id": "chatcmpl-5d01c7c7-49a7-4cb2-b63e-0e67fc8750b6",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.300065488,
+        "prompt_tokens": 1572,
+        "prompt_time": 0.00509569,
+        "completion_tokens": 253,
+        "completion_time": 0.558283856,
+        "total_tokens": 1825,
+        "total_time": 0.563379546
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "958",
+        "x-ratelimit-reset-requests": "1h0m28.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5831",
+        "x-ratelimit-reset-tokens": "16.267s"
+      },
+      "id": "chatcmpl-b849bfd7-adc5-4148-b4e6-e7aa9199dd3d",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.415521918,
+        "prompt_tokens": 1738,
+        "prompt_time": 0.599605861,
+        "completion_tokens": 249,
+        "completion_time": 0.522329755,
+        "total_tokens": 1987,
+        "total_time": 1.121935616
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "957",
+        "x-ratelimit-reset-requests": "1h1m55.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4240",
+        "x-ratelimit-reset-tokens": "28.2s"
+      },
+      "id": "chatcmpl-c537136b-077c-47c2-9daf-3fe164db47a5",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.018517488,
+        "prompt_tokens": 1649,
+        "prompt_time": 0.025563501,
+        "completion_tokens": 285,
+        "completion_time": 0.672877462,
+        "total_tokens": 1934,
+        "total_time": 0.698440963
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "956",
+        "x-ratelimit-reset-requests": "1h3m21.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3939",
+        "x-ratelimit-reset-tokens": "30.457s"
+      },
+      "id": "chatcmpl-bcaa536d-cda1-42e0-ab4f-a749b2e330cc",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.209465107,
+        "prompt_tokens": 1567,
+        "prompt_time": 0.350991485,
+        "completion_tokens": 181,
+        "completion_time": 0.380333585,
+        "total_tokens": 1748,
+        "total_time": 0.73132507
+      }
+    }
+  ]
+}

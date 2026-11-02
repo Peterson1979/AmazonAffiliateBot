@@ -75,7 +75,18 @@ class TestTruthfulDashboardStates(TestCase):
         self.assertEqual(set(presentation["platforms"]), {"facebook", "pinterest", "pinterest_lifemodehq", "threads"})
         self.assertNotEqual(presentation["state"], "PUBLISHED")
 
-    def test_b0d_historical_report_distinguishes_user_report_from_dry_run(self):
+    @patch("publishing.reconciliation.load_historical_reconciliation")
+    def test_b0d_historical_report_distinguishes_user_report_from_dry_run(self, mock_load):
+        mock_load.return_value = {
+            "products": {
+                "B0DTHHK2S1": {
+                    "destinations": {
+                        "facebook": {"state": "UNKNOWN", "reported_outcome": "not_visible"},
+                        "pinterest": {"state": "UNKNOWN", "reported_outcome": "published", "evidence_status": "user_reported"},
+                    }
+                }
+            }
+        }
         facebook = get_historical_destination_report("B0DTHHK2S1", "facebook")
         pinterest = get_historical_destination_report("B0DTHHK2S1", "pinterest")
         self.assertEqual(facebook["state"], "UNKNOWN")

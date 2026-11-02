@@ -22,6 +22,20 @@
   </div>
 </div>
 
+{% if failed_recovery_batches %}
+<section class="card" style="margin-bottom: 20px; border-color: #f59e0b;">
+  <div class="card-title">Recover failed import</div>
+  <p class="help-text">Retries content generation for the recorded failed batch entry only. No URL is re-imported and nothing is published.</p>
+  {% for failed_batch in failed_recovery_batches %}
+  <form action="{{ url_for('api_recover_failed', asin=product.asin) }}" method="POST" onsubmit="this.querySelector('button').disabled=true;">
+    <input type="hidden" name="batch_id" value="{{ failed_batch.batch_id }}">
+    <div class="table-subtext">Batch {{ failed_batch.batch_id }} · {{ failed_batch.url }}</div>
+    <button type="submit" class="btn btn-primary">Retry content generation</button>
+  </form>
+  {% endfor %}
+</section>
+{% endif %}
+
 <div class="grid-2">
   <!-- Product Identity & Canonical Facts -->
   <div class="card">
@@ -64,7 +78,7 @@
     {% if product.queue_item %}
       <div class="card-title" style="margin-top: 24px; margin-bottom: 10px;">Queue Information</div>
       <div style="font-size: 0.85rem; color: #cbd5e1;">
-        <div><strong>Status:</strong> <span class="badge badge-info">{{ product.queue_item.status }}</span></div>
+        <div><strong>Status:</strong> <span class="badge badge-info">{{ product.queue_item.ui_label or product.queue_item.status }}</span></div>
         <div style="margin-top: 4px;"><strong>Scheduled Slot:</strong> {{ product.queue_item.scheduled_date }} (Slot {{ product.queue_item.daily_slot }} @ {{ product.queue_item.scheduled_at }})</div>
       </div>
     {% endif %}
@@ -156,4 +170,203 @@
 
   </div>
 </div>
+
+<!-- Pinterest Marketing Creatives (Free Google Flow Workflow) -->
+<section class="card" style="margin-top: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <div class="card-title" style="margin-bottom: 4px;">Pinterest Marketing Creatives (Google Flow Workflow)</div>
+      <p class="help-text" style="margin-bottom: 0;">
+        100% Free workflow: Copy the verified Flow prompt, download the reference image, generate in Google Flow (9:16 Vertical / Portrait), and upload the result back into your chosen creative slot.
+      </p>
+    </div>
+    <form action="{{ url_for('api_generate_creatives', asin=product.asin) }}" method="POST" style="margin: 0;">
+      <input type="hidden" name="overwrite" value="false">
+      <button type="submit" class="btn btn-secondary" title="Refresh Flow Prompts from canonical facts without removing uploaded images">
+        🔄 Refresh Prompts
+      </button>
+    </form>
+  </div>
+
+  <!-- Publishing Selection Status Banner -->
+  {% if product.creatives and product.creatives.selected_creative_type %}
+    <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.2rem;">⭐</span>
+        <div>
+          <strong style="color: #10b981;">Selected for Pinterest Publishing:</strong>
+          <span style="color: #f8fafc; font-weight: 600; margin-left: 6px;">{{ product.creatives.selected_creative_display }}</span>
+          <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 8px;">(The publisher will publish only this creative)</span>
+        </div>
+      </div>
+      <form action="{{ url_for('api_select_creative', asin=product.asin) }}" method="POST" style="margin: 0;">
+        <input type="hidden" name="creative_type" value="none">
+        <button type="submit" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;">✕ Clear Selection</button>
+      </form>
+    </div>
+  {% else %}
+    <div style="background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 1.1rem; color: #38bdf8;">ℹ️</span>
+      <span style="font-size: 0.88rem; color: #cbd5e1;">
+        No creative is currently selected for Pinterest publishing. Upload a generated image to either card and click <strong>"Select for Publishing"</strong>.
+      </span>
+    </div>
+  {% endif %}
+
+  {% if product.creatives and product.creatives.creatives %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px;">
+      {% for type_key in ['gift_inspiration', 'everyday_pick'] %}
+        {% set slot = product.creatives.creatives.get(type_key) %}
+        {% if slot %}
+          <div style="background: rgba(255, 255, 255, 0.03); border: {% if slot.selected %}2px solid #10b981{% else %}1px solid rgba(255, 255, 255, 0.1){% endif %}; border-radius: 10px; padding: 18px; display: flex; flex-direction: column;">
+            
+            <!-- Card Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <span class="badge {% if type_key == 'gift_inspiration' %}badge-warning{% else %}badge-info{% endif %}" style="font-size: 0.85rem; padding: 4px 10px;">
+                  {% if type_key == 'gift_inspiration' %}🎁 Gift Inspiration{% else %}⭐ Everyday Pick{% endif %}
+                </span>
+              </div>
+              <div>
+                {% if slot.selected %}
+                  <span class="badge badge-success" style="font-size: 0.78rem;">⭐ Selected for Publishing</span>
+                {% elif slot.uploaded_image_path %}
+                  <span class="badge badge-info" style="font-size: 0.78rem;">✓ Image Ready</span>
+                {% else %}
+                  <span class="badge badge-secondary" style="font-size: 0.78rem;">Pending Flow Upload</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Verified Headlines & Bullets -->
+            <div style="margin-bottom: 14px;">
+              <div style="font-weight: 600; font-size: 1.05rem; line-height: 1.35; margin-bottom: 4px; color: #f1f5f9;">
+                {{ slot.headline }}
+              </div>
+              <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px;">
+                {{ slot.subheadline }}
+              </div>
+              {% if slot.benefits %}
+                <ul style="font-size: 0.82rem; color: #cbd5e1; padding-left: 18px; margin: 0 0 10px 0;">
+                  {% for b in slot.benefits %}
+                    <li style="margin-bottom: 2px;">{{ b }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <div style="font-size: 0.78rem; color: #38bdf8; font-weight: 600;">
+                CTA: {{ slot.cta_text }}
+              </div>
+            </div>
+
+            <!-- Flow Prompt Section -->
+            <div style="background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; font-weight: 600;">
+                  Google Flow Prompt (9:16 Vertical / Portrait)
+                </span>
+                <button type="button" class="btn btn-secondary" style="padding: 2px 8px; font-size: 0.75rem;" onclick="copyFlowPrompt('prompt_{{ type_key }}', this)">
+                  📋 Copy Prompt
+                </button>
+              </div>
+              <textarea id="prompt_{{ type_key }}" readonly style="width: 100%; height: 110px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 4px; color: #e2e8f0; font-family: monospace; font-size: 0.75rem; padding: 8px; resize: vertical; box-sizing: border-box;">{{ slot.prompt }}</textarea>
+              <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                <a href="{{ url_for('download_reference_image', asin=product.asin) }}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" download>
+                  📥 Download Reference Image
+                </a>
+                <a href="https://labs.google/flow" target="_blank" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;">
+                  🔗 Open Google Flow ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Image Upload & Preview Section -->
+            <div style="margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 14px;">
+              {% if slot.uploaded_image_url %}
+                <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px;">
+                  <div style="width: 90px; height: 135px; background: #0b1120; border-radius: 6px; overflow: hidden; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;">
+                    <a href="{{ slot.uploaded_image_url }}" target="_blank">
+                      <img src="{{ slot.uploaded_image_url }}" alt="{{ slot.display_name }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                    </a>
+                  </div>
+                  <div style="flex-grow: 1;">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #10b981; margin-bottom: 2px;">✓ Flow Image Uploaded</div>
+                    {% if slot.dimensions %}
+                      <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px;">Size: {{ slot.dimensions[0] }} × {{ slot.dimensions[1] }} px</div>
+                    {% endif %}
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                      {% if slot.selected %}
+                        <form action="{{ url_for('api_select_creative', asin=product.asin) }}" method="POST" style="margin: 0;">
+                          <input type="hidden" name="creative_type" value="none">
+                          <button type="submit" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.8rem;">
+                            ✕ Deselect
+                          </button>
+                        </form>
+                      {% else %}
+                        <form action="{{ url_for('api_select_creative', asin=product.asin) }}" method="POST" style="margin: 0;">
+                          <input type="hidden" name="creative_type" value="{{ type_key }}">
+                          <button type="submit" class="btn btn-success" style="padding: 5px 12px; font-size: 0.8rem;">
+                            ⭐ Select for Publishing
+                          </button>
+                        </form>
+                      {% endif %}
+                      <a href="{{ slot.uploaded_image_url }}" target="_blank" class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;">
+                        🔍 View Full
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Replace Image Accordion/Form -->
+                <details style="margin-top: 8px;">
+                  <summary style="font-size: 0.78rem; color: #94a3b8; cursor: pointer; user-select: none;">Replace uploaded image</summary>
+                  <form action="{{ url_for('api_upload_creative', asin=product.asin) }}" method="POST" enctype="multipart/form-data" style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
+                    <input type="hidden" name="creative_type" value="{{ type_key }}">
+                    <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp" required style="font-size: 0.78rem; color: #cbd5e1; max-width: 220px;" />
+                    <button type="submit" class="btn btn-secondary" style="padding: 3px 10px; font-size: 0.75rem;">Upload Replacement</button>
+                  </form>
+                </details>
+
+              {% else %}
+                <div style="margin-bottom: 8px; font-size: 0.82rem; color: #94a3b8;">
+                  Upload the generated Google Flow image (PNG, JPG, or WEBP):
+                </div>
+                <form action="{{ url_for('api_upload_creative', asin=product.asin) }}" method="POST" enctype="multipart/form-data" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                  <input type="hidden" name="creative_type" value="{{ type_key }}">
+                  <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp" required style="font-size: 0.8rem; color: #cbd5e1; flex-grow: 1;" />
+                  <button type="submit" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.8rem;">
+                    📤 Upload Image
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="padding: 24px; text-align: center; color: var(--text-muted); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; margin-top: 12px;">
+      Click <strong>Refresh Prompts</strong> to generate the initial Google Flow prompts for Gift Inspiration and Everyday Pick.
+    </div>
+  {% endif %}
+</section>
+
+<script>
+function copyFlowPrompt(elementId, btn) {
+  var textarea = document.getElementById(elementId);
+  if (!textarea) return;
+  textarea.select();
+  navigator.clipboard.writeText(textarea.value).then(function() {
+    var origText = btn.innerText;
+    btn.innerText = "✓ Copied!";
+    btn.style.color = "#10b981";
+    setTimeout(function() {
+      btn.innerText = origText;
+      btn.style.color = "";
+    }, 2000);
+  }).catch(function(err) {
+    alert("Could not copy prompt automatically. Please select and copy manually.");
+  });
+}
+</script>
 {% endblock %}

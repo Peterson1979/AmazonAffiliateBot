@@ -6,178 +6,29 @@
   "products_per_day": 2,
   "target_capacity": 60,
   "total_submitted": 16,
-  "total_processed": 20,
-  "total_ready": 1,
-  "total_failed": 3,
-  "scheduled_posts": 1,
-  "unfilled_slots": 59,
-  "slot_claims": {
-    "2026-10-07-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-13T19:10:53.559231+02:00"
-    },
-    "2026-10-12-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-13T19:10:53.559231+02:00"
-    },
-    "2026-10-12-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-13T19:10:53.559231+02:00"
-    },
-    "2026-10-13-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-13T19:10:53.559231+02:00"
-    },
-    "2026-10-13-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-13T19:10:50.853693+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-13T19:10:53.559231+02:00"
-    },
-    "2026-10-14-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-14T16:44:14.491022+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-14T16:44:16.445987+02:00"
-    },
-    "2026-10-14-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-14T22:21:48.943418+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-14T22:21:51.215699+02:00"
-    },
-    "2026-10-15-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-15T16:29:38.173835+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-15T16:29:40.135721+02:00"
-    },
-    "2026-10-15-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-15T22:05:23.388801+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-15T22:05:25.217061+02:00"
-    },
-    "2026-10-16-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-16T16:22:08.030910+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-16T16:22:09.949586+02:00"
-    },
-    "2026-10-16-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-16T21:44:43.007603+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-16T21:44:44.937022+02:00"
-    },
-    "2026-10-17-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-17T15:17:19.803729+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-17T15:17:21.731606+02:00"
-    },
-    "2026-10-17-slot-2": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-10-17T20:54:04.972122+02:00",
-      "attempt": 1,
-      "completed_at": "2026-10-17T20:54:06.691693+02:00"
-    }
-  },
+  "total_processed": 6,
+  "total_ready": 6,
+  "total_failed": 0,
+  "scheduled_posts": 6,
+  "unfilled_slots": 54,
+  "slot_claims": {},
   "items": [
     {
-      "queue_item_id": "item_001_B0GNGTN7TV",
-      "original_url": "https://link.amazon/B0bXBNrkK",
-      "asin": "B0GNGTN7TV",
-      "product_name": "Electactic - Espresso machine with 15 bars with grinder, espresso maker with milk steam/frother/brewing tool/espresso machine with grinder",
-      "scheduled_date": "2026-10-07",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-07T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0GNGTN7TV_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-06T09:36:21.758206+00:00",
-      "published_at": "2026-10-13T19:10:53.560789+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998924347",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998924347/",
-          "title": "Electactic 15 Bar Espresso Machine with Grinder and Steam Bar",
-          "link": "https://link.amazon/B0bXBNrkK",
-          "image_url": "https://m.media-amazon.com/images/I/716AFeA66pL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998924347 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983241547139258",
-          "post_id": "17987049575882000",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DecUGlVmwfK",
-          "image_url": "https://m.media-amazon.com/images/I/716AFeA66pL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 17987049575882000 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_002_B0GKGBWRTR",
-      "original_url": "https://link.amazon/B0hwa4Nkm",
-      "asin": "B0GKGBWRTR",
-      "product_name": "17.3-inch Laptop Stand Aluminum Adjustable",
-      "scheduled_date": "2026-10-07",
+      "queue_item_id": "item_026_B09X5BQ969",
+      "original_url": "https://link.amazon/B0g3KMMBy",
+      "asin": "B09X5BQ969",
+      "product_name": "Bellavita Luxury Honey Oud Eau de Parfum Perfume Unisex, 3.4 fl oz (100 ml)",
+      "scheduled_date": "2026-11-03",
       "daily_slot": 2,
-      "scheduled_at": "2026-10-07T19:00:00+02:00",
+      "scheduled_at": "2026-11-03T19:00:00+01:00",
       "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0GKGBWRTR_content_package.json",
-      "status": "PUBLISHED",
+      "package_reference": "data/generated/asin_B09X5BQ969_content_package.json",
+      "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
-      "created_at": "2026-10-06T09:36:21.758300+00:00",
-      "published_at": "2026-10-09T19:00:02.724757+02:00",
+      "created_at": "2026-10-26T13:19:11.352264+00:00",
+      "published_at": null,
       "publishing_results": {
-        "x": {
-          "platform": "x",
-          "account": "@BitGoldone",
-          "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to x (@BitGoldone). No real request sent."
-        },
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
@@ -195,6 +46,15 @@
           "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
           "board": "Shopping ideas"
         },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "board": "Home & Everyday Living"
+        },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
@@ -203,1081 +63,168 @@
           "status": "WOULD_PUBLISH",
           "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      }
+      },
+      "batch_id": "batch_20261026T141635592098_27945101"
     },
     {
-      "queue_item_id": "item_003_B0TESTADD1",
-      "original_url": "https://www.amazon.com/dp/B0TESTADD1?tag=lifemode-20",
-      "asin": "B0TESTADD1",
-      "product_name": "Professional Ergonomic Aluminum Laptop Stand",
-      "scheduled_date": "2026-10-08",
+      "queue_item_id": "item_027_B0BZYCJK89",
+      "original_url": "https://link.amazon/B01k4qcKc",
+      "asin": "B0BZYCJK89",
+      "product_name": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Denim",
+      "scheduled_date": "2026-11-04",
       "daily_slot": 1,
-      "scheduled_at": "2026-10-08T12:00:00+02:00",
+      "scheduled_at": "2026-11-04T13:00:00+01:00",
       "timezone": "Europe/Budapest",
-      "package_reference": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B0TESTADD1_content_package.json",
-      "status": "FAILED",
-      "validation_status": "FAILED_VALIDATION",
-      "errors": [],
-      "created_at": "2026-10-06T10:54:42.393772+00:00",
-      "published_at": null,
-      "publishing_results": null
-    },
-    {
-      "queue_item_id": "item_004_B01NBJEKX2",
-      "original_url": "https://link.amazon/B08rC9igT",
-      "asin": "B01NBJEKX2",
-      "product_name": "TRULY SOFT Everyday Sheet Set White Polyester 4-Piece Full Sheet Set, Solid Color Themed, Adult Bedding, Oeko-TEX Certified",
-      "scheduled_date": "2026-10-11",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-11T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B01NBJEKX2_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.920588+00:00",
-      "published_at": "2026-10-11T07:36:29.948577+02:00",
-      "publishing_results": {
-        "x": {
-          "platform": "x",
-          "account": "@BitGoldone",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "errors": [
-            "Missing required credentials for x: api_key, api_secret, access_token, access_token_secret"
-          ],
-          "message": "Cannot publish to x: missing credentials."
-        },
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "photo_id": "122325680732197726",
-          "post_id": "226949230493910_122325680834197726",
-          "permalink_url": "https://www.facebook.com/photo.php?fbid=122325680732197726&set=a.122110416488197726&type=3",
-          "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
-          "verified_image_read": true,
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published and verified photo 122325680732197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998850640",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998850640/",
-          "title": "TRULY SOFT Everyday Sheet Set White Polyester 4-Piece Full Sheet Set",
-          "link": "https://link.amazon/B08rC9igT",
-          "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998850640 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17982856608139258",
-          "post_id": "18144904363600584",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DeV7BpvjeNJ",
-          "image_url": "https://m.media-amazon.com/images/I/71x8zTkUyhL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18144904363600584 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_005_B08CRPWQHB",
-      "original_url": "https://link.amazon/B08OcbzJJ",
-      "asin": "B08CRPWQHB",
-      "product_name": "BigFoot Shower Curtain Liner – 72 x 72 PEVA Heavy Duty Shower Curtain with Rustproof Metal Grommet and 3 Magnetic Weights – Odor Free and Compatible with Standard Showers, Clear",
-      "scheduled_date": null,
-      "daily_slot": null,
-      "scheduled_at": null,
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B08CRPWQHB_content_package.json",
-      "status": "SKIPPED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.922820+00:00",
-      "published_at": null,
-      "publishing_results": null
-    },
-    {
-      "queue_item_id": "item_006_B08GH41N87",
-      "original_url": "https://link.amazon/B02bkZwVE",
-      "asin": "B08GH41N87",
-      "product_name": "THE BEER VALLEY Chindi Woven Rug 2x3 Feet - Yellow",
-      "scheduled_date": "2026-10-12",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-12T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B08GH41N87_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.924523+00:00",
-      "published_at": "2026-10-13T19:10:53.560789+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998924355",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998924355/",
-          "title": "THE BEER VALLEY Chindi Woven Rug 2x3 Feet - Yellow",
-          "link": "https://link.amazon/B02bkZwVE",
-          "image_url": "https://m.media-amazon.com/images/I/912NPqKUTZL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998924355 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983241580139258",
-          "post_id": "18271001371306492",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DecUH9yG8Jo",
-          "image_url": "https://m.media-amazon.com/images/I/912NPqKUTZL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18271001371306492 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_007_B09SH38JRR",
-      "original_url": "https://link.amazon/B0aLCB05n",
-      "asin": "B09SH38JRR",
-      "product_name": "WLIVE Small Dresser Nightstand for Bedroom, 4 Drawers, Rustic Brown",
-      "scheduled_date": "2026-10-12",
-      "daily_slot": 2,
-      "scheduled_at": "2026-10-12T19:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B09SH38JRR_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.927679+00:00",
-      "published_at": "2026-10-13T19:10:53.560789+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998924358",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998924358/",
-          "title": "WLIVE Rustic Brown 4 Drawer Nightstand with Multifunction Cabinet",
-          "link": "https://link.amazon/B0aLCB05n",
-          "image_url": "https://m.media-amazon.com/images/I/81wEshft9lL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998924358 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983241613139258",
-          "post_id": "18131001442744997",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DecUJU4m4jW",
-          "image_url": "https://m.media-amazon.com/images/I/81wEshft9lL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18131001442744997 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_008_B09ZV2TX28",
-      "original_url": "https://link.amazon/B0arzMCtg",
-      "asin": "B09ZV2TX28",
-      "product_name": "Lifewit 60L Clothes Storage Bags, Foldable Under-Bed Storage Bags,6 Pack",
-      "scheduled_date": "2026-10-13",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-13T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B09ZV2TX28_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.929299+00:00",
-      "published_at": "2026-10-13T19:10:53.560789+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998924372",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998924372/",
-          "title": "Lifewit 6-Pack 60L Foldable Under-Bed Storage Bags",
-          "link": "https://link.amazon/B0arzMCtg",
-          "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998924372 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983241649139258",
-          "post_id": "18122285866905947",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DecUKlGmziE",
-          "image_url": "https://m.media-amazon.com/images/I/81epIVvxgeL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18122285866905947 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_009_B0BJKRYCZF",
-      "original_url": "https://link.amazon/B00j5slzz",
-      "asin": "B0BJKRYCZF",
-      "product_name": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture Modern Home Decoration Desktop Decoration Christmas New Year Gift (3 Pcs Gold)",
-      "scheduled_date": "2026-10-13",
-      "daily_slot": 2,
-      "scheduled_at": "2026-10-13T19:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0BJKRYCZF_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.930477+00:00",
-      "published_at": "2026-10-13T19:10:53.560789+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998924409",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998924409/",
-          "title": "3 PCS Thinker Statue, Golden Black Abstract Art Sculpture - Modern Home Decoration",
-          "link": "https://link.amazon/B00j5slzz",
-          "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998924409 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983241694139258",
-          "post_id": "18153107746536754",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DecUL36mzzo",
-          "image_url": "https://m.media-amazon.com/images/I/61a0rUYmrsL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18153107746536754 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_010_B0C235GNV9",
-      "original_url": "https://link.amazon/B0eFc8pa5",
-      "asin": "B0C235GNV9",
-      "product_name": "KOZYFLY Washable Area Rug 5x7 ft Rubber Backed Non Slip Rugs for Living Room Braided Cotton Bedroom Rug Woven Office Rugs Indoor Floor Carpets for Dining Bedroom Living Room, Tan/Orange/Brown",
-      "scheduled_date": "2026-10-14",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-14T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0C235GNV9_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.932152+00:00",
-      "published_at": "2026-10-14T16:44:16.447479+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998947391",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998947391/",
-          "title": "KOZYFLY 5x7 ft Tan/Orange/Brown Braided Cotton Rug with Rubber Backing",
-          "link": "https://link.amazon/B0eFc8pa5",
-          "image_url": "https://m.media-amazon.com/images/I/91+aCRVBxuL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998947391 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018158565",
-          "pin_url": "https://www.pinterest.com/pin/495607134018158565/",
-          "title": "KOZYFLY 5x7 ft Tan/Orange/Brown Braided Cotton Rug with Rubber Backing",
-          "link": "https://link.amazon/B0eFc8pa5",
-          "image_url": "https://m.media-amazon.com/images/I/91+aCRVBxuL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018158565 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983380510139258",
-          "post_id": "18145720240597157",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DeeoH1zm0Ji",
-          "image_url": "https://m.media-amazon.com/images/I/91+aCRVBxuL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18145720240597157 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_011_B0C51CZJ83",
-      "original_url": "https://link.amazon/B079VepZB",
-      "asin": "B0C51CZJ83",
-      "product_name": "Twin Size Sheet Set - 4 Piece - Hotel Luxury Bed Sheets - Extra Soft - Deep Pockets - Easy Fit - Breathable & Cooling - Wrinkle Free - Comfy - Steel Blue Bed Sheets - Twins Sheets - 4 PC",
-      "scheduled_date": "2026-10-14",
-      "daily_slot": 2,
-      "scheduled_at": "2026-10-14T19:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0C51CZJ83_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.933524+00:00",
-      "published_at": "2026-10-14T22:21:51.216904+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998956954",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998956954/",
-          "title": "Twin Size Sheet Set",
-          "link": "https://link.amazon/B079VepZB",
-          "image_url": "https://m.media-amazon.com/images/I/81ym31kVh2L._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998956954 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018160539",
-          "pin_url": "https://www.pinterest.com/pin/495607134018160539/",
-          "title": "Twin Size Sheet Set",
-          "link": "https://link.amazon/B079VepZB",
-          "image_url": "https://m.media-amazon.com/images/I/81ym31kVh2L._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018160539 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983419753139258",
-          "post_id": "18347785033264127",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DefOwXXCTpR",
-          "image_url": "https://m.media-amazon.com/images/I/81ym31kVh2L._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18347785033264127 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_012_B0C65T7727",
-      "original_url": "https://link.amazon/B0bUpIGar",
-      "asin": "B0C65T7727",
-      "product_name": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025 Pullover Sweaters Winter Clothes",
-      "scheduled_date": "2026-10-15",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-15T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0C65T7727_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.934677+00:00",
-      "published_at": "2026-10-15T16:29:40.137693+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998977548",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998977548/",
-          "title": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025",
-          "link": "https://link.amazon/B0bUpIGar",
-          "image_url": "https://m.media-amazon.com/images/I/61KStmQof9L._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998977548 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018165739",
-          "pin_url": "https://www.pinterest.com/pin/495607134018165739/",
-          "title": "Trendy Queen Womens Oversized Hoodies Fleece Sweatshirts Fall Fashion 2025",
-          "link": "https://link.amazon/B0bUpIGar",
-          "image_url": "https://m.media-amazon.com/images/I/61KStmQof9L._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018165739 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983560807139258",
-          "post_id": "18039865895645635",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DehLPr8mxzC",
-          "image_url": "https://m.media-amazon.com/images/I/61KStmQof9L._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18039865895645635 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_013_B0CNCL35CH",
-      "original_url": "https://link.amazon/B0exefrmH",
-      "asin": "B0CNCL35CH",
-      "product_name": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick – Under Eye & Face Wrinkle Care, Firming & Hydrating Balm with Collagen, Smooth Makeup Prep & Instant Glow – Korean Skincare (9g)",
-      "scheduled_date": "2026-10-15",
-      "daily_slot": 2,
-      "scheduled_at": "2026-10-15T19:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0CNCL35CH_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.936229+00:00",
-      "published_at": "2026-10-15T22:05:25.219165+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551998985764",
-          "pin_url": "https://www.pinterest.com/pin/1033646551998985764/",
-          "title": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick – Under Eye & Face Wrinkle Care, Firming & H",
-          "link": "https://link.amazon/B0exefrmH",
-          "image_url": "https://m.media-amazon.com/images/I/61mj7V036QL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551998985764 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018167881",
-          "pin_url": "https://www.pinterest.com/pin/495607134018167881/",
-          "title": "Dr.Melaxin Cemenrete Calcium Multi Balm Stick – Under Eye & Face Wrinkle Care, Firming & H",
-          "link": "https://link.amazon/B0exefrmH",
-          "image_url": "https://m.media-amazon.com/images/I/61mj7V036QL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018167881 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983603470139258",
-          "post_id": "18145291876601591",
-          "permalink": "https://www.threads.com/@lifemodehq/post/Dehxq3xGAl6",
-          "image_url": "https://m.media-amazon.com/images/I/61mj7V036QL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18145291876601591 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_014_B0D6G5S35J",
-      "original_url": "https://link.amazon/B09PbfKuR",
-      "asin": "B0D6G5S35J",
-      "product_name": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
-      "scheduled_date": "2026-10-16",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-16T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0D6G5S35J_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.937569+00:00",
-      "published_at": "2026-10-16T16:22:09.950600+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551999007361",
-          "pin_url": "https://www.pinterest.com/pin/1033646551999007361/",
-          "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
-          "link": "https://link.amazon/B09PbfKuR",
-          "image_url": "https://m.media-amazon.com/images/I/71L3IRMyLbL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551999007361 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018173460",
-          "pin_url": "https://www.pinterest.com/pin/495607134018173460/",
-          "title": "FRIDEKO HOME Floor Lamp with RGB Smart LED Bulb and Beige Lampshade",
-          "link": "https://link.amazon/B09PbfKuR",
-          "image_url": "https://m.media-amazon.com/images/I/71L3IRMyLbL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018173460 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983740846139258",
-          "post_id": "17871489417649167",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DejvLrYHEBz",
-          "image_url": "https://m.media-amazon.com/images/I/71L3IRMyLbL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 17871489417649167 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_015_B0D9TCFRJ5",
-      "original_url": "https://link.amazon/B0dycBsOk",
-      "asin": "B0D9TCFRJ5",
-      "product_name": "Travertine Tray,Bathroom Vanity Tray",
-      "scheduled_date": "2026-10-16",
-      "daily_slot": 2,
-      "scheduled_at": "2026-10-16T19:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0D9TCFRJ5_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-10-10T17:56:45.938811+00:00",
-      "published_at": "2026-10-16T21:44:44.938958+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551999016145",
-          "pin_url": "https://www.pinterest.com/pin/1033646551999016145/",
-          "title": "MULWR Natural Marble Bathroom Vanity Tray - Versatile and Sturdy Storage Solution",
-          "link": "https://link.amazon/B0dycBsOk",
-          "image_url": "https://m.media-amazon.com/images/I/81d7pG201QL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551999016145 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018175122",
-          "pin_url": "https://www.pinterest.com/pin/495607134018175122/",
-          "title": "MULWR Natural Marble Bathroom Vanity Tray - Versatile and Sturdy Storage Solution",
-          "link": "https://link.amazon/B0dycBsOk",
-          "image_url": "https://m.media-amazon.com/images/I/81d7pG201QL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018175122 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983786902139258",
-          "post_id": "17976884819930501",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DekUGXaoCey",
-          "image_url": "https://m.media-amazon.com/images/I/81d7pG201QL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 17976884819930501 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_016_B0DHKSF81K",
-      "original_url": "https://link.amazon/B054USqXz",
-      "asin": "B0DHKSF81K",
-      "product_name": "celimax Pore Dark Spot Brightening Cream With Niacinamide, Tranexamic Acid, Txa Cream, Pore Minimizer, Non-Irritating, Hydrating, For Sensitive Skin, 35Ml",
-      "scheduled_date": "2026-10-17",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-17T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0DHKSF81K_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-      ],
-      "created_at": "2026-10-10T17:56:45.940016+00:00",
-      "published_at": "2026-10-17T15:17:21.733821+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551999036459",
-          "pin_url": "https://www.pinterest.com/pin/1033646551999036459/",
-          "title": "Celimax Pore Dark Spot Brightening Cream 35ml",
-          "link": "https://link.amazon/B054USqXz",
-          "image_url": "https://m.media-amazon.com/images/I/51G+12fcKPL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551999036459 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018180220",
-          "pin_url": "https://www.pinterest.com/pin/495607134018180220/",
-          "title": "Celimax Pore Dark Spot Brightening Cream 35ml",
-          "link": "https://link.amazon/B054USqXz",
-          "image_url": "https://m.media-amazon.com/images/I/51G+12fcKPL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018180220 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983898697139258",
-          "post_id": "18133508788669228",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DemMj19G7qp",
-          "image_url": "https://m.media-amazon.com/images/I/51G+12fcKPL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18133508788669228 to Threads account 'lifemodehq' (28272717349017680)."
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_017_B0DTHHK2S1",
-      "original_url": "https://link.amazon/B07zWpUB4",
-      "asin": "B0DTHHK2S1",
-      "product_name": "IUV",
-      "scheduled_date": "2026-10-17",
-      "daily_slot": 2,
-      "scheduled_at": "2026-10-17T19:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0DTHHK2S1_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-      ],
-      "created_at": "2026-10-10T17:56:45.941662+00:00",
-      "published_at": "2026-10-17T20:54:06.693599+02:00",
-      "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "page_id": "226949230493910",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
-          ],
-          "message": "Facebook Graph API rejected post with HTTP 400."
-        },
-        "pinterest": {
-          "platform": "pinterest",
-          "account": "dailyideasforyou",
-          "board": "Shopping ideas",
-          "board_id": "1033646620665866548",
-          "pin_id": "1033646551999044762",
-          "pin_url": "https://www.pinterest.com/pin/1033646551999044762/",
-          "title": "IUV Western Wooden Heel Cowgirl Boots",
-          "link": "https://link.amazon/B07zWpUB4",
-          "image_url": "https://m.media-amazon.com/images/I/81rnKuAcLJL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 1033646551999044762 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
-          "published_at": "2026-10-17T20:54:06.693599+02:00"
-        },
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018182184",
-          "pin_url": "https://www.pinterest.com/pin/495607134018182184/",
-          "title": "IUV Western Wooden Heel Cowgirl Boots",
-          "link": "https://link.amazon/B07zWpUB4",
-          "image_url": "https://m.media-amazon.com/images/I/81rnKuAcLJL._AC_SL1500_.jpg",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "message": "Successfully created pin 495607134018182184 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
-          "published_at": "2026-10-17T20:54:06.693599+02:00"
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "user_id": "28272717349017680",
-          "creation_id": "17983953546139258",
-          "post_id": "18133367923663189",
-          "permalink": "https://www.threads.com/@lifemodehq/post/DemzGQSHXZG",
-          "image_url": "https://m.media-amazon.com/images/I/81rnKuAcLJL._AC_SL1500_.jpg",
-          "verified_media_type": "IMAGE",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 200,
-          "message": "Successfully published image post 18133367923663189 to Threads account 'lifemodehq' (28272717349017680).",
-          "published_at": "2026-10-17T20:54:06.693599+02:00"
-        }
-      }
-    },
-    {
-      "queue_item_id": "item_018_B0H1W18KGL",
-      "original_url": "https://link.amazon/B0isaIph6",
-      "asin": "B0H1W18KGL",
-      "product_name": "5FT Halloween Swinging Ghost Outdoor Decor,Spooky Hanging Ghost Decorations",
-      "scheduled_date": "2026-10-18",
-      "daily_slot": 1,
-      "scheduled_at": "2026-10-18T12:00:00+02:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0H1W18KGL_content_package.json",
+      "package_reference": "data/generated/asin_B0BZYCJK89_content_package.json",
       "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
-      "created_at": "2026-10-10T17:56:45.944187+00:00",
+      "created_at": "2026-10-26T13:20:52.251634+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": "batch_20261026T141635592098_27945101"
     },
     {
-      "queue_item_id": "item_019_B095NXXP8C",
-      "original_url": "https://link.amazon/B0amY6llW",
-      "asin": "B095NXXP8C",
-      "product_name": "Nintiue 【Upgraded】 Dimmable Floor Lamp, 1000 Lumens LED Bulb Included, Arc Floor Lamps for Living Room Modern Standing Lamp with Linen Shade, Tall Lamp for Bedroom Office Reading Dining Room- Black",
-      "scheduled_date": "2026-10-11",
+      "queue_item_id": "item_028_B07H9PZDQW",
+      "original_url": "https://link.amazon/B0b08ATBA",
+      "asin": "B07H9PZDQW",
+      "product_name": "Gaiam Essentials Thick Yoga Mat Fitness & Exercise Mat with Easy-Cinch Yoga Mat Carrier Strap, 72\"L x 24\"W x 2/5 Inch Thick",
+      "scheduled_date": "2026-11-04",
       "daily_slot": 2,
-      "scheduled_at": "2026-10-11T19:00:00+02:00",
+      "scheduled_at": "2026-11-04T19:00:00+01:00",
       "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B095NXXP8C_content_package.json",
-      "status": "FAILED",
+      "package_reference": "data/generated/asin_B07H9PZDQW_content_package.json",
+      "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Skipped because item image preflight was blocked.",
-        "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-      ],
-      "created_at": "2026-10-11T04:37:34.455206+00:00",
-      "published_at": "2026-10-11T19:00:05.636575+02:00",
+      "errors": [],
+      "created_at": "2026-10-26T13:24:21.526414+00:00",
+      "published_at": null,
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
           "action": "PUBLISH",
           "mode": "DRY_RUN",
-          "status": "SKIPPED",
-          "errors": [
-            "Skipped because item image preflight was blocked."
-          ]
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
         },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
           "action": "PUBLISH",
           "mode": "DRY_RUN",
-          "status": "FAILED",
-          "errors": [
-            "Blocked: Pinterest requires a verified HTTPS image URL from the product package or same-ASIN cache."
-          ]
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
+          "board": "Shopping ideas"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "board": "Home & Everyday Living"
         },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
           "action": "PUBLISH",
           "mode": "DRY_RUN",
-          "status": "SKIPPED",
-          "errors": [
-            "Skipped because item image preflight was blocked."
-          ]
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
         }
-      }
+      },
+      "batch_id": "batch_20261026T142353075489_ae63c4db"
     },
     {
-      "queue_item_id": "item_020_UNKNOWN",
-      "original_url": "https://link.amazon/B04Kl1BNM",
-      "asin": "UNKNOWN",
-      "product_name": "Alpine Corporation Indoor/Outdoor Fountain (Unverified)",
-      "scheduled_date": null,
-      "daily_slot": null,
-      "scheduled_at": null,
+      "queue_item_id": "item_029_B0FL6Q8NFQ",
+      "original_url": "https://link.amazon/B05RcKpuU",
+      "asin": "B0FL6Q8NFQ",
+      "product_name": "Titanium Cutting Board for Kitchen, Cutting Board Set Double Sided Food Grade, Pure Titanium and Wheat Straw PP, Easy to Clean[15.5”*10.5”+12”*8.5”]",
+      "scheduled_date": "2026-11-05",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-05T13:00:00+01:00",
       "timezone": "Europe/Budapest",
-      "package_reference": null,
-      "status": "FAILED",
-      "validation_status": "FAILED_VALIDATION",
-      "errors": [
-        "Product identity or supporting information could not be verified: ASIN is unknown and extracted features are empty."
-      ],
-      "created_at": "2026-10-11T04:57:40.819852+00:00",
+      "package_reference": "data/generated/asin_B0FL6Q8NFQ_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:26:34.983862+00:00",
       "published_at": null,
-      "publishing_results": null
+      "publishing_results": null,
+      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+    },
+    {
+      "queue_item_id": "item_030_B07PBXXNCY",
+      "original_url": "https://link.amazon/B03NM8ggp",
+      "asin": "B07PBXXNCY",
+      "product_name": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette, Eczema Association Accepted, Makeup Remover Dry Wipes, Ultra Soft, 1 Pack, 50 Ct",
+      "scheduled_date": "2026-11-05",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-05T19:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B07PBXXNCY_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-26T13:26:55.352825+00:00",
+      "published_at": null,
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
+          "board": "Shopping ideas"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
+          "board": "Home & Everyday Living"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "action": "PUBLISH",
+          "mode": "DRY_RUN",
+          "status": "WOULD_PUBLISH",
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      },
+      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+    },
+    {
+      "queue_item_id": "item_031_B0BW93676T",
+      "original_url": "https://link.amazon/B01JvH5z4",
+      "asin": "B0BW93676T",
+      "product_name": "Trendy Queen Trd1361022 Women's T-Shirt",
+      "scheduled_date": "2026-11-06",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-06T13:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0BW93676T_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-10-27T11:29:05.011677+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261027T122840231670_da1691ba"
     }
   ]
 }

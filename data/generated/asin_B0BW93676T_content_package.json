@@ -1,0 +1,124 @@
+{
+  "asin": "B0BW93676T",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-27T11:29:04.965356+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0BW93676T.json",
+    "affiliate_url": "https://link.amazon/B01JvH5z4"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "It includes a slim‑fit crew neck design with a smooth, flat neckline that hugs the body without feeling tight.\n\nIncludes Softness: Ultra-soft, breathable, and high-stretch fabric made from 88% polyester and 12% spandex feels buttery soft against your skin. Lightweight yet substantial enough to resist turning sheer, it moves with you and maintains shape after stretching.\n\nLink: https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+      "description": "The shirt is made from 88% polyester and 12% spandex, providing an ultra‑soft, breathable, high‑stretch fabric. It features a slim‑fit crew neck design that hugs the body while maintaining shape. https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B01JvH5z4",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Trendy Queen Trd1361022 Women’s T‑Shirt features an ultra‑soft, breathable, high‑stretch fabric of 88% polyester and 12% spandex. It has a slim‑fit crew‑neck design that hugs the body while maintaining shape.\n\nLink: https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6243",
+        "x-ratelimit-reset-tokens": "13.177s"
+      },
+      "id": "chatcmpl-d81650d0-dc4d-4e80-854b-dece64f2cd2a",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.15471026,
+        "prompt_tokens": 1484,
+        "prompt_time": 0.349924208,
+        "completion_tokens": 250,
+        "completion_time": 0.524611976,
+        "total_tokens": 1734,
+        "total_time": 0.874536184
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4710",
+        "x-ratelimit-reset-tokens": "24.675s"
+      },
+      "id": "chatcmpl-3d8a4f5e-38b9-48bb-8a97-107f4bb50c46",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.210412209,
+        "prompt_tokens": 1561,
+        "prompt_time": 0.097319792,
+        "completion_tokens": 259,
+        "completion_time": 0.548113186,
+        "total_tokens": 1820,
+        "total_time": 0.645432978
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3188",
+        "x-ratelimit-reset-tokens": "36.09s"
+      },
+      "id": "chatcmpl-b73b19fb-1a48-4dab-bd34-1a3f78bdc5c5",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.130227492,
+        "prompt_tokens": 1479,
+        "prompt_time": 0.177101011,
+        "completion_tokens": 137,
+        "completion_time": 0.288721208,
+        "total_tokens": 1616,
+        "total_time": 0.465822219
+      }
+    }
+  ]
+}

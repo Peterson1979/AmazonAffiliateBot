@@ -1,0 +1,124 @@
+{
+  "asin": "B08BRJHJF9",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-26T13:17:01.947031+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B08BRJHJF9.json",
+    "affiliate_url": "https://link.amazon/B0bPi8P7o"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The towels feature a grip‑root weave and overlock braided stitching and are constructed from microfiber material.\n\nIncludes 10x GRIP-ROOT WEAVE.\n\nLink: https://link.amazon/B0bPi8P7o\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "USANOOKS Microfiber Cleaning Cloth Grey 12‑Pack 12.6×12.6 in",
+      "description": "The USANOOKS cloths measure 12.6 × 12.6 in and are crafted from 300 GSM microfiber with a 2.5 mm thickness. https://link.amazon/B0bPi8P7o\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0bPi8P7o",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "USANOOKS Microfiber Cleaning Cloth in grey comes in a 12‑pack of 12.6″ × 12.6″ towels that feature a 2.5 mm thick, 300 GSM grip‑root weave.\n\nLink: https://link.amazon/B0bPi8P7o\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6032",
+        "x-ratelimit-reset-tokens": "14.76s"
+      },
+      "id": "chatcmpl-23e06487-6244-42df-b220-e0e9c270ed5a",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.298790791,
+        "prompt_tokens": 1634,
+        "prompt_time": 0.073229093,
+        "completion_tokens": 252,
+        "completion_time": 0.733259815,
+        "total_tokens": 1886,
+        "total_time": 0.806488908
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4401",
+        "x-ratelimit-reset-tokens": "26.992s"
+      },
+      "id": "chatcmpl-8b6770b4-d9a1-43dc-ac89-20b2ac93668b",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.417558551,
+        "prompt_tokens": 1711,
+        "prompt_time": 0.098256199,
+        "completion_tokens": 352,
+        "completion_time": 0.75356523,
+        "total_tokens": 2063,
+        "total_time": 0.851821429
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2676",
+        "x-ratelimit-reset-tokens": "39.93s"
+      },
+      "id": "chatcmpl-5fcd8513-6540-413c-81ec-743d2cd22bb1",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.479788842,
+        "prompt_tokens": 1629,
+        "prompt_time": 0.088921351,
+        "completion_tokens": 174,
+        "completion_time": 0.365854312,
+        "total_tokens": 1803,
+        "total_time": 0.454775663
+      }
+    }
+  ]
+}

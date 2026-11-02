@@ -1,0 +1,254 @@
+{
+  "asin": "B07H9PZDQW",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-10-26T13:24:21.523928+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B07H9PZDQW.json",
+    "affiliate_url": "https://link.amazon/B0b08ATBA"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The Gaiam Essentials Thick Yoga Mat measures 72 inches long, 24 inches wide, and 2/5 inch thick, weighing 3.11 pounds.\n\nThe mat includes an Easy‑Cinch yoga mat carrier strap.\n\nLink: https://link.amazon/B0b08ATBA\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81mao7QZ1iL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Gaiam Essentials Thick Yoga Mat with Carrier Strap",
+      "description": "The Gaiam Essentials yoga mat measures 72 inches long, 24 inches wide, and 2/5 inch thick. It includes an Easy‑Cinch carrier strap. https://link.amazon/B0b08ATBA\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81mao7QZ1iL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0b08ATBA",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Gaiam Essentials Thick Yoga Mat with Easy‑Cinch carrier strap measures 72 inches long by 24 inches wide and is 2/5 inch thick. The mat includes a yoga‑mat carrier strap.\n\nLink: https://link.amazon/B0b08ATBA\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81mao7QZ1iL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "972",
+        "x-ratelimit-reset-requests": "40m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5911",
+        "x-ratelimit-reset-tokens": "15.667s"
+      },
+      "id": "chatcmpl-f9d7fb59-c89b-4200-afdb-26f554be8428",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.017709684,
+        "prompt_tokens": 1572,
+        "prompt_time": 0.06746332,
+        "completion_tokens": 232,
+        "completion_time": 0.543361119,
+        "total_tokens": 1804,
+        "total_time": 0.610824439
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "971",
+        "x-ratelimit-reset-requests": "41m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5426",
+        "x-ratelimit-reset-tokens": "19.305s"
+      },
+      "id": "chatcmpl-705ed547-092c-4d5e-8650-3401ba25717a",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.698785503,
+        "prompt_tokens": 1633,
+        "prompt_time": 0.102503348,
+        "completion_tokens": 198,
+        "completion_time": 0.413190828,
+        "total_tokens": 1831,
+        "total_time": 0.515694176
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "970",
+        "x-ratelimit-reset-requests": "43m12s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3844",
+        "x-ratelimit-reset-tokens": "31.17s"
+      },
+      "id": "chatcmpl-3622b871-1c66-4cf7-a51a-e92019964fb9",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.047854988,
+        "prompt_tokens": 1649,
+        "prompt_time": 0.084576139,
+        "completion_tokens": 351,
+        "completion_time": 0.735049086,
+        "total_tokens": 2000,
+        "total_time": 0.819625225
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "969",
+        "x-ratelimit-reset-requests": "44m38.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2138",
+        "x-ratelimit-reset-tokens": "43.965s"
+      },
+      "id": "chatcmpl-df8e6daf-d45a-4ace-aa9a-5c227954d297",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.047651968,
+        "prompt_tokens": 1546,
+        "prompt_time": 0.027425182,
+        "completion_tokens": 244,
+        "completion_time": 0.505781015,
+        "total_tokens": 1790,
+        "total_time": 0.533206197
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "968",
+        "x-ratelimit-reset-requests": "46m4.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1604",
+        "x-ratelimit-reset-tokens": "47.97s"
+      },
+      "id": "chatcmpl-d99a499e-81ab-4723-9550-96e984edad6c",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.2082301,
+        "prompt_tokens": 1567,
+        "prompt_time": 0.087157709,
+        "completion_tokens": 212,
+        "completion_time": 0.447187056,
+        "total_tokens": 1779,
+        "total_time": 0.534344765
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "967",
+        "x-ratelimit-reset-requests": "47m31.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2187",
+        "x-ratelimit-reset-tokens": "43.597s"
+      },
+      "id": "chatcmpl-fa9fa43b-97fd-4c31-9258-4cac0a618c7f",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.297240258,
+        "prompt_tokens": 1490,
+        "prompt_time": 0.033631307,
+        "completion_tokens": 113,
+        "completion_time": 0.236070633,
+        "total_tokens": 1603,
+        "total_time": 0.26970194
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "966",
+        "x-ratelimit-reset-requests": "48m57.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1722",
+        "x-ratelimit-reset-tokens": "47.084s"
+      },
+      "id": "chatcmpl-abc375a4-a457-49e6-9fa7-fa3a7966a93f",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.018044284,
+        "prompt_tokens": 1567,
+        "prompt_time": 0.019955967,
+        "completion_tokens": 160,
+        "completion_time": 0.609909027,
+        "total_tokens": 1727,
+        "total_time": 0.629864994
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "965",
+        "x-ratelimit-reset-requests": "50m24s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1612",
+        "x-ratelimit-reset-tokens": "47.91s"
+      },
+      "id": "chatcmpl-c5be4fd7-d262-48e4-84b2-0add75166c5d",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.048663509,
+        "prompt_tokens": 1485,
+        "prompt_time": 0.067627003,
+        "completion_tokens": 101,
+        "completion_time": 0.209871992,
+        "total_tokens": 1586,
+        "total_time": 0.277498995
+      }
+    }
+  ]
+}

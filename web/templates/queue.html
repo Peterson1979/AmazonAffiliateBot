@@ -1,20 +1,324 @@
 {% extends "base.html" %}
 {% block title %}Publishing Queue{% endblock %}
 {% block content %}
-<div class="page-header"><!-- Slot 1 / Slot 2 --><div><div class="eyebrow">Queue control</div><h1 class="page-title">Publishing Queue Schedule — Publishing queue</h1><p class="help-text">Scheduled items and evidence-backed platform outcomes in Europe/Budapest time.</p></div><div class="page-actions"><a href="{{ url_for('add_product') }}" class="btn btn-primary">Add product</a><form action="{{ url_for('publisher_run') }}" method="POST"><button type="submit" class="btn btn-secondary" title="Local dry-run only; no live posts are sent">Run local simulation</button></form></div></div>
+<div class="page-header">
+  <div>
+    <div class="eyebrow">Queue control</div>
+    <h1 class="page-title">Publishing Queue Schedule</h1>
+    <p class="help-text">Slot 1: 13:00 · Slot 2: 19:00 Europe/Budapest. Automatic publishing runs items for the current Budapest day; overdue items are held for explicit review.</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Products</a>
+    <form action="{{ url_for('publisher_run') }}" method="POST" style="display:inline;">
+      <button type="submit" class="btn btn-secondary">Run Local Simulation</button>
+    </form>
+  </div>
+</div>
 
-<section class="notice-card"><div><strong>Dry-run and live actions are separate.</strong> “Run local simulation” never publishes. “Publish live” requires an explicit confirmation and uses Facebook, both configured Pinterest destinations and Threads. A workflow run alone does not confirm a social post.</div><span class="badge badge-info">EXPLICIT LIVE ONLY</span></section>
+<section class="notice-card">
+  <div><strong>Dry-run and live actions are separate.</strong> Local simulation evaluates queue readiness without publishing. Live publication requires explicit confirmation.</div>
+  <span class="badge badge-info">EXPLICIT LIVE ONLY</span>
+</section>
 
-<section class="card filter-card"><form method="GET" action="{{ url_for('queue') }}" class="filter-row"><div><label for="status">Status</label><select id="status" name="status"><option value="ALL" {% if current_filter == 'ALL' %}selected{% endif %}>All items</option><option value="SCHEDULED" {% if current_filter == 'SCHEDULED' %}selected{% endif %}>Scheduled</option><option value="PUBLISHING" {% if current_filter == 'PUBLISHING' %}selected{% endif %}>Publishing</option><option value="SIMULATED" {% if current_filter == 'SIMULATED' %}selected{% endif %}>Simulated</option><option value="PUBLISHED" {% if current_filter == 'PUBLISHED' %}selected{% endif %}>Published</option><option value="PARTIAL" {% if current_filter == 'PARTIAL' %}selected{% endif %}>Partial</option><option value="FAILED" {% if current_filter == 'FAILED' %}selected{% endif %}>Failed</option><option value="RETRYABLE" {% if current_filter == 'RETRYABLE' %}selected{% endif %}>Retryable</option><option value="UNKNOWN" {% if current_filter == 'UNKNOWN' %}selected{% endif %}>Unknown</option></select></div><button type="submit" class="btn btn-secondary">Apply filter</button>{% if current_filter != 'ALL' %}<a href="{{ url_for('queue') }}" class="btn btn-sm btn-secondary">Clear</a>{% endif %}</form></section>
+<!-- Filter Card -->
+<section class="card filter-card">
+  <form method="GET" action="{{ url_for('queue') }}" class="filter-row">
+    <div>
+      <label for="batch_id">Batch</label>
+      <select id="batch_id" name="batch_id">
+        <option value="ALL" {% if not selected_batch or selected_batch_id == 'ALL' %}selected{% endif %}>All Batches (Full Queue)</option>
+        {% if batches %}
+          {% for batch in batches %}
+            <option value="{{ batch.batch_id }}" {% if selected_batch and selected_batch.batch_id == batch.batch_id %}selected{% endif %}>{{ batch.display_label }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </div>
+    <div>
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option value="ALL" {% if current_filter == 'ALL' %}selected{% endif %}>All Statuses</option>
+        <option value="SCHEDULED" {% if current_filter == 'SCHEDULED' %}selected{% endif %}>Scheduled</option>
+        <option value="PUBLISHING" {% if current_filter == 'PUBLISHING' %}selected{% endif %}>Publishing</option>
+        <option value="SIMULATED" {% if current_filter == 'SIMULATED' %}selected{% endif %}>Not Published (Simulated)</option>
+        <option value="PUBLISHED" {% if current_filter == 'PUBLISHED' %}selected{% endif %}>Published</option>
+        <option value="PARTIAL" {% if current_filter == 'PARTIAL' %}selected{% endif %}>Partial</option>
+        <option value="FAILED" {% if current_filter == 'FAILED' %}selected{% endif %}>Failed</option>
+        <option value="RETRYABLE" {% if current_filter == 'RETRYABLE' %}selected{% endif %}>Retryable</option>
+        <option value="UNKNOWN" {% if current_filter == 'UNKNOWN' %}selected{% endif %}>Awaiting confirmation</option>
+      </select>
+    </div>
+    <div style="display:flex; align-items:flex-end; gap:6px;">
+      <button type="submit" class="btn btn-secondary">Apply</button>
+      {% if selected_batch or current_filter != 'ALL' %}
+        <a href="{{ url_for('queue') }}" class="btn btn-sm btn-secondary">Reset</a>
+      {% endif %}
+    </div>
+  </form>
+</section>
 
-<div class="table-responsive"><table class="queue-table"><thead><tr><th>Scheduled slot</th><th>Product</th><th>State</th><th>Platform results</th><th>Evidence</th><th>Actions</th></tr></thead><tbody>
-{% if items %}{% for item in items %}<tr>
-  <td><strong>{{ item.scheduled_date or '—' }}</strong><div class="table-subtext">{% if item.daily_slot == 1 %}12:00{% elif item.daily_slot == 2 %}19:00{% else %}Unscheduled{% endif %} Budapest</div></td>
-  <td><a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a><div class="table-subtext">{{ item.asin }}</div></td>
-  <td><span class="state-pill state-{{ item.ui_state|lower|replace('_', '-') }}">{{ item.ui_state }}</span>{% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}</td>
-  <td><div class="platform-result-list">{% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set p = item.ui_platforms.get(p_key) %}<div class="platform-result"><span>{{ p.label }}</span><span class="state-pill state-{{ p.state|lower|replace('_', '-') }}">{{ p.state }}</span>{% if p.post_url %}<a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>{% elif p.post_id %}<span class="table-subtext">ID {{ p.post_id }}</span>{% endif %}{% if p.errors %}<span class="error-detail" title="{{ p.errors|join('; ') }}">Issue</span>{% elif p.evidence_note %}<span class="error-detail" title="{{ p.evidence_note }}">Evidence note</span>{% endif %}</div>{% endfor %}</div></td>
-  <td>{% if item.ui_published_at %}<div class="table-subtext">Published {{ item.ui_published_at }}</div>{% elif item.ui_state in ('PUBLISHED', 'PARTIAL') %}<span class="muted-value">Live confirmation recorded; timestamp unavailable</span>{% elif item.status == 'FAILED' and item.errors %}<div class="error-detail" title="{{ item.errors|join('; ') }}">{{ item.errors[0]|truncate(90) }}</div>{% else %}<span class="muted-value">No live confirmation</span>{% endif %}</td>
-  <td><div class="action-stack"><a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary">Preview</a><a href="{{ url_for('product_detail', asin=item.asin) }}" class="btn btn-sm btn-secondary">Details</a>{% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state != 'PUBLISHED' %}<form action="{{ url_for('publish_queue_item', queue_item_id=item.queue_item_id) }}" method="POST" class="live-publish-form"><label><input type="checkbox" name="confirm_live" value="yes" required> Confirm live publish to Facebook, both Pinterest destinations and Threads</label><button type="submit" name="publish_live" value="confirm" class="btn btn-sm btn-danger">Publish live</button></form>{% endif %}</div></td>
-</tr>{% endfor %}{% else %}<tr><td colspan="7"><div class="empty-state"><div class="empty-state-title">No matching queue items</div><div class="empty-state-desc">Adjust the filter or add a validated Amazon product.</div></div></td></tr>{% endif %}
-</tbody></table></div>
+<!-- Overdue Held Items Section -->
+{% if overdue_held_items %}
+<section class="notice-card" style="margin-bottom:20px;">
+  <div>
+    <strong>{{ overdue_held_items|length }} overdue item(s) are held for review.</strong>
+    These records are outside the same-day window. Reschedule them into future slots or publish live explicitly.
+    <form action="{{ url_for('queue_reschedule_overdue') }}" method="POST" style="display:inline-block; margin-left: 12px;">
+      <button type="submit" class="btn btn-sm btn-primary">Reschedule Overdue to Future Slots</button>
+    </form>
+  </div>
+  <span class="badge badge-warning">OVERDUE HELD</span>
+</section>
+
+<section class="card" style="margin-bottom:20px;">
+  <div class="card-title">Overdue — held for review</div>
+  <div class="help-text">These items were not published automatically. You can reschedule them or remove failed entries below.</div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Scheduled slot</th>
+          <th>Product</th>
+          <th>State</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in overdue_held_items %}
+        <tr>
+          <td>
+            <strong>{{ item.scheduled_date or '—' }}</strong>
+            <div class="table-subtext">{% if item.daily_slot == 1 %}13:00{% elif item.daily_slot == 2 %}19:00{% else %}Unscheduled{% endif %} Budapest</div>
+          </td>
+          <td>
+            <a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a>
+            <div class="table-subtext">{{ item.asin }}</div>
+          </td>
+          <td>
+            <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Awaiting confirmation' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
+            {% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
+            {% if item.errors %}
+              <div class="error-detail" title="{{ item.errors|join('; ') }}">{{ item.errors[0]|truncate(90) }}</div>
+            {% endif %}
+          </td>
+          <td>
+            <div class="action-stack">
+              <div style="display:flex; gap:6px; margin-bottom:4px;">
+                <a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary">Preview</a>
+                <a href="{{ url_for('product_detail', asin=item.asin) }}" class="btn btn-sm btn-secondary">Details</a>
+                <form action="{{ url_for('queue_remove_item', queue_item_id=item.queue_item_id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Remove this item from the publishing queue? (Product data and history will be preserved)');">
+                  <button type="submit" class="btn btn-sm btn-danger" title="Remove from queue">&times; Remove</button>
+                </form>
+              </div>
+              {% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state != 'PUBLISHED' %}
+                <form action="{{ url_for('publish_queue_item', queue_item_id=item.queue_item_id) }}" method="POST" class="live-publish-form">
+                  <label><input type="checkbox" name="confirm_live" value="yes" required> Confirm live</label>
+                  <button type="submit" name="publish_live" value="confirm" class="btn btn-sm btn-danger">Publish live</button>
+                </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+<!-- Batch Details if a specific batch is selected -->
+{% if selected_batch %}
+<section class="card" style="margin-bottom:20px;">
+  <div class="card-title">Batch Details: {{ selected_batch.display_label }}</div>
+  <div class="help-text">Created {{ selected_batch.created_at }} &middot; Batch ID {{ selected_batch.batch_id }}</div>
+  <div class="table-subtext" style="margin-top:10px;">Submitted: {{ selected_batch.submitted_count }} &middot; Accepted: {{ selected_batch.accepted_count }} &middot; Duplicate: {{ selected_batch.duplicate_count }} &middot; Failed/Invalid: {{ selected_batch.failed_count }}</div>
+</section>
+
+{% if batch_entries %}
+<section class="card" style="margin-bottom:20px;">
+  <div class="card-title">Import outcomes</div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Submitted URL</th>
+          <th>Outcome</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in batch_entries %}
+        <tr>
+          <td style="word-break:break-all;">{{ entry.url }}</td>
+          <td><span class="badge {% if entry.status == 'ACCEPTED' %}badge-success{% elif entry.status == 'DUPLICATE' %}badge-warning{% else %}badge-danger{% endif %}">{{ entry.status }}</span></td>
+          <td>{{ entry.reason or ('Accepted into the publishing queue.' if entry.status == 'ACCEPTED' else '') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endif %}
+
+<!-- Pagination Bar -->
+{% if pagination %}
+<style>
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .pagination-bar .pagination-summary { white-space: nowrap; }
+  .pagination-nav { display: flex; align-items: center; gap: 4px; }
+  .pagination-nav .page-link,
+  .pagination-nav .page-ellipsis {
+    border: 1px solid var(--border-color, #3a3f4a);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    padding: 4px 9px;
+    text-decoration: none;
+  }
+  .pagination-nav .page-link:hover { color: #fff; background: var(--bg-card); }
+  .pagination-nav .page-link.active {
+    background: var(--bg-card);
+    color: #fff;
+    font-weight: 600;
+  }
+  .pagination-nav .page-ellipsis { border-color: transparent; }
+</style>
+<div class="pagination-bar">
+  <div class="pagination-summary">
+    Showing {{ pagination.start_index }}–{{ pagination.end_index }} of {{ pagination.total }} queued item{{ '' if pagination.total == 1 else 's' }}
+    &middot; Page {{ pagination.page }} of {{ pagination.total_pages }}
+  </div>
+  <nav class="pagination-nav" aria-label="Queue pagination">
+    {% if pagination.has_prev %}
+      <a class="page-link" href="{{ url_for('queue', batch_id=selected_batch_id, status=current_filter, per_page=pagination.per_page, page=pagination.page - 1) }}">Previous</a>
+    {% endif %}
+    {% for p in pagination.pages %}
+      {% if p == '…' %}
+        <span class="page-ellipsis">…</span>
+      {% elif p == pagination.page %}
+        <span class="page-link active" aria-current="page">{{ p }}</span>
+      {% else %}
+        <a class="page-link" href="{{ url_for('queue', batch_id=selected_batch_id, status=current_filter, per_page=pagination.per_page, page=p) }}">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if pagination.has_next %}
+      <a class="page-link" href="{{ url_for('queue', batch_id=selected_batch_id, status=current_filter, per_page=pagination.per_page, page=pagination.page + 1) }}">Next</a>
+    {% endif %}
+  </nav>
+</div>
+{% endif %}
+
+<!-- Primary Queue Table -->
+<div class="table-responsive">
+  <table class="queue-table">
+    <thead>
+      <tr>
+        <th style="width: 70px;">Order</th>
+        <th>Scheduled slot</th>
+        <th>Product</th>
+        <th>State</th>
+        <th>Platform results</th>
+        <th>Evidence</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if items %}
+        {% for item in items %}
+        <tr>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <form action="{{ url_for('queue_move_item', queue_item_id=item.queue_item_id) }}" method="POST" style="margin:0;">
+                <input type="hidden" name="direction" value="up">
+                <button type="submit" class="btn btn-sm btn-secondary" style="padding: 2px 6px; font-size: 0.75rem;" title="Move up in queue">&uarr;</button>
+              </form>
+              <form action="{{ url_for('queue_move_item', queue_item_id=item.queue_item_id) }}" method="POST" style="margin:0;">
+                <input type="hidden" name="direction" value="down">
+                <button type="submit" class="btn btn-sm btn-secondary" style="padding: 2px 6px; font-size: 0.75rem;" title="Move down in queue">&darr;</button>
+              </form>
+            </div>
+          </td>
+          <td>
+            <strong>{{ item.scheduled_date or '—' }}</strong>
+            <div class="table-subtext">{% if item.daily_slot == 1 %}13:00{% elif item.daily_slot == 2 %}19:00{% else %}Unscheduled{% endif %} Budapest</div>
+          </td>
+          <td>
+            <a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a>
+            <div class="table-subtext">{{ item.asin }}</div>
+          </td>
+          <td>
+            <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Awaiting confirmation' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
+            {% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
+          </td>
+          <td>
+            <div class="platform-result-list">
+              {% for p_key in ('facebook','pinterest','pinterest_lifemodehq','threads') %}
+                {% set p = item.ui_platforms.get(p_key) %}
+                <div class="platform-result">
+                  <span>{{ p.label }}</span>
+                  <span class="state-pill state-{{ p.state|lower|replace('_','-') }}">{{ p.ui_label or ('Not published' if p.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Awaiting confirmation' if p.state == 'UNKNOWN' else p.state|capitalize)) }}</span>
+                  {% if p.post_url %}
+                    <a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>
+                  {% elif p.post_id %}
+                    <span class="table-subtext">ID {{ p.post_id }}</span>
+                  {% endif %}
+                  {% if p.errors %}
+                    <span class="error-detail" title="{{ p.errors|join('; ') }}">Issue</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </td>
+          <td>
+            {% if item.ui_published_at %}
+              <div class="table-subtext">Published {{ item.ui_published_at }}</div>
+            {% elif item.ui_state in ('PUBLISHED','PARTIAL') %}
+              <span class="muted-value">Live confirmation recorded</span>
+            {% elif item.status == 'FAILED' and item.errors %}
+              <div class="error-detail" title="{{ item.errors|join('; ') }}">{{ item.errors[0]|truncate(90) }}</div>
+            {% else %}
+              <span class="muted-value">No live confirmation</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="action-stack">
+              <div style="display:flex; gap:4px; margin-bottom:4px;">
+                <a href="{{ url_for('content_preview', asin=item.asin) }}" class="btn btn-sm btn-secondary">Preview</a>
+                <a href="{{ url_for('product_detail', asin=item.asin) }}" class="btn btn-sm btn-secondary">Details</a>
+                <form action="{{ url_for('queue_remove_item', queue_item_id=item.queue_item_id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Remove this item from the publishing queue? (Product data and history will be preserved)');">
+                  <button type="submit" class="btn btn-sm btn-danger" title="Remove from queue">&times; Remove</button>
+                </form>
+              </div>
+              {% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state != 'PUBLISHED' %}
+                <form action="{{ url_for('publish_queue_item', queue_item_id=item.queue_item_id) }}" method="POST" class="live-publish-form">
+                  <label><input type="checkbox" name="confirm_live" value="yes" required> Confirm live</label>
+                  <button type="submit" name="publish_live" value="confirm" class="btn btn-sm btn-danger">Publish live</button>
+                </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <div class="empty-state-title">No products match the selected filters</div>
+              <div class="empty-state-desc">Try clearing the status filter or choosing "All Batches".</div>
+            </div>
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
