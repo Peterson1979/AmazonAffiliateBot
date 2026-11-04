@@ -12,8 +12,8 @@ class TestLiveDashboardAction(TestCase):
         item = QueueItem(
             "item-live-test",
             "https://www.amazon.com/dp/B0GKGBWRTR",
-            asin="B0GKGBWRTR",
-            package_reference="data/generated/asin_B0GKGBWRTR_content_package.json",
+            asin="B09X5BQ969",
+            package_reference="data/generated/asin_B09X5BQ969_content_package.json",
             status="READY",
             validation_status="READY_FOR_REVIEW",
             publishing_results=prior_results,

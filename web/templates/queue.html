@@ -110,11 +110,14 @@
                   <button type="submit" class="btn btn-sm btn-danger" title="Remove from queue">&times; Remove</button>
                 </form>
               </div>
-              {% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state != 'PUBLISHED' %}
+              {% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state not in ('PUBLISHED', 'PUBLISHING') %}
                 <form action="{{ url_for('publish_queue_item', queue_item_id=item.queue_item_id) }}" method="POST" class="live-publish-form">
+                  <input type="hidden" name="publish_live" value="confirm">
                   <label><input type="checkbox" name="confirm_live" value="yes" required> Confirm live</label>
                   <button type="submit" name="publish_live" value="confirm" class="btn btn-sm btn-danger">Publish live</button>
                 </form>
+              {% elif item.ui_state == 'PUBLISHING' %}
+                <span class="muted-value">Publishing...</span>
               {% endif %}
             </div>
           </td>
@@ -279,11 +282,18 @@
             </div>
           </td>
           <td>
-            {% if item.ui_published_at %}
+            {% if item.ui_state == 'PARTIAL' %}
+              {% if item.ui_published_at %}
+                <div class="table-subtext">Published {{ item.ui_published_at }}</div>
+              {% endif %}
+              <div class="error-detail" title="{{ item.errors|join('; ') }}">Partial failure: {{ (item.errors[0] if item.errors else 'Some platforms failed')|truncate(90) }}</div>
+            {% elif item.ui_state == 'PUBLISHING' %}
+              <span class="badge badge-warning">Publishing in progress...</span>
+            {% elif item.ui_published_at %}
               <div class="table-subtext">Published {{ item.ui_published_at }}</div>
-            {% elif item.ui_state in ('PUBLISHED','PARTIAL') %}
+            {% elif item.ui_state == 'PUBLISHED' %}
               <span class="muted-value">Live confirmation recorded</span>
-            {% elif item.status == 'FAILED' and item.errors %}
+            {% elif (item.status == 'FAILED' or item.ui_state == 'FAILED') and item.errors %}
               <div class="error-detail" title="{{ item.errors|join('; ') }}">{{ item.errors[0]|truncate(90) }}</div>
             {% else %}
               <span class="muted-value">No live confirmation</span>
@@ -298,11 +308,14 @@
                   <button type="submit" class="btn btn-sm btn-danger" title="Remove from queue">&times; Remove</button>
                 </form>
               </div>
-              {% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state != 'PUBLISHED' %}
+              {% if item.validation_status == 'READY_FOR_REVIEW' and item.ui_state not in ('PUBLISHED', 'PUBLISHING') %}
                 <form action="{{ url_for('publish_queue_item', queue_item_id=item.queue_item_id) }}" method="POST" class="live-publish-form">
+                  <input type="hidden" name="publish_live" value="confirm">
                   <label><input type="checkbox" name="confirm_live" value="yes" required> Confirm live</label>
                   <button type="submit" name="publish_live" value="confirm" class="btn btn-sm btn-danger">Publish live</button>
                 </form>
+              {% elif item.ui_state == 'PUBLISHING' %}
+                <span class="muted-value">Publishing...</span>
               {% endif %}
             </div>
           </td>
@@ -321,4 +334,19 @@
     </tbody>
   </table>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".live-publish-form").forEach(function(form) {
+    form.addEventListener("submit", function() {
+      var btn = form.querySelector("button[type='submit']");
+      if (btn) {
+        setTimeout(function() {
+          btn.disabled = true;
+          btn.innerText = "Publishing...";
+        }, 10);
+      }
+    });
+  });
+});
+</script>
 {% endblock %}

@@ -4,10 +4,13 @@ Target account: LifeModeHQ
 Publishes posts to Facebook Page feed via Meta Graph API v19.0.
 """
 
-from typing import Dict, Any, List, Tuple
+from pathlib import Path
+from typing import Dict, Any, List, Optional, Tuple
 import logging
 import requests
 from .base import BasePlatformAdapter, STATUS_PUBLISHED, STATUS_FAILED
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 LOGGER = logging.getLogger(__name__)
 
@@ -76,8 +79,28 @@ class FacebookAdapter(BasePlatformAdapter):
             }
 
         image_url = str(content.get("image_url") or account_config.get("image_url", "")).strip()
+        image_path = content.get("image_path")
 
-        if not image_url and account_config.get("require_image", False):
+        local_file: Optional[Path] = None
+        if image_path:
+            p = Path(image_path)
+            if p.is_file():
+                local_file = p
+            elif (PROJECT_ROOT / image_path).is_file():
+                local_file = PROJECT_ROOT / image_path
+        if not local_file and image_url and not (image_url.startswith("http://") or image_url.startswith("https://")):
+            clean_rel = image_url.lstrip("/\\")
+            if clean_rel.startswith("creatives/"):
+                cand = PROJECT_ROOT / "data" / clean_rel
+                if cand.is_file():
+                    local_file = cand
+            if not local_file:
+                cand = PROJECT_ROOT / clean_rel
+                if cand.is_file():
+                    local_file = cand
+
+        has_image = bool(local_file or image_url)
+        if not has_image and account_config.get("require_image", False):
             return {
                 "platform": self.platform_name,
                 "account": account_name,
@@ -85,17 +108,35 @@ class FacebookAdapter(BasePlatformAdapter):
                 "action": "PUBLISH",
                 "mode": "LIVE",
                 "status": STATUS_FAILED,
-                "errors": ["Missing required image_url for Facebook photo post creation."],
-                "message": f"Cannot publish photo to Facebook Page '{account_name}': missing image_url."
+                "errors": ["Missing required image for Facebook photo post creation."],
+                "message": f"Cannot publish photo to Facebook Page '{account_name}': missing image."
             }
 
-        if image_url:
+        if local_file and local_file.is_file():
+            url = f"https://graph.facebook.com/v19.0/{page_id}/photos"
+            payload = {
+                "caption": text,
+                "published": True,
+                "access_token": access_token
+            }
+        elif image_url and (image_url.startswith("https://") or image_url.startswith("http://")):
             url = f"https://graph.facebook.com/v19.0/{page_id}/photos"
             payload = {
                 "url": image_url,
                 "caption": text,
                 "published": True,
                 "access_token": access_token
+            }
+        elif image_url and not (image_url.startswith("https://") or image_url.startswith("http://")):
+            return {
+                "platform": self.platform_name,
+                "account": account_name,
+                "page_id": page_id,
+                "action": "PUBLISH",
+                "mode": "LIVE",
+                "status": STATUS_FAILED,
+                "errors": [f"Facebook photo upload failed: local creative file not found on disk for '{image_url}'."],
+                "message": f"Cannot publish photo to Facebook Page '{account_name}': local image file not found on disk."
             }
         else:
             url = f"https://graph.facebook.com/v19.0/{page_id}/feed"
@@ -105,7 +146,11 @@ class FacebookAdapter(BasePlatformAdapter):
             }
 
         try:
-            resp = requests.post(url, data=payload, timeout=30)
+            if local_file and local_file.is_file():
+                with open(local_file, "rb") as f_img:
+                    resp = requests.post(url, data=payload, files={"source": f_img}, timeout=60)
+            else:
+                resp = requests.post(url, data=payload, timeout=30)
             if 200 <= resp.status_code < 300:
                 resp_data = resp.json()
                 if not isinstance(resp_data, dict):
@@ -127,8 +172,9 @@ class FacebookAdapter(BasePlatformAdapter):
                         "message": "Facebook Graph API returned an error response."
                     }
 
-                photo_id = resp_data.get("id") if image_url else ""
-                post_id = resp_data.get("post_id") or (resp_data.get("id") if not image_url else "")
+                is_photo_req = bool(local_file or image_url)
+                photo_id = resp_data.get("id") if is_photo_req else ""
+                post_id = resp_data.get("post_id") or (resp_data.get("id") if not is_photo_req else "")
 
                 # A photo ID alone is not sufficient confirmation that the
                 # Page post exists. Persist success only with a returned post ID.
@@ -136,7 +182,7 @@ class FacebookAdapter(BasePlatformAdapter):
                     # Authenticated verification read from Graph API when photo is published
                     photo_link = None
                     verified_image = False
-                    if image_url and photo_id:
+                    if is_photo_req and photo_id:
                         try:
                             v_url = f"https://graph.facebook.com/v19.0/{photo_id}?fields=id,link,images,created_time&access_token={access_token}"
                             v_resp = requests.get(v_url, timeout=10)
