@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 import json
 import os
 import re
+import threading
 import urllib.request
 import subprocess
 import uuid
@@ -89,6 +90,7 @@ from publishing.queue import (
     SLOT_2_TIME,
     STATUS_READY,
     STATUS_PUBLISHED,
+    STATUS_PUBLISHING,
     STATUS_FAILED,
     STATUS_QUEUED,
     STATUS_PARTIALLY_PUBLISHED,
@@ -120,6 +122,9 @@ LOGS_DIR = DATA_DIR / "logs"
 DISCOVERY_HISTORY_FILE = DATA_DIR / "discovery" / "discovery_history.json"
 SCHEDULED_WORKFLOW_FILE = PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml"
 ACTIVE_PUBLISHING_PLATFORMS = ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
+
+_LIVE_PUBLISH_LOCK = threading.Lock()
+_ACTIVE_PUBLISHING_ITEM_IDS: Set[str] = set()
 
 DEFAULT_AFFILIATE_DISCLOSURE = "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
 
@@ -467,6 +472,18 @@ def get_queue_item_presentation(
     elif item.status == STATUS_PARTIALLY_PUBLISHED:
         state = "PARTIAL"
         ui_label = "Partial"
+    elif item.status == STATUS_PUBLISHING:
+        with _LIVE_PUBLISH_LOCK:
+            is_active = item.queue_item_id in _ACTIVE_PUBLISHING_ITEM_IDS
+        if is_active:
+            state = "PUBLISHING"
+            ui_label = "Publishing..."
+        elif has_live:
+            state = "PARTIAL"
+            ui_label = "Partial"
+        else:
+            state = "FAILED"
+            ui_label = "Not published" if time_has_passed else "Failed"
     elif is_future:
         state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
         ui_label = f"Scheduled — {format_scheduled_datetime(scheduled_dt)}"
@@ -2115,132 +2132,177 @@ def execute_live_publish_item(
             "requires_confirmation": True,
         }
 
-    if not QUEUE_FILE.exists():
-        return {"success": False, "error": f"Publishing queue not found at {QUEUE_FILE}."}
+    with _LIVE_PUBLISH_LOCK:
+        if queue_item_id in _ACTIVE_PUBLISHING_ITEM_IDS:
+            return {
+                "success": False,
+                "error": f"Queue item '{queue_item_id}' is already being published. Concurrent requests are rejected.",
+            }
 
-    try:
-        queue = PublishingQueue.load(QUEUE_FILE)
-    except Exception as exc:
-        return {"success": False, "error": f"Could not load publishing queue: {exc}"}
+        if not QUEUE_FILE.exists():
+            return {"success": False, "error": f"Publishing queue not found at {QUEUE_FILE}."}
 
-    item = next((candidate for candidate in queue.items if candidate.queue_item_id == queue_item_id), None)
-    if item is None:
-        return {"success": False, "error": f"Queue item '{queue_item_id}' was not found."}
+        try:
+            queue = PublishingQueue.load(QUEUE_FILE)
+        except Exception as exc:
+            return {"success": False, "error": f"Could not load publishing queue: {exc}"}
 
-    presentation = get_queue_item_presentation(queue, item)
-    if presentation["state"] == "PUBLISHED":
-        return {
-            "success": True,
-            "skipped": True,
-            "message": "All active platforms already have confirmed live publication evidence.",
-            "item_id": item.queue_item_id,
-            "status": presentation["state"],
-            "platforms": presentation["platforms"],
-        }
+        item = next((candidate for candidate in queue.items if candidate.queue_item_id == queue_item_id), None)
+        if item is None:
+            return {"success": False, "error": f"Queue item '{queue_item_id}' was not found."}
 
-    package_path = Path(item.package_reference) if item.package_reference else None
-    if package_path and not package_path.exists():
-        package_path = PROJECT_ROOT / item.package_reference
-    if not package_path or not package_path.exists():
-        return {
-            "success": False,
-            "error": f"Content package is unavailable for ASIN {item.asin}; fix the product/content preflight first.",
-            "error_type": "product_preflight",
-        }
+        # Safe recovery if process restarted while item was left in PUBLISHING status
+        if item.status == STATUS_PUBLISHING:
+            prev_results = [v for v in (item.publishing_results or {}).values() if isinstance(v, dict)]
+            if any(_is_confirmed_live_result(v) for v in prev_results):
+                item.status = STATUS_PARTIALLY_PUBLISHED
+            else:
+                item.status = STATUS_FAILED
+                if not item.errors:
+                    item.errors = ["Previous publishing attempt was interrupted by a process restart or crash."]
+            queue.save(QUEUE_FILE)
 
-    try:
-        with package_path.open("r", encoding="utf-8") as handle:
-            package = json.load(handle)
-    except Exception as exc:
-        return {"success": False, "error": f"Could not read content package: {exc}", "error_type": "product_preflight"}
+        presentation = get_queue_item_presentation(queue, item)
+        if presentation["state"] == "PUBLISHED" or item.status == STATUS_PUBLISHED:
+            return {
+                "success": True,
+                "skipped": True,
+                "message": "All active platforms already have confirmed live publication evidence.",
+                "item_id": item.queue_item_id,
+                "status": presentation["state"],
+                "platforms": presentation["platforms"],
+            }
 
-    if package.get("status") != STATUS_READY_FOR_REVIEW:
-        return {
-            "success": False,
-            "error": f"Content package is '{package.get('status')}', not READY_FOR_REVIEW.",
-            "error_type": "product_preflight",
-        }
+        package_path = Path(item.package_reference) if item.package_reference else None
+        if package_path and not package_path.exists():
+            package_path = PROJECT_ROOT / item.package_reference
+        if not package_path or not package_path.exists():
+            return {
+                "success": False,
+                "error": f"Content package is unavailable for ASIN {item.asin}; fix the product/content preflight first.",
+                "error_type": "product_preflight",
+            }
 
-    cfg = config or load_application_config()
-    publisher = SocialPublisher(
-        config=PublishingConfig.from_dict(cfg, dry_run_override=False)
+        try:
+            with package_path.open("r", encoding="utf-8") as handle:
+                package = json.load(handle)
+        except Exception as exc:
+            return {"success": False, "error": f"Could not read content package: {exc}", "error_type": "product_preflight"}
+
+        if package.get("status") != STATUS_READY_FOR_REVIEW:
+            return {
+                "success": False,
+                "error": f"Content package is '{package.get('status')}', not READY_FOR_REVIEW.",
+                "error_type": "product_preflight",
+            }
+
+        # Register in-flight publish and persist PUBLISHING status before any API call
+        _ACTIVE_PUBLISHING_ITEM_IDS.add(queue_item_id)
+        item.status = STATUS_PUBLISHING
+        queue.save(QUEUE_FILE)
+
+    QueuePublisher.log_event(
+        f"Manual live publishing initiated for queue item '{queue_item_id}' (ASIN {item.asin})."
     )
+
     try:
+        cfg = config or load_application_config()
+        publisher = SocialPublisher(
+            config=PublishingConfig.from_dict(cfg, dry_run_override=False)
+        )
         report = publisher.publish_package(
             package,
             dry_run=False,
             prior_results=item.publishing_results,
         )
-    except Exception as exc:
-        return {"success": False, "error": f"Live publisher failed before platform execution: {exc}", "error_type": "publisher"}
+        platform_results = report.get("results", {})
 
-    platform_results = report.get("results", {})
+        def confirmed_live(result: Dict[str, Any]) -> bool:
+            return _is_confirmed_live_result(result)
 
-    def confirmed_live(result: Dict[str, Any]) -> bool:
-        return (
-            result.get("status") == "PUBLISHED"
-            and result.get("mode") == "LIVE"
-            and bool(
-                result.get("post_id")
-                or result.get("pin_id")
-                or result.get("photo_id")
-                or result.get("permalink")
-                or result.get("permalink_url")
-                or result.get("pin_url")
+        # Preserve confirmed successes even if a retry report omits that target or
+        # returns a contradictory failure.
+        for key, previous in (item.publishing_results or {}).items():
+            if confirmed_live(previous):
+                current = platform_results.get(key)
+                if not isinstance(current, dict) or not confirmed_live(current):
+                    preserved = dict(previous)
+                    preserved["action"] = "SKIP_DUPLICATE"
+                    platform_results[key] = preserved
+
+        active_results = {
+            key: value for key, value in platform_results.items()
+            if key in ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
+            and isinstance(value, dict)
+        }
+        now_dt = datetime.now(get_budapest_timezone()).isoformat()
+        for result in active_results.values():
+            if confirmed_live(result):
+                result.setdefault("published_at", now_dt)
+
+        confirmed_count = sum(1 for result in active_results.values() if confirmed_live(result))
+        failed_count = sum(1 for result in active_results.values() if result.get("status") == "FAILED")
+        if active_results and confirmed_count == len(active_results):
+            item.status = STATUS_PUBLISHED
+        elif confirmed_count > 0:
+            item.status = STATUS_PARTIALLY_PUBLISHED
+        else:
+            item.status = STATUS_FAILED
+
+        errors = []
+        for result in active_results.values():
+            if not confirmed_live(result):
+                errors.extend(result.get("errors") or [])
+        item.errors = list(dict.fromkeys(errors))
+        if confirmed_count:
+            item.published_at = now_dt
+        item.publishing_results = platform_results
+
+        for p_name, p_res in active_results.items():
+            p_status = p_res.get("status")
+            p_id = p_res.get("post_id") or p_res.get("pin_id") or p_res.get("photo_id") or "none"
+            QueuePublisher.log_event(
+                f"Manual live publish [{queue_item_id}][{p_name}]: {p_status} (id: {p_id})"
             )
+        QueuePublisher.log_event(
+            f"Manual live publishing completed for '{queue_item_id}': status={item.status}, "
+            f"confirmed={confirmed_count}, failed={failed_count}"
         )
 
-    # Preserve confirmed successes even if a retry report omits that target or
-    # returns a contradictory failure.  The existing publisher normally emits
-    # SKIP_DUPLICATE itself; this defensive merge keeps persistence idempotent.
-    for key, previous in (item.publishing_results or {}).items():
-        if confirmed_live(previous):
-            current = platform_results.get(key)
-            if not isinstance(current, dict) or not confirmed_live(current):
-                preserved = dict(previous)
-                preserved["action"] = "SKIP_DUPLICATE"
-                platform_results[key] = preserved
-
-    active_results = {
-        key: value for key, value in platform_results.items()
-        if key in ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
-        and isinstance(value, dict)
-    }
-    now_dt = datetime.now(get_budapest_timezone()).isoformat()
-    for result in active_results.values():
-        if confirmed_live(result):
-            result.setdefault("published_at", now_dt)
-
-    confirmed_count = sum(1 for result in active_results.values() if confirmed_live(result))
-    failed_count = sum(1 for result in active_results.values() if result.get("status") == "FAILED")
-    if active_results and confirmed_count == len(active_results):
-        item.status = STATUS_PUBLISHED
-    elif confirmed_count > 0:
-        item.status = STATUS_PARTIALLY_PUBLISHED
-    else:
-        item.status = STATUS_FAILED
-
-    errors = []
-    for result in active_results.values():
-        if not confirmed_live(result):
-            errors.extend(result.get("errors") or [])
-    item.errors = list(dict.fromkeys(errors))
-    if confirmed_count:
-        item.published_at = now_dt
-    item.publishing_results = platform_results
-    queue.recalculate_counts()
-    queue.save(QUEUE_FILE)
-
-    return {
-        "success": True,
-        "item_id": item.queue_item_id,
-        "asin": item.asin,
-        "mode": "LIVE",
-        "status": item.status,
-        "confirmed_platforms": confirmed_count,
-        "failed_platforms": failed_count,
-        "platforms": get_queue_item_presentation(queue, item)["platforms"],
-    }
+        return {
+            "success": True,
+            "item_id": item.queue_item_id,
+            "asin": item.asin,
+            "mode": "LIVE",
+            "status": item.status,
+            "confirmed_platforms": confirmed_count,
+            "failed_platforms": failed_count,
+            "platforms": get_queue_item_presentation(queue, item)["platforms"],
+        }
+    except Exception as exc:
+        QueuePublisher.log_event(
+            f"Manual live publishing failed for queue item '{queue_item_id}': {exc}",
+            level="ERROR",
+        )
+        prev_confirmed = sum(1 for v in (item.publishing_results or {}).values() if _is_confirmed_live_result(v))
+        if prev_confirmed > 0:
+            item.status = STATUS_PARTIALLY_PUBLISHED
+        else:
+            item.status = STATUS_FAILED
+        item.errors = list(dict.fromkeys((item.errors or []) + [f"Publishing execution error: {exc}"]))
+        return {
+            "success": False,
+            "error": f"Live publisher execution failed: {exc}",
+            "error_type": "publisher",
+        }
+    finally:
+        with _LIVE_PUBLISH_LOCK:
+            _ACTIVE_PUBLISHING_ITEM_IDS.discard(queue_item_id)
+            if item.status == STATUS_PUBLISHING:
+                prev_confirmed = sum(1 for v in (item.publishing_results or {}).values() if _is_confirmed_live_result(v))
+                item.status = STATUS_PARTIALLY_PUBLISHED if prev_confirmed > 0 else STATUS_FAILED
+            queue.recalculate_counts()
+            queue.save(QUEUE_FILE)
 
 
 def get_log_content(log_type: str = "publisher", max_lines: int = 150) -> List[str]:

@@ -3,10 +3,14 @@ Pinterest platform publishing adapter.
 Supports independently configured Pinterest accounts and boards.
 """
 
+import base64
+from pathlib import Path
 import re
 from typing import Dict, Any, List, Optional, Tuple
 import requests
 from .base import BasePlatformAdapter, STATUS_PUBLISHED, STATUS_FAILED
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class PinterestAdapter(BasePlatformAdapter):
@@ -56,7 +60,8 @@ class PinterestAdapter(BasePlatformAdapter):
 
         title = str(content.get("title", ""))[:100]
         description = str(content.get("description", ""))[:800]
-        image_url = content.get("image_url") or account_config.get("image_url", "")
+        image_url = str(content.get("image_url") or account_config.get("image_url", "")).strip()
+        image_path = content.get("image_path")
         link = content.get("link") or account_config.get("link", "")
 
         if not link:
@@ -64,7 +69,55 @@ class PinterestAdapter(BasePlatformAdapter):
             if url_match:
                 link = url_match.group(0).rstrip(".,)")
 
-        if not image_url:
+        # Resolve local creative image file vs public HTTPS URL
+        local_file: Optional[Path] = None
+        if image_path:
+            p = Path(image_path)
+            if p.is_file():
+                local_file = p
+            elif (PROJECT_ROOT / image_path).is_file():
+                local_file = PROJECT_ROOT / image_path
+        if not local_file and image_url and not (image_url.startswith("http://") or image_url.startswith("https://")):
+            clean_rel = image_url.lstrip("/\\")
+            if clean_rel.startswith("creatives/"):
+                cand = PROJECT_ROOT / "data" / clean_rel
+                if cand.is_file():
+                    local_file = cand
+            if not local_file:
+                cand = PROJECT_ROOT / clean_rel
+                if cand.is_file():
+                    local_file = cand
+
+        media_source: Optional[Dict[str, Any]] = None
+        if local_file and local_file.is_file():
+            try:
+                with open(local_file, "rb") as f:
+                    b64_data = base64.b64encode(f.read()).decode("ascii")
+                suffix = local_file.suffix.lower()
+                content_type = "image/png" if suffix == ".png" else "image/jpeg"
+                media_source = {
+                    "source_type": "image_base64",
+                    "content_type": content_type,
+                    "data": b64_data,
+                }
+            except Exception as e:
+                return {
+                    "platform": self.platform_name,
+                    "account": account_name,
+                    "board": board_name,
+                    "board_id": board_id,
+                    "action": "PUBLISH",
+                    "mode": "LIVE",
+                    "status": STATUS_FAILED,
+                    "errors": [f"Failed to read local image file for Pinterest base64 upload: {e}"],
+                    "message": f"Cannot create pin: local image read failed: {e}",
+                }
+        elif image_url and (image_url.startswith("https://") or image_url.startswith("http://")):
+            media_source = {
+                "source_type": "image_url",
+                "url": image_url,
+            }
+        else:
             return {
                 "platform": self.platform_name,
                 "account": account_name,
@@ -73,8 +126,10 @@ class PinterestAdapter(BasePlatformAdapter):
                 "action": "PUBLISH",
                 "mode": "LIVE",
                 "status": STATUS_FAILED,
-                "errors": ["Missing required image_url for Pinterest Pin creation."],
-                "message": f"Cannot create pin on board '{board_name}': missing image_url."
+                "errors": [
+                    f"Pinterest requires a valid public HTTPS image URL or an accessible local image file for base64 upload. Received: '{image_url or image_path}'."
+                ],
+                "message": "Cannot create pin: invalid or missing image source for Pinterest.",
             }
 
         if not board_id:
@@ -99,10 +154,7 @@ class PinterestAdapter(BasePlatformAdapter):
 
         payload: Dict[str, Any] = {
             "board_id": board_id,
-            "media_source": {
-                "source_type": "image_url",
-                "url": image_url
-            },
+            "media_source": media_source,
             "title": title,
             "description": description
         }
@@ -145,6 +197,23 @@ class PinterestAdapter(BasePlatformAdapter):
                     error_detail = err_json.get("message") or resp.text
                 except Exception:
                     pass
+                if resp.status_code == 401:
+                    return {
+                        "platform": self.platform_name,
+                        "account": account_name,
+                        "board": board_name,
+                        "board_id": board_id,
+                        "action": "PUBLISH",
+                        "mode": "LIVE",
+                        "status": STATUS_FAILED,
+                        "http_status": 401,
+                        "api_response": err_json if isinstance(err_json, dict) else None,
+                        "errors": [
+                            f"Pinterest authentication failed (HTTP 401) for account '{account_name}'. "
+                            "The OAuth access token is expired or invalid. Reauthorization is required."
+                        ],
+                        "message": f"Pinterest authentication failed for '{account_name}': token is expired or invalid. Reauthorization required.",
+                    }
                 return {
                     "platform": self.platform_name,
                     "account": account_name,

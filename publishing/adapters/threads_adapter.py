@@ -51,6 +51,21 @@ class ThreadsAdapter(BasePlatformAdapter):
 
         image_url = str(content.get("image_url") or account_config.get("image_url", "")).strip()
 
+        if image_url and not (image_url.startswith("https://") or image_url.startswith("http://")):
+            return {
+                "platform": self.platform_name,
+                "account": account_name,
+                "user_id": user_id,
+                "action": "PUBLISH",
+                "mode": "LIVE",
+                "status": STATUS_FAILED,
+                "errors": [
+                    f"Threads requires a publicly accessible HTTPS image URL. "
+                    f"Local relative path or file '{image_url}' cannot be retrieved by Threads API."
+                ],
+                "message": f"Cannot publish to Threads account '{account_name}': image_url must be a publicly accessible HTTPS URL."
+            }
+
         if not image_url and account_config.get("require_image", False):
             return {
                 "platform": self.platform_name,
