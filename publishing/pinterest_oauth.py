@@ -20,7 +20,15 @@ PINTEREST_TOKEN_URL = "https://api.pinterest.com/v5/oauth/token"
 PINTEREST_API_URL = "https://api.pinterest.com/v5"
 DEFAULT_REDIRECT_URI = "http://localhost:8085/oauth/callback"
 LIFEMODEHQ_TOKEN_ENV = "PINTEREST_LIFEMODEHQ_ACCESS_TOKEN"
+DAILYIDEASFORYOU_TOKEN_ENV = "PINTEREST_ACCESS_TOKEN"
 REQUIRED_SCOPES = (
+    "pins:read",
+    "pins:write",
+    "boards:read",
+    "boards:write",
+    "user_accounts:read",
+)
+DAILYIDEASFORYOU_SCOPES = (
     "pins:read",
     "pins:write",
     "boards:read",
@@ -97,10 +105,16 @@ def _api_get(path: str, access_token: str, params: Optional[Dict[str, Any]] = No
     return response.json()
 
 
+def _normalize_name(name: str) -> str:
+    """Normalize board name for case-insensitive and whitespace-invariant comparison."""
+    return " ".join(str(name or "").strip().split()).casefold()
+
+
 def verify_account_and_board(
     access_token: str,
     expected_username: str = "LifeModeHQ",
     board_name: str = "Home & Everyday Living",
+    expected_board_id: Optional[str] = None,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """Verify account identity and resolve the board ID for that account."""
     if not access_token:
@@ -112,18 +126,56 @@ def verify_account_and_board(
             f"Pinterest token belongs to '{actual_username or 'unknown'}', not '{expected_username}'."
         )
 
+    target_norm = _normalize_name(board_name)
+
+    if expected_board_id:
+        try:
+            board = _api_get(f"/boards/{expected_board_id}", access_token)
+            board_owner = ((board.get("owner") or {}).get("username") or "").strip()
+            if board_owner and board_owner.casefold() != expected_username.casefold():
+                raise RuntimeError(
+                    f"Pinterest board '{expected_board_id}' belongs to '{board_owner}', not '{expected_username}'."
+                )
+            if _normalize_name(board.get("name", "")) == target_norm:
+                return account, board
+        except RuntimeError as err:
+            if "belongs to" in str(err):
+                raise
+
     bookmark = None
-    for _ in range(10):
+    matched_by_id = None
+    matched_by_name = None
+
+    for _ in range(50):
         params: Dict[str, Any] = {"page_size": 100}
         if bookmark:
             params["bookmark"] = bookmark
         page = _api_get("/boards", access_token, params)
         for board in page.get("items", []):
-            if board.get("name") == board_name:
-                return account, board
+            board_owner = ((board.get("owner") or {}).get("username") or "").strip()
+            if board_owner and board_owner.casefold() != expected_username.casefold():
+                continue
+
+            board_id_str = str(board.get("id", ""))
+            name_matches = _normalize_name(board.get("name", "")) == target_norm
+
+            if expected_board_id and board_id_str == str(expected_board_id):
+                if name_matches:
+                    return account, board
+                matched_by_id = board
+
+            if name_matches and matched_by_name is None:
+                matched_by_name = board
+
         bookmark = (page.get("bookmark") or "").strip()
         if not bookmark:
             break
+
+    if matched_by_id and _normalize_name(matched_by_id.get("name", "")) == target_norm:
+        return account, matched_by_id
+    if matched_by_name:
+        return account, matched_by_name
+
     raise RuntimeError(f"Pinterest board '{board_name}' was not found for account '{expected_username}'.")
 
 
@@ -155,3 +207,33 @@ def persist_lifemodehq_token_and_board(
     account_cfg = config.setdefault("publishing", {}).setdefault("pinterest_accounts", {}).setdefault("lifemodehq", {})
     account_cfg["board_id"] = str(board_id)
     config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+def persist_dailyideasforyou_token_and_board(
+    access_token: str,
+    board_id: str,
+    env_path: Path = Path(".env"),
+    config_path: Path = Path("config.json"),
+) -> None:
+    """Persist only local ignored secrets and the verified account-specific board ID for dailyideasforyou."""
+    if not access_token or not board_id:
+        raise ValueError("Verified dailyideasforyou access token and board ID are required.")
+
+    lines = env_path.read_text(encoding="utf-8").splitlines() if env_path.exists() else []
+    replacement = f"{DAILYIDEASFORYOU_TOKEN_ENV}={access_token}"
+    found = False
+    updated = []
+    for line in lines:
+        if line.strip().startswith(f"{DAILYIDEASFORYOU_TOKEN_ENV}="):
+            updated.append(replacement)
+            found = True
+        else:
+            updated.append(line)
+    if not found:
+        updated.append(replacement)
+    env_path.write_text("\n".join(updated).rstrip() + "\n", encoding="utf-8")
+
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    account_cfg = config.setdefault("publishing", {}).setdefault("pinterest_accounts", {}).setdefault("dailyideasforyou", {})
+    account_cfg["board_id"] = str(board_id)
+    config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+

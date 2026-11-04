@@ -338,10 +338,13 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
             if result.get("skipped"):
                 flash(result.get("message", "Already published; no action taken."), "info")
             else:
+                parts = [f"Confirmed platforms: {result.get('confirmed_platforms', 0)}"]
+                if result.get("skipped_platforms", 0) > 0:
+                    parts.append(f"previously published / skipped: {result.get('skipped_platforms')}")
+                parts.append(f"failed platforms: {result.get('failed_platforms', 0)}")
                 flash(
                     f"Live publication finished for {result.get('asin')}: {result.get('status')}. "
-                    f"Confirmed platforms: {result.get('confirmed_platforms', 0)}; "
-                    f"failed platforms: {result.get('failed_platforms', 0)}.",
+                    f"{'; '.join(parts)}.",
                     "success" if result.get("status") == STATUS_PUBLISHED else "warning",
                 )
         else:

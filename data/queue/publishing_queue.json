@@ -23,45 +23,96 @@
       "scheduled_at": "2026-11-03T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09X5BQ969_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Pinterest authentication failed (HTTP 401) for account 'dailyideasforyou'. The OAuth access token is expired or invalid. Reauthorization is required."
+      ],
       "created_at": "2026-10-26T13:19:11.352264+00:00",
-      "published_at": null,
+      "published_at": "2026-11-04T11:13:47.472252+01:00",
       "publishing_results": {
-        "facebook": {
-          "platform": "facebook",
-          "account": "LifeModeHQ",
-          "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
-        },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
-          "board": "Shopping ideas"
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 401,
+          "api_response": {
+            "code": 3,
+            "message": "Your token does not have sufficient permissions to perform this operation. Please ensure your token is authorized with the correct set of scopes. Missing: ['boards:write']"
+          },
+          "errors": [
+            "Pinterest authentication failed (HTTP 401) for account 'dailyideasforyou'. The OAuth access token is expired or invalid. Reauthorization is required."
+          ],
+          "message": "Pinterest authentication failed for 'dailyideasforyou': token is expired or invalid. Reauthorization required."
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
           "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018315842",
+          "pin_url": "https://www.pinterest.com/pin/495607134018315842/",
+          "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+          "link": "https://link.amazon/B0g3KMMBy",
+          "image_url": "/creatives/B09X5BQ969/gift_inspiration_flow.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
-          "board": "Home & Everyday Living"
-        },
-        "threads": {
-          "platform": "threads",
-          "account": "lifemodehq",
-          "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                }
+              }
+            },
+            "is_product": false,
+            "alt_text": null,
+            "has_been_promoted": false,
+            "description": "Bellavita Luxury Honey Oud Eau de Parfum comes in a 3.4 fl oz (100 ml) spray bottle. https://link.amazon/B0g3KMMBy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "link": "https://link.amazon/B0g3KMMBy",
+            "board_id": "495607202683261042",
+            "is_removable": false,
+            "created_at": "2026-11-04T10:13:47",
+            "is_standard": true,
+            "id": "495607134018315842",
+            "board_section_id": null,
+            "is_owner": true,
+            "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+            "creative_type": "REGULAR",
+            "product_tags": [],
+            "dominant_color": null,
+            "parent_pin_id": null,
+            "pin_metrics": null
+          },
+          "message": "Successfully created pin 495607134018315842 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-04T11:13:47.472252+01:00"
         }
       },
       "batch_id": "batch_20261026T141635592098_27945101"

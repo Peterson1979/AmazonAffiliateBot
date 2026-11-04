@@ -337,7 +337,10 @@ def get_platform_publication_result(
         result_status = result.get("status")
         mode = result.get("mode")
         if _is_confirmed_live_result(result):
-            state = "PUBLISHED"
+            if result.get("action") == "SKIP_DUPLICATE":
+                state = "SKIPPED"
+            else:
+                state = "PUBLISHED"
         elif result_status == "FAILED" and (time_has_passed or not is_future):
             state = "FAILED"
         elif is_future:
@@ -363,16 +366,17 @@ def get_platform_publication_result(
     historical_report = get_historical_destination_report(item.asin, platform)
     if historical_report.get("reported_outcome") and state != "PUBLISHED":
         state = "UNKNOWN"
-    live_confirmed = state == "PUBLISHED"
+    live_confirmed = state in ("PUBLISHED", "SKIPPED")
     result = result or {}
 
     ui_label = {
         "PUBLISHED": "Published",
+        "SKIPPED": "Previously published / skipped",
         "FAILED": "Failed",
         "SIMULATED": "Not published",
         "SCHEDULED": "Scheduled",
         "PUBLISHING": "Publishing",
-        "UNKNOWN": "Awaiting confirmation",
+        "UNKNOWN": "Unverified",
     }.get(state, state.replace("_", " ").capitalize())
 
     return {
@@ -452,6 +456,8 @@ def get_queue_item_presentation(
     states = {result["state"] for result in platform_results.values()}
     has_live = any(result["state"] == "PUBLISHED" for result in platform_results.values())
     has_failed = any(result["state"] == "FAILED" for result in platform_results.values())
+    has_skipped = any(result["state"] == "SKIPPED" for result in platform_results.values())
+    has_any_confirmed = has_live or has_skipped
 
     scheduled_dt = parse_product_scheduled_dt(
         scheduled_at=item.scheduled_at,
@@ -463,10 +469,10 @@ def get_queue_item_presentation(
     time_has_passed = scheduled_dt is not None and scheduled_dt <= now_dt
     is_overdue = is_item_overdue_held(item, now_dt)
 
-    if states and all(s == "PUBLISHED" for s in states):
+    if states and all(s in ("PUBLISHED", "SKIPPED") for s in states):
         state = "PUBLISHED"
         ui_label = "Published"
-    elif has_live and (has_failed or not all(s == "PUBLISHED" for s in states)):
+    elif has_any_confirmed and (has_failed or not all(s in ("PUBLISHED", "SKIPPED") for s in states)):
         state = "PARTIAL"
         ui_label = "Partial"
     elif item.status == STATUS_PARTIALLY_PUBLISHED:
@@ -2240,11 +2246,22 @@ def execute_live_publish_item(
             if confirmed_live(result):
                 result.setdefault("published_at", now_dt)
 
-        confirmed_count = sum(1 for result in active_results.values() if confirmed_live(result))
-        failed_count = sum(1 for result in active_results.values() if result.get("status") == "FAILED")
-        if active_results and confirmed_count == len(active_results):
+        newly_confirmed_count = sum(
+            1 for result in active_results.values()
+            if confirmed_live(result) and result.get("action") != "SKIP_DUPLICATE"
+        )
+        skipped_count = sum(
+            1 for result in active_results.values()
+            if confirmed_live(result) and result.get("action") == "SKIP_DUPLICATE"
+        )
+        failed_count = sum(
+            1 for result in active_results.values()
+            if result.get("status") == "FAILED"
+        )
+        total_confirmed = newly_confirmed_count + skipped_count
+        if active_results and total_confirmed == len(active_results):
             item.status = STATUS_PUBLISHED
-        elif confirmed_count > 0:
+        elif total_confirmed > 0:
             item.status = STATUS_PARTIALLY_PUBLISHED
         else:
             item.status = STATUS_FAILED
@@ -2254,19 +2271,23 @@ def execute_live_publish_item(
             if not confirmed_live(result):
                 errors.extend(result.get("errors") or [])
         item.errors = list(dict.fromkeys(errors))
-        if confirmed_count:
+        if newly_confirmed_count:
+            item.published_at = now_dt
+        elif skipped_count and not item.published_at:
             item.published_at = now_dt
         item.publishing_results = platform_results
 
         for p_name, p_res in active_results.items():
             p_status = p_res.get("status")
+            if p_res.get("action") == "SKIP_DUPLICATE":
+                p_status = "SKIPPED_DUPLICATE"
             p_id = p_res.get("post_id") or p_res.get("pin_id") or p_res.get("photo_id") or "none"
             QueuePublisher.log_event(
                 f"Manual live publish [{queue_item_id}][{p_name}]: {p_status} (id: {p_id})"
             )
         QueuePublisher.log_event(
             f"Manual live publishing completed for '{queue_item_id}': status={item.status}, "
-            f"confirmed={confirmed_count}, failed={failed_count}"
+            f"newly_confirmed={newly_confirmed_count}, skipped={skipped_count}, failed={failed_count}"
         )
 
         return {
@@ -2275,7 +2296,8 @@ def execute_live_publish_item(
             "asin": item.asin,
             "mode": "LIVE",
             "status": item.status,
-            "confirmed_platforms": confirmed_count,
+            "confirmed_platforms": newly_confirmed_count,
+            "skipped_platforms": skipped_count,
             "failed_platforms": failed_count,
             "platforms": get_queue_item_presentation(queue, item)["platforms"],
         }

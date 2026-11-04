@@ -95,7 +95,7 @@
             <div class="table-subtext">{{ item.asin }}</div>
           </td>
           <td>
-            <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Awaiting confirmation' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
+            <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
             {% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
             {% if item.errors %}
               <div class="error-detail" title="{{ item.errors|join('; ') }}">{{ item.errors[0]|truncate(90) }}</div>
@@ -259,7 +259,7 @@
             <div class="table-subtext">{{ item.asin }}</div>
           </td>
           <td>
-            <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Awaiting confirmation' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
+            <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
             {% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
           </td>
           <td>
@@ -268,7 +268,7 @@
                 {% set p = item.ui_platforms.get(p_key) %}
                 <div class="platform-result">
                   <span>{{ p.label }}</span>
-                  <span class="state-pill state-{{ p.state|lower|replace('_','-') }}">{{ p.ui_label or ('Not published' if p.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Awaiting confirmation' if p.state == 'UNKNOWN' else p.state|capitalize)) }}</span>
+                  <span class="state-pill state-{{ p.state|lower|replace('_','-') }}">{{ p.ui_label or ('Not published' if p.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if p.state == 'UNKNOWN' else p.state|capitalize)) }}</span>
                   {% if p.post_url %}
                     <a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>
                   {% elif p.post_id %}
