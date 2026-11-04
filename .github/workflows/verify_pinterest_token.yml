@@ -1,0 +1,68 @@
+name: Verify Pinterest Access Token
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify Pinterest Secret
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify token and username against Pinterest API
+        env:
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+        run: |
+          python3 - << 'EOF'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+
+          token = os.environ.get("PINTEREST_ACCESS_TOKEN", "").strip()
+          if not token:
+              print("HTTP Status: <none>")
+              print("Returned Username: <none>")
+              print("RESULT: FAIL (PINTEREST_ACCESS_TOKEN secret is empty or not configured)")
+              sys.exit(1)
+
+          req = urllib.request.Request(
+              "https://api.pinterest.com/v5/user_account",
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "User-Agent": "PinterestTokenVerifier/1.0",
+              },
+              method="GET",
+          )
+
+          status_code = "<none>"
+          username = "<none>"
+
+          try:
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  status_code = resp.status
+                  body = resp.read().decode("utf-8")
+                  data = json.loads(body)
+                  username = data.get("username", "<none>")
+          except urllib.error.HTTPError as err:
+              status_code = err.code
+          except Exception as err:
+              print("HTTP Status: <none>")
+              print("Returned Username: <none>")
+              print(f"RESULT: FAIL ({type(err).__name__})")
+              sys.exit(1)
+
+          print(f"HTTP Status: {status_code}")
+          print(f"Returned Username: {username}")
+
+          if status_code == 200 and username == "everydayideaslife":
+              print("RESULT: PASS")
+              sys.exit(0)
+          else:
+              print("RESULT: FAIL")
+              sys.exit(1)
+          EOF
+
