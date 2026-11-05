@@ -1,0 +1,91 @@
+{
+  "asin": "B08BRJHJF9",
+  "title": "USANOOKS Microfiber Cleaning Cloth Grey - 12 Packs 12.6\"x12.6\" - High Performance - 1200 Washes, Ultra Absorbent Towels Weave Grime & Liquid for Streak-Free Mirror Shine - Car Washing Cloth",
+  "category": "home_and_kitchen",
+  "affiliate_url": "https://link.amazon/B0bPi8P7o",
+  "original_image_url": "https://m.media-amazon.com/images/I/A1U4ZA-OJmS._AC_SL1500_.jpg",
+  "created_at": "2026-11-02T10:34:19.098215+00:00",
+  "total_variations": 4,
+  "variations": [
+    {
+      "variation_id": "var_1_practical_solution",
+      "angle": "Practical Solution",
+      "theme_name": "Warm Minimalist",
+      "headline": "Soft & Absorbent USANOOKS Microfiber Cleaning Cloth Grey",
+      "subheadline": "High-absorbency fabric with reinforced edges built for everyday kitchen tasks.",
+      "benefits": [
+        "Each towel features a 2.5mm thick design",
+        "LASTS 1200+ WASHES - That’s 3.27 YEARS worth"
+      ],
+      "cta_text": "Shop Now",
+      "file_path": "data/creatives/B08BRJHJF9/variation_1_practical_solution.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:34:19.098215+00:00",
+      "layout_template": "hero_showcase"
+    },
+    {
+      "variation_id": "var_2_key_product_benefits",
+      "angle": "Key Product Benefits",
+      "theme_name": "Modern Slate Tech",
+      "headline": "Everyday Kitchen Quality: USANOOKS Microfiber Cleaning Cloth Grey",
+      "subheadline": "Durable, absorbent weave designed to withstand daily use and washing.",
+      "benefits": [
+        "LASTS 1200+ WASHES - That’s 3.27 YEARS worth",
+        "Each towel features a 2.5mm thick design"
+      ],
+      "cta_text": "See Details",
+      "file_path": "data/creatives/B08BRJHJF9/variation_2_key_product_benefits.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:34:19.098215+00:00",
+      "layout_template": "editorial_split"
+    },
+    {
+      "variation_id": "var_3_thoughtful_design",
+      "angle": "Thoughtful Design",
+      "theme_name": "Editorial Classic",
+      "headline": "Crafted for Daily Chores: USANOOKS Microfiber Cleaning Cloth Grey",
+      "subheadline": "Quality stitching and quick-drying fabric made for busy homes.",
+      "benefits": [
+        "LASTS 1200+ WASHES - That’s 3.27 YEARS worth",
+        "Each towel features a 2.5mm thick design"
+      ],
+      "cta_text": "Discover More",
+      "file_path": "data/creatives/B08BRJHJF9/variation_3_thoughtful_design.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:34:19.098215+00:00",
+      "layout_template": "feature_focus"
+    },
+    {
+      "variation_id": "var_4_gift_inspiration",
+      "angle": "Gift Inspiration",
+      "theme_name": "Fresh Botanical",
+      "headline": "A Practical Gift for Any Kitchen",
+      "subheadline": "A useful, attractive kitchen essential anyone will appreciate.",
+      "benefits": [
+        "Each towel features a 2.5mm thick design",
+        "LASTS 1200+ WASHES - That’s 3.27 YEARS worth"
+      ],
+      "cta_text": "Explore Gift Idea",
+      "file_path": "data/creatives/B08BRJHJF9/variation_4_gift_inspiration.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:34:19.098215+00:00",
+      "layout_template": "minimalist_frame"
+    }
+  ]
+}

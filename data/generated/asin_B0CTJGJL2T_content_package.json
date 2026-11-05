@@ -1,0 +1,143 @@
+{
+  "asin": "B0CTJGJL2T",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-11-05T18:27:52.686490+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0CTJGJL2T.json",
+    "affiliate_url": "https://link.amazon/B02XWjJte"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The GODONLIF Candle Warmer Lamp with Timer features a fully dimmable light and a 12‑hour timing function, and its pole can be adjusted for height.\n\nIt is crafted with premium materials and includes an adjustable pole.\n\nLink: https://link.amazon/B02XWjJte\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/810vcJJDrkL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4"
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "GODONLIF Candle Warmer Lamp with Timer",
+      "description": "The GODONLIF Candle Warmer Lamp includes a timer function and fully dimmable lighting. It features a height‑adjustable pole to accommodate various jar candle sizes. https://link.amazon/B02XWjJte\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/810vcJJDrkL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B02XWjJte",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4"
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "GODONLIF Candle Warmer Lamp with Timer features a height‑adjustable pole to fit various jar candles, a fully dimmable light, and a 12‑hour timer.\n\nLink: https://link.amazon/B02XWjJte\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/810vcJJDrkL._AC_SL1500_.jpg",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4"
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6140",
+        "x-ratelimit-reset-tokens": "13.95s"
+      },
+      "id": "chatcmpl-5bcc8fe7-b99a-4dc5-a756-dfffdffe2c77",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.048224431,
+        "prompt_tokens": 1519,
+        "prompt_time": 0.063914075,
+        "completion_tokens": 164,
+        "completion_time": 0.340739558,
+        "total_tokens": 1683,
+        "total_time": 0.404653633
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4530",
+        "x-ratelimit-reset-tokens": "26.025s"
+      },
+      "id": "chatcmpl-028bf1dc-e176-471e-9d77-69f29d8409ec",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.089056604,
+        "prompt_tokens": 1596,
+        "prompt_time": 0.069349184,
+        "completion_tokens": 172,
+        "completion_time": 0.363145863,
+        "total_tokens": 1768,
+        "total_time": 0.432495047
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3026",
+        "x-ratelimit-reset-tokens": "37.305s"
+      },
+      "id": "chatcmpl-128f8888-7fff-4388-9b18-03b9daa44af5",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.210731577,
+        "prompt_tokens": 1514,
+        "prompt_time": 0.071182283,
+        "completion_tokens": 142,
+        "completion_time": 0.297833799,
+        "total_tokens": 1656,
+        "total_time": 0.369016082
+      }
+    }
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+    "asin": "B0CTJGJL2T",
+    "uploaded_at": "2026-11-05T18:27:53.608876+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+    "content_type": "video/mp4",
+    "filename": "GODONLIF Candle Warmer Lamp.mp4",
+    "size_bytes": 2307614
+  }
+}

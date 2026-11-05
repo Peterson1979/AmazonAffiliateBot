@@ -1,0 +1,95 @@
+{
+  "asin": "B09X5BQ969",
+  "title": "Bellavita Luxury Honey Oud Eau de Parfum Perfume Unisex, 3.4 fl oz (100 ml)",
+  "category": "perfumes_and_fragrances",
+  "affiliate_url": "https://link.amazon/B0g3KMMBy",
+  "original_image_url": "https://m.media-amazon.com/images/I/61XgBmBmp3L._AC_SL1500_.jpg",
+  "created_at": "2026-11-02T10:42:53.980469+00:00",
+  "total_variations": 4,
+  "variations": [
+    {
+      "variation_id": "var_1_luxury_fragrance",
+      "angle": "Luxury Fragrance",
+      "theme_name": "Warm Minimalist",
+      "headline": "Warm Honey & Rich Smoky Oud",
+      "subheadline": "A warm, sweet and woody fragrance with an alluring, elegant character.",
+      "benefits": [
+        "Unisex Eau de Parfum",
+        "Sweet, woody and gourmand dry-down",
+        "Golden honey and bergamot open"
+      ],
+      "cta_text": "Discover the Scent",
+      "file_path": "data/creatives/B09X5BQ969/variation_1_luxury_fragrance.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:42:53.980469+00:00",
+      "layout_template": "hero_showcase"
+    },
+    {
+      "variation_id": "var_2_fragrance_notes",
+      "angle": "Fragrance Notes",
+      "theme_name": "Modern Slate Tech",
+      "headline": "Where Golden Honey Meets Smoky Oud",
+      "subheadline": "A warm, sweet and woody fragrance with a rich, elegant character.",
+      "benefits": [
+        "Top: Sparkling bergamot and golden honey",
+        "Heart: Soft rose, earthy patchouli and smoky oud",
+        "Base: Warm amber, creamy vanilla and smooth musk"
+      ],
+      "cta_text": "Explore Notes",
+      "file_path": "data/creatives/B09X5BQ969/variation_2_fragrance_notes.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:42:53.980469+00:00",
+      "layout_template": "editorial_split"
+    },
+    {
+      "variation_id": "var_3_gift_inspiration",
+      "angle": "Gift Inspiration",
+      "theme_name": "Editorial Classic",
+      "headline": "A Memorable Fragrance for Someone Special",
+      "subheadline": "A cozy holiday present made for winter evenings and festive dinners.",
+      "benefits": [
+        "A cozy holiday present",
+        "Made for winter evenings & date nights",
+        "Loved by women and men"
+      ],
+      "cta_text": "Explore Gift Idea",
+      "file_path": "data/creatives/B09X5BQ969/variation_3_gift_inspiration.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:42:53.980469+00:00",
+      "layout_template": "feature_focus"
+    },
+    {
+      "variation_id": "var_4_everyday_elegance",
+      "angle": "Everyday Elegance",
+      "theme_name": "Fresh Botanical",
+      "headline": "Your Signature Cold-Weather Scent",
+      "subheadline": "One to two sprays on pulse points for an all-day captivating scent trail.",
+      "benefits": [
+        "Apply to pulse points (wrists, neck)",
+        "One to two sprays are enough",
+        "3.4 fl oz spray bottle"
+      ],
+      "cta_text": "See Details",
+      "file_path": "data/creatives/B09X5BQ969/variation_4_everyday_elegance.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:42:53.980469+00:00",
+      "layout_template": "minimalist_frame"
+    }
+  ]
+}

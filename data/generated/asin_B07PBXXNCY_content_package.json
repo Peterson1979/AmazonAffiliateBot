@@ -28,6 +28,12 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
+      },
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B07PBXXNCY/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B07PBXXNCY/everyday_pick_flow.jpg"
       }
     },
     "threads": {

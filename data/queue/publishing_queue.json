@@ -6,11 +6,11 @@
   "products_per_day": 2,
   "target_capacity": 60,
   "total_submitted": 16,
-  "total_processed": 6,
-  "total_ready": 6,
+  "total_processed": 7,
+  "total_ready": 4,
   "total_failed": 0,
-  "scheduled_posts": 6,
-  "unfilled_slots": 54,
+  "scheduled_posts": 4,
+  "unfilled_slots": 56,
   "slot_claims": {},
   "items": [
     {
@@ -23,31 +23,76 @@
       "scheduled_at": "2026-11-03T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09X5BQ969_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Pinterest authentication failed (HTTP 401) for account 'dailyideasforyou'. The OAuth access token is expired or invalid. Reauthorization is required."
-      ],
+      "errors": [],
       "created_at": "2026-10-26T13:19:11.352264+00:00",
-      "published_at": "2026-11-04T11:13:47.472252+01:00",
+      "published_at": "2026-11-04T12:22:38.297557+01:00",
       "publishing_results": {
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
           "board": "Shopping ideas",
           "board_id": "1033646620665866548",
+          "pin_id": "1033646551999585856",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999585856/",
+          "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+          "link": "https://link.amazon/B0g3KMMBy",
+          "image_url": "/creatives/B09X5BQ969/gift_inspiration_flow.jpg",
           "action": "PUBLISH",
           "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 401,
+          "status": "PUBLISHED",
+          "http_status": 201,
           "api_response": {
-            "code": 3,
-            "message": "Your token does not have sufficient permissions to perform this operation. Please ensure your token is authorized with the correct set of scopes. Missing: ['boards:write']"
+            "link": "https://link.amazon/B0g3KMMBy",
+            "dominant_color": "#924b18",
+            "id": "1033646551999585856",
+            "description": "Bellavita Luxury Honey Oud Eau de Parfum comes in a 3.4 fl oz (100 ml) spray bottle. https://link.amazon/B0g3KMMBy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_removable": false,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "is_owner": true,
+            "pin_metrics": null,
+            "is_standard": true,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/77/c3/43/77c34356c0dbe8198f465acdca491dfc.jpg"
+                }
+              }
+            },
+            "product_tags": [],
+            "board_id": "1033646620665866548",
+            "has_been_promoted": false,
+            "creative_type": "REGULAR",
+            "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
+            "parent_pin_id": null,
+            "alt_text": null,
+            "created_at": "2026-11-04T11:22:38",
+            "board_section_id": null,
+            "is_product": false
           },
-          "errors": [
-            "Pinterest authentication failed (HTTP 401) for account 'dailyideasforyou'. The OAuth access token is expired or invalid. Reauthorization is required."
-          ],
-          "message": "Pinterest authentication failed for 'dailyideasforyou': token is expired or invalid. Reauthorization required."
+          "message": "Successfully created pin 1033646551999585856 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-04T12:22:38.297557+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
@@ -59,7 +104,7 @@
           "title": "Bellavita Luxury Honey Oud Eau de Parfum 3.4 fl oz",
           "link": "https://link.amazon/B0g3KMMBy",
           "image_url": "/creatives/B09X5BQ969/gift_inspiration_flow.jpg",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -113,6 +158,45 @@
           },
           "message": "Successfully created pin 495607134018315842 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
           "published_at": "2026-11-04T11:13:47.472252+01:00"
+        },
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122330130818197726",
+          "post_id": "226949230493910_122330130866197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122330130818197726&set=a.122110416488197726&type=3",
+          "image_url": "/creatives/B09X5BQ969/gift_inspiration_flow.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122330130818197726",
+            "post_id": "226949230493910_122330130866197726"
+          },
+          "message": "Successfully published photo 122330130818197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-04T12:22:38.297557+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17987162457139258",
+          "post_id": "18185288008420805",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfUY-ZDDohf",
+          "image_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/creatives/B09X5BQ969/gift_inspiration_flow.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18185288008420805"
+          },
+          "message": "Successfully published image post 18185288008420805 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-04T12:51:12.038720+01:00"
         }
       },
       "batch_id": "batch_20261026T141635592098_27945101"
@@ -145,45 +229,180 @@
       "scheduled_at": "2026-11-04T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B07H9PZDQW_content_package.json",
-      "status": "READY",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-26T13:24:21.526414+00:00",
-      "published_at": null,
+      "published_at": "2026-11-04T22:21:40.380724+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122330244008197726",
+          "post_id": "226949230493910_122330244044197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122330244008197726&set=a.122110416488197726&type=3",
+          "image_url": "/creatives/B07H9PZDQW/everyday_pick_flow.jpg",
+          "verified_image_read": true,
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122330244008197726",
+            "post_id": "226949230493910_122330244044197726"
+          },
+          "message": "Successfully published photo 122330244008197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-04T22:21:40.380724+01:00"
         },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999599365",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999599365/",
+          "title": "Gaiam Essentials Thick Yoga Mat with Carrier Strap",
+          "link": "https://link.amazon/B0b08ATBA",
+          "image_url": "/creatives/B07H9PZDQW/everyday_pick_flow.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
-          "board": "Shopping ideas"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_owner": true,
+            "product_tags": [],
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "board_section_id": null,
+            "id": "1033646551999599365",
+            "dominant_color": null,
+            "parent_pin_id": null,
+            "is_standard": true,
+            "alt_text": null,
+            "pin_metrics": null,
+            "has_been_promoted": false,
+            "created_at": "2026-11-04T21:21:21",
+            "link": "https://link.amazon/B0b08ATBA",
+            "title": "Gaiam Essentials Thick Yoga Mat with Carrier Strap",
+            "is_product": false,
+            "board_id": "1033646620665866548",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                }
+              }
+            },
+            "description": "The Gaiam Essentials yoga mat measures 72 inches long, 24 inches wide, and 2/5 inch thick. It includes an Easy‑Cinch carrier strap. https://link.amazon/B0b08ATBA\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_removable": false
+          },
+          "message": "Successfully created pin 1033646551999599365 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-04T22:21:40.380724+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
           "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018319273",
+          "pin_url": "https://www.pinterest.com/pin/495607134018319273/",
+          "title": "Gaiam Essentials Thick Yoga Mat with Carrier Strap",
+          "link": "https://link.amazon/B0b08ATBA",
+          "image_url": "/creatives/B07H9PZDQW/everyday_pick_flow.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
-          "board": "Home & Everyday Living"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "product_tags": [],
+            "is_product": false,
+            "link": "https://link.amazon/B0b08ATBA",
+            "dominant_color": "#c0a58a",
+            "has_been_promoted": false,
+            "is_owner": true,
+            "description": "The Gaiam Essentials yoga mat measures 72 inches long, 24 inches wide, and 2/5 inch thick. It includes an Easy‑Cinch carrier strap. https://link.amazon/B0b08ATBA\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "board_id": "495607202683261042",
+            "creative_type": "REGULAR",
+            "is_removable": false,
+            "parent_pin_id": null,
+            "board_section_id": null,
+            "pin_metrics": null,
+            "id": "495607134018319273",
+            "title": "Gaiam Essentials Thick Yoga Mat with Carrier Strap",
+            "alt_text": null,
+            "is_standard": true,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/4c/b4/7a/4cb47a42b4e90803b0fc30b649101434.jpg"
+                }
+              }
+            },
+            "created_at": "2026-11-04T21:21:24"
+          },
+          "message": "Successfully created pin 495607134018319273 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-04T22:21:40.380724+01:00"
         },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17987220420139258",
+          "post_id": "17952447366302245",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfVaQ5yDuo8",
+          "image_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/creatives/B07H9PZDQW/everyday_pick_flow.jpg",
+          "verified_media_type": "IMAGE",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17952447366302245"
+          },
+          "message": "Successfully published image post 17952447366302245 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-04T22:21:40.380724+01:00"
         }
       },
       "batch_id": "batch_20261026T142353075489_ae63c4db"
@@ -198,12 +417,182 @@
       "scheduled_at": "2026-11-05T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0FL6Q8NFQ_content_package.json",
-      "status": "READY",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-26T13:26:34.983862+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-05T16:00:34.064122+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122330445320197726",
+          "post_id": "226949230493910_122330445356197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122330445320197726&set=a.122110416488197726&type=3",
+          "image_url": "/creatives/B0FL6Q8NFQ/everyday_pick_flow.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122330445320197726",
+            "post_id": "226949230493910_122330445356197726"
+          },
+          "message": "Successfully published photo 122330445320197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-05T16:00:34.064122+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999619018",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999619018/",
+          "title": "Titanium Cutting Board – Double‑Sided 99.9% Pure Titanium & Food‑Grade PP",
+          "link": "https://link.amazon/B05RcKpuU",
+          "image_url": "/creatives/B0FL6Q8NFQ/everyday_pick_flow.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "creative_type": "REGULAR",
+            "board_section_id": null,
+            "board_id": "1033646620665866548",
+            "title": "Titanium Cutting Board – Double‑Sided 99.9% Pure Titanium & Food‑Grade PP",
+            "pin_metrics": null,
+            "is_owner": true,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "dominant_color": null,
+            "id": "1033646551999619018",
+            "is_standard": true,
+            "has_been_promoted": false,
+            "link": "https://link.amazon/B05RcKpuU",
+            "description": "Includes a built‑in juice groove that holds 200 ml and a garlic grinding zone on the PP side. https://link.amazon/B05RcKpuU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_removable": false,
+            "product_tags": [],
+            "alt_text": null,
+            "created_at": "2026-11-05T15:00:10",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                }
+              }
+            },
+            "is_product": false,
+            "parent_pin_id": null
+          },
+          "message": "Successfully created pin 1033646551999619018 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-05T16:00:34.064122+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018323896",
+          "pin_url": "https://www.pinterest.com/pin/495607134018323896/",
+          "title": "Titanium Cutting Board – Double‑Sided 99.9% Pure Titanium & Food‑Grade PP",
+          "link": "https://link.amazon/B05RcKpuU",
+          "image_url": "/creatives/B0FL6Q8NFQ/everyday_pick_flow.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "alt_text": null,
+            "product_tags": [],
+            "board_section_id": null,
+            "board_id": "495607202683261042",
+            "has_been_promoted": false,
+            "dominant_color": "#d4d4d1",
+            "created_at": "2026-11-05T15:00:12",
+            "description": "Includes a built‑in juice groove that holds 200 ml and a garlic grinding zone on the PP side. https://link.amazon/B05RcKpuU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "parent_pin_id": null,
+            "link": "https://link.amazon/B05RcKpuU",
+            "is_standard": true,
+            "title": "Titanium Cutting Board – Double‑Sided 99.9% Pure Titanium & Food‑Grade PP",
+            "pin_metrics": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "is_removable": false,
+            "is_owner": true,
+            "creative_type": "REGULAR",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/94/48/42/9448428ca65f0afc48f756fd84e5f75b.jpg"
+                }
+              }
+            },
+            "is_product": false,
+            "id": "495607134018323896"
+          },
+          "message": "Successfully created pin 495607134018323896 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-05T16:00:34.064122+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17987327925139258",
+          "post_id": "18078941291469053",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfXTb7ejnfZ",
+          "image_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/creatives/B0FL6Q8NFQ/everyday_pick_flow.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18078941291469053"
+          },
+          "message": "Successfully published image post 18078941291469053 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-05T16:00:34.064122+01:00"
+        }
+      },
       "batch_id": "batch_20261026T142627181488_cd39a9d3"
     },
     {
@@ -276,6 +665,26 @@
       "published_at": null,
       "publishing_results": null,
       "batch_id": "batch_20261027T122840231670_da1691ba"
+    },
+    {
+      "queue_item_id": "item_032_B0CTJGJL2T",
+      "original_url": "https://link.amazon/B02XWjJte",
+      "asin": "B0CTJGJL2T",
+      "product_name": "GODONLIF Candle Warmer Lamp with Timer, Birthday Gifts for Women Home Decor",
+      "scheduled_date": "2026-11-06",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-06T21:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0CTJGJL2T_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-05T18:27:53.635802+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261105T192718144830_c4373ea4",
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4"
     }
   ]
 }

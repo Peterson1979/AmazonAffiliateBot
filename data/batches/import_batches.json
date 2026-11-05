@@ -1,0 +1,553 @@
+[
+  {
+    "batch_id": "batch_20261026T141635592098_27945101",
+    "created_at": "2026-10-26T14:16:35.600412+01:00",
+    "submitted_count": 9,
+    "accepted_count": 3,
+    "duplicate_count": 0,
+    "failed_count": 6,
+    "entries": [
+      {
+        "url": "https://link.amazon/B0bPi8P7o",
+        "asin": "B08BRJHJF9",
+        "title": "USANOOKS Microfiber Cleaning Cloth Grey - 12 Packs 12.6\"x12.6\" - High Performance - 1200 Washes, Ultra Absorbent Towels Weave Grime & Liquid for Streak-Free Mirror Shine - Car Washing Cloth",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-28",
+        "daily_slot": 1,
+        "scheduled_at": "2026-10-28T12:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B08BRJHJF9_content_package.json",
+        "queue_item_id": "item_024_B08BRJHJF9"
+      },
+      {
+        "url": "https://link.amazon/B05RcKpuU",
+        "asin": "B0FL6Q8NFQ",
+        "status": "CONTENT_GENERATION_FAILED",
+        "stage": "content_generation",
+        "reason": "pinterest: Unit mismatch: number '10.5' has no unit associated in source facts, but was generated with unit 'in'.; pinterest: Unit mismatch: number '8.5' has no unit associated in source facts, but was generated with unit 'in'.; pinterest: Untraceable concept 'surface' in generated claim cannot be mapped to source facts.; pinterest: Untraceable concept 'surface' in generated claim cannot be mapped to source facts.; threads: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7679, Requested 1820. Please try again in 11.2425s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=8m38.4s; rate_headers={'retry-after': '12', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '994', 'x-ratelimit-reset-requests': '8m38.4s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '321', 'x-ratelimit-reset-tokens': '57.592s'}"
+      },
+      {
+        "url": "https://link.amazon/B02l4c2PN",
+        "asin": "B0DTJX2SX4",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B02l4c2PN' has insufficient title or features."
+      },
+      {
+        "url": "https://link.amazon/B0b08ATBA",
+        "asin": "B07H9PZDQW",
+        "status": "CONTENT_GENERATION_FAILED",
+        "stage": "content_generation",
+        "reason": "threads: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7550, Requested 1805. Please try again in 10.1625s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=15m50.4s; rate_headers={'retry-after': '11', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '989', 'x-ratelimit-reset-requests': '15m50.4s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '450', 'x-ratelimit-reset-tokens': '56.625s'}"
+      },
+      {
+        "url": "https://link.amazon/B03NM8ggp",
+        "asin": "B07PBXXNCY",
+        "status": "CONTENT_GENERATION_FAILED",
+        "stage": "content_generation",
+        "reason": "pinterest: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6089, Requested 1917. Please try again in 45ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=17m16.8s; rate_headers={'retry-after': '1', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '988', 'x-ratelimit-reset-requests': '17m16.8s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '1911', 'x-ratelimit-reset-tokens': '45.667s'}; threads: Not attempted because groq failed at pinterest: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6089, Requested 1917. Please try again in 45ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=17m16.8s; rate_headers={'retry-after': '1', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '988', 'x-ratelimit-reset-requests': '17m16.8s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '1911', 'x-ratelimit-reset-tokens': '45.667s'}"
+      },
+      {
+        "url": "https://link.amazon/B0g3KMMBy",
+        "asin": "B09X5BQ969",
+        "title": "Bellavita Luxury Honey Oud Eau de Parfum Perfume Unisex, 3.4 fl oz (100 ml)",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-29",
+        "daily_slot": 1,
+        "scheduled_at": "2026-10-29T12:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B09X5BQ969_content_package.json",
+        "queue_item_id": "item_026_B09X5BQ969"
+      },
+      {
+        "url": "https://link.amazon/B03ohAqlv",
+        "asin": null,
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B03ohAqlv' has missing ASIN."
+      },
+      {
+        "url": "https://link.amazon/B01k4qcKc",
+        "asin": "B0BZYCJK89",
+        "title": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Denim",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-29",
+        "daily_slot": 2,
+        "scheduled_at": "2026-10-29T19:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B0BZYCJK89_content_package.json",
+        "queue_item_id": "item_027_B0BZYCJK89"
+      },
+      {
+        "url": "https://link.amazon/B05Bcs2qd",
+        "asin": null,
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B05Bcs2qd' has missing ASIN."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T142353075489_ae63c4db",
+    "created_at": "2026-10-26T14:23:53.076253+01:00",
+    "submitted_count": 4,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 3,
+    "entries": [
+      {
+        "url": "https://link.amazon/B05RcKpuU",
+        "asin": "B0FL6Q8NFQ",
+        "status": "VALIDATION_FAILED",
+        "stage": "claim_validation",
+        "reason": "facebook: Unit mismatch: number '15.5' has no unit associated in source facts, but was generated with unit 'in'.; facebook: Unit mismatch: number '10.5' has no unit associated in source facts, but was generated with unit 'in'.; facebook: Unit mismatch: number '12' has no unit associated in source facts, but was generated with unit 'in'.; facebook: Unit mismatch: number '8.5' has no unit associated in source facts, but was generated with unit 'in'.; facebook: Untraceable concept 'opposite' in generated claim cannot be mapped to source facts.; facebook: Untraceable concept 'dedicated' in generated claim cannot be mapped to source facts.; facebook: Untraceable concept 'surfaces' in generated claim cannot be mapped to source facts.; facebook: Untraceable concept 'non' in generated claim cannot be mapped to source facts."
+      },
+      {
+        "url": "https://link.amazon/B02l4c2PN",
+        "asin": "B0DTJX2SX4",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B02l4c2PN' has insufficient title or features."
+      },
+      {
+        "url": "https://link.amazon/B0b08ATBA",
+        "asin": "B07H9PZDQW",
+        "title": "Gaiam Essentials Thick Yoga Mat Fitness & Exercise Mat with Easy-Cinch Yoga Mat Carrier Strap, 72\"L x 24\"W x 2/5 Inch Thick",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-30",
+        "daily_slot": 1,
+        "scheduled_at": "2026-10-30T12:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B07H9PZDQW_content_package.json",
+        "queue_item_id": "item_028_B07H9PZDQW"
+      },
+      {
+        "url": "https://link.amazon/B03NM8ggp",
+        "asin": "B07PBXXNCY",
+        "status": "CONTENT_GENERATION_FAILED",
+        "stage": "content_generation",
+        "reason": "facebook: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6010, Requested 2005. Please try again in 112.499999ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=50m24s; rate_headers={'retry-after': '1', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '965', 'x-ratelimit-reset-requests': '50m24s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '1990', 'x-ratelimit-reset-tokens': '45.074s'}; pinterest: Not attempted because groq failed at facebook: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6010, Requested 2005. Please try again in 112.499999ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=50m24s; rate_headers={'retry-after': '1', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '965', 'x-ratelimit-reset-requests': '50m24s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '1990', 'x-ratelimit-reset-tokens': '45.074s'}; threads: Not attempted because groq failed at facebook: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6010, Requested 2005. Please try again in 112.499999ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=50m24s; rate_headers={'retry-after': '1', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '965', 'x-ratelimit-reset-requests': '50m24s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '1990', 'x-ratelimit-reset-tokens': '45.074s'}"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T142627181488_cd39a9d3",
+    "created_at": "2026-10-26T14:26:27.182384+01:00",
+    "submitted_count": 3,
+    "accepted_count": 2,
+    "duplicate_count": 0,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B05RcKpuU",
+        "asin": "B0FL6Q8NFQ",
+        "title": "Titanium Cutting Board for Kitchen, Cutting Board Set Double Sided Food Grade, Pure Titanium and Wheat Straw PP, Easy to Clean[15.5”*10.5”+12”*8.5”]",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-30",
+        "daily_slot": 2,
+        "scheduled_at": "2026-10-30T19:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B0FL6Q8NFQ_content_package.json",
+        "queue_item_id": "item_029_B0FL6Q8NFQ"
+      },
+      {
+        "url": "https://link.amazon/B02l4c2PN",
+        "asin": "B0DTJX2SX4",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B02l4c2PN' has insufficient title or features."
+      },
+      {
+        "url": "https://link.amazon/B03NM8ggp",
+        "asin": "B07PBXXNCY",
+        "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette, Eczema Association Accepted, Makeup Remover Dry Wipes, Ultra Soft, 1 Pack, 50 Ct",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-31",
+        "daily_slot": 1,
+        "scheduled_at": "2026-10-31T12:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B07PBXXNCY_content_package.json",
+        "queue_item_id": "item_030_B07PBXXNCY"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T152759350573_3f5b2445",
+    "created_at": "2026-10-26T15:27:59.350619+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T152824999543_b0f3c566",
+    "created_at": "2026-10-26T15:28:24.999585+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T152951586187_8f3f1c3c",
+    "created_at": "2026-10-26T15:29:51.586273+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T153015403847_5a36f053",
+    "created_at": "2026-10-26T15:30:15.403886+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T153057137261_2689f4fe",
+    "created_at": "2026-10-26T15:30:57.137304+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261026T153121525999_29afef3a",
+    "created_at": "2026-10-26T15:31:21.526047+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261027T090324488886_a1f1aeb7",
+    "created_at": "2026-10-27T09:03:24.489256+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 2,
+    "entries": [
+      {
+        "url": "https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first",
+        "asin": "B0WFTEST01",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.co.uk/dp/B0WFTEST01?tag=homeideas4a01-20&ref=first' has insufficient title or features."
+      },
+      {
+        "url": "https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2",
+        "asin": "B0WFTEST02",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://www.amazon.de/dp/B0WFTEST02?tag=homeideas4a01-20&x=2' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261027T112329440358_07913f5c",
+    "created_at": "2026-10-27T11:23:29.448779+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B01JvH5z4",
+        "asin": "",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B01JvH5z4' has missing ASIN."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261027T122840231670_da1691ba",
+    "created_at": "2026-10-27T12:28:40.236237+01:00",
+    "submitted_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://link.amazon/B01JvH5z4",
+        "asin": "B0BW93676T",
+        "title": "Trendy Queen Trd1361022 Women's T-Shirt",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-10-31",
+        "daily_slot": 2,
+        "scheduled_at": "2026-10-31T19:00:00+01:00",
+        "package_path": "C:/Users/opeti/AmazonAffiliateBot/data/generated/asin_B0BW93676T_content_package.json",
+        "queue_item_id": "item_031_B0BW93676T"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T152116435069_86bf21c9",
+    "created_at": "2026-11-02T15:21:16.435550+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T152330976267_b96fb1b2",
+    "created_at": "2026-11-02T15:23:30.976337+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T152340342533_8c8f490f",
+    "created_at": "2026-11-02T15:23:40.342602+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T152432514118_f3968c47",
+    "created_at": "2026-11-02T15:24:32.514195+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T155651700346_3102af63",
+    "created_at": "2026-11-02T15:56:51.700733+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T155742845096_4f186fcf",
+    "created_at": "2026-11-02T15:57:42.845144+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261102T155846792590_8f8e64e3",
+    "created_at": "2026-11-02T15:58:46.792632+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261103T215058535177_ed3c3768",
+    "created_at": "2026-11-03T21:50:58.535223+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261105T075850430283_ed191107",
+    "created_at": "2026-11-05T07:58:50.430350+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261105T192718144830_c4373ea4",
+    "created_at": "2026-11-05T19:27:18.146472+01:00",
+    "submitted_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://link.amazon/B02XWjJte",
+        "asin": "B0CTJGJL2T",
+        "title": "GODONLIF Candle Warmer Lamp with Timer, Birthday Gifts for Women Home Decor",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-11-06",
+        "daily_slot": 2,
+        "scheduled_at": "2026-11-06T21:00:00+01:00",
+        "package_path": "data/generated/asin_B0CTJGJL2T_content_package.json",
+        "queue_item_id": "item_032_B0CTJGJL2T",
+        "media_type": "video",
+        "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261105T200520852627_eef690d0",
+    "created_at": "2026-11-05T20:05:20.853408+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261105T200725450702_c8eb5461",
+    "created_at": "2026-11-05T20:07:25.450949+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://www.amazon.com/dp/B08CRPWQHB?tag=test-20",
+        "asin": "B08CRPWQHB",
+        "status": "DUPLICATE",
+        "reason": "Product with ASIN B08CRPWQHB is already present in the publishing queue."
+      }
+    ]
+  }
+]

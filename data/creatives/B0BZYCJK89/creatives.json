@@ -1,0 +1,95 @@
+{
+  "asin": "B0BZYCJK89",
+  "title": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Denim",
+  "category": "general",
+  "affiliate_url": "https://link.amazon/B01k4qcKc",
+  "original_image_url": "https://m.media-amazon.com/images/I/51VU5d5ySHL._AC_SL1500_.jpg",
+  "created_at": "2026-11-02T10:44:03.561936+00:00",
+  "total_variations": 4,
+  "variations": [
+    {
+      "variation_id": "var_1_practical_solution",
+      "angle": "Practical Solution",
+      "theme_name": "Warm Minimalist",
+      "headline": "A Smart Solution for Daily Use",
+      "subheadline": "Thoughtful design and proven functionality from Owala FreeSip Insulated Stainless Steel Water.",
+      "benefits": [
+        "Unleash the power of our patented FreeSip spout",
+        "Sip with finesse through the built-in straw",
+        "Your beverage, your rules"
+      ],
+      "cta_text": "See Details",
+      "file_path": "data/creatives/B0BZYCJK89/variation_1_practical_solution.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:44:03.561936+00:00",
+      "layout_template": "hero_showcase"
+    },
+    {
+      "variation_id": "var_2_key_product_benefits",
+      "angle": "Key Product Benefits",
+      "theme_name": "Modern Slate Tech",
+      "headline": "Verified Features & Specifications",
+      "subheadline": "Grounded product details for Owala FreeSip Insulated Stainless Steel Water.",
+      "benefits": [
+        "Unleash the power of our patented FreeSip spout",
+        "Sip with finesse through the built-in straw",
+        "Your beverage, your rules"
+      ],
+      "cta_text": "See Details",
+      "file_path": "data/creatives/B0BZYCJK89/variation_2_key_product_benefits.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:44:03.561936+00:00",
+      "layout_template": "editorial_split"
+    },
+    {
+      "variation_id": "var_3_thoughtful_design",
+      "angle": "Thoughtful Design",
+      "theme_name": "Editorial Classic",
+      "headline": "Focused on Functional Design",
+      "subheadline": "Clean design elements that make everyday use simpler and smoother.",
+      "benefits": [
+        "Unleash the power of our patented FreeSip spout",
+        "Sip with finesse through the built-in straw",
+        "Your beverage, your rules"
+      ],
+      "cta_text": "Discover More",
+      "file_path": "data/creatives/B0BZYCJK89/variation_3_thoughtful_design.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:44:03.561936+00:00",
+      "layout_template": "feature_focus"
+    },
+    {
+      "variation_id": "var_4_gift_inspiration",
+      "angle": "Gift Inspiration",
+      "theme_name": "Fresh Botanical",
+      "headline": "A Standout Find Worth Gifting",
+      "subheadline": "A thoughtful present designed for everyday utility and lasting value.",
+      "benefits": [
+        "Unleash the power of our patented FreeSip spout",
+        "Sip with finesse through the built-in straw",
+        "Your beverage, your rules"
+      ],
+      "cta_text": "Explore Gift Idea",
+      "file_path": "data/creatives/B0BZYCJK89/variation_4_gift_inspiration.png",
+      "dimensions": [
+        1000,
+        1500
+      ],
+      "aspect_ratio": "2:3",
+      "created_at": "2026-11-02T10:44:03.561936+00:00",
+      "layout_template": "minimalist_frame"
+    }
+  ]
+}
