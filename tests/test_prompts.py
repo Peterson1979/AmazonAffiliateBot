@@ -12,6 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from amazon.scraper import Product
+from content.facts import FactExtractor, is_keyword_stuffed_text
 from content.prompts import (
     PLATFORM_PROMPTS,
     format_source_product_data,
@@ -100,6 +101,104 @@ class TestPrompts(unittest.TestCase):
             self.assertIn("COMPLETE FACTUAL UNIVERSE", prompt, f"{name} missing COMPLETE FACTUAL UNIVERSE constraint")
             self.assertIn("PREFER OMISSION", prompt, f"{name} missing PREFER OMISSION constraint")
             self.assertIn("STRICT PROPOSITION GROUNDING", prompt, f"{name} missing STRICT PROPOSITION GROUNDING constraint")
+
+
+KEYWORD_BLOB = (
+    "Great laptop stand, best laptop stand, amazing laptop stand, "
+    "wonderful laptop stand, superb laptop stand, top laptop stand"
+)
+
+
+class TestGenerationSourceInput(unittest.TestCase):
+    """The generation input must be the actual product title and description,
+    never SEO keyword lists or search phrases."""
+
+    def setUp(self):
+        self.product_with_description = Product(
+            title="Stainless Steel Insulated Water Bottle 750ml",
+            description=(
+                "Double-wall vacuum insulated stainless steel bottle that keeps drinks "
+                "cold for 24 hours. Leak-proof lid with a carry loop."
+            ),
+            features=[KEYWORD_BLOB],
+            affiliate_url="https://link.amazon/B0TESTSRC1",
+            source_url="https://www.amazon.co.uk/dp/B0TESTSRC1",
+            asin="B0TESTSRC1",
+        )
+        self.product_without_description = Product(
+            title="Foldable Laptop Stand for 17.3 Inch Laptops",
+            features=[KEYWORD_BLOB],
+            affiliate_url="https://link.amazon/B0TESTSRC2",
+            source_url="https://www.amazon.co.uk/dp/B0TESTSRC2",
+            asin="B0TESTSRC2",
+        )
+
+    def test_keyword_list_detection(self):
+        """SEO keyword dumps are detected; genuine sentences and empty input are not."""
+        self.assertTrue(is_keyword_stuffed_text(KEYWORD_BLOB))
+        self.assertTrue(is_keyword_stuffed_text(
+            "women's tops, women's t-shirts, women's tops, women's t-shirts"
+        ))
+        self.assertFalse(is_keyword_stuffed_text(
+            "Crafted from lightweight aluminum with 11 lbs capacity"
+        ))
+        self.assertFalse(is_keyword_stuffed_text(""))
+        self.assertFalse(is_keyword_stuffed_text(None))
+
+    def test_source_block_uses_actual_title_and_description_as_primary(self):
+        """The prompt's primary source is the real title plus the real description."""
+        block = format_source_product_data(self.product_with_description)
+        self.assertIn(f"FACT 1: {self.product_with_description.title}", block)
+        self.assertIn(f"FACT 2: {self.product_with_description.description}", block)
+        self.assertIn("PRIMARY SOURCE (product title)", block)
+        self.assertIn("PRIMARY SOURCE (product description)", block)
+        self.assertLess(block.index("FACT 1:"), block.index("FACT 2:"))
+
+    def test_source_block_never_uses_keyword_lists_as_description(self):
+        """Keyword-stuffed fields are excluded from the source block entirely."""
+        for product in (self.product_with_description, self.product_without_description):
+            block = format_source_product_data(product)
+            self.assertNotIn("Great laptop stand", block)
+            self.assertNotIn("best laptop stand", block)
+            self.assertNotIn(KEYWORD_BLOB, block)
+            self.assertIn("never treat keyword lists", block)
+
+    def test_source_block_never_fabricates_a_missing_description(self):
+        """When the source data has no description, the prompt says so instead of inventing one."""
+        facts = FactExtractor.extract_canonical_facts(self.product_without_description)
+        self.assertEqual(facts.primary_description(), "")
+        self.assertEqual(facts.supporting_attributes(), [])
+        block = format_source_product_data(self.product_without_description)
+        self.assertIn("PRODUCT DESCRIPTION: not available in the source data - do not invent one.", block)
+        self.assertIn(f"FACT 1: {self.product_without_description.title}", block)
+
+    def test_every_platform_prompt_uses_title_and_description_as_primary_source(self):
+        """All three platform prompts receive the same primary source fields."""
+        for name, builder in PLATFORM_PROMPTS.items():
+            prompt = builder(self.product_with_description)
+            self.assertIn(self.product_with_description.title, prompt, name)
+            self.assertIn(self.product_with_description.description, prompt, name)
+            self.assertIn("PRIMARY SOURCE (product title)", prompt, name)
+            self.assertIn("PRIMARY SOURCE (product description)", prompt, name)
+            self.assertNotIn(KEYWORD_BLOB, prompt, name)
+            self.assertNotIn("best laptop stand", prompt, name)
+
+    def test_supporting_attributes_keep_genuine_facts(self):
+        """Real factual attributes still reach the prompt as optional supporting facts."""
+        product = Product(
+            title="Aluminum Laptop Stand",
+            description="Folds flat to 10 x 8.7 x 1.8 inches for easy storage.",
+            features=[
+                KEYWORD_BLOB,
+                "Folds flat to 10 x 8.7 x 1.8 inches for easy storage",
+            ],
+            affiliate_url="https://link.amazon/B0TESTSRC3",
+            asin="B0TESTSRC3",
+        )
+        block = format_source_product_data(product)
+        self.assertIn("10 x 8.7 x 1.8 inches", block)
+        self.assertIn("SUPPORTING ATTRIBUTES (optional", block)
+        self.assertNotIn(KEYWORD_BLOB, block)
 
 
 if __name__ == "__main__":

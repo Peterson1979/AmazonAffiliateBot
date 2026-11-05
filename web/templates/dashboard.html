@@ -17,7 +17,7 @@
 
 <div class="dashboard-grid dashboard-grid-primary">
   <section class="card schedule-card">
-    <div class="section-heading"><div><div class="eyebrow">Europe/Budapest</div><h2>Next publishing slots</h2></div><span class="badge badge-info">13:00 · 19:00</span></div>
+    <div class="section-heading"><div><div class="eyebrow">Europe/Budapest</div><h2>Next publishing slots</h2></div><span class="badge badge-info">15:00 · 21:00</span></div>
     {% if summary.queue.next_slots %}<div class="slot-list">
       {% for slot in summary.queue.next_slots %}<div class="slot-row"><div class="slot-time"><strong>{{ slot.time }}</strong><span>{{ slot.date }} · {{ slot.timezone }}</span></div><div class="slot-product"><strong>Publishing slot {{ slot.slot }}</strong><span>Scheduler-controlled cloud execution</span></div><span class="state-pill state-{{ slot.status|lower }}">{{ slot.status }}</span></div>{% endfor %}
     </div>{% else %}<div class="empty-state compact"><div class="empty-state-title">No scheduler slots available</div><div class="empty-state-desc">The scheduler configuration could not be read.</div></div>{% endif %}

@@ -6,33 +6,107 @@
 <div class="page-header">
   <div>
     <h1 class="page-title">Multi-Platform Content Preview</h1>
-    <p class="help-text">Inspect the exact social copy, affiliate link, and disclosure that will be dispatched to each platform.</p>
+    <p class="help-text">Inspect the exact social copy, attached media, affiliate destination URL, and disclosure across all four publishing destinations.</p>
   </div>
+  {% if product %}
+  <div class="page-actions">
+    <a href="{{ url_for('product_detail', asin=product.asin) }}" class="btn btn-secondary">Inspect Product Detail &rarr;</a>
+  </div>
+  {% endif %}
 </div>
 
 <div class="alert alert-info" style="margin-bottom: 24px; font-weight: 600;">
-  Preview only — this page never publishes. Use the explicitly confirmed live action on the publishing queue to publish through the configured adapters.
+  Preview only — this page never publishes. Use the explicitly confirmed live action on the publishing queue or product detail page to publish through the configured adapters.
 </div>
 
 <!-- Product Selector -->
 <div class="card" style="margin-bottom: 24px;">
-  <form method="GET" action="{{ url_for('content_preview') }}" style="display: flex; gap: 12px; align-items: flex-end;">
-    <div style="flex: 1;">
+  <form method="GET" action="{{ url_for('content_preview') }}" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 260px;">
       <label for="product_select">Select Product to Preview</label>
       <select id="product_select" name="asin" onchange="window.location.href='{{ url_for('content_preview') }}/' + this.value;">
         {% for p in products %}
           <option value="{{ p.asin }}" {% if p.asin == selected_asin %}selected{% endif %}>
-            {{ p.asin }} — {{ p.title }}
+            {{ p.asin }} — {{ p.title }}{% if p.media_type == 'video' %} [🎬 Video]{% elif p.media_type == 'image' %} [🖼️ Image]{% else %} [— No Media]{% endif %}
           </option>
         {% endfor %}
       </select>
     </div>
+    <noscript>
+      <button type="submit" class="btn btn-secondary">Load Preview</button>
+    </noscript>
   </form>
 </div>
 
 {% if product and product.platforms %}
+{% set is_video = (product.video and product.video.attached and product.video.video_url) or (product.package and product.package.get('media_type') == 'video' and product.package.get('video_url')) %}
+{% set video_url = (product.video.video_url if product.video and product.video.video_url else (product.package.get('video_url') if product.package else '')) %}
+{% set video_mime = (product.video.content_type if product.video and product.video.content_type else (product.package.get('video_content_type') if product.package else '')) or 'video/mp4' %}
+{% set img = (product.facts.image_url if product.facts else None) or product.platforms.get('facebook', {}).get('image_url') or product.platforms.get('pinterest', {}).get('image_url') or product.platforms.get('threads', {}).get('image_url') %}
+{% set aff_url = product.affiliate_url or product.platforms.get('pinterest', {}).get('link') or '' %}
+
+<!-- Product Identity, Mode & Affiliate Destination Summary -->
+<div class="card" style="margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 260px;">
+      <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px;">
+        ASIN <code>{{ product.asin }}</code>
+      </div>
+      <h2 style="font-size: 1.15rem; margin: 0 0 10px 0; color: #f8fafc;">{{ product.title }}</h2>
+      {% if aff_url %}
+      <div style="font-size: 0.86rem; word-break: break-all; color: #cbd5e1;">
+        <strong>Amazon Affiliate Destination URL:</strong>
+        <a href="{{ aff_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">{{ aff_url }}</a>
+      </div>
+      {% endif %}
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+      {% if is_video %}
+        <span class="badge badge-success" style="font-size: 0.88rem; padding: 6px 12px;">🎬 Video Publication Mode</span>
+      {% elif img %}
+        <span class="badge badge-muted" style="font-size: 0.88rem; padding: 6px 12px;">🖼️ Image Publication Mode</span>
+      {% else %}
+        <span class="badge badge-muted" style="font-size: 0.88rem; padding: 6px 12px; opacity: 0.75;">— No Media Attached</span>
+      {% endif %}
+      <div style="font-size: 0.78rem; color: var(--text-muted);">
+        Active Destinations: 4 (Facebook, 2× Pinterest, Threads)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Attached Media Preview -->
+{% if is_video %}
+<div class="card" style="margin-bottom: 24px; background: var(--bg-subtle); border-radius: 6px; text-align: center;">
+  <video controls preload="metadata" {% if img %}poster="{{ img }}"{% endif %} style="max-width: 100%; max-height: 460px; border-radius: 6px; background: #000; display: inline-block;">
+    <source src="{{ video_url }}" type="{{ video_mime }}">
+    Your browser does not support inline HTML5 video playback.
+  </video>
+  <div style="margin-top: 10px; font-size: 0.85rem; color: #cbd5e1;">
+    <strong>🎬 Attached Product Video (Cloudflare R2)</strong>
+    <div style="margin-top: 4px; font-size: 0.8rem; word-break: break-all;">
+      <a href="{{ video_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary);">{{ video_url }}</a>
+    </div>
+    {% if img %}
+    <div style="margin-top: 4px; font-size: 0.78rem; color: var(--text-muted);">
+      Verified cover image preserved for Pinterest Video Pins (<code>dailyideasforyou</code> &amp; <code>LifeModeHQ</code>).
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% elif img %}
+<div class="card" style="margin-bottom: 24px; border: none; background: var(--bg-subtle); border-radius: 6px; text-align: center;">
+  <img src="{{ img }}" alt="Product" style="max-width: 100%; max-height: 420px; height: auto; border-radius: 4px;">
+  <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);">🖼️ Static Image Mode &bull; Verified Product Image</div>
+</div>
+{% else %}
+<div class="card" style="margin-bottom: 24px; background: var(--bg-subtle); border-radius: 6px; text-align: center; color: var(--text-muted); font-size: 0.88rem;">
+  — No verified video or static product image is currently attached to this package.
+</div>
+{% endif %}
+
 <div class="grid-2">
-  <!-- Facebook Platform Preview -->
+  <!-- 1. Facebook (LifeModeHQ) -->
   {% if 'facebook' in product.platforms %}
   {% set fb_p = product.platforms['facebook'] %}
   <div class="platform-card">
@@ -41,33 +115,39 @@
         <span class="platform-title">Facebook</span>
         <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>LifeModeHQ</code></div>
       </div>
-      {% if fb_p.status == 'VALID' or fb_p.status == 'READY_FOR_REVIEW' %}
-        <span class="badge badge-success">VALIDATED</span>
-      {% else %}
-        <span class="badge badge-danger">FAILED VALIDATION</span>
-      {% endif %}
+      <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <span class="badge {% if is_video %}badge-info{% else %}badge-muted{% endif %}">{% if is_video %}🎬 Native Video{% else %}🖼️ Image{% endif %}</span>
+        {% if fb_p.status == 'VALID' or fb_p.status == 'READY_FOR_REVIEW' %}
+          <span class="badge badge-success">VALIDATED</span>
+        {% else %}
+          <span class="badge badge-danger">FAILED VALIDATION</span>
+        {% endif %}
+      </div>
     </div>
     <div class="copy-preview">{{ fb_p.content }}</div>
     <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
-      Multi-paragraph structure &bull; Affiliate Link & Disclosure verified
+      {% if is_video %}Native Facebook Page video post{% else %}Facebook Page image post{% endif %} &bull; Affiliate Link &amp; Disclosure verified
     </div>
   </div>
   {% endif %}
 
-  <!-- Pinterest Platform Preview -->
+  <!-- 2. Pinterest — dailyideasforyou -->
   {% if 'pinterest' in product.platforms %}
   {% set pin_p = product.platforms['pinterest'] %}
   <div class="platform-card">
     <div class="platform-header">
       <div>
-        <span class="platform-title">Pinterest Pin</span>
+        <span class="platform-title">Pinterest — dailyideasforyou</span>
         <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>dailyideasforyou</code> / Board: <code>Shopping ideas</code></div>
       </div>
-      {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
-        <span class="badge badge-success">VALIDATED</span>
-      {% else %}
-        <span class="badge badge-danger">FAILED VALIDATION</span>
-      {% endif %}
+      <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <span class="badge {% if is_video %}badge-info{% else %}badge-muted{% endif %}">{% if is_video %}🎬 Video Pin{% else %}🖼️ Image Pin{% endif %}</span>
+        {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
+          <span class="badge badge-success">VALIDATED</span>
+        {% else %}
+          <span class="badge badge-danger">FAILED VALIDATION</span>
+        {% endif %}
+      </div>
     </div>
     <div style="margin-bottom: 8px;">
       <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Title:</strong>
@@ -75,23 +155,60 @@
     </div>
     <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Description:</strong>
     <div class="copy-preview" style="margin-top: 4px;">{{ pin_p.description }}</div>
+    {% if pin_p.link or aff_url %}
+    <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted); word-break: break-all;">
+      <strong>Pin Destination URL:</strong> <code>{{ pin_p.link or aff_url }}</code>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- 3. Pinterest — LifeModeHQ -->
+  <div class="platform-card">
+    <div class="platform-header">
+      <div>
+        <span class="platform-title">Pinterest — LifeModeHQ</span>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>LifeModeHQ</code> / Board: <code>Home &amp; Everyday Living</code></div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <span class="badge {% if is_video %}badge-info{% else %}badge-muted{% endif %}">{% if is_video %}🎬 Video Pin{% else %}🖼️ Image Pin{% endif %}</span>
+        {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
+          <span class="badge badge-success">VALIDATED</span>
+        {% else %}
+          <span class="badge badge-danger">FAILED VALIDATION</span>
+        {% endif %}
+      </div>
+    </div>
+    <div style="margin-bottom: 8px;">
+      <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Title:</strong>
+      <div style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-top: 2px;">{{ pin_p.title }}</div>
+    </div>
+    <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Description:</strong>
+    <div class="copy-preview" style="margin-top: 4px;">{{ pin_p.description }}</div>
+    {% if pin_p.link or aff_url %}
+    <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted); word-break: break-all;">
+      <strong>Pin Destination URL:</strong> <code>{{ pin_p.link or aff_url }}</code>
+    </div>
+    {% endif %}
   </div>
   {% endif %}
 
-  <!-- Threads Platform Preview -->
+  <!-- 4. Threads (lifemodehq) -->
   {% if 'threads' in product.platforms %}
   {% set th_p = product.platforms['threads'] %}
   <div class="platform-card">
     <div class="platform-header">
       <div>
-        <span class="platform-title">Threads Post</span>
+        <span class="platform-title">Threads</span>
         <div style="font-size: 0.8rem; color: var(--text-muted);">Target: <code>lifemodehq</code></div>
       </div>
-      {% if th_p.status == 'VALID' or th_p.status == 'READY_FOR_REVIEW' %}
-        <span class="badge badge-success">VALIDATED</span>
-      {% else %}
-        <span class="badge badge-danger">FAILED VALIDATION</span>
-      {% endif %}
+      <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <span class="badge {% if is_video %}badge-info{% else %}badge-muted{% endif %}">{% if is_video %}🎬 Video{% else %}🖼️ Image{% endif %}</span>
+        {% if th_p.status == 'VALID' or th_p.status == 'READY_FOR_REVIEW' %}
+          <span class="badge badge-success">VALIDATED</span>
+        {% else %}
+          <span class="badge badge-danger">FAILED VALIDATION</span>
+        {% endif %}
+      </div>
     </div>
     <div class="copy-preview">{{ th_p.content }}</div>
     <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">

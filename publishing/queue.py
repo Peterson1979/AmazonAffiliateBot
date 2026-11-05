@@ -18,7 +18,7 @@ from zoneinfo import ZoneInfo
 from amazon.scraper import Product, extract_asin_from_url, is_valid_image_url
 from ai.provider import create_content_provider
 from content.generator import ContentGenerator
-from content.package import ContentPackage, STATUS_READY_FOR_REVIEW, STATUS_FAILED_VALIDATION
+from content.package import ContentPackage, is_valid_video_url, STATUS_READY_FOR_REVIEW, STATUS_FAILED_VALIDATION
 from publishing.publisher import (
     SocialPublisher,
     PublishingConfig,
@@ -415,9 +415,13 @@ class QueueItem:
     # Dashboard import-run identity. Optional for backward compatibility with
     # queue records created before batch management existed.
     batch_id: Optional[str] = None
+    # Optional video-publishing metadata. Omitted when None so legacy/image-only
+    # queue records remain unchanged without migration.
+    media_type: Optional[str] = None
+    video_url: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        payload: Dict[str, Any] = {
             "queue_item_id": self.queue_item_id,
             "original_url": self.original_url,
             "asin": self.asin,
@@ -435,6 +439,11 @@ class QueueItem:
             "publishing_results": self.publishing_results,
             "batch_id": self.batch_id,
         }
+        if self.media_type is not None:
+            payload["media_type"] = self.media_type
+        if self.video_url is not None:
+            payload["video_url"] = self.video_url
+        return payload
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "QueueItem":
@@ -471,6 +480,8 @@ class QueueItem:
             published_at=data.get("published_at"),
             publishing_results=data.get("publishing_results"),
             batch_id=data.get("batch_id"),
+            media_type=data.get("media_type"),
+            video_url=data.get("video_url"),
         )
 
 
@@ -758,6 +769,154 @@ class PublishingQueue:
         with open(target_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         return cls.from_dict(data)
+
+    def remove_item(self, queue_item_id: str) -> Optional[QueueItem]:
+        """Remove an item from the queue by its queue_item_id.
+        Preserves all underlying product records, generated content, and history.
+        Only removes queue membership.
+        """
+        for idx, itm in enumerate(self.items):
+            if itm.queue_item_id == queue_item_id:
+                removed = self.items.pop(idx)
+                if removed.scheduled_at and removed.daily_slot:
+                    try:
+                        item_dt = QueuePublisher.parse_datetime(removed.scheduled_at)
+                        claim_key = f"{item_dt.date().isoformat()}-slot-{removed.daily_slot}"
+                        if claim_key in self.slot_claims:
+                            del self.slot_claims[claim_key]
+                    except Exception:
+                        pass
+                self.recalculate_counts()
+                return removed
+        return None
+
+    def reorder_items(self, item_ids_in_order: List[str]) -> bool:
+        """Reorder queue items based on a provided list of queue_item_ids.
+        Maintains all items, but arranges them in the specified sequence.
+        Items not listed remain at their relative positions at the end.
+        """
+        id_to_item = {item.queue_item_id: item for item in self.items}
+        new_items = []
+        for q_id in item_ids_in_order:
+            if q_id in id_to_item:
+                new_items.append(id_to_item.pop(q_id))
+        for item in self.items:
+            if item.queue_item_id in id_to_item:
+                new_items.append(item)
+                del id_to_item[item.queue_item_id]
+        self.items = new_items
+        return True
+
+    def move_item(self, queue_item_id: str, direction: str) -> bool:
+        """Move an item 'up' or 'down' by one position in the queue.
+        If both the moved item and adjacent item are unpublished (READY / FAILED / QUEUED),
+        also swap their scheduled slot info (scheduled_date, daily_slot, scheduled_at)
+        to maintain chronological scheduling order.
+        """
+        idx = next((i for i, itm in enumerate(self.items) if itm.queue_item_id == queue_item_id), -1)
+        if idx == -1:
+            return False
+
+        target_idx = idx - 1 if direction == "up" else idx + 1
+        if target_idx < 0 or target_idx >= len(self.items):
+            return False
+
+        item_a = self.items[idx]
+        item_b = self.items[target_idx]
+
+        unpublished_statuses = (STATUS_READY, STATUS_FAILED, STATUS_QUEUED)
+        if item_a.status in unpublished_statuses and item_b.status in unpublished_statuses:
+            a_date, a_slot, a_at = item_a.scheduled_date, item_a.daily_slot, item_a.scheduled_at
+            b_date, b_slot, b_at = item_b.scheduled_date, item_b.daily_slot, item_b.scheduled_at
+            item_a.scheduled_date, item_a.daily_slot, item_a.scheduled_at = b_date, b_slot, b_at
+            item_b.scheduled_date, item_b.daily_slot, item_b.scheduled_at = a_date, a_slot, a_at
+
+        self.items[idx], self.items[target_idx] = self.items[target_idx], self.items[idx]
+        return True
+
+    def reschedule_overdue_items(self, reference_dt: Optional[datetime] = None) -> List[QueueItem]:
+        """Reschedule overdue unpublished entries into valid chronological future slots.
+        - Preserves current queue order.
+        - Avoids conflicting slots and duplicate entries.
+        - Never alters confirmed published products or historical records.
+        - Uses standard slots: 15:00 (slot 1) and 21:00 (slot 2) Europe/Budapest.
+        """
+        tz = get_budapest_timezone()
+        if not reference_dt:
+            reference_dt = datetime.now(tz)
+        elif reference_dt.tzinfo is None:
+            reference_dt = reference_dt.replace(tzinfo=tz)
+
+        # 1. Collect all slots that are already occupied by confirmed or future scheduled items
+        occupied_slots: Set[Tuple[str, int]] = set()
+        for itm in self.items:
+            if itm.status == STATUS_PUBLISHED and itm.scheduled_date and itm.daily_slot:
+                occupied_slots.add((itm.scheduled_date, itm.daily_slot))
+            elif itm.scheduled_at and itm.daily_slot:
+                try:
+                    dt = QueuePublisher.parse_datetime(itm.scheduled_at)
+                    if dt >= reference_dt:
+                        occupied_slots.add((itm.scheduled_date or dt.date().isoformat(), itm.daily_slot))
+                except Exception:
+                    pass
+
+        # 2. Identify unpublished overdue items in their current queue order
+        overdue_items: List[QueueItem] = []
+        for itm in self.items:
+            if itm.status == STATUS_PUBLISHED or (itm.publishing_results and any(
+                isinstance(r, dict) and r.get("status") == "PUBLISHED" and r.get("mode") == "LIVE"
+                for r in itm.publishing_results.values()
+            )):
+                continue
+            if itm.status in (STATUS_READY, STATUS_QUEUED) and itm.scheduled_at:
+                try:
+                    dt = QueuePublisher.parse_datetime(itm.scheduled_at)
+                    if dt < reference_dt:
+                        overdue_items.append(itm)
+                except Exception:
+                    overdue_items.append(itm)
+
+        if not overdue_items:
+            return []
+
+        # 3. Generate future slots starting from reference_dt date
+        cur_date = reference_dt.date()
+        rescheduled: List[QueueItem] = []
+        item_idx = 0
+
+        for day_offset in range(60):
+            if item_idx >= len(overdue_items):
+                break
+            day = cur_date + timedelta(days=day_offset)
+            day_str = day.isoformat()
+
+            # Slot 1: 15:00
+            dt_s1 = datetime(day.year, day.month, day.day, SLOT_1_TIME.hour, SLOT_1_TIME.minute, 0, tzinfo=tz)
+            if dt_s1 > reference_dt and (day_str, 1) not in occupied_slots:
+                target_item = overdue_items[item_idx]
+                target_item.scheduled_date = day_str
+                target_item.daily_slot = 1
+                target_item.scheduled_at = dt_s1.isoformat()
+                occupied_slots.add((day_str, 1))
+                rescheduled.append(target_item)
+                item_idx += 1
+
+            if item_idx >= len(overdue_items):
+                break
+
+            # Slot 2: 21:00
+            dt_s2 = datetime(day.year, day.month, day.day, SLOT_2_TIME.hour, SLOT_2_TIME.minute, 0, tzinfo=tz)
+            if dt_s2 > reference_dt and (day_str, 2) not in occupied_slots:
+                target_item = overdue_items[item_idx]
+                target_item.scheduled_date = day_str
+                target_item.daily_slot = 2
+                target_item.scheduled_at = dt_s2.isoformat()
+                occupied_slots.add((day_str, 2))
+                rescheduled.append(target_item)
+                item_idx += 1
+
+        self.recalculate_counts()
+        return rescheduled
 
 
 class QueueBuilder:
@@ -1299,7 +1458,10 @@ class QueuePublisher:
                 })
                 continue
 
-            # 3. Publish via SocialPublisher
+            # 3. Publish via SocialPublisher (forwarding QueueItem video metadata if missing from package file)
+            if is_valid_video_url(getattr(item, "video_url", None)) and not is_valid_video_url(package_data.get("video_url")):
+                package_data = dict(package_data)
+                ContentPackage.attach_verified_video(package_data, item.video_url)
             try:
                 pub_report = publisher.publish_package(
                     package_data,
@@ -1319,6 +1481,7 @@ class QueuePublisher:
                         and result.get("mode") == "LIVE"
                         and bool(
                             result.get("post_id")
+                            or result.get("video_id")
                             or result.get("pin_id")
                             or result.get("photo_id")
                             or result.get("permalink")

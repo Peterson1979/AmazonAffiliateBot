@@ -14,6 +14,7 @@ import re
 import threading
 import urllib.request
 import subprocess
+import tempfile
 import uuid
 
 from amazon.scraper import Product, scrape_amazon_product, extract_asin_from_url
@@ -34,7 +35,8 @@ from content.package import (
     STATUS_READY_FOR_REVIEW,
     STATUS_FAILED_VALIDATION,
     STATUS_VALID,
-    SUPPORTED_PLATFORMS
+    SUPPORTED_PLATFORMS,
+    is_valid_video_url,
 )
 try:
     from content.pinterest_creative import (
@@ -108,6 +110,14 @@ from publishing.replenisher import (
 )
 from publishing.config import PublishingConfig, DEFAULT_TARGET_ACCOUNTS
 from publishing.publisher import SocialPublisher, STATUS_WOULD_PUBLISH
+from publishing.r2_storage import (
+    R2Client,
+    R2Config,
+    get_max_video_size_bytes,
+    get_video_upload_timeout,
+    upload_video_to_r2,
+    validate_video_file,
+)
 from publishing.reconciliation import get_historical_destination_report
 
 
@@ -208,6 +218,10 @@ def build_import_batch_view(
             item.ui_retryable = presentation["retryable"]
             item.ui_platforms = presentation["platforms"]
             item.ui_published_at = presentation["published_at"]
+            item.ui_label = presentation.get("ui_label", presentation["state"])
+            item.ui_media_type = presentation["media_type"]
+            item.ui_video_url = presentation["video_url"]
+            item.ui_image_url = presentation["image_url"]
             items.append(item)
             entry["queue_item"] = item
         entries.append(entry)
@@ -230,7 +244,7 @@ MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "O
 
 
 def format_scheduled_datetime(dt: datetime) -> str:
-    """Format a datetime in Europe/Budapest as 'Nov 4, 2026, 13:00'."""
+    """Format a datetime in Europe/Budapest as 'Nov 4, 2026, 15:00'."""
     month_name = MONTH_NAMES[dt.month - 1]
     return f"{month_name} {dt.day}, {dt.year}, {dt.strftime('%H:%M')}"
 
@@ -382,16 +396,16 @@ def get_platform_publication_result(
     return {
         "platform": platform,
         "label": {
-            "facebook": "Facebook",
-            "pinterest": "Pinterest",
-            "pinterest_lifemodehq": "Pinterest LifeModeHQ",
-            "threads": "Threads",
+            "facebook": "Facebook (LifeModeHQ)",
+            "pinterest": "Pinterest (dailyideasforyou)",
+            "pinterest_lifemodehq": "Pinterest (LifeModeHQ)",
+            "threads": "Threads (lifemodehq)",
         }.get(platform, platform.capitalize()),
         "state": state,
         "ui_label": ui_label,
         "mode": result.get("mode"),
         "timestamp": result.get("published_at") if live_confirmed else None,
-        "post_id": result.get("post_id") or result.get("pin_id") or result.get("photo_id"),
+        "post_id": result.get("post_id") or result.get("video_id") or result.get("pin_id") or result.get("photo_id"),
         "post_url": result.get("permalink_url") or result.get("pin_url") or result.get("permalink"),
         "errors": result.get("errors") or ([result.get("message")] if state == "FAILED" and result.get("message") else []),
         "evidence_note": (
@@ -416,6 +430,7 @@ def _is_confirmed_live_result(result: Dict[str, Any]) -> bool:
         return False
     return bool(
         result.get("post_id")
+        or result.get("video_id")
         or result.get("pin_id")
         or result.get("photo_id")
         or result.get("permalink")
@@ -432,6 +447,72 @@ def _has_ambiguous_historical_dry_run(item: QueueItem) -> bool:
     if any(_is_confirmed_live_result(value) for value in results):
         return False
     return all(value.get("mode") == "DRY_RUN" or value.get("status") == "WOULD_PUBLISH" for value in results)
+
+
+def _resolve_queue_item_media(item: QueueItem) -> Dict[str, Optional[str]]:
+    """Resolve media_type ('video', 'image', or 'none') and preview URLs for a queue item."""
+    asin_upper = str(item.asin or "").upper().strip()
+    resolved_video_url: Optional[str] = (
+        item.video_url.strip()
+        if item.media_type == "video" and is_valid_video_url(item.video_url)
+        else None
+    )
+    resolved_image_url: Optional[str] = None
+
+    pkg: Optional[Dict[str, Any]] = None
+    pkg_candidates: List[Path] = []
+    if item.package_reference:
+        ref_path = Path(item.package_reference)
+        pkg_candidates.append(ref_path if ref_path.is_absolute() else (PROJECT_ROOT / ref_path))
+    if asin_upper:
+        pkg_candidates.append(GENERATED_DIR / f"asin_{asin_upper}_content_package.json")
+
+    for candidate in pkg_candidates:
+        if candidate.is_file():
+            try:
+                with open(candidate, "r", encoding="utf-8") as handle:
+                    loaded = json.load(handle)
+                if isinstance(loaded, dict):
+                    pkg = loaded
+                    break
+            except Exception:
+                continue
+
+    if pkg is not None:
+        if not resolved_video_url and pkg.get("media_type") == "video" and is_valid_video_url(pkg.get("video_url")):
+            resolved_video_url = str(pkg.get("video_url")).strip()
+        candidate_img = recover_verified_image_url(pkg, products_dir=PRODUCTS_DIR)
+        if is_valid_image_url(candidate_img):
+            resolved_image_url = candidate_img
+
+    if not resolved_image_url and asin_upper:
+        prod_file = PRODUCTS_DIR / f"asin_{asin_upper}.json"
+        if prod_file.is_file():
+            try:
+                with open(prod_file, "r", encoding="utf-8") as handle:
+                    pdata = json.load(handle)
+                if isinstance(pdata, dict) and is_valid_image_url(pdata.get("image_url")):
+                    resolved_image_url = str(pdata["image_url"]).strip()
+            except Exception:
+                pass
+
+    if resolved_video_url:
+        return {
+            "media_type": "video",
+            "video_url": resolved_video_url,
+            "image_url": resolved_image_url,
+        }
+    if resolved_image_url:
+        return {
+            "media_type": "image",
+            "video_url": None,
+            "image_url": resolved_image_url,
+        }
+    return {
+        "media_type": "none",
+        "video_url": None,
+        "image_url": None,
+    }
 
 
 def get_queue_item_presentation(
@@ -520,6 +601,7 @@ def get_queue_item_presentation(
         ) if state in ("PUBLISHED", "PARTIAL") else None,
         "platforms": platform_results,
         "errors": item.errors or [],
+        **_resolve_queue_item_media(item),
     }
 
 
@@ -1151,6 +1233,8 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                     affiliate_url = pdata.get("affiliate_url") or pdata.get("source_url", "")
                     features = pdata.get("features", [])
                     specs = pdata.get("specs", {})
+                    prod_img = str(pdata.get("image_url") or "").strip()
+                    has_prod_img = is_valid_image_url(prod_img)
 
                     products_by_asin[asin] = {
                         "asin": asin,
@@ -1167,7 +1251,10 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                         "scheduled_at": None,
                         "publishing_status": "N/A",
                         "package_path": None,
-                        "product_file": str(pfile)
+                        "product_file": str(pfile),
+                        "media_type": "image" if has_prod_img else "none",
+                        "image_url": prod_img if has_prod_img else "",
+                        "video_url": "",
                     }
             except Exception:
                 continue
@@ -1205,6 +1292,19 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                         products_by_asin[asin]["content_status"] = "GENERATED"
                         products_by_asin[asin]["validation_status"] = pkg.get("status", "UNKNOWN")
                         products_by_asin[asin]["package_path"] = str(gfile)
+                    pkg_img = recover_verified_image_url(pkg, products_dir=PRODUCTS_DIR)
+                    has_pkg_img = is_valid_image_url(pkg_img)
+                    has_pkg_video = pkg.get("media_type") == "video" and is_valid_video_url(pkg.get("video_url"))
+                    products_by_asin[asin].setdefault("media_type", "none")
+                    products_by_asin[asin].setdefault("image_url", "")
+                    products_by_asin[asin].setdefault("video_url", "")
+                    if has_pkg_img and not products_by_asin[asin].get("image_url"):
+                        products_by_asin[asin]["image_url"] = pkg_img
+                    if has_pkg_video:
+                        products_by_asin[asin]["media_type"] = "video"
+                        products_by_asin[asin]["video_url"] = str(pkg.get("video_url")).strip()
+                    elif has_pkg_img and products_by_asin[asin].get("media_type") != "video":
+                        products_by_asin[asin]["media_type"] = "image"
             except Exception:
                 continue
 
@@ -1254,6 +1354,16 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                     products_by_asin[asin]["retryable"] = presentation["retryable"]
                     if item.package_reference:
                         products_by_asin[asin]["package_path"] = item.package_reference
+                products_by_asin[asin].setdefault("media_type", "none")
+                products_by_asin[asin].setdefault("image_url", "")
+                products_by_asin[asin].setdefault("video_url", "")
+                if presentation.get("image_url") and not products_by_asin[asin].get("image_url"):
+                    products_by_asin[asin]["image_url"] = presentation["image_url"]
+                if presentation.get("media_type") == "video" and presentation.get("video_url"):
+                    products_by_asin[asin]["media_type"] = "video"
+                    products_by_asin[asin]["video_url"] = presentation["video_url"]
+                elif products_by_asin[asin].get("media_type") not in ("video", "image") and presentation.get("media_type") == "image":
+                    products_by_asin[asin]["media_type"] = "image"
         except Exception:
             pass
 
@@ -1368,7 +1478,12 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
                         "ui_label": pres["ui_label"],
                         "validation_status": it.validation_status,
                         "published_at": it.published_at,
-                        "publishing_results": it.publishing_results
+                        "publishing_results": it.publishing_results,
+                        "media_type": it.media_type,
+                        "video_url": it.video_url,
+                        "is_overdue": pres["is_overdue"],
+                        "retryable": pres["retryable"],
+                        "platforms": pres["platforms"],
                     }
                     break
         except Exception:
@@ -1410,11 +1525,32 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
                 "title": p_data.get("title", ""),
                 "description": p_data.get("description", ""),
                 "image_url": p_data.get("image_url", ""),
+                "video_url": p_data.get("video_url", ""),
+                "media_type": p_data.get("media_type", ""),
                 "link": p_data.get("link", ""),
                 "validation_status": val_meta.get("status", p_data.get("status", "UNKNOWN")),
                 "errors": val_meta.get("errors", []),
                 "retry_count": val_meta.get("retry_count", 0)
             }
+
+    video_info: Optional[Dict[str, Any]] = None
+    pkg_video_url = (package or {}).get("video_url")
+    queue_video_url = (queue_item or {}).get("video_url")
+    resolved_video_url = pkg_video_url or queue_video_url
+    if resolved_video_url or (package or {}).get("media_type") == "video":
+        pkg_video_meta = (package or {}).get("video") if isinstance((package or {}).get("video"), dict) else {}
+        video_info = {
+            "attached": bool(resolved_video_url),
+            "upload_status": "UPLOADED" if resolved_video_url else "MISSING",
+            "asin": asin_clean,
+            "video_url": resolved_video_url or "",
+            "object_key": (package or {}).get("video_object_key") or pkg_video_meta.get("object_key", ""),
+            "content_type": (package or {}).get("video_content_type") or pkg_video_meta.get("content_type", "video/mp4"),
+            "filename": pkg_video_meta.get("filename", ""),
+            "size_bytes": pkg_video_meta.get("size_bytes"),
+            "uploaded_at": pkg_video_meta.get("uploaded_at", ""),
+            "cover_image_url": structured_facts.get("image_url") or "",
+        }
 
     return {
         "asin": asin_clean,
@@ -1425,7 +1561,12 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
         "package": package,
         "platforms": platforms_content,
         "queue_item": queue_item,
+        "video": video_info,
         "status": package.get("status") if package else (queue_item.get("status") if queue_item else "UNKNOWN"),
+        "historically_published": any(
+            get_historical_destination_report(asin_clean, p).get("evidence_status") == "platform_verified"
+            for p in ACTIVE_PUBLISHING_PLATFORMS
+        ),
         "creatives": get_product_creatives(asin_clean)
     }
 
@@ -1532,10 +1673,596 @@ def get_reference_image_service(asin: str) -> Optional[Path]:
     return get_or_download_reference_image(asin)
 
 
-def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def _resolve_video_upload_limits(cfg: Dict[str, Any]) -> Tuple[int, int]:
+    """Resolve configured max video size (bytes) and upload timeout (seconds)."""
+    video_cfg = cfg.get("video", {}) if isinstance(cfg.get("video"), dict) else {}
+    max_bytes_override: Optional[int] = None
+    if video_cfg.get("max_size_bytes") is not None:
+        max_bytes_override = int(video_cfg["max_size_bytes"])
+    elif video_cfg.get("max_size_mb") is not None:
+        max_bytes_override = int(float(video_cfg["max_size_mb"]) * 1024 * 1024)
+    timeout_override: Optional[int] = (
+        int(video_cfg["upload_timeout"]) if video_cfg.get("upload_timeout") is not None else None
+    )
+    return get_max_video_size_bytes(max_bytes_override), get_video_upload_timeout(timeout_override)
+
+
+def _prepare_video_upload_source(
+    video_file: Any,
+    max_size_bytes: int,
+) -> Tuple[bool, Optional[Path], str, bool, Optional[str]]:
+    """Validate and stage an uploaded video stream or local path before product processing.
+
+    Returns:
+        (is_valid, staged_path, original_filename, owns_temp_file, error_message)
+    """
+    if isinstance(video_file, (str, Path)):
+        src_path = Path(video_file)
+        if not src_path.is_file():
+            return False, None, src_path.name, False, f"Local video file does not exist: '{video_file}'."
+        size_bytes = src_path.stat().st_size
+        ok, err = validate_video_file(src_path.name, size_bytes=size_bytes, max_size_bytes=max_size_bytes)
+        return ok, (src_path if ok else None), src_path.name, False, err
+
+    raw_filename = Path(str(getattr(video_file, "filename", "") or "")).name.strip()
+    if not raw_filename:
+        return False, None, "", False, "Video filename is missing."
+
+    # Fast-fail unsupported extensions before reading potentially large upload streams.
+    ext_ok, ext_err = validate_video_file(raw_filename, size_bytes=1, max_size_bytes=max_size_bytes)
+    if not ext_ok:
+        return False, None, raw_filename, False, ext_err
+
+    suffix = Path(raw_filename).suffix.lower()
+    tmp_handle = tempfile.NamedTemporaryFile(prefix="aab_video_", suffix=suffix, delete=False)
+    tmp_path = Path(tmp_handle.name)
+    total_bytes = 0
+    try:
+        while True:
+            chunk = video_file.read(1024 * 1024)
+            if not chunk:
+                break
+            total_bytes += len(chunk)
+            if total_bytes > max_size_bytes:
+                tmp_handle.close()
+                tmp_path.unlink(missing_ok=True)
+                _, size_err = validate_video_file(raw_filename, size_bytes=total_bytes, max_size_bytes=max_size_bytes)
+                return False, None, raw_filename, False, size_err
+            tmp_handle.write(chunk)
+        tmp_handle.close()
+    except Exception as exc:
+        try:
+            tmp_handle.close()
+        except Exception:
+            pass
+        tmp_path.unlink(missing_ok=True)
+        return False, None, raw_filename, False, f"Could not read uploaded video file: {exc}"
+
+    ok, err = validate_video_file(raw_filename, size_bytes=total_bytes, max_size_bytes=max_size_bytes)
+    if not ok:
+        tmp_path.unlink(missing_ok=True)
+        return False, None, raw_filename, False, err
+    return True, tmp_path, raw_filename, True, None
+
+
+def attach_product_video_service(
+    asin: str,
+    video_file: Any,
+    config: Optional[Dict[str, Any]] = None,
+    r2_config: Optional[R2Config] = None,
+    r2_client: Optional[R2Client] = None,
+) -> Dict[str, Any]:
+    """Upload or replace a product video in Cloudflare R2 for an existing product.
+
+    Preserves all existing product facts, affiliate URLs, generated platform copy,
+    and queue item identifiers/schedule while updating ContentPackage and any
+    matching READY QueueItem.
+    """
+    asin_clean = str(asin or "").upper().strip()
+    if not asin_clean:
+        return {"success": False, "asin": "", "message": "Product ASIN is required."}
+
+    pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+    if not pkg_file.exists():
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"No content package found for ASIN {asin_clean}.",
+        }
+
+    try:
+        with open(pkg_file, "r", encoding="utf-8") as f:
+            pkg = json.load(f)
+    except Exception as exc:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Could not read content package for ASIN {asin_clean}: {exc}",
+        }
+
+    if not isinstance(pkg, dict):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Invalid content package structure for ASIN {asin_clean}.",
+        }
+
+    queue: Optional[PublishingQueue] = None
+    ready_items: List[QueueItem] = []
+    if QUEUE_FILE.exists():
+        try:
+            queue = PublishingQueue.load(QUEUE_FILE)
+        except Exception as exc:
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Could not read publishing queue: {exc}",
+            }
+        matching_items = [it for it in queue.items if (it.asin or "").upper() == asin_clean]
+        ready_items = [it for it in matching_items if it.status == STATUS_READY]
+        has_live_publication = any(
+            it.status in (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED)
+            or any(
+                isinstance(res, dict) and res.get("status") == STATUS_PUBLISHED
+                for res in (it.publishing_results or {}).values()
+            )
+            for it in matching_items
+        )
+        if has_live_publication and not ready_items:
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Cannot upload or replace video for ASIN {asin_clean} because it has already been published.",
+            }
+
+    if video_file is None:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": "Please select a local MP4 or MOV video file to upload.",
+        }
+
+    cfg = config or load_application_config()
+    max_video_bytes, video_upload_timeout = _resolve_video_upload_limits(cfg)
+
+    vid_ok, staged_video_path, staged_video_filename, owns_staged_video, vid_err = _prepare_video_upload_source(
+        video_file,
+        max_size_bytes=max_video_bytes,
+    )
+    if not vid_ok or staged_video_path is None:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": vid_err or "Invalid video file.",
+        }
+
+    try:
+        r2_res = upload_video_to_r2(
+            asin=asin_clean,
+            local_video_path=staged_video_path,
+            filename_override=staged_video_filename,
+            max_size_bytes=max_video_bytes,
+            timeout=video_upload_timeout,
+            config=r2_config,
+            client=r2_client,
+        )
+    finally:
+        if owns_staged_video and staged_video_path is not None:
+            staged_video_path.unlink(missing_ok=True)
+
+    if not r2_res.get("success") or not r2_res.get("public_url"):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": r2_res.get("error", "Cloudflare R2 video upload failed."),
+        }
+
+    was_replaced = bool(pkg.get("video_url") or pkg.get("media_type") == "video")
+    pkg_updated: Dict[str, Any] = json.loads(json.dumps(pkg))
+    ContentPackage.detach_video(pkg_updated)
+    attached = ContentPackage.attach_verified_video(
+        pkg_updated,
+        video_url=r2_res["public_url"],
+        object_key=r2_res.get("object_key"),
+        content_type=r2_res.get("content_type"),
+        filename=staged_video_filename,
+        size_bytes=r2_res.get("size_bytes"),
+    )
+    if not attached:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": "Uploaded R2 video URL failed HTTPS verification.",
+        }
+
+    pkg_path = ContentPackage.save_content_package(
+        pkg_updated,
+        f"asin_{asin_clean}",
+        target_dir=GENERATED_DIR,
+    )
+
+    queue_updated = False
+    updated_queue_item_id: Optional[str] = None
+    if queue is not None and ready_items:
+        for it in ready_items:
+            it.media_type = "video"
+            it.video_url = r2_res["public_url"]
+            if not it.package_reference:
+                it.package_reference = to_repository_relative_path(pkg_path)
+            updated_queue_item_id = updated_queue_item_id or it.queue_item_id
+        queue.save(QUEUE_FILE)
+        queue_updated = True
+
+    action = "replaced" if was_replaced else "uploaded"
+    return {
+        "success": True,
+        "asin": asin_clean,
+        "action": action,
+        "video_url": r2_res["public_url"],
+        "object_key": r2_res.get("object_key", ""),
+        "content_type": r2_res.get("content_type", "video/mp4"),
+        "filename": staged_video_filename,
+        "size_bytes": r2_res.get("size_bytes"),
+        "queue_updated": queue_updated,
+        "queue_item_id": updated_queue_item_id,
+        "message": (
+            f"Replaced product video for ASIN {asin_clean} and uploaded to Cloudflare R2."
+            if was_replaced
+            else f"Uploaded product video for ASIN {asin_clean} to Cloudflare R2."
+        ),
+    }
+
+
+def detach_product_video_service(asin: str) -> Dict[str, Any]:
+    """Remove an attached video reference from an existing product's ContentPackage and queue item.
+
+    Preserves all product data, affiliate URLs, generated copy, and queue metadata.
+    Does not physically delete objects from Cloudflare R2.
+    """
+    asin_clean = str(asin or "").upper().strip()
+    if not asin_clean:
+        return {"success": False, "asin": "", "message": "Product ASIN is required."}
+
+    pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+    if not pkg_file.exists():
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"No content package found for ASIN {asin_clean}.",
+        }
+
+    try:
+        with open(pkg_file, "r", encoding="utf-8") as f:
+            pkg = json.load(f)
+    except Exception as exc:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Could not read content package for ASIN {asin_clean}: {exc}",
+        }
+
+    if not isinstance(pkg, dict):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Invalid content package structure for ASIN {asin_clean}.",
+        }
+
+    queue: Optional[PublishingQueue] = None
+    unpublished_items: List[QueueItem] = []
+    if QUEUE_FILE.exists():
+        try:
+            queue = PublishingQueue.load(QUEUE_FILE)
+        except Exception as exc:
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Could not read publishing queue: {exc}",
+            }
+        matching_items = [it for it in queue.items if (it.asin or "").upper() == asin_clean]
+        unpublished_items = [
+            it for it in matching_items
+            if it.status not in (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED)
+            and not any(
+                isinstance(res, dict) and res.get("status") == STATUS_PUBLISHED
+                for res in (it.publishing_results or {}).values()
+            )
+        ]
+        if matching_items and not unpublished_items:
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Cannot remove video for ASIN {asin_clean} because it has already been published.",
+            }
+
+    pkg_changed = ContentPackage.detach_video(pkg)
+
+    queue_changed = False
+    updated_queue_item_id: Optional[str] = None
+    if queue is not None and unpublished_items:
+        for it in unpublished_items:
+            if it.media_type is not None or it.video_url is not None:
+                it.media_type = None
+                it.video_url = None
+                queue_changed = True
+                updated_queue_item_id = updated_queue_item_id or it.queue_item_id
+
+    if not pkg_changed and not queue_changed:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"No attached video found for ASIN {asin_clean}.",
+        }
+
+    if pkg_changed:
+        ContentPackage.save_content_package(
+            pkg,
+            f"asin_{asin_clean}",
+            target_dir=GENERATED_DIR,
+        )
+
+    if queue is not None and queue_changed:
+        queue.save(QUEUE_FILE)
+
+    return {
+        "success": True,
+        "asin": asin_clean,
+        "action": "removed",
+        "queue_updated": queue_changed,
+        "queue_item_id": updated_queue_item_id,
+        "message": (
+            f"Removed attached video from ASIN {asin_clean}. "
+            "Product data, affiliate links, and generated copy remain intact."
+        ),
+    }
+
+
+def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
+    """Add an existing unqueued product and its ContentPackage to the publishing queue.
+
+    Preserves the original Amazon affiliate URL, existing product facts and verified
+    product imagery, all generated platform content, and any attached R2 video URL.
+    Prevents duplicate queue entries and protects already-published or terminal items.
+    """
+    asin_clean = str(asin or "").upper().strip()
+    if not asin_clean:
+        return {"success": False, "asin": "", "message": "Product ASIN is required."}
+
+    prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
+    product: Optional[Product] = None
+    if prod_file.exists():
+        try:
+            with open(prod_file, "r", encoding="utf-8") as f:
+                product = Product.from_dict(json.load(f))
+        except Exception as exc:
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Product source data for ASIN {asin_clean} is unreadable: {exc}",
+            }
+
+    pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+    if not pkg_file.exists():
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"No content package found for ASIN {asin_clean}. Generate multi-platform content first.",
+        }
+
+    try:
+        with open(pkg_file, "r", encoding="utf-8") as f:
+            package = json.load(f)
+    except Exception as exc:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Content package for ASIN {asin_clean} is unreadable: {exc}",
+        }
+
+    if not isinstance(package, dict):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Invalid content package structure for ASIN {asin_clean}.",
+        }
+
+    pkg_asin = str(package.get("asin") or "").upper().strip()
+    if pkg_asin and pkg_asin != asin_clean:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"ContentPackage ASIN '{pkg_asin}' does not match requested ASIN '{asin_clean}'.",
+        }
+
+    if package.get("status") != STATUS_READY_FOR_REVIEW:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": (
+                f"Content package for ASIN {asin_clean} has status '{package.get('status')}'. "
+                f"Content must pass validation ('{STATUS_READY_FOR_REVIEW}') before queueing."
+            ),
+        }
+
+    pkg_source = package.get("source") if isinstance(package.get("source"), dict) else {}
+    pkg_aff = str(pkg_source.get("affiliate_url") or "").strip()
+    prod_aff = str((product.original_affiliate_url or product.affiliate_url) if product else "").strip()
+
+    if pkg_aff and prod_aff and pkg_aff != prod_aff:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Affiliate URL mismatch between cached product and ContentPackage for ASIN {asin_clean}.",
+        }
+
+    affiliate_url = pkg_aff or prod_aff
+    if not affiliate_url:
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Original Amazon affiliate URL is missing for ASIN {asin_clean}.",
+        }
+
+    if product is not None:
+        facts = FactExtractor.extract_canonical_facts(product)
+        if not facts.is_sufficient():
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Canonical product facts for ASIN {asin_clean} are insufficient for queueing.",
+            }
+
+    verified_image = recover_verified_image_url(package, products_dir=PRODUCTS_DIR) or (
+        product.image_url if product else None
+    )
+    if not is_valid_image_url(verified_image):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"No verified HTTPS product image found for ASIN {asin_clean}; cannot enqueue package.",
+        }
+
+    if any(
+        get_historical_destination_report(asin_clean, p).get("evidence_status") == "platform_verified"
+        for p in ACTIVE_PUBLISHING_PLATFORMS
+    ):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"Cannot enqueue ASIN {asin_clean}: verified publication history already exists.",
+        }
+
+    if QUEUE_FILE.exists():
+        try:
+            queue = PublishingQueue.load(QUEUE_FILE)
+        except Exception as exc:
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "message": f"Could not read publishing queue: {exc}",
+            }
+    else:
+        now_bp = datetime.now(get_budapest_timezone())
+        queue = PublishingQueue(
+            queue_id=f"queue_{now_bp.strftime('%Y%m%d')}_30d",
+            created_at=now_bp.isoformat(),
+            start_date=now_bp.strftime("%Y-%m-%d"),
+            total_days=30,
+            products_per_day=2,
+            target_capacity=60,
+        )
+
+    matching_items = [
+        it for it in queue.items
+        if (it.asin or "").upper() == asin_clean
+        or (it.original_url and it.original_url.strip() == affiliate_url)
+    ]
+    if matching_items:
+        for existing in matching_items:
+            has_live_pub = (
+                existing.status in (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED)
+                or any(
+                    isinstance(res, dict) and (res.get("status") == STATUS_PUBLISHED or _is_confirmed_live_result(res))
+                    for res in (existing.publishing_results or {}).values()
+                )
+            )
+            if has_live_pub:
+                return {
+                    "success": False,
+                    "asin": asin_clean,
+                    "queue_item_id": existing.queue_item_id,
+                    "message": f"Cannot enqueue ASIN {asin_clean}: this product has already been published.",
+                }
+        first_existing = matching_items[0]
+        if first_existing.status in (STATUS_FAILED, STATUS_SKIPPED):
+            return {
+                "success": False,
+                "asin": asin_clean,
+                "queue_item_id": first_existing.queue_item_id,
+                "message": (
+                    f"Cannot re-enqueue ASIN {asin_clean}: existing queue item "
+                    f"'{first_existing.queue_item_id}' has terminal status '{first_existing.status}'."
+                ),
+            }
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "queue_item_id": first_existing.queue_item_id,
+            "message": f"ASIN {asin_clean} is already in the publishing queue ({first_existing.queue_item_id}).",
+        }
+
+    pkg_video_url = str(package.get("video_url") or "").strip()
+    has_attached_video = bool(
+        pkg_video_url
+        and is_valid_video_url(pkg_video_url)
+        and package.get("media_type") == "video"
+    )
+    item_media_type: Optional[str] = "video" if has_attached_video else None
+    item_video_url: Optional[str] = pkg_video_url if has_attached_video else None
+
+    next_slot_info = QueueReplenisher.find_next_available_slot(queue)
+    item_id = next_queue_item_id(queue.items, asin_clean)
+    product_title = (
+        product.title
+        if product and product.title
+        else (pkg_source.get("title") or f"Product {asin_clean}")
+    )
+    pkg_path_str = to_repository_relative_path(pkg_file)
+
+    new_queue_item = QueueItem(
+        queue_item_id=item_id,
+        original_url=affiliate_url,
+        asin=asin_clean,
+        product_name=product_title,
+        scheduled_date=next_slot_info["date"],
+        daily_slot=next_slot_info["slot"],
+        scheduled_at=next_slot_info["scheduled_at"],
+        timezone=next_slot_info["timezone"],
+        package_reference=pkg_path_str,
+        status=STATUS_READY,
+        validation_status=STATUS_READY_FOR_REVIEW,
+        errors=[],
+        media_type=item_media_type,
+        video_url=item_video_url,
+    )
+    queue.items.append(new_queue_item)
+    queue.recalculate_counts()
+    QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    queue.save(QUEUE_FILE)
+
+    media_desc = "video package" if has_attached_video else "image package"
+    return {
+        "success": True,
+        "asin": asin_clean,
+        "queue_item_id": item_id,
+        "original_url": affiliate_url,
+        "scheduled_date": next_slot_info["date"],
+        "daily_slot": next_slot_info["slot"],
+        "scheduled_at": next_slot_info["scheduled_at"],
+        "timezone": next_slot_info["timezone"],
+        "package_path": pkg_path_str,
+        "status": STATUS_READY,
+        "validation_status": STATUS_READY_FOR_REVIEW,
+        "media_type": item_media_type or "image",
+        "video_url": item_video_url,
+        "queue_updated": True,
+        "message": (
+            f"Added ASIN {asin_clean} ({media_desc}) to publishing queue as {item_id} "
+            f"for {next_slot_info['date']} (Slot {next_slot_info['slot']})."
+        ),
+    }
+
+
+def add_products_from_urls(
+    urls_text: str,
+    config: Optional[Dict[str, Any]] = None,
+    video_file: Optional[Any] = None,
+    r2_config: Optional[R2Config] = None,
+    r2_client: Optional[R2Client] = None,
+) -> Dict[str, Any]:
     """
     Process manual Amazon affiliate URL(s) submission.
-    Pipeline: URL -> Product Resolution -> CanonicalProductFacts -> ContentGenerator -> Validator -> ContentPackage -> Queue.
+    Pipeline: URL -> Product Resolution -> CanonicalProductFacts -> ContentGenerator -> Validator -> ContentPackage -> (Optional R2 Video Upload) -> Queue.
     """
     cfg = config or load_application_config()
     # Keep duplicate lines here so the dashboard can report every submitted
@@ -1551,6 +2278,51 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             "rejected": 0,
             "results": []
         }
+
+    staged_video_path: Optional[Path] = None
+    staged_video_filename: str = ""
+    owns_staged_video: bool = False
+    max_video_bytes, video_upload_timeout = _resolve_video_upload_limits(cfg)
+
+    if video_file is not None:
+        if len(urls) > 1:
+            return {
+                "success": False,
+                "message": "Video attachment is supported for single-product import only. Please submit one Amazon affiliate URL when attaching a video.",
+                "total": len(urls),
+                "accepted": 0,
+                "rejected": len(urls),
+                "results": [
+                    {
+                        "url": u.strip(),
+                        "asin": extract_asin_from_url(u.strip()) or "",
+                        "status": "REJECTED",
+                        "reason": "Video attachment requires a single product URL.",
+                    }
+                    for u in urls
+                ],
+            }
+        vid_ok, staged_video_path, staged_video_filename, owns_staged_video, vid_err = _prepare_video_upload_source(
+            video_file,
+            max_size_bytes=max_video_bytes,
+        )
+        if not vid_ok or staged_video_path is None:
+            single_clean = urls[0].strip()
+            return {
+                "success": False,
+                "message": vid_err or "Invalid video file.",
+                "total": 1,
+                "accepted": 0,
+                "rejected": 1,
+                "results": [
+                    {
+                        "url": single_clean,
+                        "asin": extract_asin_from_url(single_clean) or "",
+                        "status": "REJECTED",
+                        "reason": vid_err or "Invalid video file.",
+                    }
+                ],
+            }
 
     batch_id = f"batch_{datetime.now(get_budapest_timezone()).strftime('%Y%m%dT%H%M%S%f')}_{uuid.uuid4().hex[:8]}"
     batch_created_at = datetime.now(get_budapest_timezone()).isoformat()
@@ -1687,7 +2459,8 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             try:
                 with open(pkg_file, "r", encoding="utf-8") as pf:
                     loaded_pkg = json.load(pf)
-                if loaded_pkg.get("status") == STATUS_READY_FOR_REVIEW:
+                loaded_aff = (loaded_pkg.get("source") or {}).get("affiliate_url")
+                if loaded_pkg.get("status") == STATUS_READY_FOR_REVIEW and (not loaded_aff or loaded_aff == url_clean):
                     package_image = (loaded_pkg.get("platforms", {}).get("pinterest") or {}).get("image_url")
                     if is_valid_image_url(package_image):
                         pkg = loaded_pkg
@@ -1734,6 +2507,8 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             pkg_path = ContentPackage.save_content_package(pkg, cache_key, target_dir=GENERATED_DIR)
         else:
             pkg_path = pkg_file
+            if staged_video_path is None and ContentPackage.detach_video(pkg):
+                pkg_path = ContentPackage.save_content_package(pkg, cache_key, target_dir=GENERATED_DIR)
 
         pkg_path_str = to_repository_relative_path(pkg_path)
 
@@ -1761,6 +2536,54 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             })
             continue
 
+        # 5.5 Optional Cloudflare R2 Video Upload (runs ONLY after product resolution and package validation succeed)
+        item_media_type: Optional[str] = None
+        item_video_url: Optional[str] = None
+        if staged_video_path is not None:
+            r2_res = upload_video_to_r2(
+                asin=asin_final,
+                local_video_path=staged_video_path,
+                filename_override=staged_video_filename,
+                max_size_bytes=max_video_bytes,
+                timeout=video_upload_timeout,
+                config=r2_config,
+                client=r2_client,
+            )
+            if not r2_res.get("success") or not r2_res.get("public_url"):
+                rejected_count += 1
+                results.append({
+                    "url": url_clean,
+                    "asin": asin_final,
+                    "status": "VIDEO_UPLOAD_FAILED",
+                    "stage": "video_upload",
+                    "reason": r2_res.get("error", "Cloudflare R2 video upload failed."),
+                })
+                continue
+
+            attached = ContentPackage.attach_verified_video(
+                pkg,
+                video_url=r2_res["public_url"],
+                object_key=r2_res.get("object_key"),
+                content_type=r2_res.get("content_type"),
+                filename=staged_video_filename,
+                size_bytes=r2_res.get("size_bytes"),
+            )
+            if not attached:
+                rejected_count += 1
+                results.append({
+                    "url": url_clean,
+                    "asin": asin_final,
+                    "status": "VIDEO_UPLOAD_FAILED",
+                    "stage": "video_upload",
+                    "reason": "Uploaded R2 video URL failed HTTPS verification.",
+                })
+                continue
+
+            pkg_path = ContentPackage.save_content_package(pkg, cache_key, target_dir=GENERATED_DIR)
+            pkg_path_str = to_repository_relative_path(pkg_path)
+            item_media_type = "video"
+            item_video_url = r2_res["public_url"]
+
         # 6. Allocate Next Slot and Schedule in Queue
         next_slot_info = QueueReplenisher.find_next_available_slot(queue)
         # Max existing numeric suffix + 1 (not len(items) + 1): diverged local
@@ -1780,7 +2603,9 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             status=STATUS_READY,
             validation_status=STATUS_READY_FOR_REVIEW,
             errors=[],
-            batch_id=batch_id
+            batch_id=batch_id,
+            media_type=item_media_type,
+            video_url=item_video_url,
         )
 
         queue.items.append(new_queue_item)
@@ -1789,7 +2614,7 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
         existing_urls.add(url_clean)
 
         accepted_count += 1
-        results.append({
+        accepted_entry: Dict[str, Any] = {
             "url": url_clean,
             "asin": asin_final,
             "title": product.title,
@@ -1798,8 +2623,16 @@ def add_products_from_urls(urls_text: str, config: Optional[Dict[str, Any]] = No
             "daily_slot": next_slot_info["slot"],
             "scheduled_at": next_slot_info["scheduled_at"],
             "package_path": pkg_path_str,
-            "queue_item_id": item_id
-        })
+            "queue_item_id": item_id,
+        }
+        if item_media_type:
+            accepted_entry["media_type"] = item_media_type
+        if item_video_url:
+            accepted_entry["video_url"] = item_video_url
+        results.append(accepted_entry)
+
+    if owns_staged_video and staged_video_path is not None:
+        staged_video_path.unlink(missing_ok=True)
 
     # Save queue and append the immutable import-run record. Processing and
     # publishing update queue state only; they never create a new batch.
@@ -1935,6 +2768,18 @@ def regenerate_content(asin: str, config: Optional[Dict[str, Any]] = None) -> Di
         cache_file_path=f"data/products/{cache_key}.json",
         model_name=provider.model
     )
+
+    existing_pkg = detail.get("package") if isinstance(detail.get("package"), dict) else {}
+    if existing_pkg.get("media_type") == "video" and existing_pkg.get("video_url"):
+        existing_video_meta = existing_pkg.get("video") if isinstance(existing_pkg.get("video"), dict) else {}
+        ContentPackage.attach_verified_video(
+            pkg,
+            video_url=existing_pkg["video_url"],
+            object_key=existing_pkg.get("video_object_key") or existing_video_meta.get("object_key"),
+            content_type=existing_pkg.get("video_content_type") or existing_video_meta.get("content_type"),
+            filename=existing_video_meta.get("filename"),
+            size_bytes=existing_video_meta.get("size_bytes"),
+        )
 
     ContentPackage.save_content_package(pkg, cache_key, target_dir=GENERATED_DIR)
 
@@ -2216,6 +3061,9 @@ def execute_live_publish_item(
         publisher = SocialPublisher(
             config=PublishingConfig.from_dict(cfg, dry_run_override=False)
         )
+        if is_valid_video_url(getattr(item, "video_url", None)) and not is_valid_video_url(package.get("video_url")):
+            package = dict(package)
+            ContentPackage.attach_verified_video(package, item.video_url)
         report = publisher.publish_package(
             package,
             dry_run=False,
@@ -2281,7 +3129,7 @@ def execute_live_publish_item(
             p_status = p_res.get("status")
             if p_res.get("action") == "SKIP_DUPLICATE":
                 p_status = "SKIPPED_DUPLICATE"
-            p_id = p_res.get("post_id") or p_res.get("pin_id") or p_res.get("photo_id") or "none"
+            p_id = p_res.get("post_id") or p_res.get("video_id") or p_res.get("pin_id") or p_res.get("photo_id") or "none"
             QueuePublisher.log_event(
                 f"Manual live publish [{queue_item_id}][{p_name}]: {p_status} (id: {p_id})"
             )

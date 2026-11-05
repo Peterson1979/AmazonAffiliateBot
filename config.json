@@ -2,9 +2,24 @@
   "ollama": {
     "base_url": "http://localhost:11434",
     "model": "qwen2.5:7b",
-    "timeout": 300,
+    "timeout": 60,
+    "max_attempts": 2,
     "num_predict": 90,
     "num_ctx": 1024
+  },
+  "content_generation": {
+    "provider": "groq",
+    "timeout": 30,
+    "max_attempts": 2
+  },
+  "groq": {
+    "base_url": "https://api.groq.com/openai/v1",
+    "model": "openai/gpt-oss-120b",
+    "api_key_env": "GROQ_API_KEY",
+    "timeout": 30,
+    "max_attempts": 2,
+    "num_predict": 320,
+    "reasoning_effort": "low"
   },
   "affiliate": {
     "disclosure": "This post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
@@ -14,7 +29,7 @@
     "firefox_profile": ""
   },
   "publishing": {
-    "dry_run": true,
+    "dry_run": false,
     "accounts": {
       "facebook": {
         "account": "LifeModeHQ"
@@ -47,7 +62,7 @@
     "enabled": false,
     "target_future_capacity": 32,
     "min_future_capacity": 16,
-    "tracking_tag": "customtag-20",
+    "tracking_tag": "homeideas4a01-20",
     "queries": [
       "ergonomic office accessories",
       "wfh setup gadgets"

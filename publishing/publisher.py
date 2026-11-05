@@ -27,7 +27,7 @@ def _confirmed_live_result(result: Dict[str, Any]) -> bool:
         isinstance(result, dict)
         and result.get("status") == STATUS_PUBLISHED
         and result.get("mode") == "LIVE"
-        and any(result.get(key) for key in ("post_id", "pin_id", "photo_id", "permalink", "permalink_url", "pin_url"))
+        and any(result.get(key) for key in ("post_id", "video_id", "pin_id", "photo_id", "permalink", "permalink_url", "pin_url"))
     )
 
 
@@ -93,11 +93,15 @@ class SocialPublisher:
 
         from pathlib import Path
         from publishing.images import is_valid_image_url, recover_verified_image_url
+        from content.package import is_valid_video_url
         from content.pinterest_creative import get_selected_creative, has_creative_context
 
         project_root = Path(__file__).resolve().parent.parent
 
         asin = package.get("asin")
+        raw_pkg_video = package.get("video_url")
+        pkg_video_url = raw_pkg_video.strip() if is_valid_video_url(raw_pkg_video) else None
+
         product_has_creative_context = bool(asin and has_creative_context(asin))
         selected_creative_info: Optional[Dict[str, Any]] = None
         creative_resolution_error: Optional[str] = None
@@ -163,73 +167,145 @@ class SocialPublisher:
                 all_succeeded = False
                 continue
 
-            if product_has_creative_context:
-                if creative_resolution_error:
-                    results[result_key] = {
-                        "platform": platform_name,
-                        "account": account_cfg.get("account", ""),
-                        "action": "PUBLISH",
-                        "mode": mode,
-                        "status": STATUS_FAILED,
-                        "errors": [creative_resolution_error],
-                    }
-                    all_succeeded = False
-                    continue
-
-                p_content = dict(p_content)
-                p_content["selected_creative"] = selected_creative_info
-                p_content["image_path"] = selected_creative_info.get("resolved_image_path") or selected_creative_info.get("selected_image_path")
-                p_content["image_url"] = selected_creative_info.get("uploaded_image_url") or selected_creative_info.get("selected_image_path")
-
-                if platform_name == "threads":
-                    img_val = p_content.get("image_url")
-                    if not is_valid_image_url(img_val):
-                        results[result_key] = {
-                            "platform": platform_name,
-                            "account": account_cfg.get("account", ""),
-                            "action": "PUBLISH",
-                            "mode": mode,
-                            "status": STATUS_FAILED,
-                            "errors": [
-                                "Threads requires a publicly accessible HTTPS image URL for creative image publishing. "
-                                f"Local creative path '{img_val}' cannot be fetched by Threads API."
-                            ],
-                        }
-                        all_succeeded = False
-                        continue
-            else:
-                # Resolve only from this package or its same-ASIN product cache.
-                if not p_content.get("image_url"):
-                    img_candidate = recover_verified_image_url(package)
-                    if img_candidate:
-                        p_content["image_url"] = img_candidate
-
-                if platform_name in ("pinterest", "threads"):
-                    img_val = p_content.get("image_url")
-                    if not is_valid_image_url(img_val):
-                        results[result_key] = {
-                            "platform": platform_name,
-                            "account": account_cfg.get("account", ""),
-                            "action": "PUBLISH",
-                            "mode": mode,
-                            "status": STATUS_FAILED,
-                            "errors": [
-                                f"Blocked: {platform_name.capitalize()} requires a verified HTTPS image URL from the product package or same-ASIN cache."
-                            ],
-                        }
-                        all_succeeded = False
-                        continue
-
-            # Route to platform adapter
-            account_cfg_to_use = dict(account_cfg)
-            # Facebook supports a text-only Page feed post when no verified
-            # image is available. Pinterest and Threads require an image.
-            account_cfg_to_use["require_image"] = platform_name in ("pinterest", "threads")
-            pub_res = adapter.publish(
-                content=p_content,
-                account_config=account_cfg_to_use,
-                dry_run=is_dry_run
+            raw_plat_video = p_content.get("video_url")
+            target_video_url = (
+                raw_plat_video.strip()
+                if is_valid_video_url(raw_plat_video)
+                else pkg_video_url
             )
+
+            account_cfg_to_use = dict(account_cfg)
+
+            if target_video_url:
+                # Video publishing path: route public HTTPS R2 video_url to each platform
+                # while preserving existing product image_url as the Pinterest video cover.
+                p_content = dict(p_content)
+                p_content["video_url"] = target_video_url
+                p_content["media_type"] = "video"
+
+                cover_candidate = p_content.get("image_url")
+                if not is_valid_image_url(cover_candidate):
+                    recovered_img = recover_verified_image_url(package)
+                    if recovered_img:
+                        cover_candidate = recovered_img
+                        p_content["image_url"] = recovered_img
+
+                if platform_name == "pinterest":
+                    if not is_valid_image_url(cover_candidate):
+                        results[result_key] = {
+                            "platform": platform_name,
+                            "account": account_cfg.get("account", ""),
+                            "action": "PUBLISH",
+                            "mode": mode,
+                            "status": STATUS_FAILED,
+                            "errors": [
+                                "Blocked: Pinterest video Pin requires a verified HTTPS cover image URL (image_url) from the product package or same-ASIN cache."
+                            ],
+                        }
+                        all_succeeded = False
+                        continue
+                    p_content["cover_image_url"] = cover_candidate.strip()
+
+                account_cfg_to_use["require_image"] = (platform_name == "pinterest")
+            else:
+                # Existing image/text publishing path: strip any invalid/empty video_url
+                # so adapters remain 100% on the image/text workflow.
+                if "video_url" in p_content:
+                    p_content = dict(p_content)
+                    p_content.pop("video_url", None)
+
+                if product_has_creative_context:
+                    if creative_resolution_error:
+                        results[result_key] = {
+                            "platform": platform_name,
+                            "account": account_cfg.get("account", ""),
+                            "action": "PUBLISH",
+                            "mode": mode,
+                            "status": STATUS_FAILED,
+                            "errors": [creative_resolution_error],
+                        }
+                        all_succeeded = False
+                        continue
+
+                    p_content = dict(p_content)
+                    p_content["selected_creative"] = selected_creative_info
+                    p_content["image_path"] = selected_creative_info.get("resolved_image_path") or selected_creative_info.get("selected_image_path")
+                    p_content["image_url"] = selected_creative_info.get("uploaded_image_url") or selected_creative_info.get("selected_image_path")
+
+                    if platform_name == "threads":
+                        img_val = p_content.get("image_url")
+                        if not is_valid_image_url(img_val):
+                            local_img = p_content.get("image_path")
+                            if local_img and Path(local_img).is_file():
+                                from publishing.r2_storage import upload_creative_to_r2
+                                r2_res = upload_creative_to_r2(
+                                    asin=asin,
+                                    local_image_path=local_img,
+                                    dry_run=is_dry_run,
+                                )
+                                if r2_res.get("success") and r2_res.get("public_url"):
+                                    p_content["image_url"] = r2_res["public_url"]
+                                    img_val = p_content["image_url"]
+
+                        if not is_valid_image_url(img_val):
+                            results[result_key] = {
+                                "platform": platform_name,
+                                "account": account_cfg.get("account", ""),
+                                "action": "PUBLISH",
+                                "mode": mode,
+                                "status": STATUS_FAILED,
+                                "errors": [
+                                    "Threads requires a publicly accessible HTTPS image URL for creative image publishing. "
+                                    f"Local creative path '{img_val}' cannot be fetched by Threads API."
+                                ],
+                            }
+                            all_succeeded = False
+                            continue
+                else:
+                    # Resolve only from this package or its same-ASIN product cache.
+                    if not p_content.get("image_url"):
+                        img_candidate = recover_verified_image_url(package)
+                        if img_candidate:
+                            p_content = dict(p_content)
+                            p_content["image_url"] = img_candidate
+
+                    if platform_name in ("pinterest", "threads"):
+                        img_val = p_content.get("image_url")
+                        if not is_valid_image_url(img_val):
+                            results[result_key] = {
+                                "platform": platform_name,
+                                "account": account_cfg.get("account", ""),
+                                "action": "PUBLISH",
+                                "mode": mode,
+                                "status": STATUS_FAILED,
+                                "errors": [
+                                    f"Blocked: {platform_name.capitalize()} requires a verified HTTPS image URL from the product package or same-ASIN cache."
+                                ],
+                            }
+                            all_succeeded = False
+                            continue
+
+                # Facebook supports a text-only Page feed post when no verified
+                # image is available. Pinterest and Threads require an image.
+                account_cfg_to_use["require_image"] = platform_name in ("pinterest", "threads")
+
+            # Route to platform adapter with independent failure isolation
+            try:
+                pub_res = adapter.publish(
+                    content=p_content,
+                    account_config=account_cfg_to_use,
+                    dry_run=is_dry_run
+                )
+            except Exception as exc:
+                pub_res = {
+                    "platform": platform_name,
+                    "account": account_cfg.get("account", ""),
+                    "action": "PUBLISH",
+                    "mode": mode,
+                    "status": STATUS_FAILED,
+                    "errors": [f"Unexpected adapter exception for '{result_key}': {exc}"],
+                    "message": f"Publishing failed for '{result_key}' due to unexpected adapter error: {exc}",
+                }
             results[result_key] = pub_res
 
             if pub_res.get("status") not in (STATUS_WOULD_PUBLISH, STATUS_PUBLISHED):
@@ -269,6 +345,38 @@ class SocialPublisher:
             return {"status": STATUS_FAILED, "errors": ["Content package is not READY_FOR_REVIEW."]}
         pin_content = package.get("platforms", {}).get("pinterest") or {}
         asin = package.get("asin")
+
+        from content.package import is_valid_video_url
+        from publishing.images import is_valid_image_url, recover_verified_image_url
+
+        raw_pin_vid = pin_content.get("video_url")
+        raw_pkg_vid = package.get("video_url")
+        target_video_url = (
+            raw_pin_vid.strip()
+            if is_valid_video_url(raw_pin_vid)
+            else (raw_pkg_vid.strip() if is_valid_video_url(raw_pkg_vid) else None)
+        )
+
+        if target_video_url:
+            cover_url = pin_content.get("image_url")
+            if not is_valid_image_url(cover_url):
+                cover_url = recover_verified_image_url(package)
+            if not is_valid_image_url(cover_url):
+                return {
+                    "status": STATUS_FAILED,
+                    "errors": ["Pinterest video Pin requires a verified HTTPS cover image URL."],
+                }
+            pin_content = dict(pin_content)
+            pin_content["video_url"] = target_video_url
+            pin_content["media_type"] = "video"
+            pin_content["image_url"] = cover_url.strip()
+            pin_content["cover_image_url"] = cover_url.strip()
+            return adapter.publish(pin_content, account_cfg, dry_run=self.config.dry_run if dry_run is None else dry_run)
+
+        if "video_url" in pin_content:
+            pin_content = dict(pin_content)
+            pin_content.pop("video_url", None)
+
         from content.pinterest_creative import get_selected_creative, has_creative_context
         if asin and has_creative_context(asin):
             selected_info = get_selected_creative(asin)
@@ -288,7 +396,6 @@ class SocialPublisher:
             elif selected_info.get("selected_image_path"):
                 pin_content["image_url"] = selected_info["selected_image_path"]
 
-        from publishing.images import is_valid_image_url, recover_verified_image_url
         image_url = pin_content.get("image_url") or recover_verified_image_url(package)
         has_valid_creative_image = bool(
             pin_content.get("image_path")

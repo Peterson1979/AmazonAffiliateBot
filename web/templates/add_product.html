@@ -10,14 +10,50 @@
   </div>
 </div>
 
+<section class="card" style="margin-bottom: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px;">
+    <div>
+      <div class="card-title" style="margin-bottom: 4px;">Open an Existing Product</div>
+      <div class="help-text">Select a previously imported product to review generated copy, attach or replace its video, add it to the publishing queue, or publish it without re-submitting its Amazon URL.</div>
+    </div>
+    <a href="{{ url_for('products') }}" class="btn btn-sm btn-secondary">Browse Products Directory</a>
+  </div>
+  {% if existing_products %}
+    <form method="GET" action="{{ url_for('add_product') }}" style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 280px;">
+        <label for="existing_asin">Existing Cached Products ({{ existing_products|length }})</label>
+        <select id="existing_asin" name="existing_asin" required>
+          <option value="" disabled selected>— Select an existing product by ASIN or title —</option>
+          {% for p in existing_products %}
+            <option value="{{ p.asin }}">
+              {{ p.asin }} — {{ (p.title or p.asin)|truncate(72) }} [{{ p.ui_label or p.queue_status }}{% if p.media_type == 'video' %} · 🎬 Video{% endif %}]
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-secondary">Open Product Detail &rarr;</button>
+      </div>
+    </form>
+  {% else %}
+    <div class="help-text" style="color: var(--text-muted);">No cached products found yet. Import your first Amazon affiliate URL below.</div>
+  {% endif %}
+</section>
+
 <div class="grid-2">
   <!-- Input Form -->
   <div class="card">
     <div class="card-title" style="margin-bottom: 16px;">Enter Amazon Affiliate Links</div>
-    <form method="POST" action="{{ url_for('add_product') }}" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled=true; btn.innerText='⏳ Processing Products...';">
+    <form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled=true; btn.innerText='⏳ Processing Products...';">
       <div class="form-group">
         <label for="url">Single Affiliate URL (Optional)</label>
         <input type="text" id="url" name="url" placeholder="https://www.amazon.com/dp/B0XXXXXXXX?tag=lifemode-20">
+      </div>
+
+      <div class="form-group">
+        <label for="video">Attach Local Product Video (Optional — Single URL only)</label>
+        <input type="file" id="video" name="video" accept=".mp4,.mov,video/mp4,video/quicktime">
+        <div class="help-text">Supports MP4 (.mp4) and MOV (.mov). Uploaded to Cloudflare R2 after product resolution and content validation succeed. Leave empty for image-only or batch imports.</div>
       </div>
 
       <div class="form-group">
@@ -56,8 +92,11 @@ https://link.amazon/B0YYYYYYYY
               {% for res in result.results %}
               <tr>
                 <td style="font-size: 0.82rem; word-break: break-all;">
-                  {% if res.asin != 'UNKNOWN' %}
+                  {% if res.asin and res.asin != 'UNKNOWN' and res.asin.strip() %}
                     <strong><a href="{{ url_for('product_detail', asin=res.asin) }}" style="color: var(--primary);">{{ res.asin }}</a></strong><br>
+                  {% endif %}
+                  {% if not res.asin or res.asin == 'UNKNOWN' %}
+                    <span class="asin-fallback" style="color: var(--muted); font-size: 0.78rem;">URL: {{ res._display_url or res.url }}</span>
                   {% endif %}
                   {{ res.url }}
                 </td>
@@ -75,6 +114,9 @@ https://link.amazon/B0YYYYYYYY
                 <td style="font-size: 0.82rem; color: #cbd5e1;">
                   {% if res.status == 'ACCEPTED' %}
                     Scheduled on <strong>{{ res.scheduled_date }}</strong> (Slot {{ res.daily_slot }})
+                    {% if res.video_url %}
+                      <br><span class="badge badge-info" style="margin-top: 4px; display: inline-block;">🎬 Video Uploaded to R2</span>
+                    {% endif %}
                   {% else %}
                     {{ res.reason }}
                   {% endif %}
@@ -94,7 +136,7 @@ https://link.amazon/B0YYYYYYYY
         <div style="margin-bottom: 8px;">2. <strong>CanonicalProductFacts:</strong> Extracts isolated structured ground truth facts.</div>
         <div style="margin-bottom: 8px;">3. <strong>Local Ollama (qwen2.5:7b):</strong> Produces marketing-oriented platform copy (Facebook, Pinterest, Threads).</div>
         <div style="margin-bottom: 8px;">4. <strong>ClaimValidator:</strong> Enforces universal claim grounding against source facts.</div>
-        <div style="margin-bottom: 8px;">5. <strong>Publishing Queue:</strong> Appends valid packages to next available daily slots (12:00 / 19:00 Europe/Budapest).</div>
+        <div style="margin-bottom: 8px;">5. <strong>Publishing Queue:</strong> Appends valid packages to next available daily slots (15:00 / 21:00 Europe/Budapest).</div>
       </div>
     </div>
   </div>

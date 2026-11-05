@@ -9,7 +9,8 @@
 [CmdletBinding()]
 param(
     [int]$Port = 5000,
-    [switch]$OpenBrowser
+    [switch]$OpenBrowser,
+    [switch]$RestartExisting
 )
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -31,8 +32,32 @@ if (Test-Path ".venv\Scripts\python.exe") {
 
 $DashboardUrl = "http://127.0.0.1:$Port/"
 $HealthUrl = "http://127.0.0.1:$Port/healthz"
+$DashboardScript = Join-Path $ProjectRoot "amazon_affiliate.py"
+
+function Stop-ExistingDashboard {
+    $projectMarker = $ProjectRoot.ToLowerInvariant()
+    $dashboardMarker = $DashboardScript.ToLowerInvariant()
+    $portMarker = "--port $Port"
+    $processes = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
+        $commandLine = ([string]$_.CommandLine).ToLowerInvariant()
+        $relativeDashboard = $commandLine -match '(^|\s)amazon_affiliate\.py(\s|$)'
+        $dashboardScriptMatch = $commandLine.Contains($dashboardMarker) -or $relativeDashboard
+        $commandLine -and $dashboardScriptMatch -and $commandLine.Contains("--dashboard") -and $commandLine.Contains($portMarker.ToLowerInvariant()) -and ($commandLine.Contains($projectMarker) -or $relativeDashboard)
+    }
+    foreach ($existing in $processes) {
+        Stop-Process -Id $existing.ProcessId -ErrorAction SilentlyContinue
+    }
+    if ($processes) {
+        Start-Sleep -Milliseconds 500
+    }
+}
 
 function Test-DashboardReady {
+    $listener = Get-NetTCPConnection -LocalAddress "127.0.0.1" -LocalPort $Port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $listener) {
+        return $false
+    }
+
     try {
         $response = Invoke-WebRequest -UseBasicParsing -Uri $HealthUrl -TimeoutSec 2
         return ($response.StatusCode -ge 200 -and $response.StatusCode -lt 500)
@@ -41,7 +66,11 @@ function Test-DashboardReady {
     }
 }
 
-if (Test-DashboardReady) {
+if ($RestartExisting) {
+    Stop-ExistingDashboard
+}
+
+if (-not $RestartExisting -and (Test-DashboardReady)) {
     Write-Host "[OK] Dashboard already running at $DashboardUrl" -ForegroundColor Green
     if ($OpenBrowser) { Start-Process $DashboardUrl }
     exit 0
@@ -57,7 +86,7 @@ Write-Host "[INFO] Starting dashboard on $DashboardUrl" -ForegroundColor Cyan
 $logDir = Join-Path $ProjectRoot "data\logs"
 $stdoutLog = Join-Path $logDir "dashboard.stdout.log"
 $stderrLog = Join-Path $logDir "dashboard.stderr.log"
-$process = Start-Process -FilePath $PythonExe -ArgumentList @("amazon_affiliate.py", "--dashboard", "--port", "$Port") -WorkingDirectory $ProjectRoot -PassThru -WindowStyle Hidden -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog
+$process = Start-Process -FilePath $PythonExe -ArgumentList @($DashboardScript, "--dashboard", "--port", "$Port") -WorkingDirectory $ProjectRoot -PassThru -WindowStyle Hidden -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog
 
 $ready = $false
 for ($attempt = 1; $attempt -le 30; $attempt++) {

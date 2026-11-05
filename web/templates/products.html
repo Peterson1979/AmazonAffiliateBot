@@ -146,6 +146,7 @@
         <th>Facts</th>
         <th>Content</th>
         <th>Validation</th>
+        <th>Media</th>
         <th>Flow Creative</th>
         <th>Publishing state</th>
         <th>Platform results</th>
@@ -189,7 +190,18 @@
             {% endif %}
           </td>
           <td>
-            {% if p.flow_creative %}
+            {% if p.media_type == 'video' %}
+              <span class="badge badge-info">🎬 Video</span>
+            {% elif p.media_type == 'image' %}
+              <span class="badge badge-muted">🖼️ Image</span>
+            {% else %}
+              <span class="badge badge-muted" style="opacity: 0.75;">— No Media</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if p.media_type == 'video' %}
+              <span class="badge badge-success">🎬 Video Pin Active</span>
+            {% elif p.flow_creative %}
               <span class="badge {{ p.flow_creative.badge_class }}">{{ p.flow_creative.label }}</span>
               {% if p.flow_creative.selected_display %}
                 <div class="table-subtext">{{ p.flow_creative.selected_display }}</div>
@@ -204,7 +216,7 @@
           </td>
           <td><div class="platform-result-list compact-results">
             {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
-              <div class="platform-result"><span>{{ {'facebook': 'Facebook', 'pinterest': 'Pinterest', 'pinterest_lifemodehq': 'Pinterest LifeModeHQ', 'threads': 'Threads'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
+              <div class="platform-result"><span>{{ {'facebook': 'Facebook (LifeModeHQ)', 'pinterest': 'Pinterest (dailyideasforyou)', 'pinterest_lifemodehq': 'Pinterest (LifeModeHQ)', 'threads': 'Threads (lifemodehq)'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
             {% endfor %}
           </div>
           </td>
@@ -223,7 +235,7 @@
         {% endfor %}
       {% else %}
         <tr>
-          <td colspan="10" style="text-align: center; padding: 32px; color: var(--text-muted);">
+          <td colspan="11" style="text-align: center; padding: 32px; color: var(--text-muted);">
             No products match the selected criteria.
           </td>
         </tr>
@@ -247,7 +259,8 @@
           <th>Product Title</th>
           <th>Facts</th>
           <th>Content</th>
-          <th>Flow Creative</th>
+          <th>Media</th>
+        <th>Flow Creative</th>
           <th>Publishing state</th>
           <th>Platform results</th>
           <th>Published at</th>
@@ -268,7 +281,18 @@
           <td><span class="badge badge-success">{{ p.facts_count }} Facts</span></td>
           <td><span class="badge badge-success">Generated</span></td>
           <td>
-            {% if p.flow_creative %}
+            {% if p.media_type == 'video' %}
+              <span class="badge badge-info">🎬 Video</span>
+            {% elif p.media_type == 'image' %}
+              <span class="badge badge-muted">🖼️ Image</span>
+            {% else %}
+              <span class="badge badge-muted" style="opacity: 0.75;">— No Media</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if p.media_type == 'video' %}
+              <span class="badge badge-success">🎬 Video Pin Active</span>
+            {% elif p.flow_creative %}
               <span class="badge {{ p.flow_creative.badge_class }}">{{ p.flow_creative.label }}</span>
               {% if p.flow_creative.selected_display %}
                 <div class="table-subtext">{{ p.flow_creative.selected_display }}</div>
@@ -281,7 +305,7 @@
           <td>
             <div class="platform-result-list compact-results">
               {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
-                <div class="platform-result"><span>{{ {'facebook': 'Facebook', 'pinterest': 'Pinterest', 'pinterest_lifemodehq': 'Pinterest LifeModeHQ', 'threads': 'Threads'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% endif %}</div>
+                <div class="platform-result"><span>{{ {'facebook': 'Facebook (LifeModeHQ)', 'pinterest': 'Pinterest (dailyideasforyou)', 'pinterest_lifemodehq': 'Pinterest (LifeModeHQ)', 'threads': 'Threads (lifemodehq)'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% endif %}</div>
               {% endfor %}
             </div>
           </td>

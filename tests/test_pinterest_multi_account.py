@@ -46,7 +46,7 @@ class TestPinterestMultiAccount(unittest.TestCase):
 
         report = publisher.publish_package(
             self.package,
-            prior_results={"pinterest": {"status": STATUS_PUBLISHED, "pin_id": "daily-pin"}},
+            prior_results={"pinterest": {"status": STATUS_PUBLISHED, "mode": "LIVE", "pin_id": "daily-pin"}},
         )
 
         self.assertEqual(report["results"]["pinterest"]["action"], "SKIP_DUPLICATE")

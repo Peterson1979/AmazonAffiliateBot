@@ -54,8 +54,19 @@ class BasePlatformAdapter(ABC):
                 "status": STATUS_WOULD_PUBLISH,
                 "message": f"Simulated publish to {self.platform_name} ({account_name}). No real request sent."
             }
+            if content.get("video_url"):
+                result["video_url"] = content.get("video_url")
+                result["media_type"] = "VIDEO"
             if self.platform_name == "pinterest":
                 result["board"] = account_config.get("board", "")
+                result["title"] = content.get("title", "")
+                result["link"] = content.get("link", "")
+                if content.get("image_path"):
+                    result["image_path"] = content.get("image_path")
+                if content.get("image_url"):
+                    result["image_url"] = content.get("image_url")
+                if content.get("cover_image_url"):
+                    result["cover_image_url"] = content.get("cover_image_url")
             return result
 
         # Live publishing: verify credentials first

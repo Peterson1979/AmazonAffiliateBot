@@ -7,6 +7,7 @@ Active supported platforms: Facebook, Pinterest, Threads. Historical X entries a
 from typing import Dict, Any, Optional, List, Tuple
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 import json
 
 from amazon.scraper import Product, is_valid_image_url
@@ -17,6 +18,17 @@ SUPPORTED_PLATFORMS = ("facebook", "pinterest", "threads")
 STATUS_READY_FOR_REVIEW = "READY_FOR_REVIEW"
 STATUS_FAILED_VALIDATION = "FAILED_VALIDATION"
 STATUS_VALID = "VALID"
+
+
+def is_valid_video_url(url: Any) -> bool:
+    """Return True when url is a valid, publicly addressable HTTPS video URL."""
+    if not isinstance(url, str):
+        return False
+    cleaned = url.strip()
+    if not cleaned or any(ch.isspace() for ch in cleaned):
+        return False
+    parsed = urlparse(cleaned)
+    return parsed.scheme == "https" and bool(parsed.netloc) and bool(parsed.path.strip("/"))
 
 
 class ContentPackage:
@@ -203,3 +215,71 @@ class ContentPackage:
             if isinstance(platform_entry, dict):
                 platform_entry["image_url"] = image_url.strip()
         return True
+
+    @staticmethod
+    def attach_verified_video(
+        package: Dict[str, Any],
+        video_url: str,
+        object_key: Optional[str] = None,
+        content_type: Optional[str] = None,
+        filename: Optional[str] = None,
+        size_bytes: Optional[int] = None,
+    ) -> bool:
+        """Attach one verified R2 video URL to the package and every active platform entry.
+
+        Preserves existing image_url fields (required for Pinterest video cover)
+        and leaves source.affiliate_url and platform affiliate links unchanged.
+        """
+        if not isinstance(package, dict) or not is_valid_video_url(video_url):
+            return False
+        clean_url = video_url.strip()
+        package["media_type"] = "video"
+        package["video_url"] = clean_url
+
+        video_meta: Dict[str, Any] = {
+            "video_url": clean_url,
+            "asin": package.get("asin", ""),
+            "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if object_key:
+            package["video_object_key"] = str(object_key).strip()
+            video_meta["object_key"] = str(object_key).strip()
+        if content_type:
+            package["video_content_type"] = str(content_type).strip()
+            video_meta["content_type"] = str(content_type).strip()
+        if filename:
+            video_meta["filename"] = str(filename).strip()
+        if size_bytes is not None:
+            video_meta["size_bytes"] = int(size_bytes)
+        package["video"] = video_meta
+
+        for platform_name in SUPPORTED_PLATFORMS:
+            platform_entry = package.get("platforms", {}).get(platform_name)
+            if isinstance(platform_entry, dict):
+                platform_entry["media_type"] = "video"
+                platform_entry["video_url"] = clean_url
+        return True
+
+    @staticmethod
+    def detach_video(package: Dict[str, Any]) -> bool:
+        """Remove video metadata from a package when re-used for an image-only import."""
+        if not isinstance(package, dict):
+            return False
+        changed = False
+        for key in ("video_url", "video", "video_object_key", "video_content_type"):
+            if key in package:
+                package.pop(key, None)
+                changed = True
+        if package.get("media_type") == "video":
+            package.pop("media_type", None)
+            changed = True
+        for platform_name in SUPPORTED_PLATFORMS:
+            platform_entry = (package.get("platforms") or {}).get(platform_name)
+            if isinstance(platform_entry, dict):
+                if "video_url" in platform_entry:
+                    platform_entry.pop("video_url", None)
+                    changed = True
+                if platform_entry.get("media_type") == "video":
+                    platform_entry.pop("media_type", None)
+                    changed = True
+        return changed

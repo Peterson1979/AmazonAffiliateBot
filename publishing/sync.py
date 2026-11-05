@@ -33,6 +33,8 @@ from publishing.queue import (
     SLOT_1_TIME,
     SLOT_2_TIME,
     get_budapest_timezone,
+    next_queue_item_id,
+    portable_package_reference,
     STATUS_READY,
     STATUS_PUBLISHED,
     STATUS_PARTIALLY_PUBLISHED,
@@ -43,9 +45,273 @@ from publishing.queue import (
 SYNC_LOCK = threading.Lock()
 
 
+def _as_claim_dict(value: Any) -> Dict[str, Any]:
+    """Return a claim record only when it is a non-empty dictionary."""
+    return dict(value) if isinstance(value, dict) and value else {}
+
+
+def _parse_claim_timestamp(value: Any) -> Optional[datetime]:
+    try:
+        parsed = datetime.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+    return parsed
+
+
+def _claim_is_newer(candidate: Dict[str, Any], reference: Dict[str, Any]) -> bool:
+    """True when ``candidate`` has the newer ``claimed_at`` timestamp."""
+    candidate_ts = str(candidate.get("claimed_at") or "")
+    reference_ts = str(reference.get("claimed_at") or "")
+    candidate_dt = _parse_claim_timestamp(candidate_ts)
+    reference_dt = _parse_claim_timestamp(reference_ts)
+    if candidate_dt is None or reference_dt is None:
+        # Unparseable timestamps lose against parseable ones; if both are
+        # unparseable fall back to a deterministic lexicographic comparison.
+        if candidate_dt is None and reference_dt is None:
+            return candidate_ts > reference_ts
+        return candidate_dt is not None
+    try:
+        return candidate_dt > reference_dt
+    except TypeError:
+        # Mixed naive/aware timestamps: compare their string form instead.
+        return candidate_ts > reference_ts
+
+
+def merge_slot_claims(
+    local_claims: Any,
+    remote_claims: Any,
+) -> Dict[str, Dict[str, Any]]:
+    """Merge the persisted ``slot_claims`` maps of both queues by claim key.
+
+    Rules:
+    - A claim key present on only one side is always preserved.
+    - On conflict, ``COMPLETED`` wins, so a finished slot can never be
+      reopened by a stale claim from the other side.
+    - Otherwise the claim with the newer ``claimed_at`` wins (ties resolve to
+      the remote claim for deterministic, cloud-baseline behaviour).
+
+    Claims dropped here would let a scheduled slot run twice, so the merge is
+    explicit rather than incidental to the item merge.
+    """
+    local_map = local_claims if isinstance(local_claims, dict) else {}
+    remote_map = remote_claims if isinstance(remote_claims, dict) else {}
+
+    merged: Dict[str, Dict[str, Any]] = {}
+    for key in sorted(set(local_map) | set(remote_map)):
+        local_claim = _as_claim_dict(local_map.get(key))
+        remote_claim = _as_claim_dict(remote_map.get(key))
+
+        if local_claim and not remote_claim:
+            merged[key] = local_claim
+            continue
+        if remote_claim and not local_claim:
+            merged[key] = remote_claim
+            continue
+        if not local_claim and not remote_claim:
+            continue
+
+        local_completed = local_claim.get("state") == "COMPLETED"
+        remote_completed = remote_claim.get("state") == "COMPLETED"
+        if local_completed != remote_completed:
+            merged[key] = local_claim if local_completed else remote_claim
+        elif _claim_is_newer(local_claim, remote_claim):
+            merged[key] = local_claim
+        else:
+            merged[key] = remote_claim
+    return merged
+
+
+def merge_import_batches(
+    local_batches: Any,
+    remote_batches: Any,
+) -> List[Dict[str, Any]]:
+    """Union two append-only import batch ledgers keyed by ``batch_id``.
+
+    Local order is kept and remote-only batches are appended, while a shared
+    ``batch_id`` resolves to the record with the newer ``created_at`` (ties and
+    unparsable timestamps resolve to the remote record). This guarantees a
+    stale local ledger can never overwrite newer remote batch history.
+    """
+    local_list = [b for b in local_batches if isinstance(b, dict)] if isinstance(local_batches, list) else []
+    remote_list = [b for b in remote_batches if isinstance(b, dict)] if isinstance(remote_batches, list) else []
+
+    def _key(batch: Dict[str, Any]) -> str:
+        return str(batch.get("batch_id") or "")
+
+    local_by_id = {_key(b): b for b in local_list if _key(b)}
+    remote_by_id = {_key(b): b for b in remote_list if _key(b)}
+
+    def _newer(candidate: Dict[str, Any], reference: Dict[str, Any]) -> bool:
+        candidate_dt = _parse_claim_timestamp(candidate.get("created_at"))
+        reference_dt = _parse_claim_timestamp(reference.get("created_at"))
+        if candidate_dt is None or reference_dt is None:
+            return candidate_dt is not None and reference_dt is None
+        return candidate_dt >= reference_dt
+
+    merged: List[Dict[str, Any]] = []
+    seen: Set[str] = set()
+    for batch in local_list + remote_list:
+        batch_id = _key(batch)
+        if not batch_id or batch_id in seen:
+            continue
+        local_batch = local_by_id.get(batch_id)
+        remote_batch = remote_by_id.get(batch_id)
+        if local_batch is not None and remote_batch is not None:
+            winner = local_batch if _newer(local_batch, remote_batch) else remote_batch
+        else:
+            winner = local_batch if local_batch is not None else remote_batch
+        merged.append(winner)
+        seen.add(batch_id)
+    return merged
+
+
+SYNC_STATE_FILENAME = "publishing_queue.json.sync_state.json"
+
+
+def _read_json_file(path: Path) -> Any:
+    """Read a JSON file, returning ``None`` for missing or malformed content."""
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except (OSError, ValueError, TypeError):
+        return None
+
+
+def _write_sync_state(state_path: Path, phase: str, **extra: Any) -> None:
+    """Atomically persist the current sync phase for crash recovery."""
+    payload = {
+        "phase": phase,
+        "updated_at": datetime.now().isoformat(),
+        **extra,
+    }
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = state_path.with_name(state_path.name + ".tmp")
+    with open(tmp_path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+    os.replace(tmp_path, state_path)
+
+
+def _is_valid_queue_file(path: Path) -> bool:
+    data = _read_json_file(path)
+    return isinstance(data, dict) and isinstance(data.get("items"), list)
+
+
+def _is_valid_batches_file(path: Path) -> bool:
+    return isinstance(_read_json_file(path), list)
+
+
+def recover_interrupted_sync(
+    queue_path: Path,
+    queue_backup_path: Path,
+    batches_path: Path,
+    batches_backup_path: Path,
+    state_path: Optional[Path] = None,
+) -> Dict[str, Any]:
+    """Repair files left behind by a sync process that was killed mid-run.
+
+    A small phase manifest is written before any local file is touched. When it
+    says the merged queue was not written yet, the pre-sync backup is restored
+    even though the main file may still be a valid (but older) HEAD checkout.
+    Once the merged queue/batch ledger has been written, the current files are
+    authoritative and only stale backups are removed. Missing or unreadable
+    main files are always restored from a valid backup, with or without a
+    manifest (legacy crash recovery).
+    """
+    state_path = state_path or queue_path.parent / SYNC_STATE_FILENAME
+    state = _read_json_file(state_path) if state_path.exists() else None
+    phase = state.get("phase") if isinstance(state, dict) else None
+    result: Dict[str, Any] = {"recovered": False, "phase": phase, "actions": []}
+
+    queue_written_phases = {"queue_written", "batches_written", "staged", "committed", "pushed"}
+    batches_written_phases = {"batches_written", "staged", "committed", "pushed"}
+
+    if queue_backup_path.exists():
+        if phase in queue_written_phases:
+            queue_backup_path.unlink(missing_ok=True)
+            result["actions"].append("discarded stale queue backup; merged queue was already written")
+        elif phase is not None or not _is_valid_queue_file(queue_path):
+            # The sync never wrote the merged queue. A checkout may already
+            # have replaced the divergent local file, so restore the backup.
+            shutil.copyfile(queue_backup_path, queue_path)
+            queue_backup_path.unlink(missing_ok=True)
+            result["recovered"] = True
+            result["actions"].append("restored pre-sync queue after interrupted synchronization")
+        else:
+            # Legacy orphan backup with a valid main file: never overwrite it.
+            queue_backup_path.unlink(missing_ok=True)
+            result["actions"].append("discarded orphan queue backup")
+
+    if batches_backup_path.exists():
+        if phase in batches_written_phases:
+            batches_backup_path.unlink(missing_ok=True)
+            result["actions"].append("discarded stale batch backup; ledger was already written")
+        elif phase is not None or not _is_valid_batches_file(batches_path):
+            batches_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(batches_backup_path, batches_path)
+            batches_backup_path.unlink(missing_ok=True)
+            result["recovered"] = True
+            result["actions"].append("restored local import batch ledger after interrupted synchronization")
+        else:
+            batches_backup_path.unlink(missing_ok=True)
+            result["actions"].append("discarded orphan batch backup")
+
+    if state_path.exists():
+        state_path.unlink(missing_ok=True)
+    return result
+
+
+def _normalize_package_references(
+    items: List[Dict[str, Any]],
+    repo_dir: Optional[Path] = None,
+) -> None:
+    """Rewrite in-repository package references to portable relative paths."""
+    root = repo_dir or PROJECT_ROOT
+    for item in items:
+        reference = item.get("package_reference")
+        if not reference:
+            continue
+        item["package_reference"] = portable_package_reference(
+            reference, asin=str(item.get("asin") or ""), repo_dir=root
+        )
+
+
+def _merge_platform_results(
+    primary: Optional[Dict[str, Any]],
+    secondary: Optional[Dict[str, Any]],
+) -> Optional[Dict[str, Any]]:
+    """Merge per-platform publishing results without ever losing a confirmed PUBLISHED result."""
+    if not isinstance(primary, dict) and not isinstance(secondary, dict):
+        return primary if primary is not None else secondary
+    if not isinstance(primary, dict):
+        return dict(secondary)  # type: ignore[arg-type]
+    if not isinstance(secondary, dict):
+        return dict(primary)
+
+    def _entry_rank(entry: Any) -> int:
+        if not isinstance(entry, dict):
+            return 0
+        status = entry.get("status")
+        mode = entry.get("mode")
+        if status == STATUS_PUBLISHED and mode == "LIVE":
+            return 4
+        if status == STATUS_PUBLISHED:
+            return 3
+        if status == STATUS_FAILED:
+            return 2
+        return 1
+
+    combined: Dict[str, Any] = dict(secondary)
+    for k, p_val in primary.items():
+        s_val = combined.get(k)
+        if s_val is None or _entry_rank(p_val) >= _entry_rank(s_val):
+            combined[k] = p_val
+    return combined
+
+
 def merge_publishing_queues(
     local_data: Dict[str, Any],
-    remote_data: Dict[str, Any]
+    remote_data: Dict[str, Any],
+    repo_dir: Optional[Path] = None,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Deterministically and safely merge local queue state with remote cloud queue state.
@@ -76,6 +342,13 @@ def merge_publishing_queues(
     remote_by_id = {it.get("queue_item_id"): it for it in remote_items if it.get("queue_item_id")}
     remote_by_asin = {it.get("asin", "").upper(): it for it in remote_items if it.get("asin")}
 
+    # Persisted slot claims live at queue level, not on the items, so they
+    # must be merged explicitly or the merged queue silently drops them.
+    merged_slot_claims = merge_slot_claims(
+        local_data.get("slot_claims"),
+        remote_data.get("slot_claims"),
+    )
+
     merged_items: List[Dict[str, Any]] = []
     seen_ids: Set[str] = set()
     seen_asins: Set[str] = set()
@@ -97,20 +370,34 @@ def merge_publishing_queues(
             l_status = l_item.get("status")
 
             terminal_statuses = (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED, STATUS_FAILED)
+            terminal_ranks = {
+                STATUS_PUBLISHED: 3,
+                STATUS_PARTIALLY_PUBLISHED: 2,
+                STATUS_FAILED: 1,
+            }
+            r_rank = terminal_ranks.get(r_status, 0)
+            l_rank = terminal_ranks.get(l_status, 0)
 
-            if r_status in terminal_statuses:
-                # Cloud publisher published or attempted the item -> remote record wins
+            if r_rank > 0 and r_rank >= l_rank:
+                # Cloud publisher holds equal or more complete terminal status -> remote wins
                 merged["status"] = r_status
-                merged["published_at"] = r_item.get("published_at")
-                merged["publishing_results"] = r_item.get("publishing_results")
+                merged["published_at"] = r_item.get("published_at") or l_item.get("published_at")
+                merged["publishing_results"] = _merge_platform_results(
+                    r_item.get("publishing_results"),
+                    l_item.get("publishing_results"),
+                )
                 merged["errors"] = r_item.get("errors", [])
                 if l_status == STATUS_READY:
                     remote_updated_count += 1
-            elif l_status in terminal_statuses and r_status == STATUS_READY:
-                # Local recorded a terminal status while remote was still READY
+            elif l_rank > r_rank:
+                # Local recorded a more complete terminal status (e.g. PUBLISHED over
+                # PARTIALLY_PUBLISHED or READY) -> preserve local publication evidence
                 merged["status"] = l_status
-                merged["published_at"] = l_item.get("published_at")
-                merged["publishing_results"] = l_item.get("publishing_results")
+                merged["published_at"] = l_item.get("published_at") or r_item.get("published_at")
+                merged["publishing_results"] = _merge_platform_results(
+                    l_item.get("publishing_results"),
+                    r_item.get("publishing_results"),
+                )
                 merged["errors"] = l_item.get("errors", [])
             else:
                 merged["status"] = r_status or l_status
@@ -120,6 +407,22 @@ def merge_publishing_queues(
                 merged["package_reference"] = l_item.get("package_reference")
             if l_item.get("product_name") and not r_item.get("product_name"):
                 merged["product_name"] = l_item.get("product_name")
+            if r_status not in terminal_statuses and l_status not in terminal_statuses:
+                # For unpublished items, local dashboard media edits (upload, replace, remove)
+                # are authoritative over an older remote READY snapshot.
+                if l_item.get("media_type"):
+                    merged["media_type"] = l_item["media_type"]
+                else:
+                    merged.pop("media_type", None)
+                if l_item.get("video_url"):
+                    merged["video_url"] = l_item["video_url"]
+                else:
+                    merged.pop("video_url", None)
+            else:
+                if l_item.get("media_type") and not r_item.get("media_type"):
+                    merged["media_type"] = l_item.get("media_type")
+                if l_item.get("video_url") and not r_item.get("video_url"):
+                    merged["video_url"] = l_item.get("video_url")
 
             merged_items.append(merged)
             if item_id:
@@ -139,8 +442,24 @@ def merge_publishing_queues(
         item_id = l_item.get("queue_item_id")
         asin = l_item.get("asin", "").upper()
 
-        if (item_id and item_id in seen_ids) or (asin and asin in seen_asins):
+        # Deduplicate by ASIN: the same product on both sides is one item.
+        if asin and asin in seen_asins:
             continue
+        if item_id and item_id in seen_ids and not asin:
+            # Identifier-only match without an ASIN cannot be told apart from
+            # the already-merged record; keep the previous conservative skip.
+            continue
+
+        if item_id and item_id in seen_ids:
+            # Diverged queues handed out the same identifier to two different
+            # products. Re-allocate a fresh unique ID instead of silently
+            # dropping the genuinely new local product.
+            l_item = dict(l_item)
+            item_id = next_queue_item_id(
+                [it.get("queue_item_id") for it in merged_items] + list(seen_ids),
+                asin,
+            )
+            l_item["queue_item_id"] = item_id
 
         merged_items.append(dict(l_item))
         if item_id:
@@ -207,6 +526,10 @@ def merge_publishing_queues(
             col_item["scheduled_at"] = dt.isoformat()
             taken_slot_tuples.add((candidate_date, candidate_slot))
 
+    # 3.5 Rewrite machine-specific package paths to repository-relative paths
+    # so the merged queue is valid on the GitHub Actions Linux runner too.
+    _normalize_package_references(merged_items, repo_dir)
+
     # 4. Chronological sort of merged items
     merged_items.sort(
         key=lambda x: (
@@ -241,6 +564,7 @@ def merge_publishing_queues(
         "total_failed": failed_count,
         "scheduled_posts": ready_count,
         "unfilled_slots": max(0, target_capacity - ready_count),
+        "slot_claims": merged_slot_claims,
         "items": merged_items,
     }
 
@@ -262,6 +586,12 @@ def find_sync_stage_files(merged_queue_dict: Dict[str, Any], repo_dir: Path) -> 
     """
     stage_set: Set[str] = {"data/queue/publishing_queue.json"}
 
+    # Dashboard import batch history travels with the queue so the Dashboard's
+    # batch history stays consistent with the files synchronized to GitHub.
+    batches_candidate = repo_dir / "data" / "batches" / "import_batches.json"
+    if batches_candidate.exists():
+        stage_set.add("data/batches/import_batches.json")
+
     for item in merged_queue_dict.get("items", []):
         asin = item.get("asin")
         if asin:
@@ -276,10 +606,15 @@ def find_sync_stage_files(merged_queue_dict: Dict[str, Any], repo_dir: Path) -> 
         pkg_ref = item.get("package_reference")
         if pkg_ref:
             norm_ref = pkg_ref.replace("\\", "/")
-            if norm_ref.startswith("data/"):
+            ref_path = Path(norm_ref)
+            if not ref_path.is_absolute():
                 ref_path = repo_dir / norm_ref
-                if ref_path.exists():
-                    stage_set.add(norm_ref)
+            try:
+                relative_ref = ref_path.resolve().relative_to(repo_dir.resolve()).as_posix()
+            except (OSError, ValueError):
+                relative_ref = ""
+            if relative_ref.startswith("data/") and (repo_dir / relative_ref).exists():
+                stage_set.add(relative_ref)
 
     # Exclude any prohibited patterns
     prohibited = {".env", "daily_publisher.log", "daily_maintenance.log", "config.json"}
@@ -321,6 +656,11 @@ def sync_with_github(
 
     queue_path = target_repo / "data" / "queue" / "publishing_queue.json"
     backup_path = target_repo / "data" / "queue" / "publishing_queue.json.sync_bak"
+    batches_path = target_repo / "data" / "batches" / "import_batches.json"
+    batches_backup_path = target_repo / "data" / "batches" / "import_batches.json.sync_bak"
+    state_path = target_repo / "data" / "queue" / SYNC_STATE_FILENAME
+    batches_written = False
+    local_batches_raw: Optional[str] = None
 
     def _run_git(args: List[str]) -> subprocess.CompletedProcess:
         return subprocess.run(
@@ -338,6 +678,19 @@ def sync_with_github(
             return {
                 "success": False,
                 "error": "Current directory is not a valid Git repository."
+            }
+
+        # Repair any files left behind by a sync process that was interrupted
+        # (for example a killed workflow or a closed dashboard). This runs
+        # before reading the local queue so recovery cannot be overwritten.
+        try:
+            recover_interrupted_sync(
+                queue_path, backup_path, batches_path, batches_backup_path, state_path
+            )
+        except OSError as recovery_error:
+            return {
+                "success": False,
+                "error": f"Could not recover an interrupted synchronization safely: {recovery_error}"
             }
 
         # 1. Fetch remote tracking branch
@@ -414,9 +767,45 @@ def sync_with_github(
                 "error": f"Queue merge validation failed: {str(e)}"
             }
 
-        # Create safety backup of local queue
+        # Create safety backup of local queue and record the phase before any
+        # file is mutated, so an interrupted run can restore the exact pre-sync
+        # local state on the next attempt.
         if queue_path.exists():
             shutil.copyfile(queue_path, backup_path)
+        _write_sync_state(state_path, "backed_up")
+
+        # 4.5 Reconcile the dashboard's import batch history with the remote
+        # copy. The union is written later, so a stale local ledger can never
+        # overwrite newer remote batch history.
+        local_batches_raw: Optional[str] = None
+        local_batches_data: Optional[List[Dict[str, Any]]] = None
+        remote_batches_data: Optional[List[Dict[str, Any]]] = None
+        merged_batches_data: Optional[List[Dict[str, Any]]] = None
+        if batches_path.exists():
+            try:
+                local_batches_raw = batches_path.read_text(encoding="utf-8")
+                parsed_local = json.loads(local_batches_raw)
+                if isinstance(parsed_local, list):
+                    local_batches_data = parsed_local
+            except (OSError, ValueError, TypeError):
+                local_batches_data = None
+
+        if local_batches_data is not None:
+            batch_show = _run_git(["show", f"{remote_ref}:data/batches/import_batches.json"])
+            if batch_show.returncode == 0 and str(batch_show.stdout or "").strip():
+                try:
+                    parsed_remote = json.loads(batch_show.stdout)
+                    if isinstance(parsed_remote, list):
+                        remote_batches_data = parsed_remote
+                except (TypeError, ValueError):
+                    remote_batches_data = None
+            merged_batches_data = merge_import_batches(local_batches_data, remote_batches_data)
+            if remote_batches_data is not None and batches_path.exists():
+                # Move the (possibly still untracked) local ledger aside so a
+                # remote commit adding the same path cannot abort the merge.
+                shutil.copyfile(batches_path, batches_backup_path)
+                batches_path.unlink(missing_ok=True)
+
 
         # 5. Check remote commits ahead
         rev_res = _run_git(["rev-list", "--count", f"HEAD..{remote_ref}"])
@@ -447,6 +836,17 @@ def sync_with_github(
         queue_path.parent.mkdir(parents=True, exist_ok=True)
         with open(queue_path, "w", encoding="utf-8") as f:
             json.dump(merged_queue_data, f, indent=2)
+        _write_sync_state(state_path, "queue_written")
+
+        # 6.5 Write the reconciled import batch history (local records are
+        # never dropped; remote-only batches are appended).
+        if merged_batches_data is not None:
+            batches_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(batches_path, "w", encoding="utf-8") as f:
+                json.dump(merged_batches_data, f, indent=2, ensure_ascii=False)
+            batches_written = True
+            batches_backup_path.unlink(missing_ok=True)
+            _write_sync_state(state_path, "batches_written")
 
         # 7. Identify specific files to stage
         stage_files = find_sync_stage_files(merged_queue_data, target_repo)
@@ -491,9 +891,10 @@ def sync_with_github(
                     "error": f"Changes were committed locally, but push to GitHub failed: {err_text}"
                 }
 
-        # Clean up backup
+        # Clean up backup and phase manifest
         if backup_path.exists():
             backup_path.unlink(missing_ok=True)
+        state_path.unlink(missing_ok=True)
 
         # Build friendly result message
         actions = []
@@ -517,10 +918,26 @@ def sync_with_github(
         if backup_path.exists():
             shutil.copyfile(backup_path, queue_path)
             backup_path.unlink(missing_ok=True)
+        state_path.unlink(missing_ok=True)
         return {
             "success": False,
             "error": f"Unexpected synchronization error: {str(e)}"
         }
 
     finally:
+        try:
+            if batches_written:
+                batches_backup_path.unlink(missing_ok=True)
+            elif batches_backup_path.exists() and local_batches_raw is not None:
+                # Synchronization aborted before the merged ledger could be
+                # written: restore the original local batch history untouched.
+                shutil.copyfile(batches_backup_path, batches_path)
+                batches_backup_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        try:
+            if not backup_path.exists() and not batches_backup_path.exists():
+                state_path.unlink(missing_ok=True)
+        except OSError:
+            pass
         SYNC_LOCK.release()

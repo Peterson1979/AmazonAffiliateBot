@@ -46,7 +46,7 @@ DEFAULT_PINTEREST_ACCOUNTS = {
 class PublishingConfig:
     """Publishing configuration for social media platforms."""
     dry_run: bool = True
-    accounts: Dict[str, Dict[str, Any]] = field(default_factory=lambda: dict(DEFAULT_TARGET_ACCOUNTS))
+    accounts: Dict[str, Dict[str, Any]] = field(default_factory=lambda: {key: dict(value) for key, value in DEFAULT_TARGET_ACCOUNTS.items()})
     credentials: Dict[str, Dict[str, Any]] = field(default_factory=dict)
     pinterest_accounts: Dict[str, Dict[str, Any]] = field(
         default_factory=lambda: {key: dict(value) for key, value in DEFAULT_PINTEREST_ACCOUNTS.items()}
@@ -68,7 +68,7 @@ class PublishingConfig:
         else:
             dry_run = pub_section.get("dry_run", True)
 
-        accounts = dict(DEFAULT_TARGET_ACCOUNTS)
+        accounts = {key: dict(value) for key, value in DEFAULT_TARGET_ACCOUNTS.items()}
         user_accounts = pub_section.get("accounts", {})
         for platform, acc_cfg in user_accounts.items():
             if platform in accounts and isinstance(acc_cfg, dict):

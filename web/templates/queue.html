@@ -79,6 +79,7 @@
         <tr>
           <th>Scheduled slot</th>
           <th>Product</th>
+        <th>Media</th>
           <th>State</th>
           <th>Actions</th>
         </tr>
@@ -93,6 +94,32 @@
           <td>
             <a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a>
             <div class="table-subtext">{{ item.asin }}</div>
+          </td>
+          <td>
+            {% set q_media = item.ui_media_type or ('video' if (item.media_type == 'video' and item.video_url) else 'none') %}
+            {% if q_media == 'video' %}
+              <div style="display: flex; align-items: center; gap: 8px;">
+                {% if item.ui_image_url %}
+                  <a href="{{ url_for('content_preview', asin=item.asin) }}" title="Open video preview">
+                    <img src="{{ item.ui_image_url }}" alt="" loading="lazy" style="width: 32px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15); display: block;">
+                  </a>
+                {% endif %}
+                <div>
+                  <span class="badge badge-info">🎬 Video</span>
+                  {% if item.ui_video_url or item.video_url %}
+                    <div class="table-subtext" style="margin-top: 2px;">
+                      <a href="{{ url_for('content_preview', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">▶ Preview</a>
+                      &middot;
+                      <a href="{{ item.ui_video_url or item.video_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">R2 ↗</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% elif q_media == 'image' %}
+              <span class="badge badge-muted">🖼️ Image</span>
+            {% else %}
+              <span class="badge badge-muted" style="opacity: 0.75;">— No Media</span>
+            {% endif %}
           </td>
           <td>
             <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
@@ -221,6 +248,15 @@
 {% endif %}
 
 <!-- Primary Queue Table -->
+{% if asin_filter %}
+<section class="notice-card" style="margin-bottom: 16px;">
+  <div>
+    <strong>Filtered to ASIN <code>{{ asin_filter }}</code>.</strong>
+    Showing queue item(s) matching <a href="{{ url_for('product_detail', asin=asin_filter) }}" style="color: var(--primary);">{{ asin_filter }}</a>.
+  </div>
+  <a href="{{ url_for('queue') }}" class="btn btn-sm btn-secondary">Show Full Queue</a>
+</section>
+{% endif %}
 <div class="table-responsive">
   <table class="queue-table">
     <thead>
@@ -228,6 +264,7 @@
         <th style="width: 70px;">Order</th>
         <th>Scheduled slot</th>
         <th>Product</th>
+        <th>Media</th>
         <th>State</th>
         <th>Platform results</th>
         <th>Evidence</th>
@@ -257,6 +294,32 @@
           <td>
             <a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a>
             <div class="table-subtext">{{ item.asin }}</div>
+          </td>
+          <td>
+            {% set q_media = item.ui_media_type or ('video' if (item.media_type == 'video' and item.video_url) else 'none') %}
+            {% if q_media == 'video' %}
+              <div style="display: flex; align-items: center; gap: 8px;">
+                {% if item.ui_image_url %}
+                  <a href="{{ url_for('content_preview', asin=item.asin) }}" title="Open video preview">
+                    <img src="{{ item.ui_image_url }}" alt="" loading="lazy" style="width: 32px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15); display: block;">
+                  </a>
+                {% endif %}
+                <div>
+                  <span class="badge badge-info">🎬 Video</span>
+                  {% if item.ui_video_url or item.video_url %}
+                    <div class="table-subtext" style="margin-top: 2px;">
+                      <a href="{{ url_for('content_preview', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">▶ Preview</a>
+                      &middot;
+                      <a href="{{ item.ui_video_url or item.video_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">R2 ↗</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% elif q_media == 'image' %}
+              <span class="badge badge-muted">🖼️ Image</span>
+            {% else %}
+              <span class="badge badge-muted" style="opacity: 0.75;">— No Media</span>
+            {% endif %}
           </td>
           <td>
             <span class="state-pill state-{{ item.ui_state|lower|replace('_','-') }}">{{ item.ui_label or ('Not published' if item.ui_state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if item.ui_state == 'UNKNOWN' else item.ui_state|capitalize)) }}</span>
@@ -323,7 +386,7 @@
         {% endfor %}
       {% else %}
         <tr>
-          <td colspan="7">
+          <td colspan="8">
             <div class="empty-state">
               <div class="empty-state-title">No products match the selected filters</div>
               <div class="empty-state-desc">Try clearing the status filter or choosing "All Batches".</div>
