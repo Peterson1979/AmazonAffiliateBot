@@ -1,0 +1,315 @@
+{
+  "asin": "B0DPJRS9DS",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-11-06T21:18:23.823073+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0DPJRS9DS.json",
+    "affiliate_url": "https://link.amazon/B02ZJxUYH"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric, 4 EA is a jelly gel mask that includes kojic acid, turmeric and niacinamide.\n\nThe mask features a color‑changing gel that transforms from opaque to transparent, indicating optimal absorption, and it is dermatologically tested and free from artificial colors. Explore the product details and available options below.\n\nLink: https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric, 4 EA is a jelly gel mask that includes kojic acid, turmeric and niacinamide.\n\nThe mask features a color‑changing gel that transforms from opaque to transparent, indicating optimal absorption, and it is dermatologically tested and free from artificial colors. Explore the product details and available options below.\n\nLink: https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "Watch the video above to see the medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric demonstrated, featuring a color‑changing gel that transforms from opaque to transparent.\n\nThe mask includes Kojic Acid, Turmeric, and Niacinamide, is dermatologically tested, and is free from artificial colors, providing 24‑hour hydration. Explore the product details and available options below.\n\nLink: https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+      "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B02ZJxUYH",
+      "account": "dailyideasforyou",
+      "accounts": {
+        "dailyideasforyou": {
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+          "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+              "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+              "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        },
+        "lifemodehq": {
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+          "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+              "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+              "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        }
+      },
+      "variants": {
+        "image": {
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+          "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+          "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. Check the specifications and current availability.\n\nLink: https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. Check the specifications and current availability.\n\nLink: https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. Check the specifications and current availability.\n\nLink: https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+      "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B02ZJxUYH",
+      "account": "lifemodehq",
+      "variants": {
+        "image": {
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+          "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric – 4 Pack",
+          "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24‑hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5960",
+        "x-ratelimit-reset-tokens": "15.3s"
+      },
+      "id": "chatcmpl-606b0068-008f-40ce-9b7d-3b5836e14670",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.088723404,
+        "prompt_tokens": 1736,
+        "prompt_time": 0.083138623,
+        "completion_tokens": 203,
+        "completion_time": 0.429169326,
+        "total_tokens": 1939,
+        "total_time": 0.512307949
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "995",
+        "x-ratelimit-reset-requests": "7m12s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4101",
+        "x-ratelimit-reset-tokens": "29.242s"
+      },
+      "id": "chatcmpl-0e8fb4a0-a09f-4b21-81ab-53fd74550479",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.266160263,
+        "prompt_tokens": 1826,
+        "prompt_time": 0.100119028,
+        "completion_tokens": 249,
+        "completion_time": 0.518100803,
+        "total_tokens": 2075,
+        "total_time": 0.618219831
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "994",
+        "x-ratelimit-reset-requests": "8m38.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2474",
+        "x-ratelimit-reset-tokens": "41.445s"
+      },
+      "id": "chatcmpl-e3da168e-28e6-4163-abe9-12b37be8e417",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.088782543,
+        "prompt_tokens": 1729,
+        "prompt_time": 0.148065842,
+        "completion_tokens": 161,
+        "completion_time": 0.339603627,
+        "total_tokens": 1890,
+        "total_time": 0.487669469
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "993",
+        "x-ratelimit-reset-requests": "10m4.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "561",
+        "x-ratelimit-reset-tokens": "55.792s"
+      },
+      "id": "chatcmpl-8855ff64-00e4-4365-9024-c941a5165ba9",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.265846965,
+        "prompt_tokens": 1755,
+        "prompt_time": 0.078500013,
+        "completion_tokens": 205,
+        "completion_time": 0.428801132,
+        "total_tokens": 1960,
+        "total_time": 0.507301145
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "8",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "993",
+        "x-ratelimit-reset-requests": "10m4.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "917",
+        "x-ratelimit-reset-tokens": "53.122s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7083, Requested 1945. Please try again in 7.71s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "8",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "993",
+        "x-ratelimit-reset-requests": "10m4.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1010",
+        "x-ratelimit-reset-tokens": "52.425s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6990, Requested 2004. Please try again in 7.455s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "7",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "993",
+        "x-ratelimit-reset-requests": "10m4.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1087",
+        "x-ratelimit-reset-tokens": "51.847s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6913, Requested 1964. Please try again in 6.5775s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "7",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "993",
+        "x-ratelimit-reset-requests": "10m4.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1166",
+        "x-ratelimit-reset-tokens": "51.254s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6834, Requested 1975. Please try again in 6.0675s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+    "asin": "B0DPJRS9DS",
+    "uploaded_at": "2026-11-06T21:18:24.528023+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+    "content_type": "video/mp4",
+    "filename": "ad-@amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+    "size_bytes": 1120189
+  }
+}
