@@ -9,6 +9,11 @@ on:
     # - CET  (Winter, UTC+1): 14:00 UTC = 15:00 CET,  20:00 UTC = 21:00 CET
     - cron: '17 13,14,19,20 * * *'
 
+  repository_dispatch:
+    types:
+      - cloudflare-scheduled-publish
+      - cloudflare_publish
+
   workflow_dispatch:
     inputs:
       dry_run:
@@ -61,10 +66,10 @@ jobs:
 
       - name: Claim Due Budapest Slots
         id: claim
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' || (github.event_name == 'repository_dispatch' && github.event.client_payload.dry_run != true)
         env:
           EVENT_NAME: ${{ github.event_name }}
-          NOW_OVERRIDE: ${{ github.event.inputs.now_override }}
+          NOW_OVERRIDE: ${{ github.event.inputs.now_override || github.event.client_payload.now_override || '' }}
         run: |
           python scripts/run_cloud_publisher.py --claim-only
 
@@ -90,8 +95,8 @@ jobs:
         id: preflight
         env:
           EVENT_NAME: ${{ github.event_name }}
-          NOW_OVERRIDE: ${{ github.event.inputs.now_override }}
-          REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' }}
+          NOW_OVERRIDE: ${{ github.event.inputs.now_override || github.event.client_payload.now_override || '' }}
+          REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' || (github.event_name == 'repository_dispatch' && github.event.client_payload.dry_run != true) }}
         run: |
           python scripts/preflight_content_packages.py
 
@@ -99,9 +104,9 @@ jobs:
         id: publisher
         env:
           EVENT_NAME: ${{ github.event_name }}
-          MANUAL_DRY_RUN: ${{ github.event.inputs.dry_run }}
-          IGNORE_WINDOW: ${{ github.event.inputs.ignore_window }}
-          NOW_OVERRIDE: ${{ github.event.inputs.now_override }}
+          MANUAL_DRY_RUN: ${{ github.event.inputs.dry_run || github.event.client_payload.dry_run || '' }}
+          IGNORE_WINDOW: ${{ github.event.inputs.ignore_window || github.event.client_payload.ignore_window || '' }}
+          NOW_OVERRIDE: ${{ github.event.inputs.now_override || github.event.client_payload.now_override || '' }}
           FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN || secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
@@ -109,9 +114,9 @@ jobs:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           PINTEREST_LIFEMODEHQ_ACCESS_TOKEN: ${{ secrets.PINTEREST_LIFEMODEHQ_ACCESS_TOKEN }}
-          REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' }}
+          REQUIRE_SLOT_CLAIM: ${{ github.event_name == 'schedule' || (github.event_name == 'repository_dispatch' && github.event.client_payload.dry_run != true) }}
         run: |
-          python scripts/run_cloud_publisher.py ${{ github.event_name == 'schedule' && '--execute-claimed' || '' }}
+          python scripts/run_cloud_publisher.py ${{ (github.event_name == 'schedule' || (github.event_name == 'repository_dispatch' && github.event.client_payload.dry_run != true)) && '--execute-claimed' || '' }}
 
       - name: Persist Queue and Logs
         if: always() && steps.publisher.outputs.queue_updated == 'true'

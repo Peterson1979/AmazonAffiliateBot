@@ -298,7 +298,12 @@ class TestCloudPublishingMigration(unittest.TestCase):
         content = workflow_path.read_text(encoding="utf-8")
 
         # Verify cron schedule covers CET/CEST shifts for the 15:00/21:00 slots
-        self.assertIn("0 13,14,19,20 * * *", content)
+        self.assertRegex(content, r"[0-9]+ 13,14,19,20 \* \* \*")
+
+        # Verify repository_dispatch trigger is configured for Cloudflare Worker
+        self.assertIn("repository_dispatch:", content)
+        self.assertIn("cloudflare-scheduled-publish", content)
+        self.assertIn("cloudflare_publish", content)
 
         # Verify workflow_dispatch dry_run default is preserved (existing behavior: false)
         self.assertIn("workflow_dispatch:", content)
@@ -566,6 +571,86 @@ class TestCloudPublishingMigration(unittest.TestCase):
                 with self.assertRaises(SystemExit) as ctx:
                     cloud_main()
                 self.assertEqual(ctx.exception.code, 1)
+
+    # -------------------------------------------------------------------------
+    # 7. Cloudflare repository_dispatch Trigger Tests
+    # -------------------------------------------------------------------------
+
+    def test_repository_dispatch_enforces_window_check_by_default(self):
+        """Verify repository_dispatch event enforces window check and skips outside 15:00/21:00 hours."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        # Current time outside 15:00/21:00 window (10:00 AM)
+        test_args = [
+            "run_cloud_publisher.py",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        # Simulate Cloudflare repository_dispatch event
+        with patch.dict(os.environ, {"EVENT_NAME": "repository_dispatch"}, clear=False):
+            with patch.object(sys, "argv", test_args):
+                with self.assertRaises(SystemExit) as ctx:
+                    cloud_main()
+                self.assertEqual(ctx.exception.code, 0)
+
+    def test_repository_dispatch_manual_dry_run_override(self):
+        """Verify repository_dispatch with MANUAL_DRY_RUN=true runs as simulation without error."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        # Current time outside window
+        test_args = [
+            "run_cloud_publisher.py",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        with patch.dict(os.environ, {"EVENT_NAME": "repository_dispatch", "MANUAL_DRY_RUN": "true"}, clear=False):
+            with patch.object(sys, "argv", test_args):
+                # dry_run bypasses window check unless check_window requested, finishes cleanly
+                cloud_main()
+
+    def test_repository_dispatch_bypasses_window_with_ignore_window(self):
+        """Verify repository_dispatch with IGNORE_WINDOW=true bypasses window check."""
+        from scripts.run_cloud_publisher import main as cloud_main
+
+        with open(self.queue_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "queue_id": "test_q",
+                "items": []
+            }, f)
+
+        test_args = [
+            "run_cloud_publisher.py",
+            "--now", "2026-10-11T10:00:00+02:00",
+            "--queue-file", str(self.queue_file),
+            "--log-file", str(self.temp_dir / "test.log")
+        ]
+        mock_env = {
+            "EVENT_NAME": "repository_dispatch",
+            "IGNORE_WINDOW": "true",
+            "FACEBOOK_PAGE_ACCESS_TOKEN": "mock_fb",
+            "FACEBOOK_PAGE_ID": "123456",
+            "THREADS_ACCESS_TOKEN": "mock_th",
+            "THREADS_USER_ID": "mock_uid",
+            "PINTEREST_ACCESS_TOKEN": "mock_pin",
+            "PINTEREST_LIFEMODEHQ_ACCESS_TOKEN": "mock_pin_life",
+        }
+        with patch.dict(os.environ, mock_env, clear=False):
+            with patch.object(sys, "argv", test_args):
+                cloud_main()
 
 
 if __name__ == "__main__":

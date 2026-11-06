@@ -33,6 +33,7 @@ from scripts.run_cloud_publisher import (
 )
 from publishing.queue import (
     PublishingQueue,
+    QueuePublisher,
     QueueItem,
     STATUS_PUBLISHED,
     STATUS_READY,
@@ -365,6 +366,42 @@ class TestWorkflowClaimOrdering(unittest.TestCase):
         self.assertIn("steps.claim.outputs.claim_updated == 'true'", workflow)
         self.assertIn("git add data/queue/publishing_queue.json", workflow)
         self.assertIn("REQUIRE_SLOT_CLAIM:", workflow)
+
+    def test_workflow_supports_repository_dispatch_claims(self):
+        """Verify repository_dispatch participates in slot claiming and execution gates."""
+        workflow = (PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml").read_text(encoding="utf-8")
+        self.assertIn("github.event_name == 'repository_dispatch'", workflow)
+        self.assertIn("cloudflare-scheduled-publish", workflow)
+
+
+class TestRepositoryDispatchSlotClaims(SlotClaimTestBase):
+    def test_repository_dispatch_claims_window_slot_and_executes(self):
+        """End-to-end test of slot claim and execution via repository_dispatch event."""
+        queue = make_queue(items=[])
+        self.save_queue(queue)
+
+        # 1. Step 1: Claim-only phase under repository_dispatch
+        exit_code, output = self.run_main(
+            ["--claim-only"],
+            env={"EVENT_NAME": "repository_dispatch"},
+        )
+        self.assertIn(exit_code, (0, None))
+        self.assertIn("Persisted scheduled slot claims:", output)
+        self.assertIn(WINDOW_KEY, output)
+        self.assertEqual(self.read_outputs().get("claim_updated"), "true")
+
+        reloaded = self.load_queue()
+        claim = reloaded.slot_claims.get(WINDOW_KEY)
+        self.assertIsNotNone(claim)
+        self.assertEqual(claim["state"], "CLAIMED")
+
+        # 2. Step 2: Execution phase under repository_dispatch with --execute-claimed
+        exit_code, output = self.run_main(
+            ["--execute-claimed"],
+            env={**MOCK_SECRETS, "EVENT_NAME": "repository_dispatch", "REQUIRE_SLOT_CLAIM": "true"},
+        )
+        self.assertIn(exit_code, (0, None))
+        self.assertNotIn("No persisted scheduled slot claim", output)
 
 
 if __name__ == "__main__":

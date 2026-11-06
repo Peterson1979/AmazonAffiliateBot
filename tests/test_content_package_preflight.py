@@ -223,6 +223,11 @@ class TestContentPackagePreflight(unittest.TestCase):
         # the preflight must not fail the workflow for it.
         self.assertEqual(self._run_main(event_name="schedule"), 0)
 
+    def test_cli_exits_zero_when_a_repository_dispatch_run_has_no_claim(self):
+        # A repository_dispatch run without a persisted claim would publish nothing,
+        # so the preflight must not fail the workflow for it.
+        self.assertEqual(self._run_main(event_name="repository_dispatch"), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -90,10 +90,13 @@ def main() -> int:
 
     now_override = args.now or os.environ.get("NOW_OVERRIDE", "").strip() or None
     event_name = os.environ.get("EVENT_NAME", "").strip().lower()
-    require_claim = (
-        os.environ.get("REQUIRE_SLOT_CLAIM", "").strip().lower() in ("true", "1", "yes")
-        or event_name == "schedule"
-    )
+    req_claim_env = os.environ.get("REQUIRE_SLOT_CLAIM", "").strip().lower()
+    if req_claim_env in ("true", "1", "yes"):
+        require_claim = True
+    elif req_claim_env in ("false", "0", "no"):
+        require_claim = False
+    else:
+        require_claim = event_name in ("schedule", "repository_dispatch")
 
     queue_file = Path(args.queue_file)
     if not queue_file.exists():

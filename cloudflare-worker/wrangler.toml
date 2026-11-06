@@ -1,0 +1,23 @@
+name = "amazon-affiliate-publishing-cron"
+main = "src/index.js"
+compatibility_date = "2024-04-01"
+
+[vars]
+GITHUB_OWNER = "Peterson1979"
+GITHUB_REPO = "AmazonAffiliateBot"
+WORKFLOW_FILE = "scheduled_publishing.yml"
+EVENT_TYPE = "cloudflare-scheduled-publish"
+CHECK_ACTIVE_RUNS = "true"
+
+[triggers]
+crons = [
+  # Europe/Budapest publishing slots are 15:00 and 21:00.
+  # Europe/Budapest observes CET (UTC+1, winter) and CEST (UTC+2, summer).
+  # Winter (CET,  UTC+1): 14:00 UTC = 15:00 CET,  20:00 UTC = 21:00 CET
+  # Summer (CEST, UTC+2): 13:00 UTC = 15:00 CEST, 19:00 UTC = 21:00 CEST
+  #
+  # Triggers at 13:00, 14:00, 19:00, 20:00 UTC daily (covers both daylight periods).
+  # Additional :15 run provides automatic retry if a transient API error occurs.
+  "0,15 13,14,19,20 * * *"
+]
+

@@ -383,8 +383,8 @@ def main():
     elif github_event == "workflow_dispatch":
         # Manual trigger defaults to dry run unless explicitly turned off
         dry_run = True
-    elif github_event == "schedule":
-        # Scheduled runs are live runs by default
+    elif github_event in ("schedule", "repository_dispatch"):
+        # Scheduled runs (via GitHub cron or Cloudflare repository_dispatch) are live runs by default
         dry_run = False
     else:
         # Default safety: dry_run = True unless DRY_RUN env var says otherwise
@@ -392,15 +392,16 @@ def main():
         dry_run = False if env_dr in ("false", "0", "no") else True
 
     # Resolve window checking:
-    # 1. Scheduled runs must always enforce the window.
-    # 2. Manual dry runs bypass window check by default (for evaluation) unless --check-window is requested.
-    # 3. Manual live runs enforce window check unless --ignore-window / IGNORE_WINDOW is explicitly requested.
-    if github_event == "schedule":
-        should_check_window = True
+    # 1. Explicit bypass requested (--ignore-window or IGNORE_WINDOW env var)
+    # 2. Dry runs bypass window check by default (for evaluation) unless --check-window is requested
+    # 3. Scheduled live runs (schedule / repository_dispatch) enforce the window
+    # 4. Manual live runs enforce window check unless --ignore-window / IGNORE_WINDOW is requested
+    if args.ignore_window or ignore_window_env in ("true", "1", "yes"):
+        should_check_window = False
     elif dry_run:
         should_check_window = True if args.check_window else False
-    elif args.ignore_window or ignore_window_env in ("true", "1", "yes"):
-        should_check_window = False
+    elif github_event in ("schedule", "repository_dispatch"):
+        should_check_window = True
     else:
         should_check_window = True
 
@@ -432,7 +433,13 @@ def main():
 
     # A scheduled run must have a claim committed by the preceding workflow
     # step.  This makes late retries safe across separate Actions invocations.
-    require_claim = args.execute_claimed or os.environ.get("REQUIRE_SLOT_CLAIM", "").lower() in ("true", "1", "yes")
+    req_claim_env = os.environ.get("REQUIRE_SLOT_CLAIM", "").strip().lower()
+    if req_claim_env in ("true", "1", "yes"):
+        require_claim = True
+    elif req_claim_env in ("false", "0", "no"):
+        require_claim = False
+    else:
+        require_claim = args.execute_claimed
 
     # 2. Live Credential Validation
     if not dry_run and not args.claim_only:

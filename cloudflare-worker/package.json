@@ -1,0 +1,21 @@
+{
+  "name": "amazon-affiliate-publishing-cron",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker Cron trigger for AmazonAffiliateBot publishing workflow via repository_dispatch",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test test/worker.test.js",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "keywords": [
+    "cloudflare-worker",
+    "cron",
+    "github-actions",
+    "repository-dispatch"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
