@@ -58,18 +58,23 @@ SLOT_CLAIM_TTL = timedelta(hours=6)
 
 def check_budapest_publishing_window(current_dt: datetime) -> Optional[int]:
     """
-    Return the currently recoverable Budapest slot.  Slot 1 (15:00-20:59)
-    remains eligible until Slot 2 begins at 21:00, and Slot 2 (21:00-23:59)
-    remains eligible through the local day, absorbing GitHub Actions startup
-    delays without making either slot a recurring open-ended window.
-    Returns slot number (1 or 2) if in window, otherwise None.
+    Return the active Europe/Budapest publishing window (1, 2, 3, or 4), or None if outside.
+    Window 1: 15:00 - 17:59 (Slot 1 Image: Facebook, Threads, Pinterest dailyideasforyou)
+    Window 2: 18:00 - 20:59 (Slot 1 Image: Pinterest LifeModeHQ)
+    Window 3: 21:00 - 22:59 (Slot 2 Video: Facebook, Threads, Pinterest dailyideasforyou)
+    Window 4: 23:00 - 23:59 (Slot 2 Video: Pinterest LifeModeHQ)
     """
     tz = get_budapest_timezone()
     b_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
-    if 15 <= b_dt.hour < 21:
+    hour = b_dt.hour
+    if 15 <= hour < 18:
         return 1
-    elif 21 <= b_dt.hour < 24:
+    elif 18 <= hour < 21:
         return 2
+    elif 21 <= hour < 23:
+        return 3
+    elif 23 <= hour < 24:
+        return 4
     return None
 
 
@@ -98,10 +103,20 @@ def claim_due_slots(
     """
     due_items = QueuePublisher.find_due_items(queue, current_dt)
     due_keys = {key for item in due_items if (key := slot_key_for_item(item))}
-    if window_slot in (1, 2):
+    if window_slot in (1, 2, 3, 4):
         tz = get_budapest_timezone()
         local_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
-        due_keys.add(f"{local_dt.date().isoformat()}-slot-{window_slot}")
+        local_date = local_dt.date().isoformat()
+        if window_slot in (3, 4):
+            slot_num = 2
+        elif window_slot == 1:
+            slot_num = 1
+        elif window_slot == 2:
+            slot_num = 2 if local_dt.hour >= 21 else 1
+        else:
+            slot_num = window_slot
+        due_keys.add(f"{local_date}-slot-{slot_num}")
+
     claimed: Set[str] = set()
     for key in sorted(due_keys):
         claim = queue.slot_claims.get(key) or {}
@@ -124,7 +139,13 @@ def claim_due_slots(
     return claimed
 
 
-def finalize_slot_claims(queue: PublishingQueue, slot_keys: Set[str], report: Dict[str, Any], current_dt: datetime) -> bool:
+def finalize_slot_claims(
+    queue: PublishingQueue,
+    slot_keys: Set[str],
+    report: Dict[str, Any],
+    current_dt: datetime,
+    window_slot: Optional[int] = None,
+) -> bool:
     """
     Complete successful claims; make failed/partial claims retryable.
 
@@ -149,8 +170,12 @@ def finalize_slot_claims(queue: PublishingQueue, slot_keys: Set[str], report: Di
     if not final_keys:
         return False
 
-    retryable = report.get("failed_count", 0) > 0 or report.get("partially_published_count", 0) > 0
-    new_state = "RETRYABLE" if retryable else "COMPLETED"
+    failed_count = report.get("failed_count", 0)
+    has_errors = failed_count > 0 or any(
+        bool(item.get("errors")) for item in report.get("items_processed", [])
+    )
+    is_partial = report.get("partially_published_count", 0) > 0
+    new_state = "RETRYABLE" if (has_errors or is_partial) else "COMPLETED"
     completed_at = current_dt.isoformat()
     changed = False
     for key in final_keys:
@@ -413,7 +438,7 @@ def main():
     print(f"\n=======================================================")
     print(f" AmazonAffiliateBot - Cloud Publisher")
     print(f" Current Europe/Budapest Time : {current_dt.strftime('%Y-%m-%d %H:%M:%S %Z')}")
-    print(f" Publish Window Match         : Slot {slot_window if slot_window else 'None (Outside Window)'}")
+    print(f" Publish Window Match         : Window {slot_window if slot_window else 'None (Outside Window)'}")
     print(f" Window Enforcement           : {'ACTIVE (Scheduled Run)' if should_check_window else 'BYPASSED (Manual Evaluation)'}")
     print(f" Mode                         : {'DRY RUN' if dry_run else 'LIVE PUBLISHING'}")
     print(f" Event Source                 : {github_event or 'local/manual'}")
@@ -422,7 +447,7 @@ def main():
     if should_check_window and slot_window is None:
         msg = (
             f"[INFO] Current time ({current_dt.strftime('%H:%M %Z')}) is outside Europe/Budapest "
-            f"recoverable scheduled windows (15:00-20:59, 21:00-23:59). Skipping scheduled execution."
+            f"recoverable scheduled windows (15:00-17:59, 18:00-20:59, 21:00-22:59, 23:00-23:59). Skipping scheduled execution."
         )
         print(msg, flush=True)
         set_github_output("queue_updated", "false")
@@ -463,7 +488,9 @@ def main():
         print(f"[ERROR] Queue file not found at: {queue_file}", file=sys.stderr, flush=True)
         sys.exit(1)
 
-    effective_slot = args.slot or (slot_window if should_check_window and not require_claim else None)
+    effective_slot = args.slot
+    if effective_slot is None and should_check_window and not require_claim and slot_window is not None:
+        effective_slot = 1 if slot_window in (1, 2) else 2
 
     try:
         raw_queue = PublishingQueue.load(queue_file)
@@ -551,7 +578,8 @@ def main():
             dry_run=dry_run,
             slot_filter=effective_slot,
             log_file=args.log_file,
-            slot_keys=allowed_slot_keys
+            slot_keys=allowed_slot_keys,
+            window_id=slot_window if should_check_window else None,
         )
 
         due_count = report.get("due_items_count", 0)
@@ -580,7 +608,9 @@ def main():
 
         if not dry_run and allowed_slot_keys:
             persisted_queue = PublishingQueue.load(queue_file)
-            claims_changed = finalize_slot_claims(persisted_queue, allowed_slot_keys, report, current_dt)
+            claims_changed = finalize_slot_claims(
+                persisted_queue, allowed_slot_keys, report, current_dt, window_slot=slot_window
+            )
             if claims_changed:
                 persisted_queue.save(queue_file)
 
@@ -601,10 +631,13 @@ def main():
         if temp_dir and Path(temp_dir).exists():
             shutil.rmtree(temp_dir, ignore_errors=True)
 
-    if not dry_run and (failed_count > 0 or partially_count > 0):
+    has_real_errors = failed_count > 0 or any(
+        bool(item.get("errors")) for item in report.get("items_processed", [])
+    )
+    if not dry_run and has_real_errors:
         print(
             f"\n[ERROR] Publishing encountered errors in live run: "
-            f"{failed_count} failed, {partially_count} partially published. Exiting with failure.",
+            f"{failed_count} failed. Exiting with failure.",
             file=sys.stderr,
             flush=True
         )

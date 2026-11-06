@@ -53,58 +53,106 @@ class TestCloudPublishingMigration(unittest.TestCase):
     # -------------------------------------------------------------------------
 
     def test_cest_summer_window_detection(self):
-        """Verify window detection during CEST (Summer, UTC+2)."""
-        # In CEST: 12:00 UTC = 14:00 CEST (Before Slot 1 -> None)
+        """Verify window detection during CEST (Summer, UTC+2) across all 4 windows."""
+        # In CEST: 12:00 UTC = 14:00 CEST (Before Window 1 -> None)
         dt_12_utc = datetime.fromisoformat("2026-07-15T12:00:00+00:00")
         self.assertIsNone(check_budapest_publishing_window(dt_12_utc))
 
-        # In CEST: 13:00 UTC = 15:00 CEST (Slot 1 opens)
+        # In CEST: 13:00 UTC = 15:00 CEST (Window 1 opens)
         dt_13_utc = datetime.fromisoformat("2026-07-15T13:00:00+00:00")
         self.assertEqual(check_budapest_publishing_window(dt_13_utc), 1)
 
-        # In CEST: 18:59 UTC = 20:59 CEST (Slot 1 last eligible minute)
+        # In CEST: 15:59 UTC = 17:59 CEST (Window 1 last eligible minute)
+        dt_1559_utc = datetime.fromisoformat("2026-07-15T15:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_1559_utc), 1)
+
+        # In CEST: 16:00 UTC = 18:00 CEST (Window 2 opens)
+        dt_16_utc = datetime.fromisoformat("2026-07-15T16:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_16_utc), 2)
+
+        # In CEST: 18:59 UTC = 20:59 CEST (Window 2 last eligible minute)
         dt_1859_utc = datetime.fromisoformat("2026-07-15T18:59:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_1859_utc), 1)
+        self.assertEqual(check_budapest_publishing_window(dt_1859_utc), 2)
 
-        # In CEST: 19:00 UTC = 21:00 CEST (Slot 2 opens)
+        # In CEST: 19:00 UTC = 21:00 CEST (Window 3 opens)
         dt_19_utc = datetime.fromisoformat("2026-07-15T19:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_19_utc), 2)
+        self.assertEqual(check_budapest_publishing_window(dt_19_utc), 3)
 
-        # In CEST: 20:00 UTC = 22:00 CEST (Slot 2 late-start recovery)
-        dt_20_utc = datetime.fromisoformat("2026-07-15T20:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_20_utc), 2)
+        # In CEST: 20:59 UTC = 22:59 CEST (Window 3 last eligible minute)
+        dt_2059_utc = datetime.fromisoformat("2026-07-15T20:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_2059_utc), 3)
+
+        # In CEST: 21:00 UTC = 23:00 CEST (Window 4 opens)
+        dt_21_utc = datetime.fromisoformat("2026-07-15T21:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_21_utc), 4)
+
+        # In CEST: 21:59 UTC = 23:59 CEST (Window 4 last eligible minute)
+        dt_2159_utc = datetime.fromisoformat("2026-07-15T21:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_2159_utc), 4)
+
+        # In CEST: 22:00 UTC = 00:00 CEST (next day -> None)
+        dt_22_utc = datetime.fromisoformat("2026-07-15T22:00:00+00:00")
+        self.assertIsNone(check_budapest_publishing_window(dt_22_utc))
 
     def test_cet_winter_window_detection(self):
-        """Verify window detection during CET (Winter, UTC+1)."""
-        # In CET: 12:00 UTC = 13:00 CET (Before Slot 1 -> None)
+        """Verify window detection during CET (Winter, UTC+1) across all 4 windows."""
+        # In CET: 12:00 UTC = 13:00 CET (Before Window 1 -> None)
         dt_12_utc = datetime.fromisoformat("2026-12-15T12:00:00+00:00")
         self.assertIsNone(check_budapest_publishing_window(dt_12_utc))
 
-        # In CET: 13:00 UTC = 14:00 CET (Before Slot 1 -> None)
+        # In CET: 13:00 UTC = 14:00 CET (Before Window 1 -> None)
         dt_13_utc = datetime.fromisoformat("2026-12-15T13:00:00+00:00")
         self.assertIsNone(check_budapest_publishing_window(dt_13_utc))
 
-        # In CET: 14:00 UTC = 15:00 CET (Slot 1 opens)
+        # In CET: 14:00 UTC = 15:00 CET (Window 1 opens)
         dt_14_utc = datetime.fromisoformat("2026-12-15T14:00:00+00:00")
         self.assertEqual(check_budapest_publishing_window(dt_14_utc), 1)
 
-        # In CET: 19:00 UTC = 20:00 CET (Slot 1 late-start recovery)
-        dt_19_utc = datetime.fromisoformat("2026-12-15T19:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_19_utc), 1)
+        # In CET: 16:59 UTC = 17:59 CET (Window 1 last eligible minute)
+        dt_1659_utc = datetime.fromisoformat("2026-12-15T16:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_1659_utc), 1)
 
-        # In CET: 20:00 UTC = 21:00 CET (Slot 2)
+        # In CET: 17:00 UTC = 18:00 CET (Window 2 opens)
+        dt_17_utc = datetime.fromisoformat("2026-12-15T17:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_17_utc), 2)
+
+        # In CET: 19:59 UTC = 20:59 CET (Window 2 last eligible minute)
+        dt_1959_utc = datetime.fromisoformat("2026-12-15T19:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_1959_utc), 2)
+
+        # In CET: 20:00 UTC = 21:00 CET (Window 3 opens)
         dt_20_utc = datetime.fromisoformat("2026-12-15T20:00:00+00:00")
-        self.assertEqual(check_budapest_publishing_window(dt_20_utc), 2)
+        self.assertEqual(check_budapest_publishing_window(dt_20_utc), 3)
+
+        # In CET: 21:59 UTC = 22:59 CET (Window 3 last eligible minute)
+        dt_2159_utc = datetime.fromisoformat("2026-12-15T21:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_2159_utc), 3)
+
+        # In CET: 22:00 UTC = 23:00 CET (Window 4 opens)
+        dt_22_utc = datetime.fromisoformat("2026-12-15T22:00:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_22_utc), 4)
+
+        # In CET: 22:59 UTC = 23:59 CET (Window 4 last eligible minute)
+        dt_2259_utc = datetime.fromisoformat("2026-12-15T22:59:00+00:00")
+        self.assertEqual(check_budapest_publishing_window(dt_2259_utc), 4)
+
+        # In CET: 23:00 UTC = 00:00 CET (next day -> None)
+        dt_23_utc = datetime.fromisoformat("2026-12-15T23:00:00+00:00")
+        self.assertIsNone(check_budapest_publishing_window(dt_23_utc))
 
     def test_publishing_window_boundaries(self):
-        """Exact boundaries: Slot 1 15:00-20:59, Slot 2 21:00-23:59, else None."""
+        """Exact boundaries: Window 1 (15:00-17:59), Window 2 (18:00-20:59), Window 3 (21:00-22:59), Window 4 (23:00-23:59)."""
         cases = [
-            ("2026-07-15T14:59:00", None),   # one minute before Slot 1
-            ("2026-07-15T15:00:00", 1),      # Slot 1 opens
-            ("2026-07-15T20:59:00", 1),      # Slot 1 last eligible minute
-            ("2026-07-15T21:00:00", 2),      # Slot 2 opens
-            ("2026-07-15T23:59:00", 2),      # Slot 2 last eligible minute
-            ("2026-07-16T00:00:00", None),   # next day, outside both windows
+            ("2026-07-15T14:59:00", None),   # one minute before Window 1
+            ("2026-07-15T15:00:00", 1),      # Window 1 opens
+            ("2026-07-15T17:59:00", 1),      # Window 1 last eligible minute
+            ("2026-07-15T18:00:00", 2),      # Window 2 opens
+            ("2026-07-15T20:59:00", 2),      # Window 2 last eligible minute
+            ("2026-07-15T21:00:00", 3),      # Window 3 opens
+            ("2026-07-15T22:59:00", 3),      # Window 3 last eligible minute
+            ("2026-07-15T23:00:00", 4),      # Window 4 opens
+            ("2026-07-15T23:59:00", 4),      # Window 4 last eligible minute
+            ("2026-07-16T00:00:00", None),   # next day, outside windows
         ]
         for iso_value, expected in cases:
             self.assertEqual(

@@ -11,13 +11,14 @@ CHECK_ACTIVE_RUNS = "true"
 
 [triggers]
 crons = [
-  # Europe/Budapest publishing slots are 15:00 and 21:00.
+  # Europe/Budapest publishing windows: 15:00, 18:00, 21:00, 23:00.
   # Europe/Budapest observes CET (UTC+1, winter) and CEST (UTC+2, summer).
-  # Winter (CET,  UTC+1): 14:00 UTC = 15:00 CET,  20:00 UTC = 21:00 CET
-  # Summer (CEST, UTC+2): 13:00 UTC = 15:00 CEST, 19:00 UTC = 21:00 CEST
+  # Summer (CEST, UTC+2): 13:00, 16:00, 19:00, 21:00 UTC
+  # Winter (CET,  UTC+1): 14:00, 17:00, 20:00, 22:00 UTC
   #
-  # Triggers at 13:00, 14:00, 19:00, 20:00 UTC daily (covers both daylight periods).
-  # Additional :15 run provides automatic retry if a transient API error occurs.
-  "0,15 13,14,19,20 * * *"
+  # Triggers at 13, 14, 16, 17, 19, 20, 21, 22 UTC daily (covers both daylight periods).
+  # Additional :15 run provides automatic retry/catch-up if a transient API error occurs.
+  # Out-of-season triggers are dropped inside worker code without dispatching.
+  "0,15 13,14,16,17,19,20,21,22 * * *"
 ]
 

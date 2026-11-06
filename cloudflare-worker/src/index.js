@@ -33,6 +33,46 @@ export function getBudapestTimeStr(date = new Date()) {
 }
 
 /**
+ * Returns object with Budapest year, month, day, hour, minute.
+ * @param {Date} date
+ * @returns {{ year: number, month: number, day: number, hour: number, minute: number }}
+ */
+export function getBudapestTimeParts(date = new Date()) {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Budapest",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(date);
+  const partMap = {};
+  for (const p of parts) {
+    partMap[p.type] = p.value;
+  }
+  return {
+    year: parseInt(partMap.year, 10),
+    month: parseInt(partMap.month, 10),
+    day: parseInt(partMap.day, 10),
+    hour: parseInt(partMap.hour, 10),
+    minute: parseInt(partMap.minute, 10),
+  };
+}
+
+/**
+ * Returns true if current Budapest time falls within one of the scheduled publishing hours (15, 18, 21, 23).
+ * Drops out-of-season triggers (e.g. 14:00 CET or 16:00 CEST) resulting from UTC cron unions.
+ * @param {Date} date
+ * @returns {boolean}
+ */
+export function isBudapestPublishingWindow(date = new Date()) {
+  const { hour } = getBudapestTimeParts(date);
+  return [15, 18, 21, 23].includes(hour);
+}
+
+/**
  * Check if a workflow run is already active (in_progress or queued) on GitHub.
  * @param {object} env
  * @returns {Promise<{ active: boolean, reason?: string, runId?: number }>}
@@ -162,6 +202,12 @@ export default {
     console.log(`[INFO] Cloudflare Worker Cron trigger invoked.`);
     console.log(`[INFO] Scheduled time (UTC): ${scheduledTime.toISOString()} | Europe/Budapest: ${bpTime}`);
     console.log(`[INFO] Cron expression: ${event.cron || "unknown"}`);
+
+    // Drop out-of-season triggers (e.g. 14:00 CET or 16:00 CEST) resulting from CET/CEST union crons
+    if (!isBudapestPublishingWindow(scheduledTime)) {
+      console.log(`[INFO] Scheduled time Europe/Budapest hour is outside active publishing windows (15, 18, 21, 23). Dropping out-of-season trigger.`);
+      return;
+    }
 
     if (!env.GITHUB_PAT) {
       console.error(`[ERROR] GITHUB_PAT secret is not set. Cannot dispatch to GitHub.`);

@@ -46,6 +46,64 @@ DEFAULT_TIMEZONE = "Europe/Budapest"
 SLOT_1_TIME = time(15, 0, 0)  # 15:00 (European audience focus)
 SLOT_2_TIME = time(21, 0, 0)  # 21:00 (North American audience / Pinterest focus)
 
+# 4 Independent Publishing Windows in Europe/Budapest
+PUBLISHING_WINDOWS: Dict[int, Dict[str, Any]] = {
+    1: {
+        "window_id": 1,
+        "name": "Afternoon Image (Main)",
+        "daily_slot": 1,
+        "media_type": "image",
+        "start_hour": 15,
+        "end_hour": 18,  # 15:00 - 17:59
+        "target_destinations": ["facebook", "threads", "pinterest"],
+    },
+    2: {
+        "window_id": 2,
+        "name": "Early Evening Image (LifeModeHQ Pinterest)",
+        "daily_slot": 1,
+        "media_type": "image",
+        "start_hour": 18,
+        "end_hour": 21,  # 18:00 - 20:59
+        "target_destinations": ["pinterest_lifemodehq"],
+    },
+    3: {
+        "window_id": 3,
+        "name": "Night Video (Main)",
+        "daily_slot": 2,
+        "media_type": "video",
+        "start_hour": 21,
+        "end_hour": 23,  # 21:00 - 22:59
+        "target_destinations": ["facebook", "threads", "pinterest"],
+    },
+    4: {
+        "window_id": 4,
+        "name": "Late Night Video (LifeModeHQ Pinterest)",
+        "daily_slot": 2,
+        "media_type": "video",
+        "start_hour": 23,
+        "end_hour": 24,  # 23:00 - 23:59
+        "target_destinations": ["pinterest_lifemodehq"],
+    },
+}
+
+ALL_PLATFORM_DESTINATIONS = ["facebook", "pinterest", "pinterest_lifemodehq", "threads"]
+
+
+def get_active_publishing_window(current_dt: datetime) -> Optional[int]:
+    """Return active publishing window ID (1, 2, 3, or 4) in Europe/Budapest, or None."""
+    tz = get_budapest_timezone()
+    b_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
+    hour = b_dt.hour
+    if 15 <= hour < 18:
+        return 1
+    elif 18 <= hour < 21:
+        return 2
+    elif 21 <= hour < 23:
+        return 3
+    elif 23 <= hour < 24:
+        return 4
+    return None
+
 STATUS_QUEUED = "QUEUED"
 STATUS_READY = "READY"
 STATUS_PUBLISHING = "PUBLISHING"
@@ -584,8 +642,38 @@ def find_overdue_held_items(
     return held
 
 
-def _is_retry_candidate(item: "QueueItem", current_dt: datetime, slot_keys: Set[str]) -> bool:
-    """True when a partially/failed item may safely retry within its claimed slot.
+def _is_destination_published(item: Any, dest: str) -> bool:
+    """Return True if destination has already been published on this item."""
+    results = getattr(item, "publishing_results", None)
+    if not results or not isinstance(results, dict):
+        return False
+    res = results.get(dest)
+    if not res or not isinstance(res, dict):
+        return False
+    status = res.get("status")
+    if status == PLATFORM_STATUS_PUBLISHED:
+        return bool(
+            res.get("post_id")
+            or res.get("video_id")
+            or res.get("pin_id")
+            or res.get("photo_id")
+            or res.get("permalink")
+            or res.get("permalink_url")
+            or res.get("pin_url")
+            or res.get("action") == "SKIP_DUPLICATE"
+        )
+    if status == STATUS_WOULD_PUBLISH:
+        return True
+    return False
+
+
+def _is_retry_candidate(
+    item: "QueueItem",
+    current_dt: datetime,
+    slot_keys: Set[str],
+    window_id: Optional[int] = None,
+) -> bool:
+    """True when a partially/failed item may safely retry within its claimed slot or window.
 
     Automatic retries are limited to the same Budapest day and to slots that an
     explicit persisted claim marked as retryable/claimed.  Anything older stays
@@ -604,7 +692,83 @@ def _is_retry_candidate(item: "QueueItem", current_dt: datetime, slot_keys: Set[
         return False
     if item_dt > current_dt:
         return False
-    return f"{item_date.isoformat()}-slot-{item.daily_slot}" in slot_keys
+
+    date_str = item_date.isoformat()
+    # Check legacy slot key
+    if f"{date_str}-slot-{item.daily_slot}" in slot_keys:
+        return True
+    # Check window key
+    if window_id is not None and f"{date_str}-window-{window_id}" in slot_keys:
+        return True
+    # Check any window key for this day that corresponds to the item's daily_slot
+    for w_id, w_info in PUBLISHING_WINDOWS.items():
+        if w_info.get("daily_slot") == item.daily_slot:
+            if f"{date_str}-window-{w_id}" in slot_keys:
+                return True
+    return False
+
+
+def check_platform_min_separation(
+    queue: "PublishingQueue",
+    destination: str,
+    current_dt: datetime,
+    min_minutes: int = 120,
+    exclude_item_id: Optional[str] = None,
+) -> Tuple[bool, Optional[datetime], Optional[float]]:
+    """
+    Check if at least `min_minutes` have elapsed since the last publication on `destination`.
+    Exact boundary (`elapsed_minutes >= min_minutes`) is allowed; `< min_minutes` is rejected.
+
+    Args:
+        queue: PublishingQueue containing item history.
+        destination: Platform key, e.g. 'facebook', 'threads', 'pinterest', 'pinterest_lifemodehq'.
+        current_dt: Current evaluation datetime.
+        min_minutes: Minimum required separation in minutes (default 120).
+        exclude_item_id: Optional item ID to ignore (e.g. the current item being processed).
+
+    Returns:
+        Tuple[bool, Optional[datetime], Optional[float]]:
+            (is_allowed, latest_publication_dt, elapsed_minutes)
+    """
+    latest_dt: Optional[datetime] = None
+    tz = get_budapest_timezone()
+    c_dt = current_dt.astimezone(tz) if current_dt.tzinfo else current_dt.replace(tzinfo=tz)
+
+    for item in queue.items:
+        if exclude_item_id and item.queue_item_id == exclude_item_id:
+            continue
+        results = item.publishing_results or {}
+        dest_res = results.get(destination)
+        if not dest_res or not isinstance(dest_res, dict):
+            continue
+
+        status = dest_res.get("status")
+        if status not in (PLATFORM_STATUS_PUBLISHED, STATUS_WOULD_PUBLISH):
+            continue
+
+        ts_str = dest_res.get("published_at") or item.published_at
+        if not ts_str:
+            continue
+        try:
+            pub_dt = QueuePublisher.parse_datetime(ts_str)
+            pub_dt = pub_dt.astimezone(tz) if pub_dt.tzinfo else pub_dt.replace(tzinfo=tz)
+        except Exception:
+            continue
+
+        if pub_dt <= c_dt:
+            if latest_dt is None or pub_dt > latest_dt:
+                latest_dt = pub_dt
+
+    if latest_dt is None:
+        return True, None, None
+
+    diff_sec = (c_dt - latest_dt).total_seconds()
+    diff_min = diff_sec / 60.0
+
+    if diff_min < min_minutes:
+        return False, latest_dt, diff_min
+
+    return True, latest_dt, diff_min
 
 
 def portable_package_reference(
@@ -1243,12 +1407,14 @@ class QueuePublisher:
         queue: PublishingQueue,
         current_dt: datetime,
         slot_filter: Optional[int] = None,
-        slot_keys: Optional[Set[str]] = None
+        slot_keys: Optional[Set[str]] = None,
+        window_id: Optional[int] = None,
     ) -> List[QueueItem]:
         """
         Identify queue items eligible for publishing under the overdue policy:
         - status == STATUS_READY on the *current* Budapest day, or
-        - a same-day PARTIALLY_PUBLISHED/FAILED item whose slot is explicitly
+        - a same-day PARTIALLY_PUBLISHED item that has pending destinations for the active window, or
+        - a same-day PARTIALLY_PUBLISHED/FAILED item whose slot/window is explicitly
           included in ``slot_keys`` (safe retry of a claimed slot),
         - scheduled_at <= current_dt,
         - slot_filter match if specified.
@@ -1258,6 +1424,11 @@ class QueuePublisher:
         """
         due_items: List[QueueItem] = []
         current_date = current_dt.astimezone(get_budapest_timezone()).date()
+
+        win_info = PUBLISHING_WINDOWS.get(window_id) if window_id is not None else None
+        if win_info and slot_filter is None:
+            slot_filter = win_info["daily_slot"]
+
         for item in queue.items:
             if not item.scheduled_at:
                 continue
@@ -1267,20 +1438,38 @@ class QueuePublisher:
             try:
                 item_dt = cls.parse_datetime(item.scheduled_at)
                 item_date = item_dt.astimezone(get_budapest_timezone()).date()
-                item_key = f"{item_date.isoformat()}-slot-{item.daily_slot}"
+                item_slot_key = f"{item_date.isoformat()}-slot-{item.daily_slot}"
+                item_window_key = f"{item_date.isoformat()}-window-{window_id}" if window_id else None
 
+                # Same-day only: earlier READY days are held, never burst-published.
+                if item_date != current_date:
+                    continue
+
+                is_eligible = False
                 if item.status == STATUS_READY:
-                    # Same-day only: earlier READY days are held, never burst-published.
-                    if item_date != current_date:
-                        continue
-                elif slot_keys is not None and _is_retry_candidate(item, current_dt, slot_keys):
-                    # Retry is explicitly authorised by a persisted slot claim.
-                    pass
-                else:
+                    is_eligible = True
+                elif item.status == STATUS_PARTIALLY_PUBLISHED:
+                    if win_info is not None:
+                        pending_dests = [
+                            d for d in win_info["target_destinations"]
+                            if not _is_destination_published(item, d)
+                        ]
+                        if pending_dests:
+                            is_eligible = True
+                    elif slot_keys is not None and _is_retry_candidate(item, current_dt, slot_keys, window_id=window_id):
+                        is_eligible = True
+                elif item.status == STATUS_FAILED:
+                    if slot_keys is not None and _is_retry_candidate(item, current_dt, slot_keys, window_id=window_id):
+                        is_eligible = True
+
+                if not is_eligible:
                     continue
 
-                if slot_keys is not None and item_key not in slot_keys:
-                    continue
+                if slot_keys is not None:
+                    has_key = item_slot_key in slot_keys or (item_window_key and item_window_key in slot_keys)
+                    if not has_key:
+                        continue
+
                 if item_dt <= current_dt:
                     due_items.append(item)
             except Exception:
@@ -1297,6 +1486,7 @@ class QueuePublisher:
         current_dt: datetime,
         slot_filter: Optional[int] = None,
         slot_keys: Optional[Set[str]] = None,
+        window_id: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Verify that every due item still has its content package on disk.
 
@@ -1309,7 +1499,7 @@ class QueuePublisher:
         per missing package identifying the affected queue item.
         """
         due_items = cls.find_due_items(
-            queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys
+            queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys, window_id=window_id
         )
         resolved: List[Dict[str, Any]] = []
         missing: List[Dict[str, Any]] = []
@@ -1348,6 +1538,9 @@ class QueuePublisher:
         publisher: Optional[SocialPublisher] = None,
         log_file: Optional[Union[str, Path]] = None,
         slot_keys: Optional[Set[str]] = None,
+        window_id: Optional[int] = None,
+        target_destinations: Optional[List[str]] = None,
+        min_separation_minutes: int = 120,
     ) -> Dict[str, Any]:
         """
         Evaluate and publish due items in the queue.
@@ -1377,6 +1570,14 @@ class QueuePublisher:
         eval_now = now_override if now_override is not None else now_str
         current_dt = cls.get_current_budapest_time(eval_now)
 
+        # Resolve window settings if window_id is provided
+        active_window_info = PUBLISHING_WINDOWS.get(window_id) if window_id is not None else None
+        if active_window_info:
+            if slot_filter is None:
+                slot_filter = active_window_info["daily_slot"]
+            if target_destinations is None:
+                target_destinations = list(active_window_info["target_destinations"])
+
         # Setup publisher
         if publisher is None:
             from publishing.config import PublishingConfig
@@ -1389,7 +1590,9 @@ class QueuePublisher:
         cls.log_event(f"Current Europe/Budapest Time: {current_dt.isoformat()} | Mode: {mode_str}", log_file=target_log)
         cls.log_event(f"Queue File: {target_file} | Total Items in Queue: {len(queue.items)}", log_file=target_log)
 
-        due_items = cls.find_due_items(queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys)
+        due_items = cls.find_due_items(
+            queue, current_dt, slot_filter=slot_filter, slot_keys=slot_keys, window_id=window_id
+        )
         overdue_held = find_overdue_held_items(queue, current_dt)
         cls.log_event(f"Due Eligible Items Found: {len(due_items)}", log_file=target_log)
         cls.log_event(
@@ -1463,10 +1666,50 @@ class QueuePublisher:
                 package_data = dict(package_data)
                 ContentPackage.attach_verified_video(package_data, item.video_url)
             try:
+                # Resolve target destinations for this pass
+                item_target_destinations = list(target_destinations) if target_destinations is not None else None
+
+                # Enforce minimum platform separation (120 minutes)
+                if item_target_destinations is not None:
+                    allowed_destinations = []
+                    for dest in item_target_destinations:
+                        is_allowed, latest_pub_dt, elapsed_mins = check_platform_min_separation(
+                            queue, dest, current_dt, min_minutes=min_separation_minutes, exclude_item_id=item.queue_item_id
+                        )
+                        if is_allowed:
+                            allowed_destinations.append(dest)
+                        else:
+                            cls.log_event(
+                                f"DEFERRED destination '{dest}' on item '{item.queue_item_id}': "
+                                f"last published at {latest_pub_dt.isoformat() if latest_pub_dt else 'unknown'} "
+                                f"({elapsed_mins:.1f}m ago < {min_separation_minutes}m min separation).",
+                                log_file=target_log,
+                                level="WARNING"
+                            )
+                    item_target_destinations = allowed_destinations
+
+                if item_target_destinations is not None and len(item_target_destinations) == 0:
+                    cls.log_event(
+                        f"Item '{item.queue_item_id}' skipped in this pass: all destinations deferred by {min_separation_minutes}-min separation policy.",
+                        log_file=target_log,
+                        level="WARNING"
+                    )
+                    items_processed.append({
+                        "item_id": item.queue_item_id,
+                        "asin": item.asin,
+                        "slot": item.daily_slot,
+                        "scheduled_at": item.scheduled_at,
+                        "status": item.status,
+                        "deferred_separation": True,
+                        "errors": [],
+                    })
+                    continue
+
                 pub_report = publisher.publish_package(
                     package_data,
                     dry_run=is_dry_run,
                     prior_results=item.publishing_results,
+                    target_destinations=item_target_destinations,
                 )
                 platform_results = pub_report.get("results", {})
 
@@ -1487,24 +1730,33 @@ class QueuePublisher:
                             or result.get("permalink")
                             or result.get("permalink_url")
                             or result.get("pin_url")
+                            or result.get("action") == "SKIP_DUPLICATE"
                         )
                     )
 
+                def is_dest_ok(result: Dict[str, Any]) -> bool:
+                    return (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run) or confirmed_live(result)
+
                 required_destinations = {"facebook", "pinterest", "pinterest_lifemodehq", "threads"}
                 all_ok = (
-                    set(platform_results) == required_destinations
+                    required_destinations.issubset(set(platform_results.keys()))
                     and all(
-                        (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
-                        or confirmed_live(result)
-                        for result in platform_results.values()
+                        is_dest_ok(platform_results[d])
+                        for d in required_destinations
                     )
                 )
 
                 any_ok = any(
-                    (result.get("status") == STATUS_WOULD_PUBLISH and is_dry_run)
-                    or confirmed_live(result)
+                    is_dest_ok(result)
                     for result in platform_results.values()
                 )
+
+                active_evaluated_dests = item_target_destinations if item_target_destinations is not None else list(platform_results.keys())
+                dest_errors = []
+                for d in active_evaluated_dests:
+                    r = platform_results.get(d, {})
+                    if r.get("status") == PLATFORM_STATUS_FAILED:
+                        dest_errors.extend(r.get("errors", []))
 
                 if is_dry_run:
                     # A simulation is not a publication and must not consume
@@ -1524,11 +1776,7 @@ class QueuePublisher:
                 # Preserve actionable platform failures for both fully failed
                 # and partially published items. Successful platforms remain
                 # in publishing_results so retries can skip them safely.
-                failure_messages = []
-                for result in platform_results.values():
-                    if result.get("status") == PLATFORM_STATUS_FAILED:
-                        failure_messages.extend(result.get("errors", []))
-                for message in failure_messages:
+                for message in dest_errors:
                     if message not in item.errors:
                         item.errors.append(message)
 
@@ -1556,7 +1804,8 @@ class QueuePublisher:
                     "scheduled_at": item.scheduled_at,
                     "status": item.status,
                     "mode": pub_report.get("mode", mode_str),
-                    "platform_statuses": {k: v.get("status") for k, v in platform_results.items()}
+                    "platform_statuses": {k: v.get("status") for k, v in platform_results.items()},
+                    "errors": dest_errors,
                 })
 
             except Exception as e:
@@ -1590,6 +1839,7 @@ class QueuePublisher:
             "evaluated_at": current_dt.isoformat(),
             "timezone": DEFAULT_TIMEZONE,
             "mode": mode_str,
+            "window_id": window_id,
             "total_items_in_queue": len(queue.items),
             "due_items_count": len(due_items),
             "overdue_policy": OVERDUE_POLICY,

@@ -62,13 +62,18 @@ class SocialPublisher:
         package: Dict[str, Any],
         dry_run: Optional[bool] = None,
         prior_results: Optional[Dict[str, Any]] = None,
+        target_destinations: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
-        Publish a validated Content Package across all configured platforms.
+        Publish a validated Content Package across all configured platforms (or targeted destinations).
 
         Args:
             package: Validated V3/V4 Content Package dictionary.
             dry_run: Optional override for DRY_RUN mode.
+            prior_results: Optional previously confirmed results dictionary to avoid duplicates.
+            target_destinations: Optional list of destination keys to publish in this pass
+                                 (e.g. ['facebook', 'threads', 'pinterest'] or ['pinterest_lifemodehq']).
+                                 If None, all configured destinations are evaluated.
 
         Returns:
             Dict[str, Any]: Comprehensive publishing report.
@@ -131,6 +136,14 @@ class SocialPublisher:
             ("pinterest_lifemodehq", "pinterest", self.pinterest_adapters.get("lifemodehq"), self.config.pinterest_accounts.get("lifemodehq", {})),
             ("threads", "threads", self.adapters.get("threads"), self.config.accounts.get("threads", {})),
         ]
+
+        if target_destinations is not None:
+            allowed_destinations = set(target_destinations)
+            # Preserve prior results for destinations not being targeted in this pass
+            for res_key, _, _, _ in targets:
+                if res_key not in allowed_destinations and res_key in prior_results:
+                    results[res_key] = prior_results[res_key]
+            targets = [t for t in targets if t[0] in allowed_destinations]
 
         for result_key, platform_name, adapter, account_cfg in targets:
             p_content = platforms_dict.get(platform_name)

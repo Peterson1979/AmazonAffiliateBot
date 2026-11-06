@@ -16,12 +16,17 @@ This Cloudflare Worker provides a **zero-infrastructure, high-reliability extern
    - **Layer 2 (Workflow level):** Workflow uses `concurrency: group: publishing-queue-lock, cancel-in-progress: false`, ensuring runs never execute in parallel.
    - **Layer 3 (Runner level):** Runner uses atomic, evidence-backed slot claims (`claim_due_slots()`) persisted directly to Git before any publishing adapter is invoked.
 3. **Timezone & Daylight Saving Alignment:**
-   - The bot publishes at **15:00** and **21:00** **Europe/Budapest** time.
+   - The bot publishes across 4 daily windows in **Europe/Budapest** time:
+     - **Window 1 (15:00):** Daily Slot 1 (Image) -> Facebook, Threads, Pinterest (`dailyideasforyou`)
+     - **Window 2 (18:00):** Daily Slot 1 (Image) -> Pinterest (`LifeModeHQ`)
+     - **Window 3 (21:00):** Daily Slot 2 (Video) -> Facebook, Threads, Pinterest (`dailyideasforyou`)
+     - **Window 4 (23:00):** Daily Slot 2 (Video) -> Pinterest (`LifeModeHQ`)
    - Budapest observes **CET** (UTC+1, winter) and **CEST** (UTC+2, summer).
-   - The worker cron is configured to run at `0,15 13,14,19,20 * * *`:
-     - Summer (CEST, UTC+2): 13:00 UTC = 15:00 CEST (Slot 1), 19:00 UTC = 21:00 CEST (Slot 2).
-     - Winter (CET, UTC+1): 14:00 UTC = 15:00 CET (Slot 1), 20:00 UTC = 21:00 CET (Slot 2).
+   - The worker cron is configured to run at `0,15 13,14,16,17,19,20,21,22 * * *`:
+     - Summer (CEST, UTC+2): 13:00 UTC = 15:00 CEST (W1), 16:00 UTC = 18:00 CEST (W2), 19:00 UTC = 21:00 CEST (W3), 21:00 UTC = 23:00 CEST (W4).
+     - Winter (CET, UTC+1): 14:00 UTC = 15:00 CET (W1), 17:00 UTC = 18:00 CET (W2), 20:00 UTC = 21:00 CET (W3), 22:00 UTC = 23:00 CET (W4).
      - The `:15` runs provide automatic retry/catch-up within the valid window if a transient network error occurred.
+     - Out-of-season triggers resulting from UTC unions are automatically dropped inside worker code without dispatching.
 4. **Preserved Queue & Overdue Semantics:**
    - Overdue items from previous Budapest calendar days remain held (`overdue_held`) and are **never** burst-published by scheduled triggers.
    - Live social media posts are sent only when inside the valid publishing window with a persisted slot claim.

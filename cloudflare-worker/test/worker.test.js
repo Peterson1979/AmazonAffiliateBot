@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import worker, {
   getBudapestTimeStr,
+  getBudapestTimeParts,
+  isBudapestPublishingWindow,
   checkActiveWorkflowRuns,
   dispatchToGitHub,
 } from "../src/index.js";
@@ -11,6 +13,28 @@ test("getBudapestTimeStr formats Budapest time correctly", () => {
   const bpStr = getBudapestTimeStr(d);
   // In November (CET, UTC+1), 14:00 UTC is 15:00 CET
   assert.match(bpStr, /^2026-11-06T15:00:00/);
+});
+
+test("isBudapestPublishingWindow validates all 4 windows in CET and CEST", () => {
+  // CET (Winter, UTC+1): 14:00Z = 15:00, 17:00Z = 18:00, 20:00Z = 21:00, 22:00Z = 23:00
+  assert.equal(isBudapestPublishingWindow(new Date("2026-12-15T14:00:00Z")), true, "CET 15:00");
+  assert.equal(isBudapestPublishingWindow(new Date("2026-12-15T17:00:00Z")), true, "CET 18:00");
+  assert.equal(isBudapestPublishingWindow(new Date("2026-12-15T20:00:00Z")), true, "CET 21:00");
+  assert.equal(isBudapestPublishingWindow(new Date("2026-12-15T22:00:00Z")), true, "CET 23:00");
+
+  // CEST (Summer, UTC+2): 13:00Z = 15:00, 16:00Z = 18:00, 19:00Z = 21:00, 21:00Z = 23:00
+  assert.equal(isBudapestPublishingWindow(new Date("2026-07-15T13:00:00Z")), true, "CEST 15:00");
+  assert.equal(isBudapestPublishingWindow(new Date("2026-07-15T16:00:00Z")), true, "CEST 18:00");
+  assert.equal(isBudapestPublishingWindow(new Date("2026-07-15T19:00:00Z")), true, "CEST 21:00");
+  assert.equal(isBudapestPublishingWindow(new Date("2026-07-15T21:00:00Z")), true, "CEST 23:00");
+
+  // Out-of-season triggers resulting from UTC unions:
+  // In CET (winter): 13:00 UTC = 14:00 CET (not in windows 15, 18, 21, 23)
+  assert.equal(isBudapestPublishingWindow(new Date("2026-12-15T13:00:00Z")), false, "CET 14:00 out-of-season");
+  // In CEST (summer): 14:00 UTC = 16:00 CEST (not in windows 15, 18, 21, 23)
+  assert.equal(isBudapestPublishingWindow(new Date("2026-07-15T14:00:00Z")), false, "CEST 16:00 out-of-season");
+  // In CEST (summer): 17:00 UTC = 19:00 CEST (not in windows 15, 18, 21, 23)
+  assert.equal(isBudapestPublishingWindow(new Date("2026-07-15T17:00:00Z")), false, "CEST 19:00 out-of-season");
 });
 
 test("dispatchToGitHub makes valid repository_dispatch request to GitHub", async () => {
@@ -107,7 +131,8 @@ test("scheduled handler skips dispatch if active run is in progress", async () =
       GITHUB_PAT: "test_pat",
       CHECK_ACTIVE_RUNS: "true",
     };
-    const event = { cron: "0 14 * * *", scheduledTime: Date.now() };
+    // 14:00 UTC = 15:00 CET (active window)
+    const event = { cron: "0 14 * * *", scheduledTime: new Date("2026-11-06T14:00:00Z").getTime() };
 
     await worker.scheduled(event, env, {});
     assert.equal(dispatchCalled, false, "Should NOT dispatch when active run exists");
@@ -139,10 +164,35 @@ test("scheduled handler executes dispatch when no runs are active", async () => 
       GITHUB_PAT: "test_pat",
       CHECK_ACTIVE_RUNS: "true",
     };
-    const event = { cron: "0 14 * * *", scheduledTime: Date.now() };
+    // 14:00 UTC = 15:00 CET (active window)
+    const event = { cron: "0 14 * * *", scheduledTime: new Date("2026-11-06T14:00:00Z").getTime() };
 
     await worker.scheduled(event, env, {});
     assert.equal(dispatchCalled, true, "Should dispatch when no active run exists");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("scheduled handler drops out-of-season triggers without dispatching", async () => {
+  let fetchCalled = false;
+
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    fetchCalled = true;
+    return new Response(null, { status: 200 });
+  };
+
+  try {
+    const env = {
+      GITHUB_PAT: "test_pat",
+      CHECK_ACTIVE_RUNS: "true",
+    };
+    // In CET (winter): 13:00 UTC is 14:00 CET (out of season, not in [15, 18, 21, 23])
+    const event = { cron: "0 13 * * *", scheduledTime: new Date("2026-12-15T13:00:00Z").getTime() };
+
+    await worker.scheduled(event, env, {});
+    assert.equal(fetchCalled, false, "Should drop out-of-season trigger without calling GitHub API");
   } finally {
     globalThis.fetch = originalFetch;
   }
