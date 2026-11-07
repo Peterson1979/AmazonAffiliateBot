@@ -45,8 +45,16 @@
 
     <div style="margin-top: 16px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
       <div>&bull; <strong>Timezone:</strong> Standard IANA <code>Europe/Budapest</code>.</div>
-      <div>&bull; <strong>Slot Separation:</strong> Strictly 7 hours between daily Slot 1 and Slot 2.</div>
-      <div>&bull; <strong>Recovery:</strong> Missed slots during system downtime are automatically executed upon next startup without duplication.</div>
+      <div>&bull; <strong>Production Cloudflare Publishing Windows:</strong>
+        <ul style="margin: 4px 0 0 16px; padding: 0; font-size: 0.82rem;">
+          <li><code>15:00</code> Budapest &mdash; Window 1 (Slot 1 IMAGE: Facebook, Threads, Pinterest DailyIdeas)</li>
+          <li><code>18:00</code> Budapest &mdash; Window 2 (Slot 1 IMAGE: Pinterest LifeModeHQ)</li>
+          <li><code>21:00</code> Budapest &mdash; Window 3 (Slot 2 VIDEO: Facebook, Threads, Pinterest DailyIdeas)</li>
+          <li><code>23:00</code> Budapest &mdash; Window 4 (Slot 2 VIDEO: Pinterest LifeModeHQ)</li>
+        </ul>
+      </div>
+      <div>&bull; <strong>Slot Separation:</strong> 3–6 hours separation across production publishing windows.</div>
+      <div>&bull; <strong>Recovery:</strong> Overdue items are held for explicit review to prevent accidental late publishing.</div>
     </div>
   </div>
 

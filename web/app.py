@@ -422,6 +422,8 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
                     it.ui_media_type = presentation["media_type"]
                     it.ui_video_url = presentation["video_url"]
                     it.ui_image_url = presentation["image_url"]
+                    it.ui_windows = presentation.get("windows", [])
+                    it.ui_execution_times = presentation.get("execution_times", "")
                     items.append(it)
 
         if status_filter != "ALL":
@@ -449,6 +451,8 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
                 held_item.ui_media_type = presentation["media_type"]
                 held_item.ui_video_url = presentation["video_url"]
                 held_item.ui_image_url = presentation["image_url"]
+                held_item.ui_windows = presentation.get("windows", [])
+                held_item.ui_execution_times = presentation.get("execution_times", "")
                 overdue_held_items.append(held_item)
 
         per_page = _parse_positive_int(request.args.get("per_page"), default=25)

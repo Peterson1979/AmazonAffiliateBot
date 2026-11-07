@@ -5,7 +5,7 @@
   <div>
     <div class="eyebrow">Queue control</div>
     <h1 class="page-title">Publishing Queue Schedule</h1>
-    <p class="help-text">Slot 1: 15:00 · Slot 2: 21:00 Europe/Budapest. Automatic publishing runs items for the current Budapest day; overdue items are held for explicit review.</p>
+    <p class="help-text">Production Schedule: Slot 1 (🖼️ Image) at 15:00 (FB, Threads, Pinterest DailyIdeas) &amp; 18:00 (Pinterest LifeModeHQ) &middot; Slot 2 (🎬 Video) at 21:00 (FB, Threads, Pinterest DailyIdeas) &amp; 23:00 (Pinterest LifeModeHQ) Europe/Budapest. Overdue items are held for explicit review.</p>
   </div>
   <div class="page-actions">
     <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Products</a>
@@ -89,14 +89,19 @@
         <tr>
           <td>
             <strong>{{ item.scheduled_date or '—' }}</strong>
-            <div class="table-subtext">{% if item.daily_slot == 1 %}15:00{% elif item.daily_slot == 2 %}21:00{% else %}Unscheduled{% endif %} Budapest</div>
+            <div class="table-subtext" style="font-weight: 500; color: var(--text-bright, #fff);">
+              {{ item.ui_execution_times or (('15:00 & 18:00 Budapest' if item.daily_slot == 1 else '21:00 & 23:00 Budapest') if item.daily_slot in (1, 2) else 'Unscheduled') }}
+            </div>
+            <div class="table-subtext" style="font-size: 0.75rem; color: var(--text-muted);">
+              {% if item.daily_slot == 1 %}Slot 1 &bull; 🖼️ Image Windows{% elif item.daily_slot == 2 %}Slot 2 &bull; 🎬 Video Windows{% else %}Slot {{ item.daily_slot or '—' }}{% endif %}
+            </div>
           </td>
           <td>
             <a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a>
             <div class="table-subtext">{{ item.asin }}</div>
           </td>
           <td>
-            {% set q_media = item.ui_media_type or ('video' if (item.media_type == 'video' and item.video_url) else 'none') %}
+            {% set q_media = item.ui_media_type or ('video' if (item.daily_slot == 2 or item.media_type == 'video') else 'image') %}
             {% if q_media == 'video' %}
               <div style="display: flex; align-items: center; gap: 8px;">
                 {% if item.ui_image_url %}
@@ -116,7 +121,21 @@
                 </div>
               </div>
             {% elif q_media == 'image' %}
-              <span class="badge badge-muted">🖼️ Image</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                {% if item.ui_image_url %}
+                  <a href="{{ url_for('content_preview', asin=item.asin) }}" title="Open image preview">
+                    <img src="{{ item.ui_image_url }}" alt="" loading="lazy" style="width: 32px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15); display: block;">
+                  </a>
+                {% endif %}
+                <div>
+                  <span class="badge badge-muted">🖼️ Image</span>
+                  {% if item.ui_image_url %}
+                    <div class="table-subtext" style="margin-top: 2px;">
+                      <a href="{{ url_for('content_preview', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">Preview</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
             {% else %}
               <span class="badge badge-muted" style="opacity: 0.75;">— No Media</span>
             {% endif %}
@@ -289,14 +308,19 @@
           </td>
           <td>
             <strong>{{ item.scheduled_date or '—' }}</strong>
-            <div class="table-subtext">{% if item.daily_slot == 1 %}15:00{% elif item.daily_slot == 2 %}21:00{% else %}Unscheduled{% endif %} Budapest</div>
+            <div class="table-subtext" style="font-weight: 500; color: var(--text-bright, #fff);">
+              {{ item.ui_execution_times or (('15:00 & 18:00 Budapest' if item.daily_slot == 1 else '21:00 & 23:00 Budapest') if item.daily_slot in (1, 2) else 'Unscheduled') }}
+            </div>
+            <div class="table-subtext" style="font-size: 0.75rem; color: var(--text-muted);">
+              {% if item.daily_slot == 1 %}Slot 1 &bull; 🖼️ Image Windows{% elif item.daily_slot == 2 %}Slot 2 &bull; 🎬 Video Windows{% else %}Slot {{ item.daily_slot or '—' }}{% endif %}
+            </div>
           </td>
           <td>
             <a class="product-link" href="{{ url_for('product_detail', asin=item.asin) }}">{{ item.product_name or item.asin }}</a>
             <div class="table-subtext">{{ item.asin }}</div>
           </td>
           <td>
-            {% set q_media = item.ui_media_type or ('video' if (item.media_type == 'video' and item.video_url) else 'none') %}
+            {% set q_media = item.ui_media_type or ('video' if (item.daily_slot == 2 or item.media_type == 'video') else 'image') %}
             {% if q_media == 'video' %}
               <div style="display: flex; align-items: center; gap: 8px;">
                 {% if item.ui_image_url %}
@@ -316,7 +340,21 @@
                 </div>
               </div>
             {% elif q_media == 'image' %}
-              <span class="badge badge-muted">🖼️ Image</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                {% if item.ui_image_url %}
+                  <a href="{{ url_for('content_preview', asin=item.asin) }}" title="Open image preview">
+                    <img src="{{ item.ui_image_url }}" alt="" loading="lazy" style="width: 32px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15); display: block;">
+                  </a>
+                {% endif %}
+                <div>
+                  <span class="badge badge-muted">🖼️ Image</span>
+                  {% if item.ui_image_url %}
+                    <div class="table-subtext" style="margin-top: 2px;">
+                      <a href="{{ url_for('content_preview', asin=item.asin) }}" style="color: var(--primary); text-decoration: none;">Preview</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
             {% else %}
               <span class="badge badge-muted" style="opacity: 0.75;">— No Media</span>
             {% endif %}
@@ -326,23 +364,62 @@
             {% if item.ui_retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
           </td>
           <td>
-            <div class="platform-result-list">
-              {% for p_key in ('facebook','pinterest','pinterest_lifemodehq','threads') %}
-                {% set p = item.ui_platforms.get(p_key) %}
-                <div class="platform-result">
-                  <span>{{ p.label }}</span>
-                  <span class="state-pill state-{{ p.state|lower|replace('_','-') }}">{{ p.ui_label or ('Not published' if p.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if p.state == 'UNKNOWN' else p.state|capitalize)) }}</span>
-                  {% if p.post_url %}
-                    <a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>
-                  {% elif p.post_id %}
-                    <span class="table-subtext">ID {{ p.post_id }}</span>
+            {% if item.ui_windows %}
+              <div class="windows-container" style="display: flex; flex-direction: column; gap: 8px;">
+                {% for win in item.ui_windows %}
+                  <div class="window-group" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 6px 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                      <span style="font-size: 0.78rem; font-weight: 600; color: var(--accent-light, #93c5fd);">
+                        ⏰ {{ win.time }} Budapest
+                      </span>
+                      <span class="state-pill state-{{ win.state|lower|replace('_','-') }}" style="font-size: 0.7rem; padding: 1px 6px;">
+                        {{ win.ui_label }}
+                      </span>
+                    </div>
+                    <div class="platform-result-list" style="display: flex; flex-direction: column; gap: 3px;">
+                      {% for p_key, p in win.platforms.items() %}
+                        <div class="platform-result" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 0.78rem;">
+                          <span style="color: var(--text-secondary, #cbd5e1);">{{ p.label }}</span>
+                          <div style="display: flex; align-items: center; gap: 4px;">
+                            <span class="state-pill state-{{ p.state|lower|replace('_','-') }}" style="font-size: 0.7rem; padding: 1px 5px;">
+                              {{ p.ui_label or ('Not published' if p.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if p.state == 'UNKNOWN' else p.state|capitalize)) }}
+                            </span>
+                            {% if p.post_url %}
+                              <a href="{{ p.post_url }}" target="_blank" rel="noopener" style="font-size: 0.72rem; color: var(--primary);">Open ↗</a>
+                            {% elif p.post_id %}
+                              <span class="table-subtext" style="font-size: 0.7rem;">ID {{ p.post_id }}</span>
+                            {% endif %}
+                            {% if p.errors %}
+                              <span class="error-detail" title="{{ p.errors|join('; ') }}" style="cursor: help;">⚠️</span>
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="platform-result-list">
+                {% for p_key in ('facebook','pinterest','pinterest_lifemodehq','threads') %}
+                  {% set p = item.ui_platforms.get(p_key) if item.ui_platforms else none %}
+                  {% if p %}
+                    <div class="platform-result">
+                      <span>{{ p.label }}</span>
+                      <span class="state-pill state-{{ p.state|lower|replace('_','-') }}">{{ p.ui_label or ('Not published' if p.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if p.state == 'UNKNOWN' else p.state|capitalize)) }}</span>
+                      {% if p.post_url %}
+                        <a href="{{ p.post_url }}" target="_blank" rel="noopener">Open</a>
+                      {% elif p.post_id %}
+                        <span class="table-subtext">ID {{ p.post_id }}</span>
+                      {% endif %}
+                      {% if p.errors %}
+                        <span class="error-detail" title="{{ p.errors|join('; ') }}">Issue</span>
+                      {% endif %}
+                    </div>
                   {% endif %}
-                  {% if p.errors %}
-                    <span class="error-detail" title="{{ p.errors|join('; ') }}">Issue</span>
-                  {% endif %}
-                </div>
-              {% endfor %}
-            </div>
+                {% endfor %}
+              </div>
+            {% endif %}
           </td>
           <td>
             {% if item.ui_state == 'PARTIAL' %}

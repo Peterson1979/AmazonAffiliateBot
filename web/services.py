@@ -98,6 +98,8 @@ from publishing.queue import (
     STATUS_QUEUED,
     STATUS_PARTIALLY_PUBLISHED,
     STATUS_SKIPPED,
+    PUBLISHING_WINDOWS,
+    ALL_PLATFORM_DESTINATIONS,
     parse_affiliate_urls,
     get_authoritative_urls_file,
     resolve_product_for_url,
@@ -223,6 +225,8 @@ def build_import_batch_view(
             item.ui_media_type = presentation["media_type"]
             item.ui_video_url = presentation["video_url"]
             item.ui_image_url = presentation["image_url"]
+            item.ui_windows = presentation.get("windows", [])
+            item.ui_execution_times = presentation.get("execution_times", "")
             items.append(item)
             entry["queue_item"] = item
         entries.append(entry)
@@ -275,6 +279,49 @@ def parse_product_scheduled_dt(
     return None
 
 
+def get_platform_scheduled_dt(
+    item: QueueItem,
+    platform: str,
+    tz: Optional[Any] = None,
+) -> Optional[datetime]:
+    """
+    Return the authoritative Europe/Budapest scheduled datetime for a specific platform on a queue item.
+    - Slot 1:
+      - Main platforms (facebook, threads, pinterest): Window 1 at 15:00
+      - Pinterest LifeModeHQ (pinterest_lifemodehq): Window 2 at 18:00
+    - Slot 2:
+      - Main platforms (facebook, threads, pinterest): Window 3 at 21:00
+      - Pinterest LifeModeHQ (pinterest_lifemodehq): Window 4 at 23:00
+    """
+    if tz is None:
+        tz = get_budapest_timezone()
+
+    slot = item.daily_slot
+    if not item.scheduled_date or slot not in (1, 2):
+        return parse_product_scheduled_dt(
+            scheduled_at=item.scheduled_at,
+            scheduled_date=item.scheduled_date,
+            daily_slot=item.daily_slot,
+            tz=tz,
+        )
+
+    if slot == 1:
+        hour = 18 if platform == "pinterest_lifemodehq" else 15
+    else:
+        hour = 23 if platform == "pinterest_lifemodehq" else 21
+
+    try:
+        d = datetime.strptime(item.scheduled_date, "%Y-%m-%d").date()
+        return datetime(d.year, d.month, d.day, hour, 0, 0, tzinfo=tz)
+    except Exception:
+        return parse_product_scheduled_dt(
+            scheduled_at=item.scheduled_at,
+            scheduled_date=item.scheduled_date,
+            daily_slot=item.daily_slot,
+            tz=tz,
+        )
+
+
 def resolve_product_publication_status(
     scheduled_at: Optional[str] = None,
     scheduled_date: Optional[str] = None,
@@ -324,7 +371,7 @@ def get_platform_publication_result(
     platform: str,
     current_dt: Optional[datetime] = None,
 ) -> Dict[str, Any]:
-    """Normalize one active platform result for truthful UI rendering."""
+    """Normalize one active platform result for truthful UI rendering with window attribution."""
     raw_results = item.publishing_results or {}
     result = raw_results.get(platform)
     if not isinstance(result, dict):
@@ -337,14 +384,21 @@ def get_platform_publication_result(
     else:
         now_dt = now_dt.astimezone(tz)
 
-    scheduled_dt = parse_product_scheduled_dt(
-        scheduled_at=item.scheduled_at,
-        scheduled_date=item.scheduled_date,
-        daily_slot=item.daily_slot,
-        tz=tz,
-    )
+    scheduled_dt = get_platform_scheduled_dt(item, platform, tz=tz)
     is_future = scheduled_dt is not None and scheduled_dt > now_dt
     time_has_passed = scheduled_dt is not None and scheduled_dt <= now_dt
+
+    slot = item.daily_slot or 1
+    if slot == 1:
+        win_id = 2 if platform == "pinterest_lifemodehq" else 1
+        hour = 18 if platform == "pinterest_lifemodehq" else 15
+    else:
+        win_id = 4 if platform == "pinterest_lifemodehq" else 3
+        hour = 23 if platform == "pinterest_lifemodehq" else 21
+
+    window_time_str = f"{hour:02d}:00"
+    win_cfg = PUBLISHING_WINDOWS.get(win_id, {})
+    window_name = win_cfg.get("name", f"Window {win_id}")
 
     state = "UNKNOWN"
     historical_dry_run_ambiguous = _has_ambiguous_historical_dry_run(item)
@@ -404,6 +458,11 @@ def get_platform_publication_result(
         }.get(platform, platform.capitalize()),
         "state": state,
         "ui_label": ui_label,
+        "window_id": win_id,
+        "window_name": window_name,
+        "window_time": window_time_str,
+        "execution_time": f"{window_time_str} Budapest",
+        "scheduled_at": scheduled_dt.isoformat() if scheduled_dt else None,
         "mode": result.get("mode"),
         "timestamp": result.get("published_at") if live_confirmed else None,
         "post_id": result.get("post_id") or result.get("video_id") or result.get("pin_id") or result.get("photo_id"),
@@ -451,15 +510,31 @@ def _has_ambiguous_historical_dry_run(item: QueueItem) -> bool:
 
 
 def _resolve_queue_item_media(item: QueueItem) -> Dict[str, Optional[str]]:
-    """Resolve media_type ('video', 'image', or 'none') and preview URLs for a queue item."""
+    """
+    Resolve media_type ('video', 'image', or 'none') and preview URLs strictly for this queue item.
+    Never let a shared content package override an individual queue item's media type.
+    """
     asin_upper = str(item.asin or "").upper().strip()
-    resolved_video_url: Optional[str] = (
-        item.video_url.strip()
-        if item.media_type == "video" and is_valid_video_url(item.video_url)
-        else None
-    )
+    raw_media = (item.media_type or "").strip().lower()
+
+    # Determine media type strictly based on the queue item's own properties
+    if raw_media == "video":
+        is_video = True
+    elif raw_media == "image":
+        is_video = False
+    elif is_valid_video_url(item.video_url):
+        is_video = True
+    elif item.daily_slot == 2:
+        is_video = True
+    elif item.daily_slot == 1:
+        is_video = False
+    else:
+        is_video = False
+
+    resolved_video_url: Optional[str] = None
     resolved_image_url: Optional[str] = None
 
+    # Load content package if available
     pkg: Optional[Dict[str, Any]] = None
     pkg_candidates: List[Path] = []
     if item.package_reference:
@@ -479,9 +554,12 @@ def _resolve_queue_item_media(item: QueueItem) -> Dict[str, Optional[str]]:
             except Exception:
                 continue
 
-    if pkg is not None:
-        if not resolved_video_url and pkg.get("media_type") == "video" and is_valid_video_url(pkg.get("video_url")):
-            resolved_video_url = str(pkg.get("video_url")).strip()
+    # Resolve image preview candidate (for image items, or cover thumbnail for video items)
+    flow_img_path = DATA_DIR / "creatives" / asin_upper / "everyday_pick_flow.jpg"
+    if flow_img_path.is_file():
+        resolved_image_url = f"/creatives/{asin_upper}/everyday_pick_flow.jpg"
+
+    if not resolved_image_url and pkg is not None:
         candidate_img = recover_verified_image_url(pkg, products_dir=PRODUCTS_DIR)
         if is_valid_image_url(candidate_img):
             resolved_image_url = candidate_img
@@ -497,23 +575,112 @@ def _resolve_queue_item_media(item: QueueItem) -> Dict[str, Optional[str]]:
             except Exception:
                 pass
 
-    if resolved_video_url:
+    if is_video:
+        if is_valid_video_url(item.video_url):
+            resolved_video_url = item.video_url.strip()
+        elif pkg and is_valid_video_url(pkg.get("video_url")):
+            resolved_video_url = str(pkg.get("video_url")).strip()
+
         return {
             "media_type": "video",
             "video_url": resolved_video_url,
             "image_url": resolved_image_url,
         }
-    if resolved_image_url:
+    else:
+        # Strictly an image item: NEVER attach video_url or let it be video
         return {
             "media_type": "image",
             "video_url": None,
             "image_url": resolved_image_url,
         }
-    return {
-        "media_type": "none",
-        "video_url": None,
-        "image_url": None,
-    }
+
+
+def get_windows_for_item(
+    item: QueueItem,
+    current_dt: Optional[datetime] = None,
+) -> List[Dict[str, Any]]:
+    """
+    Return the authoritative publishing windows for a queue item based on its daily_slot.
+    Slot 1 (Image):
+      - Window 1: 15:00 Budapest (Main: Facebook, Threads, Pinterest dailyideasforyou)
+      - Window 2: 18:00 Budapest (Pinterest LifeModeHQ)
+    Slot 2 (Video):
+      - Window 3: 21:00 Budapest (Main: Facebook, Threads, Pinterest dailyideasforyou)
+      - Window 4: 23:00 Budapest (Pinterest LifeModeHQ)
+    """
+    tz = get_budapest_timezone()
+    now_dt = current_dt or datetime.now(tz)
+    if now_dt.tzinfo is None:
+        now_dt = now_dt.replace(tzinfo=tz)
+    else:
+        now_dt = now_dt.astimezone(tz)
+
+    slot = item.daily_slot or 1
+    sched_date_str = item.scheduled_date
+    sched_date = None
+    if sched_date_str:
+        try:
+            sched_date = datetime.strptime(sched_date_str, "%Y-%m-%d").date()
+        except Exception:
+            pass
+
+    windows_data = []
+    applicable_win_ids = [1, 2] if slot == 1 else [3, 4]
+
+    for win_id in applicable_win_ids:
+        win_cfg = PUBLISHING_WINDOWS.get(win_id, {})
+        start_hour = win_cfg.get("start_hour", 15)
+        time_str = f"{start_hour:02d}:00"
+        win_dt = datetime.combine(sched_date, time(start_hour, 0, 0), tzinfo=tz) if sched_date else None
+
+        is_future = win_dt is not None and win_dt > now_dt
+        time_has_passed = win_dt is not None and win_dt <= now_dt
+
+        destinations = win_cfg.get("target_destinations", [])
+        plat_results = {}
+        for dest in destinations:
+            plat_results[dest] = get_platform_publication_result(item, dest, current_dt=now_dt)
+
+        win_states = [res["state"] for res in plat_results.values()]
+        if win_states and all(s in ("PUBLISHED", "SKIPPED") for s in win_states):
+            win_state = "PUBLISHED"
+            win_ui_label = "Published"
+        elif any(s in ("PUBLISHED", "SKIPPED") for s in win_states):
+            win_state = "PARTIAL"
+            win_ui_label = "Partial"
+        elif any(s == "FAILED" for s in win_states):
+            win_state = "FAILED"
+            win_ui_label = "Failed"
+        elif any(s == "PUBLISHING" for s in win_states):
+            win_state = "PUBLISHING"
+            win_ui_label = "Publishing..."
+        elif is_future:
+            win_state = "SCHEDULED"
+            win_ui_label = "Scheduled"
+        elif time_has_passed:
+            win_state = "SIMULATED"
+            win_ui_label = "Not published"
+        else:
+            win_state = "UNKNOWN"
+            win_ui_label = "Awaiting confirmation"
+
+        windows_data.append({
+            "window_id": win_id,
+            "name": win_cfg.get("name", f"Window {win_id}"),
+            "time": time_str,
+            "execution_time": f"{time_str} Budapest",
+            "start_hour": start_hour,
+            "scheduled_dt": win_dt.isoformat() if win_dt else None,
+            "media_type": win_cfg.get("media_type", "image" if slot == 1 else "video"),
+            "destinations": destinations,
+            "platforms": plat_results,
+            "state": win_state,
+            "ui_label": win_ui_label,
+            "is_future": is_future,
+            "time_has_passed": time_has_passed,
+        })
+
+    return windows_data
 
 
 def get_queue_item_presentation(
@@ -591,6 +758,13 @@ def get_queue_item_presentation(
         state = "UNKNOWN"
         ui_label = "Awaiting confirmation"
 
+    windows = get_windows_for_item(item, current_dt=now_dt)
+    execution_times = (
+        "15:00 & 18:00 Budapest"
+        if item.daily_slot == 1
+        else ("21:00 & 23:00 Budapest" if item.daily_slot == 2 else "Unscheduled")
+    )
+
     return {
         "state": state,
         "ui_label": ui_label,
@@ -601,6 +775,8 @@ def get_queue_item_presentation(
             default=None,
         ) if state in ("PUBLISHED", "PARTIAL") else None,
         "platforms": platform_results,
+        "windows": windows,
+        "execution_times": execution_times,
         "errors": item.errors or [],
         **_resolve_queue_item_media(item),
     }
@@ -1323,31 +1499,10 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                 queued_asins.add(asin)
                 presentation = get_queue_item_presentation(queue, item)
 
-                # Determine media type strictly for this queue item:
-                # Never let content package media_type overwrite an image queue item.
-                item_media_type = (item.media_type or "").lower()
-                if not item_media_type or item_media_type not in ("video", "image"):
-                    if is_valid_video_url(item.video_url):
-                        item_media_type = "video"
-                    elif item.daily_slot == 2:
-                        item_media_type = "video"
-                    elif item.daily_slot == 1:
-                        item_media_type = "image"
-                    elif presentation.get("media_type") in ("video", "image"):
-                        item_media_type = presentation["media_type"]
-                    else:
-                        item_media_type = "none"
-
+                item_media_type = presentation.get("media_type") or ("video" if item.daily_slot == 2 else "image")
                 base = products_by_asin.get(asin, {})
                 row_img = presentation.get("image_url") or base.get("image_url", "")
-                row_video = ""
-                if item_media_type == "video":
-                    if is_valid_video_url(item.video_url):
-                        row_video = item.video_url
-                    elif is_valid_video_url(presentation.get("video_url")):
-                        row_video = presentation["video_url"]
-                    elif is_valid_video_url(base.get("video_url")):
-                        row_video = base["video_url"]
+                row_video = presentation.get("video_url") or (base.get("video_url", "") if item_media_type == "video" else "")
 
                 row = {
                     "asin": asin,
@@ -1374,6 +1529,8 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                     "media_type": item_media_type,
                     "image_url": row_img,
                     "video_url": row_video,
+                    "windows": presentation.get("windows", []),
+                    "execution_times": presentation.get("execution_times", ""),
                 }
                 queued_rows.append(row)
         except Exception:
@@ -1476,13 +1633,14 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
 
     # 4. Check Queue status
     queue_item: Optional[Dict[str, Any]] = None
+    queue_items: List[Dict[str, Any]] = []
     if QUEUE_FILE.exists():
         try:
             queue = PublishingQueue.load(QUEUE_FILE)
             for it in queue.items:
                 if (it.asin or "").upper() == asin_clean:
                     pres = get_queue_item_presentation(queue, it)
-                    queue_item = {
+                    item_dict = {
                         "queue_item_id": it.queue_item_id,
                         "scheduled_date": it.scheduled_date,
                         "daily_slot": it.daily_slot,
@@ -1494,13 +1652,19 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
                         "validation_status": it.validation_status,
                         "published_at": it.published_at,
                         "publishing_results": it.publishing_results,
-                        "media_type": it.media_type,
-                        "video_url": it.video_url,
+                        "media_type": pres.get("media_type") or it.media_type or ("video" if it.daily_slot == 2 else "image"),
+                        "video_url": pres.get("video_url") or it.video_url,
+                        "image_url": pres.get("image_url"),
                         "is_overdue": pres["is_overdue"],
                         "retryable": pres["retryable"],
                         "platforms": pres["platforms"],
+                        "windows": pres.get("windows", []),
+                        "execution_times": pres.get("execution_times", ""),
                     }
-                    break
+                    queue_items.append(item_dict)
+            if queue_items:
+                queue_items = sorted(queue_items, key=lambda x: (x.get("scheduled_date") or "9999-99-99", x.get("daily_slot") or 0))
+                queue_item = queue_items[0]
         except Exception:
             pass
 
@@ -1633,6 +1797,7 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
         "package": package,
         "platforms": platforms_content,
         "queue_item": queue_item,
+        "queue_items": queue_items,
         "video": video_info,
         "status": package.get("status") if package else (queue_item.get("status") if queue_item else "UNKNOWN"),
         "historically_published": any(

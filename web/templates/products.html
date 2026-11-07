@@ -219,15 +219,41 @@
             <span class="state-pill state-{{ p.publishing_status|lower|replace('_', '-') }}">{% if p.publishing_status_display %}{{ p.publishing_status_display }}{% elif p.publishing_status in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif p.publishing_status == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ p.publishing_status }}{% endif %}</span>
             {% if p.retryable %}<div class="table-subtext retry-text">Retryable</div>{% endif %}
           </td>
-          <td><div class="platform-result-list compact-results">
-            {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
-              <div class="platform-result"><span>{{ {'facebook': 'Facebook (LifeModeHQ)', 'pinterest': 'Pinterest (dailyideasforyou)', 'pinterest_lifemodehq': 'Pinterest (LifeModeHQ)', 'threads': 'Threads (lifemodehq)'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
-            {% endfor %}
-          </div>
+          <td>
+            {% if p.windows %}
+              <div class="windows-container" style="display: flex; flex-direction: column; gap: 6px;">
+                {% for win in p.windows %}
+                  <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 4px 6px;">
+                    <div style="font-size: 0.72rem; font-weight: 600; color: var(--accent-light, #93c5fd); margin-bottom: 2px;">
+                      ⏰ {{ win.time }} Budapest
+                    </div>
+                    <div class="platform-result-list compact-results">
+                      {% for p_key, result in win.platforms.items() %}
+                        <div class="platform-result">
+                          <span>{{ result.label }}</span>
+                          <span class="state-pill state-{{ result.state|lower|replace('_', '-') }}" style="font-size: 0.68rem; padding: 1px 4px;">{{ result.ui_label or ('Not published' if result.state in ('SIMULATED', 'NOT_PUBLISHED') else ('Unverified' if result.state == 'UNKNOWN' else result.state|capitalize)) }}</span>
+                          {% if result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener" style="font-size: 0.7rem;">Open</a>
+                          {% elif result.post_id %}<span class="table-subtext" style="font-size: 0.68rem;">ID {{ result.post_id }}</span>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="platform-result-list compact-results">
+                {% for p_key in ('facebook', 'pinterest', 'pinterest_lifemodehq', 'threads') %}{% set result = p.publishing_results.get(p_key) if p.publishing_results else None %}
+                  <div class="platform-result"><span>{{ {'facebook': 'Facebook (LifeModeHQ)', 'pinterest': 'Pinterest (dailyideasforyou)', 'pinterest_lifemodehq': 'Pinterest (LifeModeHQ)', 'threads': 'Threads (lifemodehq)'}[p_key] }}</span><span class="state-pill state-{{ (result.state if result else 'UNKNOWN')|lower|replace('_', '-') }}">{% if result and result.ui_label %}{{ result.ui_label }}{% elif result and result.state in ('SIMULATED', 'NOT_PUBLISHED') %}Not published{% elif result and result.state == 'UNKNOWN' %}Awaiting confirmation{% else %}{{ result.state if result else 'UNKNOWN' }}{% endif %}</span>{% if result and result.post_url %}<a href="{{ result.post_url }}" target="_blank" rel="noopener">Open</a>{% elif result and result.post_id %}<span class="table-subtext">ID {{ result.post_id }}</span>{% elif result and result.evidence_note %}<span class="table-subtext">Unverified evidence</span>{% endif %}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
           </td>
           <td>
             {% if p.scheduled_date %}
-              <span style="font-size: 0.85rem;">{{ p.scheduled_date }} &bull; Slot {{ p.daily_slot }}</span>
+              <div style="font-weight: 500; font-size: 0.85rem;">{{ p.scheduled_date }}</div>
+              <div class="table-subtext" style="color: var(--text-bright, #fff); font-weight: 500;">{{ p.execution_times or (('15:00 & 18:00 Budapest' if p.daily_slot == 1 else '21:00 & 23:00 Budapest') if p.daily_slot in (1, 2) else '') }}</div>
+              <div class="table-subtext" style="font-size: 0.75rem; color: var(--text-muted);">Slot {{ p.daily_slot }} &bull; {{ '🖼️ Image' if p.media_type == 'image' else ('🎬 Video' if p.media_type == 'video' else 'Media') }}</div>
               {% if p.published_at %}<div class="table-subtext">Published {{ p.published_at }}</div>{% endif %}
             {% else %}
               <span style="color: var(--text-muted); font-size: 0.8rem;">Unscheduled</span>
