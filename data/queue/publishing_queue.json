@@ -11,7 +11,13 @@
   "total_failed": 0,
   "scheduled_posts": 7,
   "unfilled_slots": 53,
-  "slot_claims": {},
+  "slot_claims": {
+    "2026-11-07-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-11-07T19:02:03.165669+01:00",
+      "attempt": 1
+    }
+  },
   "items": [
     {
       "queue_item_id": "item_026_B09X5BQ969",
