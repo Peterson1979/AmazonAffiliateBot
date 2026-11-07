@@ -572,5 +572,28 @@
         "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
       }
     ]
+  },
+  {
+    "batch_id": "batch_20261107T103328809671_2cc7106a",
+    "created_at": "2026-11-07T10:33:28.816053+01:00",
+    "submitted_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://link.amazon/B07LDOITU",
+        "asin": "B0CLGNYKFR",
+        "title": "EverFoams Womens Fuzzy Open-toe Slippers Memory Foam Indoor House Shoes",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-11-07",
+        "daily_slot": 2,
+        "scheduled_at": "2026-11-07T21:00:00+01:00",
+        "package_path": "data/generated/asin_B0CLGNYKFR_content_package.json",
+        "queue_item_id": "item_034_B0CLGNYKFR",
+        "media_type": "video",
+        "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+      }
+    ]
   }
 ]

@@ -6,7 +6,7 @@
   "products_per_day": 2,
   "target_capacity": 60,
   "total_submitted": 16,
-  "total_processed": 8,
+  "total_processed": 9,
   "total_ready": 5,
   "total_failed": 0,
   "scheduled_posts": 5,
@@ -696,15 +696,227 @@
       "scheduled_at": "2026-11-07T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0DPJRS9DS_content_package.json",
-      "status": "READY",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-06T21:18:24.560125+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-06T22:34:53.628879+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "video_id": "1418310947119611",
+          "post_id": "1418310947119611",
+          "permalink_url": "https://www.facebook.com/reel/1418310947119611/",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+          "media_type": "VIDEO",
+          "verified_video_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "1418310947119611"
+          },
+          "message": "Successfully published video 1418310947119611 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-06T22:34:53.628879+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999656386",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999656386/",
+          "media_id": "4012058977570973184",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric \u2013 4 Pack",
+          "link": "https://link.amazon/B02ZJxUYH",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "parent_pin_id": null,
+            "link": "https://link.amazon/B02ZJxUYH",
+            "dominant_color": null,
+            "alt_text": null,
+            "has_been_promoted": false,
+            "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24\u2011hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_owner": true,
+            "is_standard": true,
+            "creative_type": "VIDEO",
+            "is_product": false,
+            "is_removable": false,
+            "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric \u2013 4 Pack",
+            "id": "1033646551999656386",
+            "created_at": "2026-11-06T21:31:55",
+            "board_id": "1033646620665866548",
+            "board_section_id": null,
+            "product_tags": [],
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 560,
+                  "url": "https://i.pinimg.com/564x/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1192,
+                  "url": "https://i.pinimg.com/1200x/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                }
+              }
+            },
+            "pin_metrics": null,
+            "board_owner": {
+              "username": "everydayideaslife"
+            }
+          },
+          "message": "Successfully created video pin 1033646551999656386 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-06T22:34:53.628879+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018334229",
+          "pin_url": "https://www.pinterest.com/pin/495607134018334229/",
+          "media_id": "4012060421955891328",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric \u2013 4 Pack",
+          "link": "https://link.amazon/B02ZJxUYH",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_standard": true,
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 560,
+                  "url": "https://i.pinimg.com/564x/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1192,
+                  "url": "https://i.pinimg.com/1200x/ae/76/de/ae76de8d533b0126c79b5f0dd2c5816a.jpg"
+                }
+              }
+            },
+            "id": "495607134018334229",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "is_owner": true,
+            "parent_pin_id": null,
+            "board_section_id": null,
+            "has_been_promoted": false,
+            "link": "https://link.amazon/B02ZJxUYH",
+            "board_id": "495607202683261042",
+            "creative_type": "VIDEO",
+            "is_removable": false,
+            "title": "Medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric \u2013 4 Pack",
+            "is_product": false,
+            "alt_text": null,
+            "dominant_color": "#fdf6c1",
+            "pin_metrics": null,
+            "description": "The jelly mask changes from opaque to transparent to indicate absorption and includes kojic acid, turmeric, and niacinamide. It is dermatologically tested, free from artificial colors, and provides 24\u2011hour hydration. See more details and explore the available options. https://link.amazon/B02ZJxUYH\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "product_tags": [],
+            "created_at": "2026-11-06T21:34:16"
+          },
+          "message": "Successfully created video pin 495607134018334229 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-06T22:34:53.628879+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17987500866139258",
+          "post_id": "17966366904220143",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfalU8ghB5P",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4",
+          "image_url": "https://m.media-amazon.com/images/I/614cNR49qpL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17966366904220143"
+          },
+          "message": "Successfully published video post 17966366904220143 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-06T22:34:53.628879+01:00"
+        }
+      },
       "batch_id": "batch_20261106T221748122306_ef9389de",
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
+    },
+    {
+      "queue_item_id": "item_034_B0CLGNYKFR",
+      "original_url": "https://link.amazon/B07LDOITU",
+      "asin": "B0CLGNYKFR",
+      "product_name": "EverFoams Womens Fuzzy Open-toe Slippers Memory Foam Indoor House Shoes",
+      "scheduled_date": "2026-11-07",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-07T21:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0CLGNYKFR_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-07T09:34:12.805316+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261107T103328809671_2cc7106a",
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
     }
   ]
 }

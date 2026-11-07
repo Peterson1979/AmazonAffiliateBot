@@ -1,0 +1,331 @@
+{
+  "asin": "B0CLGNYKFR",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-11-07T09:34:11.404250+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0CLGNYKFR.json",
+    "affiliate_url": "https://link.amazon/B07LDOITU"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The slippers are crafted with faux fur uppers, soft linings, and are available in sizes 3‑4, 5‑6, 7‑8, and 9‑10.\n\nIncludes Simple yet Stylish Esthetic: These ladies slippers’ classic double strap silhouette with cute furry faux fur never goes out of style. Explore the product details and available options below.\n\nLink: https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "The slippers are crafted with faux fur uppers, soft linings, and are available in sizes 3‑4, 5‑6, 7‑8, and 9‑10.\n\nIncludes Simple yet Stylish Esthetic: These ladies slippers’ classic double strap silhouette with cute furry faux fur never goes out of style. Explore the product details and available options below.\n\nLink: https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "The slippers are crafted with faux fur uppers, soft linings, and are available in sizes 3‑4, 5‑6, 7‑8, and 9‑10.\n\nIncludes Simple yet Stylish Esthetic: These ladies slippers’ classic double strap silhouette with cute furry faux fur never goes out of style. Explore the product details and available options below.\n\nLink: https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+      "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B07LDOITU",
+      "account": "dailyideasforyou",
+      "accounts": {
+        "dailyideasforyou": {
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+              "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+              "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        },
+        "lifemodehq": {
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+              "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+              "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        }
+      },
+      "variants": {
+        "image": {
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "EverFoams Women’s Fuzzy Open‑toe Slippers feature premium faux‑fur uppers, a high‑density memory foam and EVA footbed, and a non‑slip sole with anti‑skid grips. Check the specifications and current availability.\n\nLink: https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "EverFoams Women’s Fuzzy Open‑toe Slippers feature premium faux‑fur uppers, a high‑density memory foam and EVA footbed, and a non‑slip sole with anti‑skid grips. Check the specifications and current availability.\n\nLink: https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "EverFoams Women’s Fuzzy Open‑toe Slippers feature premium faux‑fur uppers, a high‑density memory foam and EVA footbed, and a non‑slip sole with anti‑skid grips. Check the specifications and current availability.\n\nLink: https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+      "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B07LDOITU",
+      "account": "lifemodehq",
+      "variants": {
+        "image": {
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5882",
+        "x-ratelimit-reset-tokens": "15.885s"
+      },
+      "id": "chatcmpl-2b811c7e-850c-4ba2-8b24-3823dba88184",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.210136597,
+        "prompt_tokens": 1817,
+        "prompt_time": 0.077499836,
+        "completion_tokens": 158,
+        "completion_time": 0.330679963,
+        "total_tokens": 1975,
+        "total_time": 0.408179799
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4032",
+        "x-ratelimit-reset-tokens": "29.759s"
+      },
+      "id": "chatcmpl-c3dd107b-0846-49ff-b73e-ace6310cdfa5",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.049575501,
+        "prompt_tokens": 1907,
+        "prompt_time": 0.089647446,
+        "completion_tokens": 191,
+        "completion_time": 0.401123975,
+        "total_tokens": 2098,
+        "total_time": 0.490771421
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2171",
+        "x-ratelimit-reset-tokens": "43.717s"
+      },
+      "id": "chatcmpl-208ae055-93fa-4f8c-91e8-db51046255d4",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.048393677,
+        "prompt_tokens": 1810,
+        "prompt_time": 0.086066822,
+        "completion_tokens": 111,
+        "completion_time": 0.233130102,
+        "total_tokens": 1921,
+        "total_time": 0.319196924
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "416",
+        "x-ratelimit-reset-tokens": "56.879s"
+      },
+      "id": "chatcmpl-c1ee84c6-171c-41d8-9d86-921ae564d6e4",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.208669957,
+        "prompt_tokens": 1836,
+        "prompt_time": 0.08733716,
+        "completion_tokens": 181,
+        "completion_time": 0.377008307,
+        "total_tokens": 2017,
+        "total_time": 0.464345467
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "10",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "706",
+        "x-ratelimit-reset-tokens": "54.705s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7294, Requested 1958. Please try again in 9.39s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "9",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "826",
+        "x-ratelimit-reset-tokens": "53.805s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7174, Requested 2004. Please try again in 8.835s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "8",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "934",
+        "x-ratelimit-reset-tokens": "52.995s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7066, Requested 1970. Please try again in 7.77s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "7",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1099",
+        "x-ratelimit-reset-tokens": "51.757s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6901, Requested 2023. Please try again in 6.93s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "7",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1203",
+        "x-ratelimit-reset-tokens": "50.977s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6797, Requested 2032. Please try again in 6.217499999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+    "asin": "B0CLGNYKFR",
+    "uploaded_at": "2026-11-07T09:34:12.767724+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+    "content_type": "video/mp4",
+    "filename": "ad-@find.it.here21-2026-09-18_0318-#everfoams-#slippers-7686678424378723597.mp4",
+    "size_bytes": 6348871
+  }
+}
