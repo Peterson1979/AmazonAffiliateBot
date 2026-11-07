@@ -19,9 +19,10 @@
       "completed_at": "2026-11-07T19:02:05.200007+01:00"
     },
     "2026-11-07-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-07T23:01:15.816860+01:00",
-      "attempt": 3
+      "attempt": 3,
+      "completed_at": "2026-11-07T23:01:18.214280+01:00"
     }
   },
   "items": [
@@ -926,7 +927,7 @@
         "Facebook Graph Video API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
       ],
       "created_at": "2026-11-07T09:34:12.805316+00:00",
-      "published_at": "2026-11-07T21:16:15.117242+01:00",
+      "published_at": "2026-11-07T23:01:18.216000+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1044,6 +1045,81 @@
           },
           "message": "Successfully published video post 18025948142719258 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-11-07T21:01:11.770281+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018341945",
+          "pin_url": "https://www.pinterest.com/pin/495607134018341945/",
+          "media_id": "4015018639635891776",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "link": "https://link.amazon/B07LDOITU",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_product": false,
+            "id": "495607134018341945",
+            "is_owner": true,
+            "is_removable": false,
+            "link": "https://link.amazon/B07LDOITU",
+            "is_standard": true,
+            "board_section_id": null,
+            "parent_pin_id": null,
+            "has_been_promoted": false,
+            "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "creative_type": "VIDEO",
+            "dominant_color": "#939090",
+            "description": "These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. Explore the product details and available options below. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "board_id": "495607202683261042",
+            "alt_text": null,
+            "product_tags": [],
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 592,
+                  "url": "https://i.pinimg.com/564x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1259,
+                  "url": "https://i.pinimg.com/1200x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                }
+              }
+            },
+            "pin_metrics": null,
+            "created_at": "2026-11-07T22:01:26"
+          },
+          "message": "Successfully created video pin 495607134018341945 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-07T23:01:18.216000+01:00"
         }
       },
       "batch_id": "batch_20261107T103328809671_2cc7106a",
