@@ -595,5 +595,28 @@
         "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
       }
     ]
+  },
+  {
+    "batch_id": "batch_20261107T133208505309_89cf0acb",
+    "created_at": "2026-11-07T13:32:08.506436+01:00",
+    "submitted_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://link.amazon/B0dLOKIZO",
+        "asin": "B0D72N7642",
+        "title": "Levoit Humidifier for Bedroom, 25dB Ultra Quiet, Top Fill",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-11-08",
+        "daily_slot": 1,
+        "scheduled_at": "2026-11-08T15:00:00+01:00",
+        "package_path": "data/generated/asin_B0D72N7642_content_package.json",
+        "queue_item_id": "item_035_B0D72N7642",
+        "media_type": "video",
+        "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+      }
+    ]
   }
 ]

@@ -6,11 +6,11 @@
   "products_per_day": 2,
   "target_capacity": 60,
   "total_submitted": 16,
-  "total_processed": 9,
-  "total_ready": 5,
+  "total_processed": 10,
+  "total_ready": 6,
   "total_failed": 0,
-  "scheduled_posts": 5,
-  "unfilled_slots": 55,
+  "scheduled_posts": 6,
+  "unfilled_slots": 54,
   "slot_claims": {},
   "items": [
     {
@@ -917,6 +917,26 @@
       "batch_id": "batch_20261107T103328809671_2cc7106a",
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+    },
+    {
+      "queue_item_id": "item_035_B0D72N7642",
+      "original_url": "https://link.amazon/B0dLOKIZO",
+      "asin": "B0D72N7642",
+      "product_name": "Levoit Humidifier for Bedroom, 25dB Ultra Quiet, Top Fill",
+      "scheduled_date": "2026-11-08",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-08T15:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0D72N7642_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-07T12:32:42.197913+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261107T133208505309_89cf0acb",
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
     }
   ]
 }

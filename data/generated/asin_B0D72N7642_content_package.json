@@ -1,0 +1,315 @@
+{
+  "asin": "B0D72N7642",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-11-07T12:32:40.663409+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0D72N7642.json",
+    "affiliate_url": "https://link.amazon/B0dLOKIZO"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "Levoit Humidifier.\n\nThe unit features a top‑fill design with a detachable tank and a 16 cm wider opening. Explore the product details and available options below.\n\nLink: https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "Levoit Humidifier.\n\nThe unit features a top‑fill design with a detachable tank and a 16 cm wider opening. Explore the product details and available options below.\n\nLink: https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "Watch the video above to see the Levoit humidifier.\n\nThe unit includes a detachable tank with a 16 cm wider opening, a 360‑degree nozzle. Explore the product details and available options below.\n\nLink: https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+      "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0dLOKIZO",
+      "account": "dailyideasforyou",
+      "accounts": {
+        "dailyideasforyou": {
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+              "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+              "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        },
+        "lifemodehq": {
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+              "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+              "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        }
+      },
+      "variants": {
+        "image": {
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Features 𝐍𝐨 𝐃𝐢𝐬𝐭𝐮𝐫𝐛𝐚𝐧𝐜𝐞 𝐖𝐡𝐞𝐧 𝐒𝐥𝐞𝐞𝐩𝐢𝐧𝐠: The Classic 160 cool mist humidifier is designed. Check the specifications and current availability.\n\nLink: https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "Features 𝐍𝐨 𝐃𝐢𝐬𝐭𝐮𝐫𝐛𝐚𝐧𝐜𝐞 𝐖𝐡𝐞𝐧 𝐒𝐥𝐞𝐞𝐩𝐢𝐧𝐠: The Classic 160 cool mist humidifier is designed. Check the specifications and current availability.\n\nLink: https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "Features 𝐍𝐨 𝐃𝐢𝐬𝐭𝐮𝐫𝐛𝐚𝐧𝐜𝐞 𝐖𝐡𝐞𝐧 𝐒𝐥𝐞𝐞𝐩𝐢𝐧𝐠: The Classic 160 cool mist humidifier is designed. Check the specifications and current availability.\n\nLink: https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+      "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0dLOKIZO",
+      "account": "lifemodehq",
+      "variants": {
+        "image": {
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5902",
+        "x-ratelimit-reset-tokens": "15.735s"
+      },
+      "id": "chatcmpl-52269358-f3d5-41f4-8ef3-e780d8db5205",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.048474931,
+        "prompt_tokens": 1839,
+        "prompt_time": 0.084372961,
+        "completion_tokens": 187,
+        "completion_time": 0.386933666,
+        "total_tokens": 2026,
+        "total_time": 0.471306627
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "3966",
+        "x-ratelimit-reset-tokens": "30.255s"
+      },
+      "id": "chatcmpl-24c447f2-9082-4dc1-946b-73069cd3c90b",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.017428477,
+        "prompt_tokens": 1929,
+        "prompt_time": 0.076580231,
+        "completion_tokens": 199,
+        "completion_time": 0.417632243,
+        "total_tokens": 2128,
+        "total_time": 0.494212474
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2072",
+        "x-ratelimit-reset-tokens": "44.46s"
+      },
+      "id": "chatcmpl-8e18e92b-08f4-4e7f-800a-4c6670c3e5e9",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.272931019,
+        "prompt_tokens": 1832,
+        "prompt_time": 0.187427257,
+        "completion_tokens": 118,
+        "completion_time": 0.245439132,
+        "total_tokens": 1950,
+        "total_time": 0.432866389
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "364",
+        "x-ratelimit-reset-tokens": "57.27s"
+      },
+      "id": "chatcmpl-7736a8e8-7ecb-4f03-8f86-bad794eaa7c6",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.047628057,
+        "prompt_tokens": 1858,
+        "prompt_time": 0.087069911,
+        "completion_tokens": 154,
+        "completion_time": 0.31866193,
+        "total_tokens": 2012,
+        "total_time": 0.405731841
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "11",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "579",
+        "x-ratelimit-reset-tokens": "55.657s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7421, Requested 1997. Please try again in 10.635s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "11",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "675",
+        "x-ratelimit-reset-tokens": "54.937s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7325, Requested 2057. Please try again in 10.364999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "10",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "767",
+        "x-ratelimit-reset-tokens": "54.247s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7233, Requested 2063. Please try again in 9.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "9",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "875",
+        "x-ratelimit-reset-tokens": "53.437s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7125, Requested 2072. Please try again in 8.9775s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+    "asin": "B0D72N7642",
+    "uploaded_at": "2026-11-07T12:32:42.193304+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+    "content_type": "video/mp4",
+    "filename": "ad-@ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+    "size_bytes": 7601794
+  }
+}
