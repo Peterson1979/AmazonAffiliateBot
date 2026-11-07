@@ -38,7 +38,7 @@
       "accounts": {
         "dailyideasforyou": {
           "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "description": "These open-toe slippers feature a double strap silhouette with cute furry faux fur uppers and soft linings. A high-density memory foam and EVA footbed pairs with a sturdy outsole and anti-skid grips. Check the specifications and current availability. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
           "variants": {
             "image": {
               "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
@@ -46,13 +46,13 @@
             },
             "video": {
               "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-              "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+              "description": "These open-toe slippers feature a double strap silhouette with cute furry faux fur uppers and soft linings. A high-density memory foam and EVA footbed pairs with a sturdy outsole and anti-skid grips. Check the specifications and current availability. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
             }
           }
         },
         "lifemodehq": {
           "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "description": "These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. Explore the product details and available options below. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
           "variants": {
             "image": {
               "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
@@ -60,7 +60,7 @@
             },
             "video": {
               "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-              "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+              "description": "These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. Explore the product details and available options below. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
             }
           }
         }
@@ -72,7 +72,7 @@
         },
         "video": {
           "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+          "description": "These open-toe slippers feature a double strap silhouette with cute furry faux fur uppers and soft linings. A high-density memory foam and EVA footbed pairs with a sturdy outsole and anti-skid grips. Check the specifications and current availability. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         }
       },
       "validation": {
@@ -81,7 +81,13 @@
         "errors": []
       },
       "media_type": "video",
-      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B0CLGNYKFR/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B0CLGNYKFR/everyday_pick_flow.jpg"
+      }
     },
     "threads": {
       "status": "VALID",
@@ -117,7 +123,7 @@
         },
         "video": {
           "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-          "description": "These slippers feature premium faux fur uppers, a high-density memory foam and EVA footbed, and a non-slip sole with anti‑skid grips. They are hand and machine washable. See more details and explore the available options. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+          "description": "These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. Explore the product details and available options below. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         }
       },
       "validation": {

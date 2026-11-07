@@ -41,6 +41,7 @@ from web.services import (
     attach_product_video_service,
     detach_product_video_service,
     enqueue_existing_product_service,
+    delete_product_service,
     revalidate_content,
     regenerate_content,
     recover_failed_product,
@@ -823,7 +824,8 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
             request.headers.get("X-Requested-With") == "XMLHttpRequest"
             or request.is_json
         )
-        res = enqueue_existing_product_service(asin)
+        media_type = request.form.get("media_type") or request.args.get("media_type")
+        res = enqueue_existing_product_service(asin, media_type=media_type)
         if res.get("success"):
             if not is_ajax:
                 flash(res.get("message", "Added product to publishing queue."), "success")
@@ -855,6 +857,26 @@ def create_app(test_config: Optional[Dict[str, Any]] = None) -> Flask:
             flash(res.get("message", "Could not add product to publishing queue."), "error")
 
         return redirect(url_for("product_detail", asin=asin))
+
+    @app.route("/api/product/<asin>/delete", methods=["POST"])
+    def api_delete_product(asin: str):
+        """Delete a product, its generated content package, creatives, and pending queue items."""
+        is_ajax = (
+            request.headers.get("X-Requested-With") == "XMLHttpRequest"
+            or request.is_json
+        )
+        res = delete_product_service(asin)
+        if res.get("success"):
+            if not is_ajax:
+                flash(res.get("message", f"Product {asin} deleted successfully."), "success")
+            if is_ajax:
+                return jsonify(res)
+        else:
+            if not is_ajax:
+                flash(res.get("message", f"Failed to delete product {asin}."), "error")
+            if is_ajax:
+                return jsonify(res), 400
+        return redirect(url_for("products"))
 
     # 9. Publisher Control (DRY RUN)
     # -------------------------------------------------------------

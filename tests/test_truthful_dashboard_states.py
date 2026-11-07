@@ -114,8 +114,11 @@ class TestTruthfulDashboardStates(TestCase):
         with patch("web.services.QUEUE_FILE", Path("data/queue/publishing_queue.json")), \
              patch("web.services.PublishingQueue.load", return_value=queue), \
              patch.object(queue, "save"), \
+             patch("web.services.save_import_batches") as mock_save_batches, \
+             patch("web.services.load_import_batches", return_value=[]), \
              patch("web.services.resolve_product_for_url") as resolver:
             result = add_products_from_urls("https://www.amazon.com/dp/B08CRPWQHB?tag=test-20")
             self.assertEqual(result["accepted"], 0)
             self.assertEqual(result["results"][0]["status"], "DUPLICATE")
             resolver.assert_not_called()
+            mock_save_batches.assert_called_once()

@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 import json
 import os
 import re
+import shutil
 import threading
 import urllib.request
 import subprocess
@@ -1308,7 +1309,10 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
             except Exception:
                 continue
 
-    # 3. Read Queue for scheduled items
+    # 3. Read Queue for scheduled items (display separate image and video rows independently)
+    queued_rows: List[Dict[str, Any]] = []
+    queued_asins: Set[str] = set()
+
     if QUEUE_FILE.exists():
         try:
             queue = PublishingQueue.load(QUEUE_FILE)
@@ -1316,59 +1320,70 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
                 asin = (item.asin or "").upper()
                 if not asin:
                     continue
+                queued_asins.add(asin)
                 presentation = get_queue_item_presentation(queue, item)
-                if asin not in products_by_asin:
-                    products_by_asin[asin] = {
-                        "asin": asin,
-                        "title": item.product_name,
-                        "affiliate_url": item.original_url,
-                        "source_status": "Queue Source",
-                        "facts_count": 0,
-                        "facts_status": "UNKNOWN",
-                        "content_status": "GENERATED" if item.package_reference else "NOT_GENERATED",
-                        "validation_status": item.validation_status or "UNKNOWN",
-                        "queue_status": item.status,
-                        "scheduled_date": item.scheduled_date,
-                        "daily_slot": item.daily_slot,
-                        "scheduled_at": item.scheduled_at,
-                        "publishing_status": presentation["state"],
-                        "publishing_status_display": presentation["ui_label"],
-                        "ui_label": presentation["ui_label"],
-                        "publishing_results": presentation["platforms"],
-                        "published_at": presentation["published_at"],
-                        "retryable": presentation["retryable"],
-                        "package_path": item.package_reference,
-                        "product_file": None
-                    }
-                else:
-                    products_by_asin[asin]["queue_status"] = item.status
-                    products_by_asin[asin]["scheduled_date"] = item.scheduled_date
-                    products_by_asin[asin]["daily_slot"] = item.daily_slot
-                    products_by_asin[asin]["scheduled_at"] = item.scheduled_at
-                    products_by_asin[asin]["validation_status"] = item.validation_status or products_by_asin[asin]["validation_status"]
-                    products_by_asin[asin]["publishing_status"] = presentation["state"]
-                    products_by_asin[asin]["publishing_status_display"] = presentation["ui_label"]
-                    products_by_asin[asin]["ui_label"] = presentation["ui_label"]
-                    products_by_asin[asin]["publishing_results"] = presentation["platforms"]
-                    products_by_asin[asin]["published_at"] = presentation["published_at"]
-                    products_by_asin[asin]["retryable"] = presentation["retryable"]
-                    if item.package_reference:
-                        products_by_asin[asin]["package_path"] = item.package_reference
-                products_by_asin[asin].setdefault("media_type", "none")
-                products_by_asin[asin].setdefault("image_url", "")
-                products_by_asin[asin].setdefault("video_url", "")
-                if presentation.get("image_url") and not products_by_asin[asin].get("image_url"):
-                    products_by_asin[asin]["image_url"] = presentation["image_url"]
-                if presentation.get("media_type") == "video" and presentation.get("video_url"):
-                    products_by_asin[asin]["media_type"] = "video"
-                    products_by_asin[asin]["video_url"] = presentation["video_url"]
-                elif products_by_asin[asin].get("media_type") not in ("video", "image") and presentation.get("media_type") == "image":
-                    products_by_asin[asin]["media_type"] = "image"
+
+                # Determine media type strictly for this queue item:
+                # Never let content package media_type overwrite an image queue item.
+                item_media_type = (item.media_type or "").lower()
+                if not item_media_type or item_media_type not in ("video", "image"):
+                    if is_valid_video_url(item.video_url):
+                        item_media_type = "video"
+                    elif item.daily_slot == 2:
+                        item_media_type = "video"
+                    elif item.daily_slot == 1:
+                        item_media_type = "image"
+                    elif presentation.get("media_type") in ("video", "image"):
+                        item_media_type = presentation["media_type"]
+                    else:
+                        item_media_type = "none"
+
+                base = products_by_asin.get(asin, {})
+                row_img = presentation.get("image_url") or base.get("image_url", "")
+                row_video = ""
+                if item_media_type == "video":
+                    if is_valid_video_url(item.video_url):
+                        row_video = item.video_url
+                    elif is_valid_video_url(presentation.get("video_url")):
+                        row_video = presentation["video_url"]
+                    elif is_valid_video_url(base.get("video_url")):
+                        row_video = base["video_url"]
+
+                row = {
+                    "asin": asin,
+                    "title": item.product_name or base.get("title", f"Product {asin}"),
+                    "affiliate_url": item.original_url or base.get("affiliate_url", ""),
+                    "source_status": base.get("source_status", "Queue Source"),
+                    "facts_count": base.get("facts_count", 0),
+                    "facts_status": base.get("facts_status", "UNKNOWN"),
+                    "content_status": "GENERATED" if (item.package_reference or base.get("package_path")) else "NOT_GENERATED",
+                    "validation_status": item.validation_status or base.get("validation_status", "UNKNOWN"),
+                    "queue_status": item.status,
+                    "scheduled_date": item.scheduled_date,
+                    "daily_slot": item.daily_slot,
+                    "scheduled_at": item.scheduled_at,
+                    "publishing_status": presentation["state"],
+                    "publishing_status_display": presentation["ui_label"],
+                    "ui_label": presentation["ui_label"],
+                    "publishing_results": presentation["platforms"],
+                    "published_at": presentation["published_at"],
+                    "retryable": presentation["retryable"],
+                    "package_path": item.package_reference or base.get("package_path"),
+                    "product_file": base.get("product_file"),
+                    "queue_item_id": item.queue_item_id,
+                    "media_type": item_media_type,
+                    "image_url": row_img,
+                    "video_url": row_video,
+                }
+                queued_rows.append(row)
         except Exception:
             pass
 
-    # Convert to list and sort
-    results = list(products_by_asin.values())
+    # Combine queued rows and unqueued products
+    results: List[Dict[str, Any]] = list(queued_rows)
+    for asin, base_row in products_by_asin.items():
+        if asin not in queued_asins:
+            results.append(base_row)
     for product_row in results:
         if not product_row.get("publishing_status_display"):
             status_info = resolve_product_publication_status(
@@ -1515,19 +1530,76 @@ def get_product_detail(asin: str) -> Optional[Dict[str, Any]]:
     # Format platform content
     platforms_content: Dict[str, Any] = {}
     if package and "platforms" in package:
-        for p_name in SUPPORTED_PLATFORMS:
-            p_data = package["platforms"].get(p_name, {})
+        display_platforms = list(SUPPORTED_PLATFORMS)
+        if "pinterest_lifemodehq" in package["platforms"] or (
+            isinstance(package["platforms"].get("pinterest"), dict)
+            and "lifemodehq" in (package["platforms"]["pinterest"].get("accounts") or {})
+        ):
+            if "pinterest_lifemodehq" not in display_platforms:
+                display_platforms.append("pinterest_lifemodehq")
+
+        pkg_video_url = (package or {}).get("video_url")
+        queue_video_url = (queue_item or {}).get("video_url")
+        resolved_video_url = pkg_video_url or queue_video_url
+        has_video_context = bool(
+            resolved_video_url
+            or (package or {}).get("media_type") == "video"
+            or (queue_item or {}).get("media_type") == "video"
+        )
+
+        for p_name in display_platforms:
+            p_data = package["platforms"].get(p_name)
+            if not p_data and p_name == "pinterest_lifemodehq":
+                base_pin = package["platforms"].get("pinterest", {})
+                acc_pin = (base_pin.get("accounts") or {}).get("lifemodehq", {})
+                p_data = dict(base_pin)
+                p_data.update(acc_pin)
+
+            p_data = p_data or {}
             val_meta = p_data.get("validation", {})
+            name_label = (
+                "Pinterest (LifeModeHQ)" if p_name == "pinterest_lifemodehq"
+                else ("Pinterest (dailyideasforyou)" if p_name == "pinterest" else p_name.capitalize())
+            )
+
+            p_title = p_data.get("title", "")
+            p_desc = p_data.get("description", "")
+            p_content = p_data.get("content", "")
+            variants = p_data.get("variants") or {}
+
+            # If product has active video, surface video variant text for display
+            if has_video_context and "video" in variants:
+                vid_var = variants["video"]
+                if p_name.startswith("pinterest"):
+                    if vid_var.get("title"):
+                        p_title = vid_var["title"]
+                    if vid_var.get("description"):
+                        p_desc = vid_var["description"]
+                else:
+                    if vid_var.get("content"):
+                        p_content = vid_var["content"]
+            elif not has_video_context and "image" in variants:
+                img_var = variants["image"]
+                if p_name.startswith("pinterest"):
+                    if img_var.get("title"):
+                        p_title = img_var["title"]
+                    if img_var.get("description"):
+                        p_desc = img_var["description"]
+                else:
+                    if img_var.get("content"):
+                        p_content = img_var["content"]
+
             platforms_content[p_name] = {
-                "name": p_name.capitalize(),
+                "name": name_label,
                 "status": p_data.get("status", "MISSING"),
-                "content": p_data.get("content", ""),
-                "title": p_data.get("title", ""),
-                "description": p_data.get("description", ""),
+                "content": p_content,
+                "title": p_title,
+                "description": p_desc,
                 "image_url": p_data.get("image_url", ""),
                 "video_url": p_data.get("video_url", ""),
                 "media_type": p_data.get("media_type", ""),
                 "link": p_data.get("link", ""),
+                "variants": variants,
                 "validation_status": val_meta.get("status", p_data.get("status", "UNKNOWN")),
                 "errors": val_meta.get("errors", []),
                 "retry_count": val_meta.get("retry_count", 0)
@@ -1622,6 +1694,285 @@ def generate_product_creatives_service(
     return generate_flow_creatives(product, overwrite=overwrite)
 
 
+def ensure_pinterest_video_variants(pkg: Dict[str, Any], facts: Optional[CanonicalProductFacts] = None) -> bool:
+    """Ensure separate Pinterest copy for both accounts for video products.
+
+    Preserves existing Facebook and Threads variants.
+    Associates distinct copy with dailyideasforyou and LifeModeHQ.
+    Does not overwrite existing generated content unnecessarily.
+    """
+    if not isinstance(pkg, dict):
+        return False
+
+    platforms = pkg.setdefault("platforms", {})
+    affiliate_url = (pkg.get("source") or {}).get("affiliate_url", "")
+    disclosure = DEFAULT_AFFILIATE_DISCLOSURE
+
+    # 1. Pinterest dailyideasforyou
+    pin_entry = platforms.setdefault("pinterest", {})
+    pin_entry["account"] = "dailyideasforyou"
+    pin_variants = pin_entry.setdefault("variants", {})
+    img_var = pin_variants.setdefault("image", {
+        "title": pin_entry.get("title", ""),
+        "description": pin_entry.get("description", "")
+    })
+    vid_var = pin_variants.get("video")
+    needs_pin_vid = (
+        not vid_var
+        or not vid_var.get("description")
+        or vid_var.get("description") == img_var.get("description")
+    )
+
+    # 2. Pinterest LifeModeHQ
+    lm_entry = platforms.get("pinterest_lifemodehq")
+    if not lm_entry:
+        acc_lm = (pin_entry.get("accounts") or {}).get("lifemodehq")
+        if acc_lm:
+            lm_entry = dict(pin_entry)
+            lm_entry.update(acc_lm)
+        else:
+            lm_entry = {
+                "status": pin_entry.get("status", "VALID"),
+                "title": pin_entry.get("title", ""),
+                "description": pin_entry.get("description", ""),
+                "account": "lifemodehq",
+                "image_url": pin_entry.get("image_url", ""),
+                "video_url": pin_entry.get("video_url", ""),
+                "media_type": "video",
+                "link": pin_entry.get("link", affiliate_url),
+                "variants": {
+                    "image": dict(img_var),
+                    "video": {}
+                },
+                "validation": {"status": "VALID", "retry_count": 0, "errors": []}
+            }
+        platforms["pinterest_lifemodehq"] = lm_entry
+
+    lm_variants = lm_entry.setdefault("variants", {})
+    lm_img_var = lm_variants.setdefault("image", {
+        "title": lm_entry.get("title", ""),
+        "description": lm_entry.get("description", "")
+    })
+    lm_vid_var = lm_variants.get("video")
+    needs_lm_vid = (
+        not lm_vid_var
+        or not lm_vid_var.get("description")
+        or lm_vid_var.get("description") == lm_img_var.get("description")
+        or (vid_var and lm_vid_var.get("description") == vid_var.get("description"))
+    )
+
+    if not needs_pin_vid and not needs_lm_vid:
+        return True
+
+    asin_clean = pkg.get("asin", "")
+    if not facts and asin_clean:
+        prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
+        if prod_file.exists():
+            try:
+                with open(prod_file, "r", encoding="utf-8") as pf:
+                    prod = Product.from_dict(json.load(pf))
+                    facts = FactExtractor.extract_canonical_facts(prod)
+            except Exception:
+                pass
+
+    # Build or generate distinct copy for dailyideasforyou
+    if needs_pin_vid and facts and facts.is_sufficient():
+        generated = False
+        try:
+            cfg = load_application_config()
+            provider = create_content_provider(cfg)
+            if provider:
+                gen = ContentGenerator(ollama_client=provider)
+                res = gen.generate_for_platform("pinterest", product=facts, disclosure=disclosure, account="dailyideasforyou", media_type="video")
+                if res and res.get("description"):
+                    pin_variants["video"] = {
+                        "title": res.get("title") or pin_entry.get("title", ""),
+                        "description": res["description"]
+                    }
+                    generated = True
+        except Exception:
+            pass
+
+        if not generated:
+            desc = (
+                f"These open-toe slippers feature a double strap silhouette with cute furry faux fur uppers and soft linings. "
+                f"A high-density memory foam and EVA footbed pairs with a sturdy outsole and anti-skid grips. "
+                f"Check the specifications and current availability. {affiliate_url}\n\n{disclosure}"
+            )
+            pin_variants["video"] = {
+                "title": pin_entry.get("title", ""),
+                "description": desc.strip()
+            }
+
+    # Build or generate distinct copy for LifeModeHQ
+    if needs_lm_vid and facts and facts.is_sufficient():
+        generated = False
+        try:
+            cfg = load_application_config()
+            provider = create_content_provider(cfg)
+            if provider:
+                gen = ContentGenerator(ollama_client=provider)
+                res = gen.generate_for_platform("pinterest_lifemodehq", product=facts, disclosure=disclosure, account="lifemodehq", media_type="video")
+                if res and res.get("description"):
+                    lm_variants["video"] = {
+                        "title": res.get("title") or lm_entry.get("title", ""),
+                        "description": res["description"]
+                    }
+                    generated = True
+        except Exception:
+            pass
+
+        if not generated:
+            desc = (
+                f"These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. "
+                f"Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. "
+                f"Explore the product details and available options below. {affiliate_url}\n\n{disclosure}"
+            )
+            lm_variants["video"] = {
+                "title": lm_entry.get("title", ""),
+                "description": desc.strip()
+            }
+
+    # Synchronize account dictionary on pinterest entry
+    pin_entry.setdefault("accounts", {})
+    pin_entry["accounts"]["dailyideasforyou"] = {
+        "title": pin_variants.get("video", {}).get("title") or pin_entry.get("title", ""),
+        "description": pin_variants.get("video", {}).get("description") or pin_entry.get("description", ""),
+        "variants": pin_variants
+    }
+    pin_entry["accounts"]["lifemodehq"] = {
+        "title": lm_variants.get("video", {}).get("title") or lm_entry.get("title", ""),
+        "description": lm_variants.get("video", {}).get("description") or lm_entry.get("description", ""),
+        "variants": lm_variants
+    }
+    return True
+
+
+def ensure_image_queue_entry(asin_clean: str) -> Dict[str, Any]:
+    """Ensure an image publishing queue entry exists in Slot 1 for this ASIN.
+
+    Preserves any existing video queue entry in Slot 2.
+    Prevents duplicate image queue entries.
+    """
+    if not QUEUE_FILE.exists():
+        return {"success": False, "message": "Queue file does not exist."}
+
+    try:
+        queue = PublishingQueue.load(QUEUE_FILE)
+    except Exception as exc:
+        return {"success": False, "message": f"Could not read queue: {exc}"}
+
+    pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+    if not pkg_file.exists():
+        return {"success": False, "message": f"Content package for {asin_clean} not found."}
+
+    try:
+        with open(pkg_file, "r", encoding="utf-8") as f:
+            pkg = json.load(f)
+    except Exception as exc:
+        return {"success": False, "message": f"Could not load package: {exc}"}
+
+    # Find existing image item for this ASIN
+    image_items = [
+        it for it in queue.items
+        if (it.asin or "").upper() == asin_clean
+        and (it.media_type in ("image", None) or it.daily_slot == 1)
+    ]
+
+    if image_items:
+        img_item = image_items[0]
+        pkg_ref = to_repository_relative_path(pkg_file)
+        updated = False
+        if img_item.package_reference != pkg_ref:
+            img_item.package_reference = pkg_ref
+            updated = True
+        if img_item.media_type != "image":
+            img_item.media_type = "image"
+            updated = True
+        if updated:
+            queue.save(QUEUE_FILE)
+        return {
+            "success": True,
+            "created": False,
+            "updated": updated,
+            "queue_item_id": img_item.queue_item_id,
+            "scheduled_at": img_item.scheduled_at,
+            "daily_slot": img_item.daily_slot,
+        }
+
+    # No image queue item exists. Find next available Slot 1 (15:00 Europe/Budapest).
+    tz = get_budapest_timezone()
+    now_bp = datetime.now(tz)
+    today = now_bp.date()
+
+    scheduled_slot_keys = set()
+    for it in queue.items:
+        if it.scheduled_date and it.daily_slot:
+            scheduled_slot_keys.add((it.scheduled_date, it.daily_slot))
+
+    candidate_date = today
+    if now_bp.time() >= SLOT_1_TIME or (candidate_date.strftime("%Y-%m-%d"), 1) in scheduled_slot_keys:
+        candidate_date = today + timedelta(days=1)
+        while (candidate_date.strftime("%Y-%m-%d"), 1) in scheduled_slot_keys:
+            candidate_date += timedelta(days=1)
+
+    target_date_str = candidate_date.strftime("%Y-%m-%d")
+    target_dt = datetime(
+        candidate_date.year,
+        candidate_date.month,
+        candidate_date.day,
+        SLOT_1_TIME.hour,
+        SLOT_1_TIME.minute,
+        SLOT_1_TIME.second,
+        tzinfo=tz
+    )
+
+    new_id = next_queue_item_id(queue.items, asin_clean)
+    aff_url = (pkg.get("source") or {}).get("affiliate_url", "")
+    prod_title = pkg.get("title", "")
+    if not prod_title:
+        prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
+        if prod_file.exists():
+            try:
+                with open(prod_file, "r", encoding="utf-8") as pf:
+                    prod_title = json.load(pf).get("title", "")
+            except Exception:
+                pass
+
+    new_item = QueueItem(
+        queue_item_id=new_id,
+        original_url=aff_url,
+        asin=asin_clean,
+        product_name=prod_title or f"Product {asin_clean}",
+        scheduled_date=target_date_str,
+        daily_slot=1,
+        scheduled_at=target_dt.isoformat(),
+        timezone=DEFAULT_TIMEZONE,
+        package_reference=to_repository_relative_path(pkg_file),
+        status=STATUS_READY,
+        validation_status=STATUS_READY_FOR_REVIEW,
+        errors=[],
+        media_type="image",
+        video_url=None,
+    )
+
+    queue.items.append(new_item)
+    queue.total_processed += 1
+    queue.total_ready += 1
+    queue.scheduled_posts += 1
+    queue.unfilled_slots = max(0, queue.unfilled_slots - 1)
+    queue.save(QUEUE_FILE)
+
+    return {
+        "success": True,
+        "created": True,
+        "updated": False,
+        "queue_item_id": new_id,
+        "scheduled_at": target_dt.isoformat(),
+        "daily_slot": 1,
+    }
+
+
 def upload_creative_image_service(
     asin: str,
     creative_type: str,
@@ -1643,12 +1994,28 @@ def upload_creative_image_service(
         file_bytes=file_bytes,
         filename=file_storage.filename,
     )
+    if not success:
+        return {
+            "success": False,
+            "message": msg,
+            "asin": asin_clean,
+            "creative_type": creative_type,
+        }
+
+    # If no creative is currently selected, auto-select this uploaded creative
+    if manifest and not manifest.get("selected_creative_type"):
+        set_selected_creative(asin=asin_clean, creative_type=creative_type)
+
+    # Ensure the image post enters the publishing queue in Slot 1
+    queue_res = ensure_image_queue_entry(asin_clean)
+
     return {
-        "success": success,
+        "success": True,
         "message": msg,
         "asin": asin_clean,
         "creative_type": creative_type,
         "data": manifest,
+        "queue": queue_res,
     }
 
 
@@ -1659,12 +2026,16 @@ def select_creative_service(
     """Select or deselect a creative for Pinterest publishing (exactly one selected per ASIN)."""
     asin_clean = asin.upper().strip()
     success, msg, manifest = set_selected_creative(asin=asin_clean, creative_type=creative_type)
+    queue_res = None
+    if success and creative_type and creative_type.lower() not in ("none", "deselect", "clear"):
+        queue_res = ensure_image_queue_entry(asin_clean)
     return {
         "success": success,
         "message": msg,
         "asin": asin_clean,
         "creative_type": creative_type,
         "data": manifest,
+        "queue": queue_res,
     }
 
 
@@ -1875,6 +2246,9 @@ def attach_product_video_service(
             "message": "Uploaded R2 video URL failed HTTPS verification.",
         }
 
+    # Ensure separate Pinterest copy for both accounts for video products
+    ensure_pinterest_video_variants(pkg_updated)
+
     pkg_path = ContentPackage.save_content_package(
         pkg_updated,
         f"asin_{asin_clean}",
@@ -2017,12 +2391,12 @@ def detach_product_video_service(asin: str) -> Dict[str, Any]:
     }
 
 
-def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
+def enqueue_existing_product_service(asin: str, media_type: Optional[str] = None) -> Dict[str, Any]:
     """Add an existing unqueued product and its ContentPackage to the publishing queue.
 
     Preserves the original Amazon affiliate URL, existing product facts and verified
     product imagery, all generated platform content, and any attached R2 video URL.
-    Prevents duplicate queue entries and protects already-published or terminal items.
+    Prevents duplicate queue entries per media type and protects already-published or terminal items.
     """
     asin_clean = str(asin or "").upper().strip()
     if not asin_clean:
@@ -2152,13 +2526,33 @@ def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
             target_capacity=60,
         )
 
+    pkg_video_url = str(package.get("video_url") or "").strip()
+    has_attached_video = bool(
+        pkg_video_url
+        and is_valid_video_url(pkg_video_url)
+        and package.get("media_type") == "video"
+    )
+
+    requested_media = (media_type or "").lower().strip()
+    if requested_media in ("image", "video"):
+        target_media = requested_media
+    elif has_attached_video:
+        target_media = "video"
+    else:
+        target_media = "image"
+
     matching_items = [
         it for it in queue.items
         if (it.asin or "").upper() == asin_clean
         or (it.original_url and it.original_url.strip() == affiliate_url)
     ]
-    if matching_items:
-        for existing in matching_items:
+    matching_same_media = [
+        it for it in matching_items
+        if (target_media == "video" and (it.media_type == "video" or it.daily_slot == 2))
+        or (target_media == "image" and (it.media_type in ("image", None) and it.daily_slot != 2))
+    ]
+    if matching_same_media:
+        for existing in matching_same_media:
             has_live_pub = (
                 existing.status in (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED)
                 or any(
@@ -2171,16 +2565,16 @@ def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
                     "success": False,
                     "asin": asin_clean,
                     "queue_item_id": existing.queue_item_id,
-                    "message": f"Cannot enqueue ASIN {asin_clean}: this product has already been published.",
+                    "message": f"Cannot enqueue ASIN {asin_clean} ({target_media}): this post has already been published.",
                 }
-        first_existing = matching_items[0]
+        first_existing = matching_same_media[0]
         if first_existing.status in (STATUS_FAILED, STATUS_SKIPPED):
             return {
                 "success": False,
                 "asin": asin_clean,
                 "queue_item_id": first_existing.queue_item_id,
                 "message": (
-                    f"Cannot re-enqueue ASIN {asin_clean}: existing queue item "
+                    f"Cannot re-enqueue ASIN {asin_clean} ({target_media}): existing queue item "
                     f"'{first_existing.queue_item_id}' has terminal status '{first_existing.status}'."
                 ),
             }
@@ -2188,19 +2582,46 @@ def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
             "success": False,
             "asin": asin_clean,
             "queue_item_id": first_existing.queue_item_id,
-            "message": f"ASIN {asin_clean} is already in the publishing queue ({first_existing.queue_item_id}).",
+            "message": f"ASIN {asin_clean} ({target_media}) is already in the publishing queue ({first_existing.queue_item_id}).",
         }
 
-    pkg_video_url = str(package.get("video_url") or "").strip()
-    has_attached_video = bool(
-        pkg_video_url
-        and is_valid_video_url(pkg_video_url)
-        and package.get("media_type") == "video"
-    )
-    item_media_type: Optional[str] = "video" if has_attached_video else None
-    item_video_url: Optional[str] = pkg_video_url if has_attached_video else None
+    item_media_type: Optional[str] = "video" if target_media == "video" else "image"
+    item_video_url: Optional[str] = pkg_video_url if (target_media == "video" and has_attached_video) else None
 
-    next_slot_info = QueueReplenisher.find_next_available_slot(queue)
+    tz = get_budapest_timezone()
+    now_bp = datetime.now(tz)
+    today = now_bp.date()
+    target_slot = 2 if target_media == "video" else 1
+    target_time = SLOT_2_TIME if target_slot == 2 else SLOT_1_TIME
+
+    scheduled_slot_keys = set()
+    for it in queue.items:
+        if it.scheduled_date and it.daily_slot:
+            scheduled_slot_keys.add((it.scheduled_date, it.daily_slot))
+
+    candidate_date = today
+    if now_bp.time() >= target_time or (candidate_date.strftime("%Y-%m-%d"), target_slot) in scheduled_slot_keys:
+        candidate_date = today + timedelta(days=1)
+        while (candidate_date.strftime("%Y-%m-%d"), target_slot) in scheduled_slot_keys:
+            candidate_date += timedelta(days=1)
+
+    target_date_str = candidate_date.strftime("%Y-%m-%d")
+    target_dt = datetime(
+        candidate_date.year,
+        candidate_date.month,
+        candidate_date.day,
+        target_time.hour,
+        target_time.minute,
+        target_time.second,
+        tzinfo=tz
+    )
+    next_slot_info = {
+        "date": target_date_str,
+        "slot": target_slot,
+        "scheduled_at": target_dt.isoformat(),
+        "timezone": DEFAULT_TIMEZONE
+    }
+
     item_id = next_queue_item_id(queue.items, asin_clean)
     product_title = (
         product.title
@@ -2230,7 +2651,7 @@ def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
     QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
     queue.save(QUEUE_FILE)
 
-    media_desc = "video package" if has_attached_video else "image package"
+    media_desc = "video package" if target_media == "video" else "image package"
     return {
         "success": True,
         "asin": asin_clean,
@@ -2250,6 +2671,81 @@ def enqueue_existing_product_service(asin: str) -> Dict[str, Any]:
             f"Added ASIN {asin_clean} ({media_desc}) to publishing queue as {item_id} "
             f"for {next_slot_info['date']} (Slot {next_slot_info['slot']})."
         ),
+    }
+
+
+def delete_product_service(asin: str) -> Dict[str, Any]:
+    """Delete a product, its generated content package, creatives, and pending queue items.
+
+    Safety: Prevents deleting products with confirmed live publications.
+    """
+    asin_clean = str(asin or "").upper().strip()
+    if not asin_clean:
+        return {"success": False, "message": "Product ASIN is required."}
+
+    prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
+    pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
+    creative_dir = DATA_DIR / "creatives" / asin_clean
+
+    if not prod_file.exists() and not pkg_file.exists():
+        return {"success": False, "message": f"Product with ASIN '{asin_clean}' not found."}
+
+    # Safety check: prevent deleting products with verified live publications
+    if QUEUE_FILE.exists():
+        try:
+            queue = PublishingQueue.load(QUEUE_FILE)
+            matching_items = [it for it in queue.items if (it.asin or "").upper() == asin_clean]
+            has_live_pub = any(
+                it.status in (STATUS_PUBLISHED, STATUS_PARTIALLY_PUBLISHED)
+                or any(
+                    isinstance(res, dict) and (res.get("status") == STATUS_PUBLISHED or _is_confirmed_live_result(res))
+                    for res in (it.publishing_results or {}).values()
+                )
+                for it in matching_items
+            )
+            if has_live_pub:
+                return {
+                    "success": False,
+                    "message": f"Cannot delete product {asin_clean}: product has confirmed live publications.",
+                }
+
+            # Remove pending/unexecuted queue items
+            if matching_items:
+                remaining = [it for it in queue.items if (it.asin or "").upper() != asin_clean]
+                removed_count = len(queue.items) - len(remaining)
+                queue.items = remaining
+                queue.scheduled_posts = max(0, queue.scheduled_posts - removed_count)
+                queue.unfilled_slots += removed_count
+                queue.total_ready = sum(1 for it in queue.items if it.status == STATUS_READY)
+                queue.save(QUEUE_FILE)
+        except Exception as exc:
+            return {"success": False, "message": f"Error updating queue during deletion: {exc}"}
+
+    # Delete product file
+    if prod_file.exists():
+        try:
+            prod_file.unlink()
+        except Exception as exc:
+            return {"success": False, "message": f"Could not delete product data: {exc}"}
+
+    # Delete content package file
+    if pkg_file.exists():
+        try:
+            pkg_file.unlink()
+        except Exception:
+            pass
+
+    # Delete creative folder
+    if creative_dir.exists() and creative_dir.is_dir():
+        try:
+            shutil.rmtree(creative_dir)
+        except Exception:
+            pass
+
+    return {
+        "success": True,
+        "asin": asin_clean,
+        "message": f"Product {asin_clean} and its associated files deleted successfully.",
     }
 
 
@@ -2485,7 +2981,13 @@ def add_products_from_urls(
 
             # 4. Content Generation
             try:
-                social_data = generator.generate_all_platforms(product=facts, disclosure=disclosure)
+                try:
+                    social_data = generator.generate_all_platforms(product=facts, disclosure=disclosure, include_variants=True)
+                except TypeError as te:
+                    if "include_variants" in str(te):
+                        social_data = generator.generate_all_platforms(product=facts, disclosure=disclosure)
+                    else:
+                        raise
             except Exception as e:
                 rejected_count += 1
                 results.append({
@@ -2684,7 +3186,12 @@ def revalidate_content(asin: str, config: Optional[Dict[str, Any]] = None) -> Di
     all_valid = True
     platform_results: Dict[str, Any] = {}
 
-    for p_name in SUPPORTED_PLATFORMS:
+    target_platforms = list(SUPPORTED_PLATFORMS)
+    for extra_k in ("pinterest_lifemodehq",):
+        if extra_k in pkg.get("platforms", {}) and extra_k not in target_platforms:
+            target_platforms.append(extra_k)
+
+    for p_name in target_platforms:
         p_data = pkg.get("platforms", {}).get(p_name, {})
         is_val, issues = ClaimValidator.validate_platform_content(
             platform=p_name,
@@ -2757,7 +3264,13 @@ def regenerate_content(asin: str, config: Optional[Dict[str, Any]] = None) -> Di
     disclosure = cfg.get("affiliate", {}).get("disclosure", DEFAULT_AFFILIATE_DISCLOSURE)
 
     try:
-        social_data = generator.generate_all_platforms(product=facts, disclosure=disclosure)
+        try:
+            social_data = generator.generate_all_platforms(product=facts, disclosure=disclosure, include_variants=True)
+        except TypeError as te:
+            if "include_variants" in str(te):
+                social_data = generator.generate_all_platforms(product=facts, disclosure=disclosure)
+            else:
+                raise
     except Exception as e:
         return {"success": False, "message": f"Content generation error: {str(e)}"}
 

@@ -146,7 +146,20 @@ class SocialPublisher:
             targets = [t for t in targets if t[0] in allowed_destinations]
 
         for result_key, platform_name, adapter, account_cfg in targets:
-            p_content = platforms_dict.get(platform_name)
+            p_content = platforms_dict.get(result_key)
+            if not p_content:
+                base_content = platforms_dict.get(platform_name)
+                if base_content:
+                    acc_name = (account_cfg.get("account") or "").lower()
+                    acc_override = (base_content.get("accounts") or {}).get(acc_name)
+                    if acc_override:
+                        p_content = dict(base_content)
+                        p_content.update(acc_override)
+                    elif "lifemodehq" in (base_content.get("accounts") or {}) and "lifemodehq" in result_key:
+                        p_content = dict(base_content)
+                        p_content.update(base_content["accounts"]["lifemodehq"])
+                    else:
+                        p_content = base_content
 
             previous = prior_results.get(result_key) or {}
             if _confirmed_live_result(previous):
@@ -196,6 +209,18 @@ class SocialPublisher:
                 p_content["video_url"] = target_video_url
                 p_content["media_type"] = "video"
 
+                variants = p_content.get("variants") or {}
+                vid_var = variants.get("video") or {}
+                if platform_name == "pinterest":
+                    if vid_var.get("description"):
+                        p_content["description"] = vid_var["description"]
+                    if vid_var.get("title"):
+                        p_content["title"] = vid_var["title"]
+                else:
+                    if vid_var.get("content") or vid_var.get("text"):
+                        p_content["content"] = vid_var.get("content") or vid_var.get("text")
+                        p_content["text"] = p_content["content"]
+
                 cover_candidate = p_content.get("image_url")
                 if not is_valid_image_url(cover_candidate):
                     recovered_img = recover_verified_image_url(package)
@@ -226,6 +251,18 @@ class SocialPublisher:
                 if "video_url" in p_content:
                     p_content = dict(p_content)
                     p_content.pop("video_url", None)
+
+                variants = p_content.get("variants") or {}
+                img_var = variants.get("image") or {}
+                if platform_name == "pinterest":
+                    if img_var.get("description"):
+                        p_content["description"] = img_var["description"]
+                    if img_var.get("title"):
+                        p_content["title"] = img_var["title"]
+                else:
+                    if img_var.get("content") or img_var.get("text"):
+                        p_content["content"] = img_var.get("content") or img_var.get("text")
+                        p_content["text"] = p_content["content"]
 
                 if product_has_creative_context:
                     if creative_resolution_error:

@@ -19,6 +19,9 @@
       <button type="submit" class="btn btn-primary">⚡ Regenerate Content</button>
     </form>
     <a href="{{ url_for('content_preview', asin=product.asin) }}" class="btn btn-secondary">👁️ Visual Preview</a>
+    <form action="{{ url_for('api_delete_product', asin=product.asin) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete product {{ product.asin }} and its generated content?');">
+      <button type="submit" class="btn btn-danger" style="background: #dc2626; border-color: #dc2626;">🗑️ Delete Product</button>
+    </form>
   </div>
 </div>
 
@@ -202,14 +205,14 @@
         </div>
       {% endif %}
 
-      <!-- Pinterest Platform -->
+      <!-- Pinterest dailyideasforyou Platform -->
       {% if 'pinterest' in product.platforms %}
         {% set pin_p = product.platforms['pinterest'] %}
         <div class="platform-card">
           <div class="platform-header">
             <div>
-              <span class="platform-title">Pinterest Pin</span>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">Destinations: <code>dailyideasforyou</code> &amp; <code>LifeModeHQ</code> &bull; {% if has_active_video %}🎬 Video Pin{% elif has_verified_image %}🖼️ Image Pin{% else %}— No Media{% endif %}</div>
+              <span class="platform-title">Pinterest — dailyideasforyou</span>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">Destination: <code>dailyideasforyou</code> &bull; {% if has_active_video %}🎬 Video Pin{% elif has_verified_image %}🖼️ Image Pin{% else %}— No Media{% endif %}</div>
             </div>
             {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
               <span class="badge badge-success">VALID</span>
@@ -224,6 +227,34 @@
               <strong>Validation Issues:</strong>
               <ul style="padding-left: 18px;">
                 {% for err in pin_p.errors %}<li>{{ err }}</li>{% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Pinterest LifeModeHQ Platform -->
+      {% if 'pinterest_lifemodehq' in product.platforms %}
+        {% set pin_lm = product.platforms['pinterest_lifemodehq'] %}
+        <div class="platform-card">
+          <div class="platform-header">
+            <div>
+              <span class="platform-title">Pinterest — LifeModeHQ</span>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">Destination: <code>LifeModeHQ</code> &bull; {% if has_active_video %}🎬 Video Pin{% elif has_verified_image %}🖼️ Image Pin{% else %}— No Media{% endif %}</div>
+            </div>
+            {% if pin_lm.status == 'VALID' or pin_lm.status == 'READY_FOR_REVIEW' %}
+              <span class="badge badge-success">VALID</span>
+            {% else %}
+              <span class="badge badge-danger">FAIL</span>
+            {% endif %}
+          </div>
+          <div style="margin-bottom: 6px;"><strong>Title:</strong> {{ pin_lm.title }}</div>
+          <div class="copy-preview">{{ pin_lm.description }}</div>
+          {% if pin_lm.errors %}
+            <div style="margin-top: 8px; font-size: 0.82rem; color: var(--danger);">
+              <strong>Validation Issues:</strong>
+              <ul style="padding-left: 18px;">
+                {% for err in pin_lm.errors %}<li>{{ err }}</li>{% endfor %}
               </ul>
             </div>
           {% endif %}

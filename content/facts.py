@@ -209,7 +209,13 @@ STOPWORDS = {
     "dimension", "dimensions", "material", "materials", "color", "colors",
     "brew", "brews", "brewing", "home", "at-home", "serve", "serves", "serving",
     "use", "uses", "used", "using", "usage", "hold", "holds", "holding", "held",
-    "store", "stores", "stored", "storing", "storage", "accommodate", "accommodates", "accommodated"
+    "store", "stores", "stored", "storing", "storage", "accommodate", "accommodates", "accommodated",
+    # Media and lifestyle framing keywords
+    "video", "videos", "clip", "clips", "watch", "watching",
+    "demonstrate", "demonstrates", "demonstrated", "demonstrating", "demonstration",
+    "action", "showcase", "showcases", "showcased", "showcasing",
+    "above", "below", "daily", "living", "lifestyle", "routine", "space", "spaces",
+    "setup", "setups", "overview", "highlight", "highlights", "highlighted", "highlighting"
 }
 
 

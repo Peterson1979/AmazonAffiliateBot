@@ -80,7 +80,11 @@ class ContentPackage:
         all_platforms_valid = True
         product_image_url = getattr(product, "image_url", None)
 
-        for p_name in SUPPORTED_PLATFORMS:
+        target_platforms = list(SUPPORTED_PLATFORMS)
+        if "pinterest_lifemodehq" in platforms_input:
+            target_platforms.append("pinterest_lifemodehq")
+
+        for p_name in target_platforms:
             p_data = platforms_input.get(p_name)
             p_meta = validation_meta.get(p_name, {})
 
@@ -111,7 +115,7 @@ class ContentPackage:
                 p_status = STATUS_FAILED_VALIDATION
             else:
                 # Content presence check
-                if p_name == "pinterest":
+                if p_name.startswith("pinterest"):
                     has_content = bool(p_data.get("title", "").strip() and p_data.get("description", "").strip())
                     verified_image_url = product_image_url
                     if not is_valid_image_url(verified_image_url):
@@ -135,7 +139,7 @@ class ContentPackage:
                 "status": p_status
             }
 
-            if p_name == "pinterest":
+            if p_name.startswith("pinterest"):
                 platform_entry["title"] = p_data.get("title", "")
                 platform_entry["description"] = p_data.get("description", "")
                 if is_valid_image_url(product_image_url):
@@ -144,11 +148,22 @@ class ContentPackage:
                     platform_entry["image_url"] = p_data["image_url"]
                 if getattr(product, "affiliate_url", None):
                     platform_entry["link"] = product.affiliate_url
+                if "account" in p_data:
+                    platform_entry["account"] = p_data["account"]
+                elif p_name == "pinterest_lifemodehq":
+                    platform_entry["account"] = "lifemodehq"
+                elif p_name == "pinterest":
+                    platform_entry["account"] = "dailyideasforyou"
+                if "accounts" in p_data:
+                    platform_entry["accounts"] = p_data["accounts"]
             else:
                 content_text = p_data.get("content") or p_data.get("text", "")
                 platform_entry["content"] = content_text
                 if getattr(product, "image_url", None):
                     platform_entry["image_url"] = product.image_url
+
+            if "variants" in p_data and isinstance(p_data["variants"], dict):
+                platform_entry["variants"] = p_data["variants"]
 
             platform_entry["validation"] = {
                 "status": p_status,
@@ -161,7 +176,7 @@ class ContentPackage:
         # Package is READY_FOR_REVIEW strictly if all supported platforms exist and are valid
         top_status = (
             STATUS_READY_FOR_REVIEW
-            if (all_platforms_valid and len(packaged_platforms) == len(SUPPORTED_PLATFORMS))
+            if (all_platforms_valid and all(p in packaged_platforms for p in SUPPORTED_PLATFORMS))
             else STATUS_FAILED_VALIDATION
         )
 
@@ -210,7 +225,7 @@ class ContentPackage:
         if not is_valid_image_url(image_url):
             return False
         package["image_url"] = image_url.strip()
-        for platform_name in SUPPORTED_PLATFORMS:
+        for platform_name in list(package.get("platforms", {}).keys()):
             platform_entry = package.get("platforms", {}).get(platform_name)
             if isinstance(platform_entry, dict):
                 platform_entry["image_url"] = image_url.strip()
@@ -253,7 +268,7 @@ class ContentPackage:
             video_meta["size_bytes"] = int(size_bytes)
         package["video"] = video_meta
 
-        for platform_name in SUPPORTED_PLATFORMS:
+        for platform_name in list(package.get("platforms", {}).keys()):
             platform_entry = package.get("platforms", {}).get(platform_name)
             if isinstance(platform_entry, dict):
                 platform_entry["media_type"] = "video"
@@ -273,7 +288,7 @@ class ContentPackage:
         if package.get("media_type") == "video":
             package.pop("media_type", None)
             changed = True
-        for platform_name in SUPPORTED_PLATFORMS:
+        for platform_name in list(package.get("platforms", {}).keys()):
             platform_entry = (package.get("platforms") or {}).get(platform_name)
             if isinstance(platform_entry, dict):
                 if "video_url" in platform_entry:

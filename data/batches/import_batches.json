@@ -613,9 +613,41 @@
         "daily_slot": 1,
         "scheduled_at": "2026-11-08T15:00:00+01:00",
         "package_path": "data/generated/asin_B0D72N7642_content_package.json",
-        "queue_item_id": "item_035_B0D72N7642",
+        "queue_item_id": "item_036_B0D72N7642",
         "media_type": "video",
         "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261107T134128419443_e02e1ab7",
+    "created_at": "2026-11-07T13:41:28.424149+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B0gTBNFeS",
+        "asin": "",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B0gTBNFeS' has insufficient title or features."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261107T134649146119_d42d23c5",
+    "created_at": "2026-11-07T13:46:49.147566+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B0bg8rh0o",
+        "asin": "",
+        "status": "REJECTED",
+        "reason": "Scraped product for 'https://link.amazon/B0bg8rh0o' has insufficient title or features."
       }
     ]
   }

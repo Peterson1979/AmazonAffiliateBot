@@ -29,6 +29,7 @@ from content.facts import (
     get_canonical_unit,
     get_unit_family
 )
+from content.prompts import APPROVED_CTA_REGEX, APPROVED_CTA_TEMPLATES
 
 
 # Forbidden commercial / pricing patterns unless verbatim in structured product facts
@@ -221,6 +222,82 @@ class ClaimValidator:
         return set(raw_numbers)
 
     @classmethod
+    def is_approved_cta(cls, text: str) -> bool:
+        """Return True if text matches an approved, compliant Call to Action structure."""
+        if not text or not text.strip():
+            return False
+        m = APPROVED_CTA_REGEX.search(text.strip())
+        if not m:
+            return False
+        matched_str = m.group(0).strip().rstrip(".:")
+        return len(matched_str) >= 15
+
+    @classmethod
+    def extract_approved_cta(cls, text: str) -> Optional[str]:
+        """Extract the approved CTA string from text if present, else None."""
+        if not text:
+            return None
+        m = APPROVED_CTA_REGEX.search(text)
+        if m and len(m.group(0).strip().rstrip(".:")) >= 15:
+            return m.group(0).strip()
+        return None
+
+    @classmethod
+    def strip_approved_cta(cls, text: str) -> Tuple[str, Optional[str]]:
+        """Remove approved CTA from text and return (stripped_text, extracted_cta)."""
+        if not text:
+            return text, None
+        m = APPROVED_CTA_REGEX.search(text)
+        if not m:
+            return text, None
+        matched_cta = m.group(0).strip()
+        if len(matched_cta.rstrip(".:")) < 15:
+            return text, None
+        stripped = text[:m.start()] + text[m.end():]
+        return stripped, matched_cta
+
+    @classmethod
+    def extract_body_sentences(
+        cls,
+        text: str,
+        facts: Optional[CanonicalProductFacts] = None,
+        disclosure: str = ""
+    ) -> List[str]:
+        """
+        Extract non-CTA, non-URL, non-disclosure substantive body sentences from text.
+        Returns a list of clean body sentences.
+        """
+        if not text or not text.strip():
+            return []
+        cleaned = text
+        if facts and facts.affiliate_url:
+            cleaned = cleaned.replace(facts.affiliate_url, "")
+        if disclosure:
+            cleaned = cleaned.replace(disclosure.strip(), "")
+        # Clean common disclosure tags
+        cleaned = re.sub(r'#ad\b|#sponsored\b', '', cleaned, flags=re.IGNORECASE)
+        # Remove URLs and link labels
+        cleaned = re.sub(r'https?://\S+', '', cleaned)
+        cleaned = re.sub(r'\bLink:\s*', '', cleaned, flags=re.IGNORECASE)
+        # Strip approved CTAs
+        cleaned, _ = cls.strip_approved_cta(cleaned)
+        # Clean markdown/formatting
+        cleaned = re.sub(r'[\*\#\_`~]', '', cleaned)
+        # Split into sentences
+        raw_sentences = [
+            re.sub(r'[ \t]+', ' ', s).strip()
+            for s in re.split(r'(?<=[.!?])\s+|\n+', cleaned)
+            if s.strip()
+        ]
+        body_sentences = []
+        for s in raw_sentences:
+            s_clean = re.sub(r'^[#*\-\s]+|[#*\-\s]+$', '', s).strip()
+            words = re.findall(r'[a-zA-Z0-9]+', s_clean)
+            if len(words) >= 3 and len(s_clean) >= 10:
+                body_sentences.append(s_clean)
+        return body_sentences
+
+    @classmethod
     def validate_content_claims(
         cls,
         text_to_check: str,
@@ -249,8 +326,28 @@ class ClaimValidator:
             cleaned_text = cleaned_text.replace(facts.affiliate_url, "")
         if disclosure:
             cleaned_text = cleaned_text.replace(disclosure, "")
+
+        # Check for multiple CTAs (maximum 1 allowed per post to avoid repetitive spam)
+        cta_matches = [
+            m.group(0).strip()
+            for m in APPROVED_CTA_REGEX.finditer(cleaned_text)
+            if len(m.group(0).strip().rstrip(".:")) >= 15
+        ]
+        if len(cta_matches) > 1:
+            issues.append(f"Too many Call-to-Action statements in content (found {len(cta_matches)}, maximum 1 allowed).")
+
+        # If an approved CTA is present, strip it from cleaned_text so its neutral
+        # exploration words (explore, details, options, availability) do not trigger
+        # false-positive ungrounded concept errors on product specifications.
+        cleaned_text, approved_cta = cls.strip_approved_cta(cleaned_text)
+
         cleaned_text_no_urls = re.sub(r'https?://\S+', '', cleaned_text)
         cleaned_lower = cleaned_text_no_urls.lower()
+
+        # If the input text consisted solely of an approved CTA (e.g. single-sentence validation),
+        # there are no factual product claims to validate and no further checks needed.
+        if not cleaned_lower.strip() and approved_cta:
+            return issues
 
         # Build canonical propositions inventory for proposition-level verification
         canonical_fact_texts = [f.text.lower() for f in facts.atomic_facts]
@@ -523,7 +620,7 @@ class ClaimValidator:
         if not facts.is_sufficient():
             return False, ["INSUFFICIENT_SOURCE_FACTS: Product title or features are insufficient to safely generate content."]
 
-        if platform_key == "pinterest":
+        if platform_key.startswith("pinterest"):
             title = content.get("title", "").strip()
             description = content.get("description", "").strip()
 
@@ -536,6 +633,16 @@ class ClaimValidator:
                 issues.append("Pinterest description is missing.")
             elif len(description) > 800:
                 issues.append(f"Pinterest description exceeds 800 characters ({len(description)} chars).")
+            else:
+                desc_body = cls.extract_body_sentences(description, facts, disclosure)
+                if not desc_body:
+                    issues.append("Pinterest description must contain at least one factually grounded product description sentence before the CTA.")
+                else:
+                    cta_match = APPROVED_CTA_REGEX.search(description)
+                    if cta_match:
+                        pre_cta_body = cls.extract_body_sentences(description[:cta_match.start()], facts, disclosure)
+                        if not pre_cta_body:
+                            issues.append("Pinterest description must contain at least one factually grounded product description sentence before the CTA.")
 
             # Validate claims in title and description
             title_issues = cls.validate_content_claims(title, facts, disclosure)
@@ -553,6 +660,16 @@ class ClaimValidator:
             text = content.get("text", "").strip()
             if not text:
                 issues.append(f"{platform_key.upper()} post text is empty.")
+            else:
+                text_body = cls.extract_body_sentences(text, facts, disclosure)
+                if not text_body:
+                    issues.append(f"{platform_key.upper()} post must contain at least one factually grounded product description sentence before the CTA.")
+                else:
+                    cta_match = APPROVED_CTA_REGEX.search(text)
+                    if cta_match:
+                        pre_cta_body = cls.extract_body_sentences(text[:cta_match.start()], facts, disclosure)
+                        if not pre_cta_body:
+                            issues.append(f"{platform_key.upper()} post must contain at least one factually grounded product description sentence before the CTA.")
 
             # Platform-specific structural checks
             if platform_key == "facebook":

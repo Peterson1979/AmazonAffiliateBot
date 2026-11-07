@@ -163,6 +163,7 @@
   </div>
 
   <!-- 3. Pinterest — LifeModeHQ -->
+  {% set pin_lm = product.platforms.get('pinterest_lifemodehq', pin_p) %}
   <div class="platform-card">
     <div class="platform-header">
       <div>
@@ -171,7 +172,7 @@
       </div>
       <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
         <span class="badge {% if is_video %}badge-info{% else %}badge-muted{% endif %}">{% if is_video %}🎬 Video Pin{% else %}🖼️ Image Pin{% endif %}</span>
-        {% if pin_p.status == 'VALID' or pin_p.status == 'READY_FOR_REVIEW' %}
+        {% if pin_lm.status == 'VALID' or pin_lm.status == 'READY_FOR_REVIEW' %}
           <span class="badge badge-success">VALIDATED</span>
         {% else %}
           <span class="badge badge-danger">FAILED VALIDATION</span>
@@ -180,13 +181,13 @@
     </div>
     <div style="margin-bottom: 8px;">
       <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Title:</strong>
-      <div style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-top: 2px;">{{ pin_p.title }}</div>
+      <div style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-top: 2px;">{{ pin_lm.title }}</div>
     </div>
     <strong style="color: #cbd5e1; font-size: 0.88rem;">Pin Description:</strong>
-    <div class="copy-preview" style="margin-top: 4px;">{{ pin_p.description }}</div>
-    {% if pin_p.link or aff_url %}
+    <div class="copy-preview" style="margin-top: 4px;">{{ pin_lm.description }}</div>
+    {% if pin_lm.link or aff_url %}
     <div style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted); word-break: break-all;">
-      <strong>Pin Destination URL:</strong> <code>{{ pin_p.link or aff_url }}</code>
+      <strong>Pin Destination URL:</strong> <code>{{ pin_lm.link or aff_url }}</code>
     </div>
     {% endif %}
   </div>

@@ -510,17 +510,19 @@ class TestFullScheduleLifecycle(unittest.TestCase):
     def create_mock_publisher(self):
         mock_pub = MagicMock()
         mock_pub.config.dry_run = False
+        mock_pub.current_time = None
 
         def mock_publish(package, dry_run=False, prior_results=None, target_destinations=None):
             results = dict(prior_results or {})
             targets = target_destinations or ["facebook", "threads", "pinterest", "pinterest_lifemodehq"]
+            pub_ts = (mock_pub.current_time or datetime.now(get_budapest_timezone())).isoformat()
             for dest in targets:
                 results[dest] = {
                     "platform": dest.replace("pinterest_lifemodehq", "pinterest"),
                     "status": PLATFORM_STATUS_PUBLISHED,
                     "mode": "LIVE",
                     "post_id": f"mock_id_{dest}",
-                    "published_at": datetime.now(get_budapest_timezone()).isoformat(),
+                    "published_at": pub_ts,
                 }
             all_ok = set(results.keys()) == {"facebook", "pinterest", "pinterest_lifemodehq", "threads"}
             return {
@@ -539,6 +541,7 @@ class TestFullScheduleLifecycle(unittest.TestCase):
 
         # Window 1: 15:00 -> Item 1 publishes facebook, threads, pinterest
         w1_dt = datetime.fromisoformat("2026-11-06T15:00:00+01:00")
+        mock_pub.current_time = w1_dt
         report1 = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
             now_override=w1_dt,
@@ -558,6 +561,7 @@ class TestFullScheduleLifecycle(unittest.TestCase):
 
         # Window 2: 18:00 -> Item 1 publishes pinterest_lifemodehq
         w2_dt = datetime.fromisoformat("2026-11-06T18:00:00+01:00")
+        mock_pub.current_time = w2_dt
         report2 = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
             now_override=w2_dt,
@@ -574,6 +578,7 @@ class TestFullScheduleLifecycle(unittest.TestCase):
 
         # Window 3: 21:00 -> Item 2 (Video) publishes facebook, threads, pinterest
         w3_dt = datetime.fromisoformat("2026-11-06T21:00:00+01:00")
+        mock_pub.current_time = w3_dt
         report3 = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
             now_override=w3_dt,
@@ -592,6 +597,7 @@ class TestFullScheduleLifecycle(unittest.TestCase):
 
         # Window 4: 23:00 -> Item 2 (Video) publishes pinterest_lifemodehq
         w4_dt = datetime.fromisoformat("2026-11-06T23:00:00+01:00")
+        mock_pub.current_time = w4_dt
         report4 = QueuePublisher.publish_due_items(
             queue_file=self.queue_file,
             now_override=w4_dt,

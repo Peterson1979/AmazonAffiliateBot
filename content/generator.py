@@ -16,7 +16,11 @@ from content.facts import FactExtractor, CanonicalProductFacts, is_keyword_stuff
 from content.prompts import (
     PLATFORM_PROMPTS,
     COMMON_CONTENT_RULES,
-    format_source_facts
+    format_source_facts,
+    get_approved_cta_for_platform,
+    build_facebook_prompt,
+    build_pinterest_prompt,
+    build_threads_prompt
 )
 from content.validator import (
     ClaimValidator,
@@ -30,6 +34,8 @@ from content.validator import (
 PLATFORM_PREDICT_TOKENS = {
     "facebook": 320,
     "pinterest": 180,
+    "pinterest_dailyideasforyou": 180,
+    "pinterest_lifemodehq": 180,
     "threads": 120,
 }
 
@@ -239,18 +245,63 @@ def format_facebook_paragraphs(text: str) -> str:
     return clean_formatting(text)
 
 
+def build_canonical_fallback_sentence(facts: CanonicalProductFacts) -> str:
+    """
+    Construct a deterministic, 100% factually grounded fallback sentence directly
+    from confirmed canonical product facts when generated text lacks body content.
+    """
+    # 1. Search atomic facts for confirmed specifications, components, materials, or features
+    for fact in facts.atomic_facts:
+        if fact.fact_type in ("specification", "component", "material", "feature"):
+            if is_keyword_stuffed_text(fact.text):
+                continue
+            cand = sanitize_outcome_clauses(fact.text)
+            cand = re.split(r'\s+-\s+|\bfor\b', cand, flags=re.IGNORECASE)[0].strip()
+            cand = cand.strip("【】[]() -:;,.")
+            cand = clean_formatting(cand).rstrip(".")
+            if len(cand) >= 10:
+                if cand.lower().startswith(("features", "includes", "equipped with", "constructed with", "made of", "with")):
+                    cand_sentence = f"{cand}."
+                else:
+                    cand_sentence = f"Features {cand}."
+                cand_sentence = clean_formatting(cand_sentence)
+                if not cand_sentence.endswith((".", "!", "?")):
+                    cand_sentence += "."
+                issues = ClaimValidator.validate_content_claims(cand_sentence, facts, disclosure="")
+                if not issues and len(cand_sentence.split()) >= 3:
+                    return cand_sentence
+
+    # 2. Try explicit materials
+    if facts.explicit_materials:
+        mat = sorted(list(facts.explicit_materials))[0]
+        cand_sentence = f"Features {mat} construction."
+        if not ClaimValidator.validate_content_claims(cand_sentence, facts, disclosure=""):
+            return cand_sentence
+
+    # 3. Fallback to clean, grounded product title
+    title_cand = clean_formatting(facts.title.split(" - ")[0].split(":")[0].strip()).strip("【】[]() -:;,.")
+    if title_cand.lower().startswith(("features", "includes")):
+        cand_sentence = f"{title_cand}."
+    else:
+        cand_sentence = f"Features {title_cand}."
+        if ClaimValidator.validate_content_claims(cand_sentence, facts, disclosure=""):
+            cand_sentence = f"{title_cand}."
+    return clean_formatting(cand_sentence)
+
+
 def extract_grounded_platform_content(
     platform_key: str,
     raw_text: str,
     facts: CanonicalProductFacts,
-    disclosure: str
+    disclosure: str,
+    allow_fallback: bool = False
 ) -> Optional[Dict[str, Any]]:
     """
     Extract, filter, and structure generated content so that every sentence is deterministically
     verified against CanonicalProductFacts propositions.
     Returns None if no valid grounded propositions could be extracted from the model's output.
     """
-    if platform_key == "pinterest":
+    if platform_key.startswith("pinterest"):
         parsed = parse_pinterest_response(raw_text, facts, disclosure)
         title_raw = clean_formatting(parsed.get("title", "").strip())
         title_issues = ClaimValidator.validate_content_claims(title_raw, facts, disclosure="")
@@ -287,9 +338,23 @@ def extract_grounded_platform_content(
                 valid_sentences.append(s_clean)
 
         if valid_sentences:
-            description = clean_formatting(" ".join(valid_sentences[:2]))
-            return {"title": title, "description": description[:400].strip()}
-        return None
+            factual_sentences = [s for s in valid_sentences if not ClaimValidator.is_approved_cta(s)]
+            cta_sentences = [s for s in valid_sentences if ClaimValidator.is_approved_cta(s)]
+            if not factual_sentences:
+                if not allow_fallback:
+                    return None
+                factual_sentences = [build_canonical_fallback_sentence(facts)]
+            cta_to_use = cta_sentences[0] if cta_sentences else ""
+            selected_sentences = factual_sentences[:2]
+            if cta_to_use:
+                selected_sentences.append(cta_to_use)
+            description = clean_formatting(" ".join(selected_sentences))
+            return {"title": title, "description": description[:450].strip()}
+        else:
+            if allow_fallback:
+                fallback_sentence = build_canonical_fallback_sentence(facts)
+                return {"title": title, "description": fallback_sentence[:450].strip()}
+            return None
 
     # Text-based platforms: Facebook, Threads
     # Check for hard Layer C violations (price, discounts, fake testimonials)
@@ -339,13 +404,23 @@ def extract_grounded_platform_content(
         return None
 
     if platform_key == "facebook":
-        if len(valid_sentences) >= 2:
-            mid = max(1, len(valid_sentences) // 2)
-            p1 = clean_formatting(" ".join(valid_sentences[:mid]))
-            p2 = clean_formatting(" ".join(valid_sentences[mid:]))
+        factual_sentences = [s for s in valid_sentences if not ClaimValidator.is_approved_cta(s)]
+        cta_sentences = [s for s in valid_sentences if ClaimValidator.is_approved_cta(s)]
+        cta_to_use = cta_sentences[0] if cta_sentences else ""
+
+        if not factual_sentences:
+            if not allow_fallback:
+                return None
+            factual_sentences = [build_canonical_fallback_sentence(facts)]
+
+        if len(factual_sentences) >= 2:
+            mid = max(1, len(factual_sentences) // 2)
+            p1 = clean_formatting(" ".join(factual_sentences[:mid]))
+            p2_body = clean_formatting(" ".join(factual_sentences[mid:]))
+            p2 = clean_formatting(f"{p2_body} {cta_to_use}".strip()) if cta_to_use else p2_body
             return {"text": f"{p1}\n\n{p2}"}
         else:
-            p1 = clean_formatting(valid_sentences[0])
+            p1 = clean_formatting(factual_sentences[0])
             p2 = ""
             for fact in facts.atomic_facts:
                 if fact.fact_type in ("specification", "component", "material", "feature"):
@@ -363,12 +438,25 @@ def extract_grounded_platform_content(
                             break
             if not p2:
                 # Never duplicate the same sentence into both paragraphs: when only
-                # one grounded sentence exists, return that single sentence.
+                # one grounded sentence exists, attach CTA to p2 or return p1.
+                if cta_to_use:
+                    return {"text": f"{p1}\n\n{cta_to_use}"}
                 return {"text": p1}
+            p2 = clean_formatting(f"{p2} {cta_to_use}".strip()) if cta_to_use else p2
             return {"text": f"{p1}\n\n{p2}"}
     else:
         # Threads
-        combined = clean_formatting(" ".join(valid_sentences[:2]))
+        factual_sentences = [s for s in valid_sentences if not ClaimValidator.is_approved_cta(s)]
+        cta_sentences = [s for s in valid_sentences if ClaimValidator.is_approved_cta(s)]
+        if not factual_sentences:
+            if not allow_fallback:
+                return None
+            factual_sentences = [build_canonical_fallback_sentence(facts)]
+        cta_to_use = cta_sentences[0] if cta_sentences else ""
+        selected_sentences = factual_sentences[:2]
+        if cta_to_use:
+            selected_sentences.append(cta_to_use)
+        combined = clean_formatting(" ".join(selected_sentences))
         return {"text": combined}
 
 
@@ -415,10 +503,37 @@ class ContentGenerator:
         facts: CanonicalProductFacts,
         disclosure: str
     ) -> Dict[str, Any]:
-        """Guarantee that affiliate link and disclosure are present in the final data."""
-        if platform == "pinterest":
+        """Guarantee that affiliate link, approved CTA, and disclosure are present in the final data."""
+        platform_key = platform.lower().strip()
+        seed = facts.asin or facts.title or ""
+
+        if platform_key.startswith("pinterest"):
             title = clean_formatting(content.get("title", ""))[:100].strip()
             desc = clean_formatting(content.get("description", "")).strip()
+
+            # Ensure there is at least one factually grounded body sentence before the CTA
+            body_sentences = ClaimValidator.extract_body_sentences(desc, facts, disclosure)
+            if not body_sentences:
+                fallback_body = build_canonical_fallback_sentence(facts)
+                existing_cta = ClaimValidator.extract_approved_cta(desc)
+                if existing_cta:
+                    desc = f"{fallback_body} {existing_cta}"
+                else:
+                    desc = fallback_body
+
+            existing_cta = ClaimValidator.extract_approved_cta(desc)
+            if not existing_cta:
+                cta = get_approved_cta_for_platform(platform_key, seed=seed)
+                # Strip URL and disclosure if already attached to avoid duplication
+                if facts.affiliate_url and facts.affiliate_url in desc:
+                    desc = desc.replace(facts.affiliate_url, "").strip()
+                if disclosure and disclosure.strip() in desc:
+                    desc = desc.replace(disclosure.strip(), "").strip()
+                desc = clean_formatting(desc)
+                if desc and not desc.endswith((".", "!", "?")):
+                    desc = f"{desc}."
+                desc = f"{desc} {cta}".strip()
+
             if facts.affiliate_url and facts.affiliate_url not in desc:
                 desc = f"{desc} {facts.affiliate_url}".strip()
             if disclosure and disclosure.strip() not in desc:
@@ -427,6 +542,58 @@ class ContentGenerator:
             content["description"] = desc
         else:
             text = clean_formatting(content.get("text", "")).strip()
+
+            # Ensure there is at least one factually grounded body sentence before the CTA
+            body_sentences = ClaimValidator.extract_body_sentences(text, facts, disclosure)
+            if not body_sentences:
+                fallback_body = build_canonical_fallback_sentence(facts)
+                existing_cta = ClaimValidator.extract_approved_cta(text)
+                if existing_cta:
+                    text = f"{fallback_body} {existing_cta}"
+                else:
+                    text = fallback_body
+
+            existing_cta = ClaimValidator.extract_approved_cta(text)
+            if not existing_cta:
+                cta = get_approved_cta_for_platform(platform_key, seed=seed)
+                # Strip URL and disclosure if already attached
+                if facts.affiliate_url and facts.affiliate_url in text:
+                    text = text.replace(f"Link: {facts.affiliate_url}", "").replace(facts.affiliate_url, "").strip()
+                if disclosure and disclosure.strip() in text:
+                    text = text.replace(disclosure.strip(), "").strip()
+                text = clean_formatting(text)
+
+                if platform_key == "facebook":
+                    paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+                    if len(paragraphs) >= 2:
+                        p_last = paragraphs[-1]
+                        if not p_last.endswith((".", "!", "?")):
+                            p_last = f"{p_last}."
+                        paragraphs[-1] = f"{p_last} {cta}"
+                        text = "\n\n".join(paragraphs)
+                    elif len(paragraphs) == 1:
+                        p0 = paragraphs[0]
+                        if not p0.endswith((".", "!", "?")):
+                            p0 = f"{p0}."
+                        text = f"{p0}\n\n{cta}"
+                    else:
+                        fallback_body = build_canonical_fallback_sentence(facts)
+                        text = f"{fallback_body}\n\n{cta}"
+                else:
+                    # Threads
+                    if text and not text.endswith((".", "!", "?")):
+                        text = f"{text}."
+                    text = f"{text} {cta}".strip()
+            else:
+                if platform_key == "facebook":
+                    body_before_cta, cta_part = ClaimValidator.strip_approved_cta(text)
+                    paragraphs = [p.strip() for p in re.split(r'\n\s*\n', body_before_cta) if p.strip()]
+                    if len(paragraphs) == 1:
+                        p0 = paragraphs[0]
+                        if not p0.endswith((".", "!", "?")):
+                            p0 = f"{p0}."
+                        text = f"{p0}\n\n{cta_part}"
+
             if facts.affiliate_url and facts.affiliate_url not in text:
                 text = f"{text}\n\nLink: {facts.affiliate_url}".strip()
             if disclosure and disclosure.strip() not in text:
@@ -439,15 +606,19 @@ class ContentGenerator:
         self,
         platform: str,
         product: Union[Product, CanonicalProductFacts],
-        disclosure: str
+        disclosure: str,
+        account: Optional[str] = None,
+        media_type: str = "image"
     ) -> Dict[str, Any]:
         """
         Generate content for a specific social platform with strictly 1 regeneration on failure.
 
         Args:
-            platform: Platform name ('facebook', 'pinterest', 'threads').
+            platform: Platform name ('facebook', 'pinterest', 'threads', 'pinterest_lifemodehq').
             product: Normalized Product or CanonicalProductFacts.
             disclosure: Configurable affiliate disclosure string.
+            account: Target account override ('dailyideasforyou', 'lifemodehq').
+            media_type: Media format type ('image' or 'video').
 
         Returns:
             Dict[str, Any]: Platform content dictionary.
@@ -457,9 +628,25 @@ class ContentGenerator:
             RuntimeError: If source facts are insufficient or output fails validation after 1 regeneration attempt.
         """
         platform_key = platform.lower().strip()
-        prompt_builder = PLATFORM_PROMPTS.get(platform_key)
-        if not prompt_builder:
-            raise ValueError(f"Unsupported platform: '{platform}'. Choose from {list(PLATFORM_PROMPTS.keys())}")
+        account_key = (account or "").lower().strip()
+        media_type_clean = (media_type or "image").lower().strip()
+        if media_type_clean not in ("image", "video"):
+            media_type_clean = "image"
+
+        pin_account = "dailyideasforyou"
+        if platform_key.startswith("pinterest"):
+            pin_account = account_key or ("lifemodehq" if "lifemodehq" in platform_key else "dailyideasforyou")
+            if pin_account == "lifemodehq" or "lifemodehq" in platform_key:
+                platform_key = "pinterest_lifemodehq"
+            else:
+                platform_key = "pinterest"
+            prompt_builder = lambda facts: build_pinterest_prompt(facts, account=pin_account, media_type=media_type_clean)
+        elif platform_key == "facebook":
+            prompt_builder = lambda facts: build_facebook_prompt(facts, media_type=media_type_clean)
+        elif platform_key == "threads":
+            prompt_builder = lambda facts: build_threads_prompt(facts, media_type=media_type_clean)
+        else:
+            raise ValueError(f"Unsupported platform: '{platform}'. Choose from ('facebook', 'pinterest', 'threads', 'pinterest_lifemodehq')")
 
         if isinstance(product, CanonicalProductFacts):
             facts = product
@@ -511,21 +698,37 @@ class ContentGenerator:
                 f"on the first generation attempt."
             ]
         else:
-            extracted = extract_grounded_platform_content(platform_key, raw_output, facts, disclosure)
+            extracted = extract_grounded_platform_content(platform_key, raw_output, facts, disclosure, allow_fallback=False)
             if extracted is not None:
                 result = self._ensure_compliance(platform_key, extracted, facts, disclosure)
                 is_valid, issues = self.validate_platform_content(platform_key, result, facts, disclosure)
             else:
                 is_valid = False
-                issues = ClaimValidator.validate_content_claims(raw_output, facts, disclosure=disclosure) or ["Output contains unsupported claims."]
+                base_issues = ClaimValidator.validate_content_claims(raw_output, facts, disclosure=disclosure)
+                missing_body_msg = (
+                    "Pinterest description must contain at least one factually grounded product description sentence before the CTA."
+                    if platform_key.startswith("pinterest")
+                    else f"{platform_key.upper()} post must contain at least one factually grounded product description sentence before the CTA."
+                )
+                issues = base_issues if base_issues else [missing_body_msg]
 
         # 2. Validate First Output & If invalid, attempt regeneration EXACTLY ONCE
         if not is_valid:
             retry_count = 1
             issues_summary = "\n- ".join(issues)
-            if platform_key == "pinterest":
+            if platform_key.startswith("pinterest"):
+                account_angle = (
+                    "Lifestyle and home living angle for LifeModeHQ"
+                    if "lifemodehq" in platform_key
+                    else "Discovery and practical shopping ideas for dailyideasforyou"
+                )
+                media_rule = (
+                    "Video format: Write a natural opening hook suited to video clip."
+                    if media_type_clean == "video"
+                    else "Image format: Focus on product appearance, design, and physical attributes."
+                )
                 retry_prompt = (
-                    f"You are a technical product copy editor creating a natural, factual Pinterest Pin JSON.\n\n"
+                    f"You are a technical product copy editor creating a natural, factual Pinterest Pin JSON ({account_angle}. {media_rule}).\n\n"
                     f"{COMMON_CONTENT_RULES}\n\n"
                     f"CORRECTION REQUIRED - PREVIOUS ATTEMPT FAILED WITH ISSUES:\n"
                     f"- {issues_summary}\n\n"
@@ -541,12 +744,23 @@ class ContentGenerator:
                 )
             else:
                 if platform_key == "facebook":
-                    format_rule = (
-                        "1. Write EXACTLY 2 short paragraphs separated by a blank line (double newline) organizing confirmed physical facts.\n"
-                        "2. Do NOT write bullet points, list dashes (-), or a single paragraph."
-                    )
+                    if media_type_clean == "video":
+                        format_rule = (
+                            "1. Write EXACTLY 2 short paragraphs separated by a blank line (double newline) organizing confirmed physical facts.\n"
+                            "2. Include a natural opening hook suited to video demonstration.\n"
+                            "3. Do NOT write bullet points, list dashes (-), or a single paragraph."
+                        )
+                    else:
+                        format_rule = (
+                            "1. Write EXACTLY 2 short paragraphs separated by a blank line (double newline) organizing confirmed physical facts.\n"
+                            "2. Focus on product appearance, design, features, and practical attributes.\n"
+                            "3. Do NOT write bullet points, list dashes (-), or a single paragraph."
+                        )
                 else:
-                    format_rule = "1. Rewrite the post in 1 to 2 natural, concise factual sentences stating only confirmed physical components and measurements."
+                    if media_type_clean == "video":
+                        format_rule = "1. Rewrite the post in 1 to 2 natural, concise factual sentences with a natural opening hook suited to video."
+                    else:
+                        format_rule = "1. Rewrite the post in 1 to 2 natural, concise factual sentences stating only confirmed physical components and measurements."
 
                 retry_prompt = (
                     f"You are writing a natural factual {platform_key.upper()} post.\n\n"
@@ -597,7 +811,7 @@ class ContentGenerator:
                     f"{'; '.join(empty_issues)}"
                 ) from exc
 
-            retry_extracted = extract_grounded_platform_content(platform_key, retry_output, facts, disclosure)
+            retry_extracted = extract_grounded_platform_content(platform_key, retry_output, facts, disclosure, allow_fallback=True)
             if retry_extracted is not None:
                 result = self._ensure_compliance(platform_key, retry_extracted, facts, disclosure)
                 is_valid, retry_issues = self.validate_platform_content(platform_key, result, facts, disclosure)
@@ -615,6 +829,12 @@ class ContentGenerator:
                     f"Content generation for '{platform_key}' failed validation after 1 regeneration attempt: {'; '.join(retry_issues)}"
                 )
 
+        result["media_type"] = media_type_clean
+        if "text" in result and "content" not in result:
+            result["content"] = result["text"]
+        if platform_key.startswith("pinterest"):
+            result["account"] = pin_account
+
         self.last_validation_metadata[platform_key] = {
             "status": "VALID",
             "retry_count": retry_count,
@@ -625,7 +845,8 @@ class ContentGenerator:
     def generate_all_platforms(
         self,
         product: Union[Product, CanonicalProductFacts],
-        disclosure: str
+        disclosure: str,
+        include_variants: bool = False
     ) -> Dict[str, Any]:
         """
         Generate content across all supported platforms: Facebook, Pinterest, and Threads.
@@ -633,6 +854,7 @@ class ContentGenerator:
         Args:
             product: Normalized Product dataclass or CanonicalProductFacts.
             disclosure: Configurable affiliate disclosure string.
+            include_variants: When True, also generates video variants and account-specific Pinterest copy.
 
         Returns:
             Dict[str, Any]: Combined generation dictionary with 'platforms' and validation metadata.
@@ -648,7 +870,9 @@ class ContentGenerator:
                 platforms_results[platform_key] = self.generate_for_platform(
                     platform=platform_key,
                     product=facts,
-                    disclosure=disclosure
+                    disclosure=disclosure,
+                    account="dailyideasforyou" if platform_key == "pinterest" else None,
+                    media_type="image"
                 )
             except OllamaProviderError as e:
                 platforms_results[platform_key] = {"error": str(e)}
@@ -673,6 +897,126 @@ class ContentGenerator:
             except Exception as e:
                 platforms_results[platform_key] = {"error": str(e)}
 
+        if include_variants:
+            # Facebook video
+            try:
+                fb_vid = self.generate_for_platform("facebook", product=facts, disclosure=disclosure, media_type="video")
+            except Exception as e:
+                fb_vid = {"content": platforms_results.get("facebook", {}).get("content", ""), "error": str(e)}
+
+            # Threads video
+            try:
+                th_vid = self.generate_for_platform("threads", product=facts, disclosure=disclosure, media_type="video")
+            except Exception as e:
+                th_vid = {"content": platforms_results.get("threads", {}).get("content", ""), "error": str(e)}
+
+            # Pinterest dailyideasforyou video
+            try:
+                pin_vid = self.generate_for_platform("pinterest", product=facts, disclosure=disclosure, account="dailyideasforyou", media_type="video")
+            except Exception as e:
+                pin_vid = {
+                    "title": platforms_results.get("pinterest", {}).get("title", ""),
+                    "description": platforms_results.get("pinterest", {}).get("description", ""),
+                    "error": str(e)
+                }
+
+            # Pinterest lifemodehq image & video
+            try:
+                lm_img = self.generate_for_platform("pinterest_lifemodehq", product=facts, disclosure=disclosure, account="lifemodehq", media_type="image")
+            except Exception as e:
+                lm_img = {
+                    "title": platforms_results.get("pinterest", {}).get("title", ""),
+                    "description": platforms_results.get("pinterest", {}).get("description", ""),
+                    "error": str(e)
+                }
+
+            try:
+                lm_vid = self.generate_for_platform("pinterest_lifemodehq", product=facts, disclosure=disclosure, account="lifemodehq", media_type="video")
+            except Exception as e:
+                lm_vid = {
+                    "title": lm_img.get("title", ""),
+                    "description": lm_img.get("description", ""),
+                    "error": str(e)
+                }
+
+            if "facebook" in platforms_results and "error" not in platforms_results["facebook"]:
+                platforms_results["facebook"]["variants"] = {
+                    "image": {"content": platforms_results["facebook"].get("content", "")},
+                    "video": {"content": fb_vid.get("content") or fb_vid.get("text", "")}
+                }
+            if "threads" in platforms_results and "error" not in platforms_results["threads"]:
+                platforms_results["threads"]["variants"] = {
+                    "image": {"content": platforms_results["threads"].get("content", "")},
+                    "video": {"content": th_vid.get("content") or th_vid.get("text", "")}
+                }
+            if "pinterest" in platforms_results and "error" not in platforms_results["pinterest"]:
+                platforms_results["pinterest"]["variants"] = {
+                    "image": {
+                        "title": platforms_results["pinterest"].get("title", ""),
+                        "description": platforms_results["pinterest"].get("description", "")
+                    },
+                    "video": {
+                        "title": pin_vid.get("title", ""),
+                        "description": pin_vid.get("description", "")
+                    }
+                }
+                platforms_results["pinterest"]["accounts"] = {
+                    "dailyideasforyou": {
+                        "title": platforms_results["pinterest"].get("title", ""),
+                        "description": platforms_results["pinterest"].get("description", ""),
+                        "variants": platforms_results["pinterest"]["variants"]
+                    },
+                    "lifemodehq": {
+                        "title": lm_img.get("title", ""),
+                        "description": lm_img.get("description", ""),
+                        "variants": {
+                            "image": {
+                                "title": lm_img.get("title", ""),
+                                "description": lm_img.get("description", "")
+                            },
+                            "video": {
+                                "title": lm_vid.get("title", ""),
+                                "description": lm_vid.get("description", "")
+                            }
+                        }
+                    }
+                }
+                platforms_results["pinterest_lifemodehq"] = {
+                    "title": lm_img.get("title", ""),
+                    "description": lm_img.get("description", ""),
+                    "status": lm_img.get("status", "VALID"),
+                    "account": "lifemodehq",
+                    "variants": platforms_results["pinterest"]["accounts"]["lifemodehq"]["variants"]
+                }
+        else:
+            # Default single-variant structure for backward compatibility
+            for p_key in ("facebook", "threads"):
+                if p_key in platforms_results and "error" not in platforms_results[p_key]:
+                    cnt = platforms_results[p_key].get("content") or platforms_results[p_key].get("text", "")
+                    platforms_results[p_key]["variants"] = {
+                        "image": {"content": cnt},
+                        "video": {"content": cnt}
+                    }
+            if "pinterest" in platforms_results and "error" not in platforms_results["pinterest"]:
+                t = platforms_results["pinterest"].get("title", "")
+                d = platforms_results["pinterest"].get("description", "")
+                platforms_results["pinterest"]["variants"] = {
+                    "image": {"title": t, "description": d},
+                    "video": {"title": t, "description": d}
+                }
+                platforms_results["pinterest"]["accounts"] = {
+                    "dailyideasforyou": {
+                        "title": t,
+                        "description": d,
+                        "variants": platforms_results["pinterest"]["variants"]
+                    },
+                    "lifemodehq": {
+                        "title": t,
+                        "description": d,
+                        "variants": platforms_results["pinterest"]["variants"]
+                    }
+                }
+
         provider_diagnostics = getattr(self.ollama, "response_metadata_history", None)
         result = {
             "asin": facts.asin or "",
@@ -684,6 +1028,14 @@ class ContentGenerator:
         if isinstance(provider_diagnostics, list) and provider_diagnostics:
             result["provider_diagnostics"] = provider_diagnostics[-20:]
         return result
+
+    def generate_all_variants(
+        self,
+        product: Union[Product, CanonicalProductFacts],
+        disclosure: str
+    ) -> Dict[str, Any]:
+        """Generate full social copy suite across all platforms, media types, and accounts."""
+        return self.generate_all_platforms(product=product, disclosure=disclosure, include_variants=True)
 
     @staticmethod
     def save_social_content(
