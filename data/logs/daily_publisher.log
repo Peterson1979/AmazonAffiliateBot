@@ -5588,3 +5588,17 @@
 [2026-11-08 15:03:02 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-11-08 15:03:02 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
 [2026-11-08 15:03:02 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-11-08 15:16:13 CET] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-11-08 15:16:13 CET] [INFO] Current Europe/Budapest Time: 2026-11-08T15:16:13.135397+01:00 | Mode: LIVE
+[2026-11-08 15:16:13 CET] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 11
+[2026-11-08 15:16:13 CET] [INFO] Due Eligible Items Found: 1
+[2026-11-08 15:16:13 CET] [INFO] Overdue READY Items Held For Review: 4 (policy: same_day; records unchanged)
+[2026-11-08 15:16:13 CET] [WARNING] HELD overdue item 'item_027_B0BZYCJK89' | ASIN: B0BZYCJK89 | Slot 1 (2026-11-04T15:00:00+01:00)
+[2026-11-08 15:16:13 CET] [WARNING] HELD overdue item 'item_030_B07PBXXNCY' | ASIN: B07PBXXNCY | Slot 2 (2026-11-05T21:00:00+01:00)
+[2026-11-08 15:16:13 CET] [WARNING] HELD overdue item 'item_031_B0BW93676T' | ASIN: B0BW93676T | Slot 1 (2026-11-06T15:00:00+01:00)
+[2026-11-08 15:16:13 CET] [WARNING] HELD overdue item 'item_032_B0CTJGJL2T' | ASIN: B0CTJGJL2T | Slot 2 (2026-11-06T21:00:00+01:00)
+[2026-11-08 15:16:13 CET] [INFO] Processing Item 'item_036_B0D72N7642' | ASIN: B0D72N7642 | Slot 1 (2026-11-08T15:00:00+01:00)
+[2026-11-08 15:16:13 CET] [INFO] Item 'item_036_B0D72N7642' Platform Results: [facebook=FAILED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-11-08 15:16:13 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-11-08 15:16:13 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
+[2026-11-08 15:16:13 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
