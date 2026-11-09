@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 11,
+  "total_ready": 10,
   "total_failed": 0,
-  "scheduled_posts": 11,
-  "unfilled_slots": 49,
+  "scheduled_posts": 10,
+  "unfilled_slots": 50,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -34,9 +34,10 @@
       "attempt": 1
     },
     "2026-11-09-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-09T15:01:17.094316+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-09T15:01:20.047287+01:00"
     }
   },
   "items": [
@@ -1460,12 +1461,132 @@
       "scheduled_at": "2026-11-09T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0D72N7642_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
+      ],
       "created_at": "2026-11-09T08:15:00.000000+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-09T15:01:20.050251+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "(#100) No permission to publish the video",
+              "type": "OAuthException",
+              "code": 100,
+              "fbtrace_id": "ARefwGNoHTuoxyUuCUk7raA"
+            }
+          },
+          "errors": [
+            "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
+          ],
+          "message": "Facebook Graph Video API rejected video with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999730698",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999730698/",
+          "media_id": "4019850522840032384",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "link": "https://link.amazon/B0dLOKIZO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "product_tags": [],
+            "creative_type": "VIDEO",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "parent_pin_id": null,
+            "board_section_id": null,
+            "is_product": false,
+            "dominant_color": "#fefeff",
+            "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+            "id": "1033646551999730698",
+            "link": "https://link.amazon/B0dLOKIZO",
+            "is_removable": false,
+            "board_id": "1033646620665866548",
+            "is_standard": true,
+            "is_owner": true,
+            "pin_metrics": null,
+            "created_at": "2026-11-09T14:01:27",
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 564,
+                  "url": "https://i.pinimg.com/564x/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1200,
+                  "url": "https://i.pinimg.com/1200x/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                }
+              }
+            },
+            "has_been_promoted": false,
+            "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "alt_text": null
+          },
+          "message": "Successfully created video pin 1033646551999730698 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-09T15:01:20.050251+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17987905107139258",
+          "post_id": "18110764127352083",
+          "permalink": "https://www.threads.com/@lifemodehq/post/Dfhf48dhiB2",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+          "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18110764127352083"
+          },
+          "message": "Successfully published video post 18110764127352083 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-09T15:01:20.050251+01:00"
+        }
+      },
       "batch_id": "batch_20261107T133208505309_89cf0acb",
       "media_type": "image"
     },
