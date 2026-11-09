@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 10,
+  "total_ready": 9,
   "total_failed": 0,
-  "scheduled_posts": 10,
-  "unfilled_slots": 50,
+  "scheduled_posts": 9,
+  "unfilled_slots": 51,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -39,9 +39,10 @@
       "attempt": 4
     },
     "2026-11-09-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-09T21:01:16.056879+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-09T21:01:18.578457+01:00"
     }
   },
   "items": [
@@ -1679,12 +1680,132 @@
       "scheduled_at": "2026-11-09T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0DWFLY18Y_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
+      ],
       "created_at": "2026-11-09T07:10:58.248391+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-09T21:01:18.582496+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "(#100) No permission to publish the video",
+              "type": "OAuthException",
+              "code": 100,
+              "fbtrace_id": "AbgNtXAKSM05DOzvT-pWi2r"
+            }
+          },
+          "errors": [
+            "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
+          ],
+          "message": "Facebook Graph Video API rejected video with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999739584",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999739584/",
+          "media_id": "4020575253877006656",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream – Lightweight Texture",
+          "link": "https://link.amazon/B0fsIDYI6",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "has_been_promoted": false,
+            "description": "The cream contains PDRN derived from salmon DNA and hyaluronic acid, and features a lightweight, fast‑absorbing texture. It has a non‑comedogenic formula and no pilling under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_standard": true,
+            "is_removable": false,
+            "id": "1033646551999739584",
+            "product_tags": [],
+            "creative_type": "VIDEO",
+            "is_product": false,
+            "board_section_id": null,
+            "pin_metrics": null,
+            "alt_text": null,
+            "is_owner": true,
+            "created_at": "2026-11-09T20:01:26",
+            "dominant_color": null,
+            "parent_pin_id": null,
+            "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream – Lightweight Texture",
+            "board_id": "1033646620665866548",
+            "link": "https://link.amazon/B0fsIDYI6",
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 734,
+                  "url": "https://i.pinimg.com/564x/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                },
+                "1200x": {
+                  "width": 1139,
+                  "height": 1484,
+                  "url": "https://i.pinimg.com/1200x/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                }
+              }
+            }
+          },
+          "message": "Successfully created video pin 1033646551999739584 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-09T21:01:18.582496+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17987947929139258",
+          "post_id": "18068422382616525",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfiJF7GBB8a",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+          "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18068422382616525"
+          },
+          "message": "Successfully published video post 18068422382616525 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-09T21:01:18.582496+01:00"
+        }
+      },
       "batch_id": "batch_20261109T081018040023_de8ac827",
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4"
