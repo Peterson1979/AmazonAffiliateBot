@@ -1,7 +1,7 @@
 """
 Facebook platform publishing adapter.
 Target account: LifeModeHQ
-Publishes posts to Facebook Page feed via Meta Graph API v19.0.
+Publishes posts to Facebook Page feed via Meta Graph API v27.0.
 """
 
 from pathlib import Path
@@ -14,6 +14,8 @@ from .base import BasePlatformAdapter, STATUS_PUBLISHED, STATUS_FAILED
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 LOGGER = logging.getLogger(__name__)
+
+GRAPH_API_VERSION = "v27.0"
 
 
 def _safe_graph_error_message(value: Any, access_token: str = "") -> str:
@@ -60,6 +62,7 @@ class FacebookAdapter(BasePlatformAdapter):
     """Publishing adapter for Facebook Graph API (Pages)."""
 
     platform_name = "facebook"
+    api_version = GRAPH_API_VERSION
 
     def check_credentials(self) -> Tuple[bool, List[str]]:
         """Verify Meta Graph API Page access token and Page ID."""
@@ -94,7 +97,7 @@ class FacebookAdapter(BasePlatformAdapter):
                 "message": f"Cannot publish video to Facebook Page '{account_name}': video_url must be a valid HTTPS URL.",
             }
 
-        url = f"https://graph-video.facebook.com/v19.0/{page_id}/videos"
+        url = f"https://graph-video.facebook.com/{GRAPH_API_VERSION}/{page_id}/videos"
         payload = {
             "file_url": video_url,
             "description": text,
@@ -147,7 +150,7 @@ class FacebookAdapter(BasePlatformAdapter):
                 permalink_url = None
                 verified_video = False
                 try:
-                    v_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=id,permalink_url,status&access_token={access_token}"
+                    v_url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{video_id}?fields=id,permalink_url,status&access_token={access_token}"
                     v_resp = requests.get(v_url, timeout=10)
                     if v_resp.status_code == 200:
                         v_json = v_resp.json()
@@ -307,14 +310,14 @@ class FacebookAdapter(BasePlatformAdapter):
             }
 
         if local_file and local_file.is_file():
-            url = f"https://graph.facebook.com/v19.0/{page_id}/photos"
+            url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{page_id}/photos"
             payload = {
                 "caption": text,
                 "published": True,
                 "access_token": access_token
             }
         elif image_url and (image_url.startswith("https://") or image_url.startswith("http://")):
-            url = f"https://graph.facebook.com/v19.0/{page_id}/photos"
+            url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{page_id}/photos"
             payload = {
                 "url": image_url,
                 "caption": text,
@@ -333,7 +336,7 @@ class FacebookAdapter(BasePlatformAdapter):
                 "message": f"Cannot publish photo to Facebook Page '{account_name}': local image file not found on disk."
             }
         else:
-            url = f"https://graph.facebook.com/v19.0/{page_id}/feed"
+            url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{page_id}/feed"
             payload = {
                 "message": text,
                 "access_token": access_token
@@ -378,7 +381,7 @@ class FacebookAdapter(BasePlatformAdapter):
                     verified_image = False
                     if is_photo_req and photo_id:
                         try:
-                            v_url = f"https://graph.facebook.com/v19.0/{photo_id}?fields=id,link,images,created_time&access_token={access_token}"
+                            v_url = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{photo_id}?fields=id,link,images,created_time&access_token={access_token}"
                             v_resp = requests.get(v_url, timeout=10)
                             if v_resp.status_code == 200:
                                 v_json = v_resp.json()

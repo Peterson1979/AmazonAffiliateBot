@@ -166,7 +166,7 @@ class TestVideoPhase3EndToEndIntegration(unittest.TestCase):
             # Guardrail: Facebook MUST use normal native Page /videos, NEVER /video_reels
             self.assertNotIn("video_reels", url)
 
-            if url == "https://graph-video.facebook.com/v19.0/44556677/videos":
+            if url == "https://graph-video.facebook.com/v27.0/44556677/videos":
                 return _http_resp(200, {"id": "fb_native_vid_501"})
             if url == "https://api.pinterest.com/v5/media":
                 auth = kwargs["headers"]["Authorization"]
@@ -205,7 +205,7 @@ class TestVideoPhase3EndToEndIntegration(unittest.TestCase):
             get_calls.append((url, kwargs))
             if url == self.expected_r2_video_url:
                 return _http_resp(200, content=self.VIDEO_BYTES)
-            if "graph.facebook.com/v19.0/fb_native_vid_501" in url:
+            if "graph.facebook.com/v27.0/fb_native_vid_501" in url:
                 return _http_resp(
                     200,
                     {

@@ -273,7 +273,7 @@ class TestFacebookVideoPublishing(unittest.TestCase):
         mock_post.assert_called_once()
         self.assertEqual(
             mock_post.call_args.args[0],
-            "https://graph-video.facebook.com/v19.0/123456789/videos",
+            "https://graph-video.facebook.com/v27.0/123456789/videos",
         )
         sent_payload = mock_post.call_args.kwargs["data"]
         self.assertEqual(sent_payload["file_url"], R2_MP4_URL)
@@ -323,7 +323,7 @@ class TestFacebookVideoPublishing(unittest.TestCase):
             dry_run=False,
         )
         self.assertEqual(res["status"], STATUS_PUBLISHED)
-        self.assertEqual(mock_post.call_args.args[0], "https://graph.facebook.com/v19.0/123456789/photos")
+        self.assertEqual(mock_post.call_args.args[0], "https://graph.facebook.com/v27.0/123456789/photos")
 
 
 class TestPinterestVideoPublishing(unittest.TestCase):
@@ -626,7 +626,7 @@ class TestOrchestratorVideoRoutingAndMultiAccount(unittest.TestCase):
         def fake_get(url, **kwargs):
             if url == R2_MP4_URL:
                 return _mock_response(200, content=b"mp4_bytes")
-            if "graph.facebook.com/v19.0/fb_vid_100" in url:
+            if "graph.facebook.com/v27.0/fb_vid_100" in url:
                 return _mock_response(
                     200, {"id": "fb_vid_100", "permalink_url": "/LifeModeHQ/videos/fb_vid_100/"}
                 )

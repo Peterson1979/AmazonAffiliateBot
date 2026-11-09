@@ -231,7 +231,7 @@ class TestPublisher(unittest.TestCase):
         # Verify request parameters
         mock_post.assert_called_once()
         call_args, call_kwargs = mock_post.call_args
-        self.assertIn("https://graph.facebook.com/v19.0/226949230493910/feed", call_args[0])
+        self.assertIn("https://graph.facebook.com/v27.0/226949230493910/feed", call_args[0])
         self.assertEqual(call_kwargs["data"]["message"], content["content"])
         self.assertEqual(call_kwargs["data"]["access_token"], "fb_valid_token")
 
@@ -469,7 +469,7 @@ class TestPublisher(unittest.TestCase):
 
         mock_post.assert_called_once()
         call_args, call_kwargs = mock_post.call_args
-        self.assertIn("https://graph.facebook.com/v19.0/226949230493910/photos", call_args[0])
+        self.assertIn("https://graph.facebook.com/v27.0/226949230493910/photos", call_args[0])
         self.assertEqual(call_kwargs["data"]["url"], "https://m.media-amazon.com/images/I/61S5bLw5RQL._AC_SL1500_.jpg")
         self.assertEqual(call_kwargs["data"]["caption"], content["content"])
         self.assertTrue(call_kwargs["data"]["published"])
