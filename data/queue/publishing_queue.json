@@ -34,10 +34,9 @@
       "attempt": 1
     },
     "2026-11-09-slot-1": {
-      "state": "RETRYABLE",
-      "claimed_at": "2026-11-09T15:01:17.094316+01:00",
-      "attempt": 1,
-      "completed_at": "2026-11-09T15:01:20.047287+01:00"
+      "state": "CLAIMED",
+      "claimed_at": "2026-11-09T15:16:12.326129+01:00",
+      "attempt": 2
     }
   },
   "items": [
