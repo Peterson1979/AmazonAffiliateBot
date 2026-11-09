@@ -37,6 +37,11 @@
       "state": "CLAIMED",
       "claimed_at": "2026-11-09T18:16:20.199556+01:00",
       "attempt": 4
+    },
+    "2026-11-09-slot-2": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-11-09T21:01:16.056879+01:00",
+      "attempt": 1
     }
   },
   "items": [
