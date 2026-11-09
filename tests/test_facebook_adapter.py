@@ -200,21 +200,98 @@ class TestFacebookVerificationScript(unittest.TestCase):
 
         # Mock /me
         # Mock /{page_id}
+        # Mock /me/accounts
         # Mock /me/permissions
         mock_get.side_effect = [
-            (200, {"id": "226949230493910", "name": "LifeModeHQ"}),
-            (200, {"id": "226949230493910", "name": "LifeModeHQ", "tasks": ["CREATE_CONTENT", "MANAGE"]}),
+            (200, {"id": "122097608325476669", "name": "LifeMode-Publisher"}),
+            (200, {"id": "226949230493910", "name": "LifeModeHQ", "link": "https://www.facebook.com/226949230493910"}),
+            (200, {"data": [
+                {
+                    "id": "226949230493910",
+                    "name": "LifeModeHQ",
+                    "tasks": ["CREATE_CONTENT", "MANAGE"],
+                }
+            ]}),
             (200, {"data": [
                 {"permission": "pages_manage_posts", "status": "granted"},
                 {"permission": "pages_read_engagement", "status": "granted"},
-                {"permission": "pages_show_list", "status": "granted"},
                 {"permission": "publish_video", "status": "granted"},
             ]}),
         ]
 
         result = run_verification(token="valid_token_xyz", page_id="226949230493910")
         self.assertTrue(result)
-        self.assertEqual(mock_get.call_count, 3)
+        self.assertEqual(mock_get.call_count, 4)
+
+        # 1st call: /me
+        self.assertEqual(mock_get.call_args_list[0][0][0], "me")
+        self.assertEqual(mock_get.call_args_list[0][0][2], {"fields": "id,name"})
+
+        # 2nd call: /{page_id} requesting only id,name,link (tasks removed)
+        self.assertEqual(mock_get.call_args_list[1][0][0], "226949230493910")
+        self.assertEqual(mock_get.call_args_list[1][0][2], {"fields": "id,name,link"})
+
+        # 3rd call: /me/accounts requesting id,name,tasks
+        self.assertEqual(mock_get.call_args_list[2][0][0], "me/accounts")
+        self.assertEqual(mock_get.call_args_list[2][0][2], {"fields": "id,name,tasks"})
+
+        # 4th call: /me/permissions
+        self.assertEqual(mock_get.call_args_list[3][0][0], "me/permissions")
+
+    @patch("scripts.verify_facebook_token.safe_api_get")
+    def test_run_verification_accounts_missing_page(self, mock_get):
+        from scripts.verify_facebook_token import run_verification
+
+        mock_get.side_effect = [
+            (200, {"id": "122097608325476669", "name": "LifeMode-Publisher"}),
+            (200, {"id": "226949230493910", "name": "LifeModeHQ", "link": "https://www.facebook.com/226949230493910"}),
+            (200, {"data": [
+                {
+                    "id": "999999999999999",
+                    "name": "DifferentPage",
+                    "tasks": ["CREATE_CONTENT"],
+                }
+            ]}),
+        ]
+
+        result = run_verification(token="valid_token_xyz", page_id="226949230493910")
+        self.assertFalse(result)
+
+    @patch("scripts.verify_facebook_token.safe_api_get")
+    def test_run_verification_missing_permission(self, mock_get):
+        from scripts.verify_facebook_token import run_verification
+
+        mock_get.side_effect = [
+            (200, {"id": "122097608325476669", "name": "LifeMode-Publisher"}),
+            (200, {"id": "226949230493910", "name": "LifeModeHQ", "link": "https://www.facebook.com/226949230493910"}),
+            (200, {"data": [
+                {
+                    "id": "226949230493910",
+                    "name": "LifeModeHQ",
+                    "tasks": ["CREATE_CONTENT"],
+                }
+            ]}),
+            (200, {"data": [
+                {"permission": "pages_manage_posts", "status": "granted"},
+                {"permission": "pages_read_engagement", "status": "granted"},
+                # publish_video missing
+            ]}),
+        ]
+
+        result = run_verification(token="valid_token_xyz", page_id="226949230493910")
+        self.assertFalse(result)
+
+    @patch("scripts.verify_facebook_token.safe_api_get")
+    def test_run_verification_page_id_mismatch(self, mock_get):
+        from scripts.verify_facebook_token import run_verification
+
+        mock_get.side_effect = [
+            (200, {"id": "122097608325476669", "name": "LifeMode-Publisher"}),
+            (200, {"id": "wrong_page_id", "name": "LifeModeHQ", "link": "https://www.facebook.com/wrong"}),
+        ]
+
+        result = run_verification(token="valid_token_xyz", page_id="226949230493910")
+        self.assertFalse(result)
 
     @patch("scripts.verify_facebook_token.safe_api_get")
     def test_run_verification_expired_token(self, mock_get):

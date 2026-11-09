@@ -2106,7 +2106,17 @@ def ensure_image_queue_entry(asin_clean: str, queue_file: Optional[Path] = None)
 
     new_id = next_queue_item_id(queue.items, asin_clean)
     aff_url = (pkg.get("source") or {}).get("affiliate_url", "")
+    if not aff_url:
+        for it in queue.items:
+            if (it.asin or "").upper() == asin_clean and it.original_url:
+                aff_url = it.original_url
+                break
     prod_title = pkg.get("title", "")
+    if not prod_title:
+        for it in queue.items:
+            if (it.asin or "").upper() == asin_clean and it.product_name:
+                prod_title = it.product_name
+                break
     if not prod_title:
         prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
         if prod_file.exists():
@@ -2431,15 +2441,97 @@ def attach_product_video_service(
 
     queue_updated = False
     updated_queue_item_id: Optional[str] = None
-    if queue is not None and ready_items:
-        for it in ready_items:
-            it.media_type = "video"
-            it.video_url = r2_res["public_url"]
-            if not it.package_reference:
-                it.package_reference = to_repository_relative_path(pkg_path)
-            updated_queue_item_id = updated_queue_item_id or it.queue_item_id
-        queue.save(QUEUE_FILE)
-        queue_updated = True
+    if queue is not None:
+        video_items = [
+            it for it in ready_items
+            if it.media_type == "video" or it.daily_slot == 2
+        ]
+        image_items = [
+            it for it in ready_items
+            if it.media_type == "image" or (it.daily_slot == 1 and it.media_type != "video")
+        ]
+
+        if video_items:
+            for it in video_items:
+                it.media_type = "video"
+                it.video_url = r2_res["public_url"]
+                if not it.package_reference:
+                    it.package_reference = to_repository_relative_path(pkg_path)
+                updated_queue_item_id = updated_queue_item_id or it.queue_item_id
+            queue_updated = True
+        elif image_items:
+            # An image item exists in Slot 1. Preserve it as image and schedule a separate Slot 2 video entry.
+            tz = get_budapest_timezone()
+            now_bp = datetime.now(tz)
+            today = now_bp.date()
+            target_slot = 2
+            target_time = SLOT_2_TIME
+
+            scheduled_slot_keys = set()
+            for it in queue.items:
+                if it.scheduled_date and it.daily_slot:
+                    scheduled_slot_keys.add((it.scheduled_date, it.daily_slot))
+
+            img_item = image_items[0]
+            candidate_date = today
+            if img_item.scheduled_date and (img_item.scheduled_date, target_slot) not in scheduled_slot_keys:
+                try:
+                    parsed_d = datetime.strptime(img_item.scheduled_date, "%Y-%m-%d").date()
+                    if parsed_d > today or (parsed_d == today and now_bp.time() < target_time):
+                        candidate_date = parsed_d
+                except Exception:
+                    candidate_date = today
+
+            if candidate_date == today and (now_bp.time() >= target_time or (candidate_date.strftime("%Y-%m-%d"), target_slot) in scheduled_slot_keys):
+                candidate_date = today + timedelta(days=1)
+            while (candidate_date.strftime("%Y-%m-%d"), target_slot) in scheduled_slot_keys:
+                candidate_date += timedelta(days=1)
+
+            target_date_str = candidate_date.strftime("%Y-%m-%d")
+            target_dt = datetime(
+                candidate_date.year, candidate_date.month, candidate_date.day,
+                target_time.hour, target_time.minute, target_time.second, tzinfo=tz
+            )
+
+            new_vid_id = next_queue_item_id(queue.items, asin_clean)
+            aff_url = img_item.original_url or (pkg_updated.get("source") or {}).get("affiliate_url", "")
+            prod_title = img_item.product_name or pkg_updated.get("title") or f"Product {asin_clean}"
+
+            new_vid_item = QueueItem(
+                queue_item_id=new_vid_id,
+                original_url=aff_url,
+                asin=asin_clean,
+                product_name=prod_title,
+                scheduled_date=target_date_str,
+                daily_slot=target_slot,
+                scheduled_at=target_dt.isoformat(),
+                timezone=DEFAULT_TIMEZONE,
+                package_reference=to_repository_relative_path(pkg_path),
+                status=STATUS_READY,
+                validation_status=STATUS_READY_FOR_REVIEW,
+                errors=[],
+                media_type="video",
+                video_url=r2_res["public_url"],
+            )
+            queue.items.append(new_vid_item)
+            queue.recalculate_counts()
+            updated_queue_item_id = new_vid_id
+            queue_updated = True
+        elif ready_items:
+            for it in ready_items:
+                it.media_type = "video"
+                it.video_url = r2_res["public_url"]
+                if not it.package_reference:
+                    it.package_reference = to_repository_relative_path(pkg_path)
+                updated_queue_item_id = updated_queue_item_id or it.queue_item_id
+            queue_updated = True
+
+        if queue_updated:
+            queue.save(QUEUE_FILE)
+
+        # If this product has an image creative, ensure its Slot 1 image entry exists as well
+        if pkg_updated.get("selected_creative") or get_selected_creative(asin_clean):
+            ensure_image_queue_entry(asin_clean, QUEUE_FILE)
 
     action = "replaced" if was_replaced else "uploaded"
     return {
@@ -2824,6 +2916,10 @@ def enqueue_existing_product_service(asin: str, media_type: Optional[str] = None
     queue.recalculate_counts()
     QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
     queue.save(QUEUE_FILE)
+
+    # If this is a video package and an image creative is available, ensure its Slot 1 image entry exists as well
+    if target_media == "video" and (package.get("selected_creative") or get_selected_creative(asin_clean)):
+        ensure_image_queue_entry(asin_clean)
 
     media_desc = "video package" if target_media == "video" else "image package"
     return {

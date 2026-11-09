@@ -220,6 +220,105 @@ class TestEnsureImageQueueEntry(unittest.TestCase):
         self.assertFalse(res.get("created"), "Must not create duplicate on production queue")
         self.assertEqual(res.get("queue_item_id"), i_item.queue_item_id)
 
+    def test_production_queue_b0gr5wf8m4_entries(self):
+        """Verify production queue data for ASIN B0GR5WF8M4 has separate IMAGE and VIDEO entries."""
+        self.assertTrue(QUEUE_FILE.exists(), "Production queue file must exist")
+        queue = PublishingQueue.load(QUEUE_FILE)
+
+        # Find items for B0GR5WF8M4
+        items = [it for it in queue.items if (it.asin or "").upper() == "B0GR5WF8M4"]
+        self.assertGreaterEqual(len(items), 2, "Must have both IMAGE and VIDEO entries for B0GR5WF8M4")
+
+        video_items = [it for it in items if it.media_type == "video"]
+        image_items = [it for it in items if it.media_type == "image"]
+
+        self.assertEqual(len(video_items), 1, "Must have exactly 1 VIDEO entry for B0GR5WF8M4")
+        self.assertEqual(len(image_items), 1, "Must have exactly 1 IMAGE entry for B0GR5WF8M4")
+
+        v_item = video_items[0]
+        i_item = image_items[0]
+
+        # Check existing VIDEO entry (item_039)
+        self.assertEqual(v_item.queue_item_id, "item_039_B0GR5WF8M4")
+        self.assertEqual(v_item.status, "READY")
+        self.assertTrue(v_item.video_url and v_item.video_url.startswith("https://"))
+        self.assertIn("ad-_myusalife4", v_item.video_url)
+        self.assertEqual(v_item.original_url, "https://link.amazon/B00TR8Qpy")
+
+        # Check newly created IMAGE entry (item_043 is scheduled for Slot 1 at 15:00)
+        self.assertEqual(i_item.queue_item_id, "item_043_B0GR5WF8M4")
+        self.assertEqual(i_item.daily_slot, 1)
+        self.assertEqual(i_item.scheduled_date, "2026-11-13")
+        self.assertEqual(i_item.scheduled_at, "2026-11-13T15:00:00+01:00")
+        self.assertEqual(i_item.status, "READY")
+        self.assertIsNone(i_item.video_url)
+        self.assertEqual(i_item.original_url, "https://link.amazon/B00TR8Qpy")
+
+        # Verify media resolution
+        v_media = _resolve_queue_item_media(v_item)
+        self.assertEqual(v_media["media_type"], "video")
+        self.assertEqual(v_media["video_url"], v_item.video_url)
+        self.assertEqual(v_media["image_url"], "/creatives/B0GR5WF8M4/everyday_pick_flow.jpg")
+
+        i_media = _resolve_queue_item_media(i_item)
+        self.assertEqual(i_media["media_type"], "image")
+        self.assertIsNone(i_media["video_url"])
+        self.assertEqual(i_media["image_url"], "/creatives/B0GR5WF8M4/everyday_pick_flow.jpg")
+
+        # Verify ensure_image_queue_entry idempotency on production queue
+        res = ensure_image_queue_entry("B0GR5WF8M4")
+        self.assertTrue(res.get("success"))
+        self.assertFalse(res.get("created"), "Must not create duplicate on production queue")
+        self.assertEqual(res.get("queue_item_id"), i_item.queue_item_id)
+
+    def test_product_with_both_image_and_assigned_video_has_separate_entries(self):
+        """Test queue workflow for a product having both generated image and assigned video."""
+        queue = PublishingQueue(
+            queue_id="test_dual_media_queue",
+            created_at="2026-11-09T00:00:00Z",
+            start_date="2026-11-09",
+            items=[],
+        )
+        # 1. Existing video entry in Slot 2
+        video_item = QueueItem(
+            queue_item_id=f"item_video_{self.test_asin}",
+            original_url="https://link.amazon/test-humidifier",
+            asin=self.test_asin,
+            product_name="Test Humidifier Product",
+            scheduled_date="2026-11-10",
+            daily_slot=2,
+            scheduled_at="2026-11-10T21:00:00+01:00",
+            timezone="Europe/Budapest",
+            package_reference=str(self.pkg_file),
+            status="READY",
+            validation_status="READY_FOR_REVIEW",
+            media_type="video",
+            video_url="https://pub-r2.dev/videos/test.mp4",
+        )
+        queue.items.append(video_item)
+        queue.save(self.test_queue_file)
+
+        # 2. Call ensure_image_queue_entry
+        res = ensure_image_queue_entry(self.test_asin, queue_file=self.test_queue_file)
+        self.assertTrue(res.get("success"))
+        self.assertTrue(res.get("created"))
+
+        # 3. Verify queue state
+        reloaded = PublishingQueue.load(self.test_queue_file)
+        items = [it for it in reloaded.items if (it.asin or "").upper() == self.test_asin]
+        self.assertEqual(len(items), 2, "Must contain exactly 2 queue entries")
+
+        v_item = next(it for it in items if it.media_type == "video")
+        i_item = next(it for it in items if it.media_type == "image")
+
+        self.assertEqual(v_item.daily_slot, 2)
+        self.assertEqual(v_item.scheduled_at, "2026-11-10T21:00:00+01:00")
+        self.assertEqual(v_item.video_url, "https://pub-r2.dev/videos/test.mp4")
+
+        self.assertEqual(i_item.daily_slot, 1)
+        self.assertTrue(i_item.scheduled_at.endswith("15:00:00+01:00"))
+        self.assertIsNone(i_item.video_url)
+
 
 if __name__ == "__main__":
     unittest.main()
