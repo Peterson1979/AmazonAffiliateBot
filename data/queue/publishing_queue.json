@@ -34,9 +34,10 @@
       "attempt": 1
     },
     "2026-11-09-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-09T18:01:19.728370+01:00",
-      "attempt": 3
+      "attempt": 3,
+      "completed_at": "2026-11-09T18:01:22.309593+01:00"
     }
   },
   "items": [
@@ -1466,7 +1467,7 @@
         "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
       ],
       "created_at": "2026-11-09T08:15:00.000000+00:00",
-      "published_at": "2026-11-09T15:16:14.577933+01:00",
+      "published_at": "2026-11-09T18:01:22.311746+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1584,6 +1585,81 @@
           },
           "message": "Successfully published video post 18110764127352083 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-11-09T15:01:20.050251+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018354288",
+          "pin_url": "https://www.pinterest.com/pin/495607134018354288/",
+          "media_id": "4020212994693195904",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+          "link": "https://link.amazon/B0dLOKIZO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "pin_metrics": null,
+            "is_standard": true,
+            "is_owner": true,
+            "has_been_promoted": false,
+            "board_section_id": null,
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 564,
+                  "url": "https://i.pinimg.com/564x/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1200,
+                  "url": "https://i.pinimg.com/1200x/84/77/4b/84774b7d7b45d92ebf3988ee506a0b87.jpg"
+                }
+              }
+            },
+            "board_id": "495607202683261042",
+            "created_at": "2026-11-09T17:01:30",
+            "description": "The humidifier operates at 25 dB and includes a top‑fill tank with a 16 cm wider opening. See more details and explore the available options. https://link.amazon/B0dLOKIZO\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_removable": false,
+            "parent_pin_id": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "link": "https://link.amazon/B0dLOKIZO",
+            "dominant_color": "#fefeff",
+            "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
+            "alt_text": null,
+            "is_product": false,
+            "creative_type": "VIDEO",
+            "id": "495607134018354288",
+            "product_tags": []
+          },
+          "message": "Successfully created video pin 495607134018354288 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-09T18:01:22.311746+01:00"
         }
       },
       "batch_id": "batch_20261107T133208505309_89cf0acb",
