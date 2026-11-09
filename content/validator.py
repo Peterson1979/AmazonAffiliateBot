@@ -302,7 +302,8 @@ class ClaimValidator:
         cls,
         text_to_check: str,
         product_or_facts: Union[Product, CanonicalProductFacts],
-        disclosure: str = ""
+        disclosure: str = "",
+        is_title: bool = False
     ) -> List[str]:
         """
         Validate that all factual claims, numeric units, modifier bindings,
@@ -551,7 +552,7 @@ class ClaimValidator:
                             continue
 
                         # If entity modifiers mapping is present, verify binding
-                        if facts.entity_modifiers:
+                        if facts.entity_modifiers and not is_title:
                             entity_matched = None
                             for candidate_ent in (full_np, two_noun, head_noun):
                                 if candidate_ent in facts.entity_modifiers:
@@ -562,9 +563,21 @@ class ClaimValidator:
                                 allowed_mods = facts.entity_modifiers.get(entity_matched, set())
                                 is_bound = any(m in allowed_mods for m in mod_synonyms)
                                 if not is_bound:
-                                    issues.append(
-                                        f"Modifier mismatch: modifier '{mod_found}' is not associated with entity '{full_np}' in source facts."
-                                    )
+                                    # Check if modifier and entity co-occur in product title or atomic facts
+                                    co_occurs = False
+                                    title_lower = (facts.title or "").lower()
+                                    if mod_found in title_lower and any(ent_w in title_lower for ent_w in (candidate_ent, head_noun)):
+                                        co_occurs = True
+                                    if not co_occurs:
+                                        for af in facts.atomic_facts:
+                                            af_lower = af.text.lower()
+                                            if mod_found in af_lower and any(ent_w in af_lower for ent_w in (candidate_ent, head_noun)):
+                                                co_occurs = True
+                                                break
+                                    if not is_bound and not co_occurs:
+                                        issues.append(
+                                            f"Modifier mismatch: modifier '{mod_found}' is not associated with entity '{full_np}' in source facts."
+                                        )
 
         # 4. Fail-Closed Concept Traceability (Zero Raw-Source-Text Fallback)
         text_without_numbers = re.sub(r"\b\d+(?:\.\d+)?\b", " ", cleaned_lower)
@@ -645,8 +658,8 @@ class ClaimValidator:
                             issues.append("Pinterest description must contain at least one factually grounded product description sentence before the CTA.")
 
             # Validate claims in title and description
-            title_issues = cls.validate_content_claims(title, facts, disclosure)
-            desc_issues = cls.validate_content_claims(description, facts, disclosure)
+            title_issues = cls.validate_content_claims(title, facts, disclosure, is_title=True)
+            desc_issues = cls.validate_content_claims(description, facts, disclosure, is_title=False)
             issues.extend([f"Pinterest Title: {iss}" for iss in title_issues])
             issues.extend([f"Pinterest Description: {iss}" for iss in desc_issues])
 

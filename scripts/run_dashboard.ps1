@@ -35,19 +35,30 @@ $HealthUrl = "http://127.0.0.1:$Port/healthz"
 $DashboardScript = Join-Path $ProjectRoot "amazon_affiliate.py"
 
 function Stop-ExistingDashboard {
+    # 1. Terminate process listening on the dashboard port if it's Python or our dashboard
+    $listener = Get-NetTCPConnection -LocalAddress "127.0.0.1" -LocalPort $Port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($listener -and $listener.OwningProcess) {
+        $p = Get-Process -Id $listener.OwningProcess -ErrorAction SilentlyContinue
+        if ($p -and ($p.ProcessName -like "*python*" -or (Test-DashboardReady))) {
+            Stop-Process -Id $listener.OwningProcess -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    # 2. Also terminate any matching dashboard processes by command line
     $projectMarker = $ProjectRoot.ToLowerInvariant()
-    $dashboardMarker = $DashboardScript.ToLowerInvariant()
-    $portMarker = "--port $Port"
     $processes = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
         $commandLine = ([string]$_.CommandLine).ToLowerInvariant()
-        $relativeDashboard = $commandLine -match '(^|\s)amazon_affiliate\.py(\s|$)'
-        $dashboardScriptMatch = $commandLine.Contains($dashboardMarker) -or $relativeDashboard
-        $commandLine -and $dashboardScriptMatch -and $commandLine.Contains("--dashboard") -and $commandLine.Contains($portMarker.ToLowerInvariant()) -and ($commandLine.Contains($projectMarker) -or $relativeDashboard)
+        $isDashboard = $commandLine -match '(^|\s)(amazon_affiliate\.py|dashboard\.py)(\s|$)'
+        $commandLine -and $isDashboard -and ($commandLine.Contains("--dashboard") -or $commandLine.Contains("dashboard.py")) -and ($commandLine.Contains($projectMarker) -or $commandLine.Contains("amazonaffiliatebot"))
     }
     foreach ($existing in $processes) {
-        Stop-Process -Id $existing.ProcessId -ErrorAction SilentlyContinue
+        Stop-Process -Id $existing.ProcessId -Force -ErrorAction SilentlyContinue
     }
-    if ($processes) {
+
+    # 3. Wait up to 3 seconds for port to clear
+    for ($i = 0; $i -lt 6; $i++) {
+        $stillListening = Get-NetTCPConnection -LocalAddress "127.0.0.1" -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+        if (-not $stillListening) { break }
         Start-Sleep -Milliseconds 500
     }
 }
@@ -76,9 +87,15 @@ if (-not $RestartExisting -and (Test-DashboardReady)) {
     exit 0
 }
 
+if (Test-DashboardReady) {
+    Write-Host "[OK] Dashboard ready at $DashboardUrl" -ForegroundColor Green
+    if ($OpenBrowser) { Start-Process $DashboardUrl }
+    exit 0
+}
+
 $portOwner = Get-NetTCPConnection -LocalAddress "127.0.0.1" -LocalPort $Port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($portOwner) {
-    Write-Error "Port $Port is already occupied, but it is not the AmazonAffiliateBot dashboard. No browser was opened."
+    Write-Error "Port $Port is already occupied by another application (PID: $($portOwner.OwningProcess)), but it is not the AmazonAffiliateBot dashboard. No browser was opened."
     exit 1
 }
 

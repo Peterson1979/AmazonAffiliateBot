@@ -1,0 +1,315 @@
+{
+  "asin": "B0DWFLY18Y",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-11-09T07:10:58.244066+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0DWFLY18Y.json",
+    "affiliate_url": "https://link.amazon/B0fsIDYI6"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "It includes PDRN derived from salmon DNA and hyaluronic acid.\n\nThe formula has a lightweight texture, is non‑comedogenic and does not pill under makeup. Explore the product details and available options below.\n\nLink: https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "It includes PDRN derived from salmon DNA and hyaluronic acid.\n\nThe formula has a lightweight texture, is non‑comedogenic and does not pill under makeup. Explore the product details and available options below.\n\nLink: https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "Watch the video above to see the Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60 ml demonstrated.\n\nThe cream features PDRN derived from salmon DNA and hyaluronic acid. It features a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, and non‑comedogenic. Explore the product details and available options below.\n\nLink: https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4"
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+      "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0fsIDYI6",
+      "account": "dailyideasforyou",
+      "accounts": {
+        "dailyideasforyou": {
+          "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream – Lightweight Texture",
+          "description": "The cream contains PDRN derived from salmon DNA and hyaluronic acid, and features a lightweight, fast‑absorbing texture. It has a non‑comedogenic formula and no pilling under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+              "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream – Lightweight Texture",
+              "description": "The cream contains PDRN derived from salmon DNA and hyaluronic acid, and features a lightweight, fast‑absorbing texture. It has a non‑comedogenic formula and no pilling under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        },
+        "lifemodehq": {
+          "title": "Anua PDRN Hyaluronic Acid Moisturizing Cream – Lightweight Hydration Video",
+          "description": "The 60 ml cream contains PDRN derived from salmon DNA and hyaluronic acid. It features a lightweight, fast‑absorbing texture, is non‑comedogenic and does not pill under makeup. Explore the product details and available options below. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+              "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Anua PDRN Hyaluronic Acid Moisturizing Cream – Lightweight Hydration Video",
+              "description": "The 60 ml cream contains PDRN derived from salmon DNA and hyaluronic acid. It features a lightweight, fast‑absorbing texture, is non‑comedogenic and does not pill under makeup. Explore the product details and available options below. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        }
+      },
+      "variants": {
+        "image": {
+          "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+          "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream – Lightweight Texture",
+          "description": "The cream contains PDRN derived from salmon DNA and hyaluronic acid, and features a lightweight, fast‑absorbing texture. It has a non‑comedogenic formula and no pilling under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4"
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60 ml features PDRN derived from salmon DNA and hyaluronic acid. It has a lightweight, fast‑absorbing texture and a non‑comedogenic formula. Check the specifications and current availability.\n\nLink: https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60 ml features PDRN derived from salmon DNA and hyaluronic acid. It has a lightweight, fast‑absorbing texture and a non‑comedogenic formula. Check the specifications and current availability.\n\nLink: https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60 ml features PDRN derived from salmon DNA and hyaluronic acid. It has a lightweight, fast‑absorbing texture and a non‑comedogenic formula. Check the specifications and current availability.\n\nLink: https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4"
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+      "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0fsIDYI6",
+      "account": "lifemodehq",
+      "variants": {
+        "image": {
+          "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+          "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Anua PDRN Hyaluronic Acid Moisturizing Cream – Lightweight Hydration Video",
+          "description": "The 60 ml cream contains PDRN derived from salmon DNA and hyaluronic acid. It features a lightweight, fast‑absorbing texture, is non‑comedogenic and does not pill under makeup. Explore the product details and available options below. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4"
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5957",
+        "x-ratelimit-reset-tokens": "15.322s"
+      },
+      "id": "chatcmpl-ef9fa0d9-0c9a-469f-b7af-c335edbda685",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.049805113,
+        "prompt_tokens": 1716,
+        "prompt_time": 0.080054125,
+        "completion_tokens": 348,
+        "completion_time": 0.732166676,
+        "total_tokens": 2064,
+        "total_time": 0.812220801
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4056",
+        "x-ratelimit-reset-tokens": "29.58s"
+      },
+      "id": "chatcmpl-2d005c53-e3d5-4400-b3ce-062c239d91a7",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.212015305,
+        "prompt_tokens": 1806,
+        "prompt_time": 0.093446951,
+        "completion_tokens": 313,
+        "completion_time": 0.652223774,
+        "total_tokens": 2119,
+        "total_time": 0.745670725
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2289",
+        "x-ratelimit-reset-tokens": "42.832s"
+      },
+      "id": "chatcmpl-d58abc19-4697-4511-9f35-b4b1cb8285be",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.19813806,
+        "prompt_tokens": 1709,
+        "prompt_time": 0.082381998,
+        "completion_tokens": 152,
+        "completion_time": 0.315066213,
+        "total_tokens": 1861,
+        "total_time": 0.397448211
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "581",
+        "x-ratelimit-reset-tokens": "55.642s"
+      },
+      "id": "chatcmpl-42752dfb-bc03-4e86-b915-0c55c63dfd9c",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.048525851,
+        "prompt_tokens": 1735,
+        "prompt_time": 0.08788412,
+        "completion_tokens": 288,
+        "completion_time": 0.597888721,
+        "total_tokens": 2023,
+        "total_time": 0.685772841
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "9",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "843",
+        "x-ratelimit-reset-tokens": "53.677s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7157, Requested 2042. Please try again in 8.9925s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "9",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "960",
+        "x-ratelimit-reset-tokens": "52.8s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7040, Requested 2045. Please try again in 8.137499999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "8",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1080",
+        "x-ratelimit-reset-tokens": "51.9s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6920, Requested 2054. Please try again in 7.305s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "7",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1175",
+        "x-ratelimit-reset-tokens": "51.187s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6825, Requested 2080. Please try again in 6.7875s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+    "asin": "B0DWFLY18Y",
+    "uploaded_at": "2026-11-09T07:14:24.541644+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+    "content_type": "video/mp4",
+    "filename": "ad-@mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+    "size_bytes": 5699730
+  }
+}

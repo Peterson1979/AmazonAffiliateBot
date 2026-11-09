@@ -650,5 +650,106 @@
         "reason": "Scraped product for 'https://link.amazon/B0bg8rh0o' has insufficient title or features."
       }
     ]
+  },
+  {
+    "batch_id": "batch_20261109T081018040023_de8ac827",
+    "created_at": "2026-11-09T08:10:18.052480+01:00",
+    "submitted_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://link.amazon/B0fsIDYI6",
+        "asin": "B0DWFLY18Y",
+        "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60ml",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-11-09",
+        "daily_slot": 1,
+        "scheduled_at": "2026-11-09T15:00:00+01:00",
+        "package_path": "data/generated/asin_B0DWFLY18Y_content_package.json",
+        "queue_item_id": "item_037_B0DWFLY18Y"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261109T082000210139_d027bfb9",
+    "created_at": "2026-11-09T08:20:00.217004+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B00TR8Qpy",
+        "asin": "B0GR5WF8M4",
+        "status": "VALIDATION_FAILED",
+        "stage": "claim_validation",
+        "reason": "pinterest: Pinterest Title: Modifier mismatch: modifier 'stainless steel' is not associated with entity 'cat water fountain' in source facts."
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261109T091145993431_e870885f",
+    "created_at": "2026-11-09T09:11:45.999438+01:00",
+    "submitted_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "entries": [
+      {
+        "url": "https://link.amazon/B0eRVtiOe",
+        "asin": "B09D7DWTVB",
+        "title": "KSIIA Washable Dog Bed Deluxe Plush Dog Crate Beds Fulffy Comfy Kennel Pad Anti-Slip Pet Sleeping Mat for Large, Jumbo, Medium, Small Dogs Breeds, 35\" x 23\", Gray",
+        "status": "ACCEPTED",
+        "scheduled_date": "2026-11-10",
+        "daily_slot": 2,
+        "scheduled_at": "2026-11-10T21:00:00+01:00",
+        "package_path": "data/generated/asin_B09D7DWTVB_content_package.json",
+        "queue_item_id": "item_040_B09D7DWTVB",
+        "media_type": "video",
+        "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261109T091907983329_113ce981",
+    "created_at": "2026-11-09T09:19:07.987790+01:00",
+    "submitted_count": 1,
+    "accepted_count": 0,
+    "duplicate_count": 0,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B02TidVfN",
+        "asin": "B0CGWQ53L3",
+        "status": "CONTENT_GENERATION_FAILED",
+        "stage": "content_generation",
+        "reason": "threads: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7367, Requested 1960. Please try again in 9.9525s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=7m12s; rate_headers={'retry-after': '10', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '995', 'x-ratelimit-reset-requests': '7m12s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '633', 'x-ratelimit-reset-tokens': '55.252s'}"
+      }
+    ]
+  },
+  {
+    "batch_id": "batch_20261109T092257085392_a9ea3bd0",
+    "created_at": "2026-11-09T09:22:57.086603+01:00",
+    "submitted_count": 2,
+    "accepted_count": 0,
+    "duplicate_count": 1,
+    "failed_count": 1,
+    "entries": [
+      {
+        "url": "https://link.amazon/B02TidVfN",
+        "asin": "B0CGWQ53L3",
+        "status": "CONTENT_GENERATION_FAILED",
+        "stage": "content_generation",
+        "reason": "threads: Groq daily quota; (HTTP 429); code=rate_limit_exceeded; detail=Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7434, Requested 1960. Please try again in 10.455s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing; reset=10m4.8s; rate_headers={'retry-after': '11', 'x-ratelimit-limit-requests': '1000', 'x-ratelimit-remaining-requests': '993', 'x-ratelimit-reset-requests': '10m4.8s', 'x-ratelimit-limit-tokens': '8000', 'x-ratelimit-remaining-tokens': '566', 'x-ratelimit-reset-tokens': '55.755s'}"
+      },
+      {
+        "url": "https://link.amazon/B02TidVfN",
+        "asin": "UNKNOWN",
+        "status": "DUPLICATE",
+        "reason": "The same affiliate URL was submitted more than once in this batch."
+      }
+    ]
   }
 ]

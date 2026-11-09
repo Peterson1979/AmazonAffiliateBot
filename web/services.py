@@ -555,9 +555,23 @@ def _resolve_queue_item_media(item: QueueItem) -> Dict[str, Optional[str]]:
                 continue
 
     # Resolve image preview candidate (for image items, or cover thumbnail for video items)
-    flow_img_path = DATA_DIR / "creatives" / asin_upper / "everyday_pick_flow.jpg"
-    if flow_img_path.is_file():
-        resolved_image_url = f"/creatives/{asin_upper}/everyday_pick_flow.jpg"
+    creatives_manifest_path = DATA_DIR / "creatives" / asin_upper / "flow_creatives.json"
+    if creatives_manifest_path.is_file():
+        try:
+            with open(creatives_manifest_path, "r", encoding="utf-8") as cmf:
+                cm_data = json.load(cmf)
+            if isinstance(cm_data, dict):
+                sel_img_path = cm_data.get("selected_image_path")
+                sel_img_url = cm_data.get("selected_image_url")
+                if sel_img_path and (PROJECT_ROOT / sel_img_path).is_file():
+                    resolved_image_url = sel_img_url or f"/creatives/{asin_upper}/{Path(sel_img_path).name}"
+        except Exception:
+            pass
+
+    if not resolved_image_url:
+        flow_img_path = DATA_DIR / "creatives" / asin_upper / "everyday_pick_flow.jpg"
+        if flow_img_path.is_file():
+            resolved_image_url = f"/creatives/{asin_upper}/everyday_pick_flow.jpg"
 
     if not resolved_image_url and pkg is not None:
         candidate_img = recover_verified_image_url(pkg, products_dir=PRODUCTS_DIR)
@@ -2013,17 +2027,18 @@ def ensure_pinterest_video_variants(pkg: Dict[str, Any], facts: Optional[Canonic
     return True
 
 
-def ensure_image_queue_entry(asin_clean: str) -> Dict[str, Any]:
+def ensure_image_queue_entry(asin_clean: str, queue_file: Optional[Path] = None) -> Dict[str, Any]:
     """Ensure an image publishing queue entry exists in Slot 1 for this ASIN.
 
     Preserves any existing video queue entry in Slot 2.
     Prevents duplicate image queue entries.
     """
-    if not QUEUE_FILE.exists():
+    target_queue_file = queue_file or QUEUE_FILE
+    if not target_queue_file.exists():
         return {"success": False, "message": "Queue file does not exist."}
 
     try:
-        queue = PublishingQueue.load(QUEUE_FILE)
+        queue = PublishingQueue.load(target_queue_file)
     except Exception as exc:
         return {"success": False, "message": f"Could not read queue: {exc}"}
 
@@ -2037,11 +2052,11 @@ def ensure_image_queue_entry(asin_clean: str) -> Dict[str, Any]:
     except Exception as exc:
         return {"success": False, "message": f"Could not load package: {exc}"}
 
-    # Find existing image item for this ASIN
+    # Find existing image item for this ASIN strictly by media_type == "image"
     image_items = [
         it for it in queue.items
         if (it.asin or "").upper() == asin_clean
-        and (it.media_type in ("image", None) or it.daily_slot == 1)
+        and it.media_type == "image"
     ]
 
     if image_items:
@@ -2051,11 +2066,8 @@ def ensure_image_queue_entry(asin_clean: str) -> Dict[str, Any]:
         if img_item.package_reference != pkg_ref:
             img_item.package_reference = pkg_ref
             updated = True
-        if img_item.media_type != "image":
-            img_item.media_type = "image"
-            updated = True
         if updated:
-            queue.save(QUEUE_FILE)
+            queue.save(target_queue_file)
         return {
             "success": True,
             "created": False,
@@ -2122,11 +2134,8 @@ def ensure_image_queue_entry(asin_clean: str) -> Dict[str, Any]:
     )
 
     queue.items.append(new_item)
-    queue.total_processed += 1
-    queue.total_ready += 1
-    queue.scheduled_posts += 1
-    queue.unfilled_slots = max(0, queue.unfilled_slots - 1)
-    queue.save(QUEUE_FILE)
+    queue.recalculate_counts()
+    queue.save(target_queue_file)
 
     return {
         "success": True,

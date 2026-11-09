@@ -1,0 +1,363 @@
+{
+  "asin": "B09D7DWTVB",
+  "status": "READY_FOR_REVIEW",
+  "generated_at": "2026-11-09T08:12:31.990119+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B09D7DWTVB.json",
+    "affiliate_url": "https://link.amazon/B0eRVtiOe"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The KSIIA washable dog bed measures 35 inches by 23 inches and is offered in gray.\n\nIncludes Non-Slip Pad Design. Explore the product details and available options below.\n\nLink: https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "The KSIIA washable dog bed measures 35 inches by 23 inches and is offered in gray.\n\nIncludes Non-Slip Pad Design. Explore the product details and available options below.\n\nLink: https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "The KSIIA washable dog bed measures 35 inches by 23 inches and is offered in gray.\n\nIncludes Non-Slip Pad Design. Explore the product details and available options below.\n\nLink: https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4"
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+      "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0eRVtiOe",
+      "account": "dailyideasforyou",
+      "accounts": {
+        "dailyideasforyou": {
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+              "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+              "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        },
+        "lifemodehq": {
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+              "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+              "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        }
+      },
+      "variants": {
+        "image": {
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B09D7DWTVB/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B09D7DWTVB/everyday_pick_flow.jpg"
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "Features Non-Slip Pad Design. Explore the product details and available options below.\n\nLink: https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "Features Non-Slip Pad Design. Explore the product details and available options below.\n\nLink: https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "Features Non-Slip Pad Design. Explore the product details and available options below.\n\nLink: https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 1,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4"
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+      "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B0eRVtiOe",
+      "account": "lifemodehq",
+      "variants": {
+        "image": {
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4"
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "6014",
+        "x-ratelimit-reset-tokens": "14.895s"
+      },
+      "id": "chatcmpl-2ba0df34-1da7-4269-9b57-d4989c40c46f",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.213810243,
+        "prompt_tokens": 1643,
+        "prompt_time": 0.076223772,
+        "completion_tokens": 130,
+        "completion_time": 0.270990832,
+        "total_tokens": 1773,
+        "total_time": 0.347214604
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4332",
+        "x-ratelimit-reset-tokens": "27.51s"
+      },
+      "id": "chatcmpl-74f8fcb6-a6ea-4f9a-b27c-ca90b0899045",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.198465144,
+        "prompt_tokens": 1733,
+        "prompt_time": 0.093045295,
+        "completion_tokens": 259,
+        "completion_time": 0.546880728,
+        "total_tokens": 1992,
+        "total_time": 0.639926023
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2685",
+        "x-ratelimit-reset-tokens": "39.862s"
+      },
+      "id": "chatcmpl-ed910cf9-efac-48d3-8f72-4dcdd34ab6c9",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.265295093,
+        "prompt_tokens": 1636,
+        "prompt_time": 0.068615346,
+        "completion_tokens": 106,
+        "completion_time": 0.222128041,
+        "total_tokens": 1742,
+        "total_time": 0.290743387
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1155",
+        "x-ratelimit-reset-tokens": "51.337s"
+      },
+      "id": "chatcmpl-d8c3150c-3622-4b78-83c9-5bfb7ab29213",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.263185605,
+        "prompt_tokens": 1601,
+        "prompt_time": 0.064098972,
+        "completion_tokens": 134,
+        "completion_time": 0.279295212,
+        "total_tokens": 1735,
+        "total_time": 0.343394184
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "2",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1537",
+        "x-ratelimit-reset-tokens": "48.472s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6463, Requested 1768. Please try again in 1.7325s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "2",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1639",
+        "x-ratelimit-reset-tokens": "47.707s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6361, Requested 1783. Please try again in 1.079999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "3",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1738",
+        "x-ratelimit-reset-tokens": "46.965s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6262, Requested 2042. Please try again in 2.28s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "995",
+        "x-ratelimit-reset-requests": "7m12s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "79",
+        "x-ratelimit-reset-tokens": "59.407s"
+      },
+      "id": "chatcmpl-a5c66750-9a63-4208-adb1-f3f6bfee5d4a",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.04896908,
+        "prompt_tokens": 1668,
+        "prompt_time": 0.070269445,
+        "completion_tokens": 241,
+        "completion_time": 0.498458003,
+        "total_tokens": 1909,
+        "total_time": 0.568727448
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "13",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "995",
+        "x-ratelimit-reset-requests": "7m12s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "130",
+        "x-ratelimit-reset-tokens": "59.025s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7870, Requested 1801. Please try again in 12.5325s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "12",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "995",
+        "x-ratelimit-reset-requests": "7m12s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "217",
+        "x-ratelimit-reset-tokens": "58.372s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7783, Requested 1811. Please try again in 11.955s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+    "asin": "B09D7DWTVB",
+    "uploaded_at": "2026-11-09T08:12:35.420445+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+    "content_type": "video/mp4",
+    "filename": "Because pets, are family._1.mp4",
+    "size_bytes": 18865713
+  }
+}

@@ -5,12 +5,12 @@
   "total_days": 30,
   "products_per_day": 2,
   "target_capacity": 60,
-  "total_submitted": 17,
-  "total_processed": 11,
-  "total_ready": 4,
+  "total_submitted": 16,
+  "total_processed": 16,
+  "total_ready": 9,
   "total_failed": 0,
-  "scheduled_posts": 4,
-  "unfilled_slots": 56,
+  "scheduled_posts": 9,
+  "unfilled_slots": 51,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -921,6 +921,101 @@
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DPJRS9DS/ad-_amazon-2026-10-30_1701-The-Holiday-Beauty-Event-is-here-with-savings-up-to-30-off-viral-K-beauty-faves-like-the-medicube-je-7702491580766178574.mp4"
     },
     {
+      "queue_item_id": "item_035_B0CLGNYKFR",
+      "original_url": "https://link.amazon/B07LDOITU",
+      "asin": "B0CLGNYKFR",
+      "product_name": "EverFoams Womens Fuzzy Open-toe Slippers Memory Foam Indoor House Shoes",
+      "scheduled_date": "2026-11-07",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-07T15:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0CLGNYKFR_content_package.json",
+      "status": "PARTIALLY_PUBLISHED",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-07T13:22:16.225028+00:00",
+      "published_at": "2026-11-07T19:02:05.201483+01:00",
+      "publishing_results": {
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018340385",
+          "pin_url": "https://www.pinterest.com/pin/495607134018340385/",
+          "media_id": "4014537050690740352",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+          "link": "https://link.amazon/B07LDOITU",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
+            "link": "https://link.amazon/B07LDOITU",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "id": "495607134018340385",
+            "board_id": "495607202683261042",
+            "description": "These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. Explore the product details and available options below. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "created_at": "2026-11-07T18:03:04",
+            "is_removable": false,
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 592,
+                  "url": "https://i.pinimg.com/564x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1259,
+                  "url": "https://i.pinimg.com/1200x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
+                }
+              }
+            },
+            "is_product": false,
+            "is_standard": true,
+            "dominant_color": null,
+            "product_tags": [],
+            "board_section_id": null,
+            "has_been_promoted": false,
+            "is_owner": true,
+            "parent_pin_id": null,
+            "creative_type": "VIDEO",
+            "alt_text": null,
+            "pin_metrics": null
+          },
+          "message": "Successfully created video pin 495607134018340385 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-07T19:02:05.201483+01:00"
+        }
+      },
+      "batch_id": null,
+      "media_type": "image"
+    },
+    {
       "queue_item_id": "item_034_B0CLGNYKFR",
       "original_url": "https://link.amazon/B07LDOITU",
       "asin": "B0CLGNYKFR",
@@ -1136,101 +1231,6 @@
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4"
     },
     {
-      "queue_item_id": "item_035_B0CLGNYKFR",
-      "original_url": "https://link.amazon/B07LDOITU",
-      "asin": "B0CLGNYKFR",
-      "product_name": "EverFoams Womens Fuzzy Open-toe Slippers Memory Foam Indoor House Shoes",
-      "scheduled_date": "2026-11-07",
-      "daily_slot": 1,
-      "scheduled_at": "2026-11-07T15:00:00+01:00",
-      "timezone": "Europe/Budapest",
-      "package_reference": "data/generated/asin_B0CLGNYKFR_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
-      "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
-      "created_at": "2026-11-07T13:22:16.225028+00:00",
-      "published_at": "2026-11-07T19:02:05.201483+01:00",
-      "publishing_results": {
-        "pinterest_lifemodehq": {
-          "platform": "pinterest",
-          "account": "LifeModeHQ",
-          "board": "Home & Everyday Living",
-          "board_id": "495607202683261042",
-          "pin_id": "495607134018340385",
-          "pin_url": "https://www.pinterest.com/pin/495607134018340385/",
-          "media_id": "4014537050690740352",
-          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CLGNYKFR/ad-_find.it.here21-2026-09-18_0318-_everfoams-_slippers-7686678424378723597.mp4",
-          "cover_image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
-          "image_url": "https://m.media-amazon.com/images/I/81rGYT3pkaL._AC_SL1500_.jpg",
-          "media_type": "VIDEO",
-          "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-          "link": "https://link.amazon/B07LDOITU",
-          "action": "PUBLISH",
-          "mode": "LIVE",
-          "status": "PUBLISHED",
-          "http_status": 201,
-          "api_response": {
-            "title": "EverFoams Women's Fuzzy Open-Toe Memory Foam Slippers",
-            "link": "https://link.amazon/B07LDOITU",
-            "board_owner": {
-              "username": "LifeModeHQ"
-            },
-            "id": "495607134018340385",
-            "board_id": "495607202683261042",
-            "description": "These open-toe bedroom slippers come together with premium sorted faux fur uppers and soft linings. Flexible memory foam provides arch support, and the sturdy outsole provides anti-skid grips. Explore the product details and available options below. https://link.amazon/B07LDOITU\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
-            "created_at": "2026-11-07T18:03:04",
-            "is_removable": false,
-            "media": {
-              "media_type": "video",
-              "cover_image_url": "https://i.pinimg.com/1200x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg",
-              "video_url": null,
-              "video_url_hls": null,
-              "duration": null,
-              "height": null,
-              "width": null,
-              "images": {
-                "150x150": {
-                  "width": 150,
-                  "height": 150,
-                  "url": "https://i.pinimg.com/150x150/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
-                },
-                "400x300": {
-                  "width": 400,
-                  "height": 300,
-                  "url": "https://i.pinimg.com/400x300/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
-                },
-                "600x": {
-                  "width": 564,
-                  "height": 592,
-                  "url": "https://i.pinimg.com/564x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
-                },
-                "1200x": {
-                  "width": 1200,
-                  "height": 1259,
-                  "url": "https://i.pinimg.com/1200x/09/af/b3/09afb36c13cabc11d5022febc42a31e2.jpg"
-                }
-              }
-            },
-            "is_product": false,
-            "is_standard": true,
-            "dominant_color": null,
-            "product_tags": [],
-            "board_section_id": null,
-            "has_been_promoted": false,
-            "is_owner": true,
-            "parent_pin_id": null,
-            "creative_type": "VIDEO",
-            "alt_text": null,
-            "pin_metrics": null
-          },
-          "message": "Successfully created video pin 495607134018340385 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
-          "published_at": "2026-11-07T19:02:05.201483+01:00"
-        }
-      },
-      "batch_id": null,
-      "media_type": "image"
-    },
-    {
       "queue_item_id": "item_036_B0D72N7642",
       "original_url": "https://link.amazon/B0dLOKIZO",
       "asin": "B0D72N7642",
@@ -1444,6 +1444,103 @@
       "batch_id": "batch_20261107T133208505309_89cf0acb",
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0D72N7642/ad-_ryetechh-2026-11-05_2156-Upgrading-my-desk-setup-with-the-Levoit-Humidifier-A-perfect-blend-of-comfort-functionality-and-styl-7704786490865274142.mp4"
+    },
+    {
+      "queue_item_id": "item_038_B0D72N7642",
+      "original_url": "https://link.amazon/B0dLOKIZO",
+      "asin": "B0D72N7642",
+      "product_name": "Levoit Humidifier for Bedroom, 25dB Ultra Quiet, Top Fill",
+      "scheduled_date": "2026-11-09",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-09T15:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0D72N7642_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-09T08:15:00.000000+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261107T133208505309_89cf0acb",
+      "media_type": "image"
+    },
+    {
+      "queue_item_id": "item_037_B0DWFLY18Y",
+      "original_url": "https://link.amazon/B0fsIDYI6",
+      "asin": "B0DWFLY18Y",
+      "product_name": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60ml",
+      "scheduled_date": "2026-11-09",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-09T21:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0DWFLY18Y_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-09T07:10:58.248391+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261109T081018040023_de8ac827",
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4"
+    },
+    {
+      "queue_item_id": "item_039_B0GR5WF8M4",
+      "original_url": "https://link.amazon/B00TR8Qpy",
+      "asin": "B0GR5WF8M4",
+      "product_name": "Veken Innovation Award Winner Stainless Steel Cat Water Fountain 3.2L/108oz",
+      "scheduled_date": "2026-11-10",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-10T15:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-09T08:03:36.931251+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": null,
+      "media_type": "image"
+    },
+    {
+      "queue_item_id": "item_040_B09D7DWTVB",
+      "original_url": "https://link.amazon/B0eRVtiOe",
+      "asin": "B09D7DWTVB",
+      "product_name": "KSIIA Washable Dog Bed Deluxe Plush Dog Crate Beds Fulffy Comfy Kennel Pad Anti-Slip Pet Sleeping Mat for Large, Jumbo, Medium, Small Dogs Breeds, 35\" x 23\", Gray",
+      "scheduled_date": "2026-11-10",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-10T21:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B09D7DWTVB_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-09T08:12:35.425538+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": "batch_20261109T091145993431_e870885f",
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4"
+    },
+    {
+      "queue_item_id": "item_041_B09D7DWTVB",
+      "original_url": "https://link.amazon/B0eRVtiOe",
+      "asin": "B09D7DWTVB",
+      "product_name": "KSIIA Washable Dog Bed Deluxe Plush Dog Crate Beds Fulffy Comfy Kennel Pad Anti-Slip Pet Sleeping Mat for Large, Jumbo, Medium, Small Dogs Breeds, 35\" x 23\", Gray",
+      "scheduled_date": "2026-11-11",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-11T15:00:00+01:00",
+      "timezone": "Europe/Budapest",
+      "package_reference": "data/generated/asin_B09D7DWTVB_content_package.json",
+      "status": "READY",
+      "validation_status": "READY_FOR_REVIEW",
+      "errors": [],
+      "created_at": "2026-11-09T08:18:13.195227+00:00",
+      "published_at": null,
+      "publishing_results": null,
+      "batch_id": null,
+      "media_type": "image"
     }
   ]
 }

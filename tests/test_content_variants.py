@@ -720,6 +720,51 @@ class TestContentQualityBodySentenceEnforcement(unittest.TestCase):
                 # 5. Affiliate URL preserved
                 self.assertIn(self.sample_product.affiliate_url, text_or_desc)
 
+    def test_pinterest_title_modifier_mismatch_not_rejected(self):
+        """Pinterest titles should not be rejected due to modifier/entity binding mismatch in source facts."""
+        fountain_product = Product(
+            title="Veken Innovation Award Winner Stainless Steel Cat Water Fountain 3.2L/108oz",
+            features=[
+                "Crafted from high-quality 304 stainless steel, this pet fountain offers a durable build.",
+                "The advanced suspended pump operates at a whisper-quiet 25 dB."
+            ],
+            affiliate_url="https://link.amazon/B00TR8Qpy",
+            asin="B0GR5WF8M4"
+        )
+        fountain_facts = FactExtractor.extract_canonical_facts(fountain_product)
+        pin_content = {
+            "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+            "description": f"The advanced suspended pump operates at a whisper-quiet 25 dB. See more details and explore the available options. {fountain_product.affiliate_url}\n\n{self.disclosure}"
+        }
+        is_val, issues = ClaimValidator.validate_platform_content("pinterest", pin_content, fountain_facts, self.disclosure)
+        self.assertTrue(is_val, f"Validation failed unexpectedly: {issues}")
+        self.assertEqual(issues, [])
+
+    def test_pinterest_accounts_genuinely_distinct(self):
+        """Ensure dailyideasforyou and lifemodehq have distinct copy and never duplicate identical text."""
+        mock_ollama = MagicMock()
+        def mock_gen(prompt, **kwargs):
+            if "JSON" in prompt:
+                if "lifestyle" in prompt.lower() or "everyday" in prompt.lower():
+                    return json.dumps({
+                        "title": "Adjustable Aluminum Stand for Home Living",
+                        "description": "7 inches height adjustment for everyday living and 11 lbs capacity."
+                    })
+                return json.dumps({
+                    "title": "Adjustable Aluminum Laptop Stand",
+                    "description": "7 inches height adjustment and 11 lbs loading capacity."
+                })
+            return "Adjustable aluminum laptop stand with 7 inches of height adjustment and 11 lbs capacity."
+
+        mock_ollama.generate_text.side_effect = mock_gen
+        gen = ContentGenerator(ollama_client=mock_ollama)
+        res = gen.generate_all_platforms(self.sample_product, self.disclosure, include_variants=True)
+        pin_daily = res["platforms"]["pinterest"]["accounts"]["dailyideasforyou"]
+        pin_life = res["platforms"]["pinterest"]["accounts"]["lifemodehq"]
+
+        self.assertNotEqual(pin_daily["title"], pin_life["title"], "Titles must be distinct between accounts")
+        self.assertNotEqual(pin_daily["description"], pin_life["description"], "Descriptions must be distinct between accounts")
+
 
 if __name__ == "__main__":
     unittest.main()

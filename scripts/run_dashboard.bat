@@ -50,4 +50,22 @@ if !errorlevel! NEQ 0 (
 
 REM 4. Start/reuse the dashboard, verify HTTP readiness, then open browser.
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_dashboard.ps1" -OpenBrowser %*
-exit /b !errorlevel!
+set "EXIT_CODE=!errorlevel!"
+
+if !EXIT_CODE! NEQ 0 (
+    echo.
+    echo ========================================================
+    echo  [ERROR] Dashboard launcher exited with code !EXIT_CODE!.
+    if exist "data\logs\dashboard.stderr.log" (
+        echo.
+        echo  Recent log output from data\logs\dashboard.stderr.log:
+        echo --------------------------------------------------------
+        type "data\logs\dashboard.stderr.log"
+        echo --------------------------------------------------------
+    )
+    echo ========================================================
+    echo.
+    pause
+    exit /b !EXIT_CODE!
+)
+exit /b 0

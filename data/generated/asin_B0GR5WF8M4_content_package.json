@@ -1,0 +1,316 @@
+{
+  "asin": "B0GR5WF8M4",
+  "status": "VALID",
+  "generated_at": "2026-11-09T07:30:18.620111+00:00",
+  "model": "openai/gpt-oss-120b",
+  "source": {
+    "product_cache": "data/products/asin_B0GR5WF8M4.json",
+    "affiliate_url": "https://link.amazon/B00TR8Qpy"
+  },
+  "platforms": {
+    "facebook": {
+      "status": "VALID",
+      "content": "The fountain is crafted from 304 stainless steel, includes snap\u2011together assembly, a large water window with an optional blue LED light, a multi\u2011stage filter, and a fully sealed leak\u2011proof structure; all water\u2011contact parts are top\u2011rack dishwasher safe and BPA\u2011free.\n\nIncludes \u3010Ultra-Quiet Suspended Pump Design\u3011The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "The fountain is crafted from 304 stainless steel, includes snap\u2011together assembly, a large water window with an optional blue LED light, a multi\u2011stage filter, and a fully sealed leak\u2011proof structure; all water\u2011contact parts are top\u2011rack dishwasher safe and BPA\u2011free.\n\nIncludes \u3010Ultra-Quiet Suspended Pump Design\u3011The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "The fountain is crafted from 304 stainless steel, includes snap\u2011together assembly, a large water window with an optional blue LED light, a multi\u2011stage filter, and a fully sealed leak\u2011proof structure; all water\u2011contact parts are top\u2011rack dishwasher safe and BPA\u2011free.\n\nIncludes \u3010Ultra-Quiet Suspended Pump Design\u3011The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest": {
+      "status": "VALID",
+      "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+      "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. See more details and explore the available options. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B00TR8Qpy",
+      "account": "dailyideasforyou",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B0GR5WF8M4/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B0GR5WF8M4/everyday_pick_flow.jpg"
+      },
+      "variants": {
+        "image": {
+          "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+          "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. See more details and explore the available options. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Veken Stainless Steel Cat Water Fountain - Video",
+          "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Check the specifications and current availability. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "accounts": {
+        "dailyideasforyou": {
+          "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+          "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. See more details and explore the available options. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+              "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. See more details and explore the available options. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Veken Stainless Steel Cat Water Fountain - Video",
+              "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Check the specifications and current availability. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        },
+        "lifemodehq": {
+          "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living",
+          "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+          "variants": {
+            "image": {
+              "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living",
+              "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            },
+            "video": {
+              "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living - Video",
+              "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+            }
+          }
+        }
+      }
+    },
+    "threads": {
+      "status": "VALID",
+      "content": "It also includes a leak\u2011proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+      "variants": {
+        "image": {
+          "content": "It also includes a leak\u2011proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "content": "It also includes a leak\u2011proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      },
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      }
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "account": "lifemodehq",
+      "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living",
+      "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B00TR8Qpy",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "variants": {
+        "image": {
+          "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living",
+          "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        },
+        "video": {
+          "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living - Video",
+          "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+        }
+      }
+    }
+  },
+  "provider_diagnostics": [
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-reset-requests": "1m26.4s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "5922",
+        "x-ratelimit-reset-tokens": "15.585s"
+      },
+      "id": "chatcmpl-f15d9125-64a9-4488-ba4c-afa76371be7c",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.212027173,
+        "prompt_tokens": 1809,
+        "prompt_time": 0.083898861,
+        "completion_tokens": 217,
+        "completion_time": 0.460294395,
+        "total_tokens": 2026,
+        "total_time": 0.544193256
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "998",
+        "x-ratelimit-reset-requests": "2m52.8s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "4026",
+        "x-ratelimit-reset-tokens": "29.805s"
+      },
+      "id": "chatcmpl-6d5f79b5-9db7-45da-aaf8-3c2e4ded5bb1",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.211879703,
+        "prompt_tokens": 1899,
+        "prompt_time": 0.099566186,
+        "completion_tokens": 341,
+        "completion_time": 0.717802188,
+        "total_tokens": 2240,
+        "total_time": 0.817368374
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "997",
+        "x-ratelimit-reset-requests": "4m19.2s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "2142",
+        "x-ratelimit-reset-tokens": "43.934s"
+      },
+      "id": "chatcmpl-37034a72-2853-4f09-8093-1a23dd12cc9e",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.665084386,
+        "prompt_tokens": 1780,
+        "prompt_time": 0.240839643,
+        "completion_tokens": 341,
+        "completion_time": 0.711902813,
+        "total_tokens": 2121,
+        "total_time": 0.952742456
+      }
+    },
+    {
+      "http_status": 200,
+      "attempt": 1,
+      "category": "success",
+      "rate_limit_headers": {
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "314",
+        "x-ratelimit-reset-tokens": "57.644s"
+      },
+      "id": "chatcmpl-d918dd62-3389-4018-a1e0-894c40534119",
+      "object": "chat.completion",
+      "model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "usage": {
+        "queue_time": 0.049248891,
+        "prompt_tokens": 3594,
+        "prompt_time": 0.001679837,
+        "completion_tokens": 130,
+        "completion_time": 0.27350689,
+        "total_tokens": 3724,
+        "total_time": 0.275186727
+      }
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "12",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "625",
+        "x-ratelimit-reset-tokens": "55.312s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7375, Requested 2107. Please try again in 11.115s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "11",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "750",
+        "x-ratelimit-reset-tokens": "54.375s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7250, Requested 2094. Please try again in 10.08s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "10",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "872",
+        "x-ratelimit-reset-tokens": "53.46s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7128, Requested 2107. Please try again in 9.2625s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "9",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "987",
+        "x-ratelimit-reset-tokens": "52.597s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7013, Requested 2175. Please try again in 8.91s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    },
+    {
+      "http_status": 429,
+      "attempt": 1,
+      "category": "daily_quota",
+      "rate_limit_headers": {
+        "retry-after": "9",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-remaining-requests": "996",
+        "x-ratelimit-reset-requests": "5m45.6s",
+        "x-ratelimit-limit-tokens": "8000",
+        "x-ratelimit-remaining-tokens": "1089",
+        "x-ratelimit-reset-tokens": "51.832s"
+      },
+      "error_code": "rate_limit_exceeded",
+      "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6911, Requested 2184. Please try again in 8.2125s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+    }
+  ]
+}

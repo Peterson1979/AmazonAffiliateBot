@@ -256,11 +256,12 @@ def build_canonical_fallback_sentence(facts: CanonicalProductFacts) -> str:
             if is_keyword_stuffed_text(fact.text):
                 continue
             cand = sanitize_outcome_clauses(fact.text)
+            cand = re.sub(r'^[【\[].*?[】\]]\s*', '', cand).strip()
             cand = re.split(r'\s+-\s+|\bfor\b', cand, flags=re.IGNORECASE)[0].strip()
             cand = cand.strip("【】[]() -:;,.")
             cand = clean_formatting(cand).rstrip(".")
             if len(cand) >= 10:
-                if cand.lower().startswith(("features", "includes", "equipped with", "constructed with", "made of", "with")):
+                if cand.lower().startswith(("the ", "this ", "features", "includes", "equipped with", "constructed with", "made of", "with")):
                     cand_sentence = f"{cand}."
                 else:
                     cand_sentence = f"Features {cand}."
@@ -289,6 +290,54 @@ def build_canonical_fallback_sentence(facts: CanonicalProductFacts) -> str:
     return clean_formatting(cand_sentence)
 
 
+def build_lifemodehq_fallback(facts: CanonicalProductFacts, media_type: str = "image") -> Dict[str, str]:
+    """
+    Construct distinct, grounded fallback copy specifically for Pinterest LifeModeHQ.
+    Emphasizes lifestyle/everyday living and ensures LifeModeHQ copy never duplicates dailyideasforyou.
+    """
+    is_video = str(media_type).lower().strip() == "video"
+    raw_title = clean_formatting(facts.title.split(" - ")[0].split(":")[0].strip()).strip("【】[]() -:;,.")
+    if len(raw_title) > 60:
+        raw_title = raw_title[:60].rsplit(" ", 1)[0]
+
+    if is_video:
+        title = f"{raw_title} for Everyday Living - Video"[:100]
+    else:
+        title = f"{raw_title} for Everyday Living"[:100]
+
+    eligible = [
+        f for f in facts.atomic_facts
+        if f.fact_type in ("specification", "component", "material", "feature")
+        and not is_keyword_stuffed_text(f.text)
+    ]
+    order = eligible[::-1] if len(eligible) > 1 else eligible
+    body_sentence = None
+    for fact in order:
+        cand = sanitize_outcome_clauses(fact.text)
+        cand = re.sub(r'^[【\[].*?[】\]]\s*', '', cand).strip()
+        cand = re.split(r'\s+-\s+|\bfor\b', cand, flags=re.IGNORECASE)[0].strip().strip("【】[]() -:;,.").rstrip(".")
+        if len(cand) >= 10:
+            if cand.lower().startswith(("the ", "this ", "features", "includes", "equipped with", "constructed with", "made of", "with", "built with")):
+                cand_sentence = f"{cand}."
+            else:
+                cand_sentence = f"Features {cand}."
+            cand_sentence = clean_formatting(cand_sentence)
+            if not cand_sentence.endswith((".", "!", "?")):
+                cand_sentence += "."
+            if not ClaimValidator.validate_content_claims(cand_sentence, facts, disclosure=""):
+                body_sentence = cand_sentence
+                break
+
+    if not body_sentence:
+        body_sentence = build_canonical_fallback_sentence(facts)
+
+    cta = "Explore the product details and available options below."
+    desc = f"{body_sentence} {cta}"
+    if facts.affiliate_url:
+        desc = f"{desc} {facts.affiliate_url}"
+    return {"title": clean_formatting(title), "description": clean_formatting(desc)}
+
+
 def extract_grounded_platform_content(
     platform_key: str,
     raw_text: str,
@@ -304,7 +353,7 @@ def extract_grounded_platform_content(
     if platform_key.startswith("pinterest"):
         parsed = parse_pinterest_response(raw_text, facts, disclosure)
         title_raw = clean_formatting(parsed.get("title", "").strip())
-        title_issues = ClaimValidator.validate_content_claims(title_raw, facts, disclosure="")
+        title_issues = ClaimValidator.validate_content_claims(title_raw, facts, disclosure="", is_title=True)
         if not title_issues and title_raw:
             title = title_raw[:100].strip()
         else:
@@ -924,18 +973,20 @@ class ContentGenerator:
             try:
                 lm_img = self.generate_for_platform("pinterest_lifemodehq", product=facts, disclosure=disclosure, account="lifemodehq", media_type="image")
             except Exception as e:
+                lm_fb_img = build_lifemodehq_fallback(facts, media_type="image")
                 lm_img = {
-                    "title": platforms_results.get("pinterest", {}).get("title", ""),
-                    "description": platforms_results.get("pinterest", {}).get("description", ""),
+                    "title": lm_fb_img["title"],
+                    "description": lm_fb_img["description"],
                     "error": str(e)
                 }
 
             try:
                 lm_vid = self.generate_for_platform("pinterest_lifemodehq", product=facts, disclosure=disclosure, account="lifemodehq", media_type="video")
             except Exception as e:
+                lm_fb_vid = build_lifemodehq_fallback(facts, media_type="video")
                 lm_vid = {
-                    "title": lm_img.get("title", ""),
-                    "description": lm_img.get("description", ""),
+                    "title": lm_fb_vid["title"],
+                    "description": lm_fb_vid["description"],
                     "error": str(e)
                 }
 
@@ -1000,6 +1051,8 @@ class ContentGenerator:
             if "pinterest" in platforms_results and "error" not in platforms_results["pinterest"]:
                 t = platforms_results["pinterest"].get("title", "")
                 d = platforms_results["pinterest"].get("description", "")
+                lm_fb_img = build_lifemodehq_fallback(facts, media_type="image")
+                lm_fb_vid = build_lifemodehq_fallback(facts, media_type="video")
                 platforms_results["pinterest"]["variants"] = {
                     "image": {"title": t, "description": d},
                     "video": {"title": t, "description": d}
@@ -1011,9 +1064,12 @@ class ContentGenerator:
                         "variants": platforms_results["pinterest"]["variants"]
                     },
                     "lifemodehq": {
-                        "title": t,
-                        "description": d,
-                        "variants": platforms_results["pinterest"]["variants"]
+                        "title": lm_fb_img["title"],
+                        "description": lm_fb_img["description"],
+                        "variants": {
+                            "image": {"title": lm_fb_img["title"], "description": lm_fb_img["description"]},
+                            "video": {"title": lm_fb_vid["title"], "description": lm_fb_vid["description"]}
+                        }
                     }
                 }
 

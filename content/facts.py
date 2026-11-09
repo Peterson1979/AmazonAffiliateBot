@@ -162,6 +162,9 @@ PROPERTY_SYNONYMS: Dict[str, Set[str]] = {
     "approx": {"approx", "approximately", "approximate"},
     "approximately": {"approx", "approximately", "approximate"},
     "approximate": {"approx", "approximately", "approximate"},
+    "stainless steel": {"stainless steel", "steel", "stainless"},
+    "steel": {"steel", "stainless steel", "stainless"},
+    "stainless": {"stainless", "stainless steel", "steel"},
 }
 
 # Generic words and structural rephrasing connectors that do not carry product-specific claim weight
@@ -214,7 +217,7 @@ STOPWORDS = {
     "video", "videos", "clip", "clips", "watch", "watching",
     "demonstrate", "demonstrates", "demonstrated", "demonstrating", "demonstration",
     "action", "showcase", "showcases", "showcased", "showcasing",
-    "above", "below", "daily", "living", "lifestyle", "routine", "space", "spaces",
+    "above", "below", "daily", "everyday", "living", "lifestyle", "routine", "space", "spaces",
     "setup", "setups", "overview", "highlight", "highlights", "highlighted", "highlighting"
 }
 
@@ -519,6 +522,14 @@ class FactExtractor:
                     bindings.append((two_mod, head_noun))
                     if len(content_tokens) >= 4:
                         bindings.append((two_mod, two_noun))
+
+                # Multi-word modifier bindings from known materials/properties/certifications
+                for i in range(len(content_tokens) - 1):
+                    pair = f"{content_tokens[i]} {content_tokens[i+1]}"
+                    if pair in KNOWN_MATERIALS or pair in KNOWN_CERTIFICATIONS or pair in COMMON_PHYSICAL_PROPERTIES:
+                        bindings.append((pair, head_noun))
+                        if two_noun != head_noun:
+                            bindings.append((pair, two_noun))
 
             # Predicate pattern: <noun> is/are <modifier>
             for m in re.finditer(r'\b([a-z]+)\s+(?:is|are|was|were)\s+([a-z-]+)\b', chunk):
