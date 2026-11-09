@@ -34,9 +34,10 @@
       "attempt": 1
     },
     "2026-11-09-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-09T15:16:12.326129+01:00",
-      "attempt": 2
+      "attempt": 2,
+      "completed_at": "2026-11-09T15:16:14.575945+01:00"
     }
   },
   "items": [
@@ -1466,7 +1467,7 @@
         "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
       ],
       "created_at": "2026-11-09T08:15:00.000000+00:00",
-      "published_at": "2026-11-09T15:01:20.050251+01:00",
+      "published_at": "2026-11-09T15:16:14.577933+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1481,7 +1482,7 @@
               "message": "(#100) No permission to publish the video",
               "type": "OAuthException",
               "code": 100,
-              "fbtrace_id": "ARefwGNoHTuoxyUuCUk7raA"
+              "fbtrace_id": "A9kkS0hYoraXj-Jh9z5IWZH"
             }
           },
           "errors": [
@@ -1503,7 +1504,7 @@
           "media_type": "VIDEO",
           "title": "Levoit Bedroom Humidifier – 25dB Ultra Quiet, Top Fill",
           "link": "https://link.amazon/B0dLOKIZO",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -1575,7 +1576,7 @@
           "image_url": "https://m.media-amazon.com/images/I/71VToW4jjoL._AC_SL1500_.jpg",
           "media_type": "VIDEO",
           "verified_media_type": "VIDEO",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 200,
