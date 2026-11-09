@@ -39,9 +39,10 @@
       "attempt": 4
     },
     "2026-11-09-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-09T23:01:15.550055+01:00",
-      "attempt": 3
+      "attempt": 3,
+      "completed_at": "2026-11-09T23:01:17.949937+01:00"
     }
   },
   "items": [
@@ -1685,7 +1686,7 @@
         "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
       ],
       "created_at": "2026-11-09T07:10:58.248391+00:00",
-      "published_at": "2026-11-09T21:16:16.747895+01:00",
+      "published_at": "2026-11-09T23:01:17.954401+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1803,6 +1804,81 @@
           },
           "message": "Successfully published video post 18068422382616525 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-11-09T21:01:18.582496+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018356102",
+          "pin_url": "https://www.pinterest.com/pin/495607134018356102/",
+          "media_id": "4020816829949894656",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0DWFLY18Y/ad-_mdcoreea-2026-09-05_0418-Botox-Not-today.-ANUA-PDRN-Hyaluronic-Acid-100-Moisturizing-Cream-helps-plump-smooth-and-revive-tire-7681869695510744328.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Anua PDRN Hyaluronic Acid Moisturizing Cream – Lightweight Hydration Video",
+          "link": "https://link.amazon/B0fsIDYI6",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "title": "Anua PDRN Hyaluronic Acid Moisturizing Cream – Lightweight Hydration Video",
+            "parent_pin_id": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "dominant_color": "#f5f7f7",
+            "link": "https://link.amazon/B0fsIDYI6",
+            "is_product": false,
+            "created_at": "2026-11-09T22:01:25",
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 734,
+                  "url": "https://i.pinimg.com/564x/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                },
+                "1200x": {
+                  "width": 1139,
+                  "height": 1484,
+                  "url": "https://i.pinimg.com/1200x/61/31/a3/6131a36ebbdb24d86193788f4eff480c.jpg"
+                }
+              }
+            },
+            "has_been_promoted": false,
+            "description": "The 60 ml cream contains PDRN derived from salmon DNA and hyaluronic acid. It features a lightweight, fast‑absorbing texture, is non‑comedogenic and does not pill under makeup. Explore the product details and available options below. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "creative_type": "VIDEO",
+            "is_standard": true,
+            "alt_text": null,
+            "is_owner": true,
+            "id": "495607134018356102",
+            "board_id": "495607202683261042",
+            "product_tags": [],
+            "is_removable": false,
+            "board_section_id": null,
+            "pin_metrics": null
+          },
+          "message": "Successfully created video pin 495607134018356102 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-09T23:01:17.954401+01:00"
         }
       },
       "batch_id": "batch_20261109T081018040023_de8ac827",
