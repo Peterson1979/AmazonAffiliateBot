@@ -1,0 +1,275 @@
+name: Test Facebook Video Publish
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish_test_video:
+    name: Controlled Facebook Video Publication Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Publish single test video via Meta Graph API v27.0
+        env:
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID || '226949230493910' }}
+        run: |
+          python3 - << 'EOF'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          GRAPH_VERSION = "v27.0"
+          EXPECTED_PAGE_ID = os.environ.get("FACEBOOK_PAGE_ID", "226949230493910").strip()
+          EXPECTED_PAGE_NAME = "LifeMode"
+          TARGET_ASIN = "B0DWFLY18Y"
+
+          token = os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN", "").strip()
+          page_id = EXPECTED_PAGE_ID
+
+          print("=======================================================")
+          print(f"Controlled Facebook Video Publication Test ({GRAPH_VERSION})")
+          print("=======================================================\n")
+
+          def redact(val) -> str:
+              text = str(val or "")
+              if token and token in text:
+                  text = text.replace(token, "[REDACTED]")
+              return text
+
+          def safe_get(url: str, headers: dict = None, timeout: int = 30):
+              """
+              Execute GET request with authentication sent securely via the
+              Authorization Bearer header, never in the URL query string.
+              """
+              req_headers = {
+                  "User-Agent": "AmazonAffiliateBot-FBTestPublisher/1.0",
+                  "Authorization": f"Bearer {token}",
+              }
+              if headers:
+                  req_headers.update(headers)
+
+              req = urllib.request.Request(url, headers=req_headers, method="GET")
+
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as resp:
+                      status = resp.status
+                      body = resp.read().decode("utf-8")
+                      try:
+                          parsed = json.loads(body)
+                      except Exception:
+                          parsed = {"raw": body}
+                      return status, parsed
+              except urllib.error.HTTPError as err:
+                  try:
+                      body = err.read().decode("utf-8")
+                      parsed = json.loads(body)
+                  except Exception:
+                      parsed = {"error": {"message": err.reason, "code": err.code}}
+                  return err.code, parsed
+              except Exception as exc:
+                  return 0, {"error": {"message": redact(str(exc)), "code": 0}}
+
+          def safe_post(url: str, params: dict, headers: dict = None, timeout: int = 60):
+              """
+              Execute POST request with all parameters (including access_token) sent
+              exclusively in the request body, never in the URL query string.
+              """
+              req_headers = {
+                  "User-Agent": "AmazonAffiliateBot-FBTestPublisher/1.0",
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  "Authorization": f"Bearer {token}",
+              }
+              if headers:
+                  req_headers.update(headers)
+
+              body_bytes = urllib.parse.urlencode(params).encode("utf-8")
+              req = urllib.request.Request(url, data=body_bytes, headers=req_headers, method="POST")
+
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as resp:
+                      status = resp.status
+                      body = resp.read().decode("utf-8")
+                      try:
+                          parsed = json.loads(body)
+                      except Exception:
+                          parsed = {"raw": body}
+                      return status, parsed
+              except urllib.error.HTTPError as err:
+                  try:
+                      body = err.read().decode("utf-8")
+                      parsed = json.loads(body)
+                  except Exception:
+                      parsed = {"error": {"message": err.reason, "code": err.code}}
+                  return err.code, parsed
+              except Exception as exc:
+                  return 0, {"error": {"message": redact(str(exc)), "code": 0}}
+
+          # Step 1: Secret Configuration Verification
+          print("--- Step 1: Secret Configuration ---")
+          if not token:
+              print("[FAIL] FACEBOOK_PAGE_ACCESS_TOKEN secret is empty or missing.")
+              sys.exit(1)
+          if not page_id:
+              print("[FAIL] FACEBOOK_PAGE_ID is empty or missing.")
+              sys.exit(1)
+
+          token_prefix = token[:4] if len(token) >= 4 else ""
+          print(f"[PASS] FACEBOOK_PAGE_ACCESS_TOKEN configured (length: {len(token)}, format: {token_prefix}***).")
+          print(f"[PASS] Target Facebook Page ID: {page_id}\n")
+
+          # Step 2: Content Package Resolution & ASIN Strict Verification
+          print("--- Step 2: Content Package Resolution & ASIN Verification ---")
+          package_path = f"data/generated/asin_{TARGET_ASIN}_content_package.json"
+
+          if not os.path.isfile(package_path):
+              print(f"[FAIL] Content package file '{package_path}' does not exist on disk.")
+              print("       Stopping: package is strictly required; no fallbacks permitted.")
+              sys.exit(1)
+
+          try:
+              with open(package_path, "r", encoding="utf-8") as f:
+                  pkg = json.load(f)
+          except Exception as e:
+              print(f"[FAIL] Could not read content package '{package_path}': {redact(str(e))}")
+              sys.exit(1)
+
+          pkg_asin = str(pkg.get("asin") or "").strip().upper()
+          if pkg_asin != TARGET_ASIN.upper():
+              print(f"[FAIL] Content package ASIN mismatch: found '{pkg_asin}', expected '{TARGET_ASIN}'.")
+              sys.exit(1)
+
+          video_url = str(pkg.get("video_url") or "").strip()
+          if not video_url or not (video_url.startswith("https://") or video_url.startswith("http://")):
+              print(f"[FAIL] Content package for ASIN {TARGET_ASIN} has no valid video URL.")
+              sys.exit(1)
+
+          if f"/{TARGET_ASIN}/" not in video_url and TARGET_ASIN not in video_url:
+              print(f"[FAIL] Video asset URL does not correspond to ASIN {TARGET_ASIN}: {video_url}")
+              sys.exit(1)
+
+          fb_plat = (pkg.get("platforms") or {}).get("facebook") or {}
+          description = str(fb_plat.get("content") or fb_plat.get("text") or "").strip()
+          if not description:
+              print(f"[FAIL] Content package for ASIN {TARGET_ASIN} has no Facebook content/text.")
+              sys.exit(1)
+
+          print(f"[PASS] Content package loaded: '{package_path}'")
+          print(f"[PASS] ASIN verified: {TARGET_ASIN}")
+          print(f"[PASS] Video asset verified for ASIN: {video_url}")
+          print(f"[PASS] Facebook description verified ({len(description)} characters).\n")
+
+          # Step 3: Video Asset Reachability Pre-check
+          print("--- Step 3: Test Video Asset Reachability Check ---")
+          try:
+              head_req = urllib.request.Request(
+                  video_url,
+                  headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", "Range": "bytes=0-1024"},
+                  method="GET",
+              )
+              with urllib.request.urlopen(head_req, timeout=15) as resp:
+                  asset_status = resp.status
+          except urllib.error.HTTPError as he:
+              asset_status = he.code
+          except Exception as e:
+              print(f"[FAIL] Error checking video asset reachability: {redact(str(e))}")
+              sys.exit(1)
+
+          if asset_status not in (200, 206):
+              print(f"[FAIL] Test video asset URL is not reachable (HTTP {asset_status}): {video_url}")
+              sys.exit(1)
+          print(f"[PASS] Verified public HTTPS video asset is reachable (HTTP {asset_status}).\n")
+
+          # Step 4: Token Identity Verification (GET with Authorization: Bearer header)
+          print(f"--- Step 4: Page Token Verification ({GRAPH_VERSION}) ---")
+          me_url = f"https://graph.facebook.com/{GRAPH_VERSION}/me?fields=id,name"
+          status_me, me_data = safe_get(me_url)
+          if status_me != 200:
+              err = me_data.get("error", {})
+              err_msg = redact(str(err.get("message", me_data)))
+              print(f"[FAIL] Meta Graph API token verification rejected (HTTP {status_me}): {err_msg}")
+              sys.exit(1)
+
+          entity_id = str(me_data.get("id", ""))
+          entity_name = str(me_data.get("name", ""))
+          print(f"[PASS] Token authenticates successfully as: '{entity_name}' (ID: {entity_id})")
+
+          if entity_id != page_id:
+              print(f"[FAIL] Token entity ID ({entity_id}) does not match target Page ID ({page_id}).")
+              print("       Token must be a direct Page Access Token for this Page.")
+              sys.exit(1)
+          print(f"[PASS] Confirmed direct Page Access Token for Page ID {page_id}.\n")
+
+          # Step 5: Exactly One Facebook Video Publication (POST body only)
+          print(f"--- Step 5: Publish Exactly One Video to Facebook Page {page_id} ---")
+          upload_url = f"https://graph-video.facebook.com/{GRAPH_VERSION}/{page_id}/videos"
+          upload_payload = {
+              "file_url": video_url,
+              "description": description,
+              "published": "true",
+              "access_token": token,
+          }
+
+          pub_status, pub_data = safe_post(upload_url, upload_payload, timeout=120)
+
+          if pub_status not in (200, 201) or "id" not in pub_data:
+              err = pub_data.get("error", {})
+              err_msg = redact(str(err.get("message", pub_data)))
+              err_code = err.get("code", pub_status)
+              print(f"[FAIL] Facebook Video API rejected publication (HTTP {pub_status}, Error {err_code}):")
+              print(f"       {err_msg}")
+              sys.exit(1)
+
+          video_id = str(pub_data.get("id", "")).strip()
+          post_id = str(pub_data.get("post_id") or video_id).strip()
+          print(f"[PASS] Successfully published video to Facebook Page.")
+          print(f"       Returned Video ID: {video_id}")
+          print(f"       Returned Post ID : {post_id}\n")
+
+          # Step 6: Post-Publication Status Verification & Permalink Retrieval (GET with Authorization: Bearer header)
+          print("--- Step 6: Post-Publication Verification & Permalink Retrieval ---")
+          verify_url = f"https://graph.facebook.com/{GRAPH_VERSION}/{video_id}?fields=id,permalink_url,published,status"
+          v_status, v_data = safe_get(verify_url, timeout=30)
+
+          permalink_url = ""
+          if v_status == 200:
+              raw_permalink = str(v_data.get("permalink_url") or "").strip()
+              if raw_permalink:
+                  permalink_url = f"https://www.facebook.com{raw_permalink}" if raw_permalink.startswith("/") else raw_permalink
+              print(f"[INFO] Graph API status object: {v_data.get('status')}")
+
+          if not permalink_url:
+              permalink_url = f"https://www.facebook.com/reel/{video_id}/"
+
+          print(f"[PASS] Live Video/Reel URL: {permalink_url}\n")
+
+          output_file = os.environ.get("GITHUB_OUTPUT")
+          if output_file:
+              try:
+                  with open(output_file, "a", encoding="utf-8") as f:
+                      f.write(f"video_id={video_id}\n")
+                      f.write(f"post_id={post_id}\n")
+                      f.write(f"permalink_url={permalink_url}\n")
+              except Exception:
+                  pass
+
+          print("=======================================================")
+          print("CONTROLLED FACEBOOK VIDEO PUBLICATION SUCCEEDED (v27.0)")
+          print("=======================================================")
+          print(f"Page Name     : {entity_name}")
+          print(f"Page ID       : {page_id}")
+          print(f"ASIN          : {TARGET_ASIN}")
+          print(f"Video ID      : {video_id}")
+          print(f"Post ID       : {post_id}")
+          print(f"Facebook URL  : {permalink_url}")
+          print("=======================================================")
+          sys.exit(0)
+          EOF
