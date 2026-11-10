@@ -50,9 +50,10 @@
       "completed_at": "2026-11-10T18:16:14.563875+01:00"
     },
     "2026-11-10-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-10T21:16:15.503018+01:00",
-      "attempt": 2
+      "attempt": 2,
+      "completed_at": "2026-11-10T21:16:17.595958+01:00"
     }
   },
   "items": [
@@ -1936,7 +1937,7 @@
         "Threads Step 1 (Video Container Creation) error (HTTP 400): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
       ],
       "created_at": "2026-11-09T08:12:35.425538+00:00",
-      "published_at": "2026-11-10T21:01:16.450339+01:00",
+      "published_at": "2026-11-10T21:16:17.599673+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1948,7 +1949,7 @@
           "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
           "media_type": "VIDEO",
           "verified_video_read": false,
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 200,
@@ -1972,7 +1973,7 @@
           "media_type": "VIDEO",
           "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
           "link": "https://link.amazon/B0eRVtiOe",
-          "action": "PUBLISH",
+          "action": "SKIP_DUPLICATE",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
