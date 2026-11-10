@@ -5700,3 +5700,17 @@
 [2026-11-09 23:01:25 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-11-09 23:01:25 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
 [2026-11-09 23:01:25 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-11-10 15:01:21 CET] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-11-10 15:01:21 CET] [INFO] Current Europe/Budapest Time: 2026-11-10T15:01:21.440935+01:00 | Mode: LIVE
+[2026-11-10 15:01:21 CET] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 18
+[2026-11-10 15:01:21 CET] [INFO] Due Eligible Items Found: 1
+[2026-11-10 15:01:21 CET] [INFO] Overdue READY Items Held For Review: 4 (policy: same_day; records unchanged)
+[2026-11-10 15:01:21 CET] [WARNING] HELD overdue item 'item_027_B0BZYCJK89' | ASIN: B0BZYCJK89 | Slot 1 (2026-11-04T15:00:00+01:00)
+[2026-11-10 15:01:21 CET] [WARNING] HELD overdue item 'item_030_B07PBXXNCY' | ASIN: B07PBXXNCY | Slot 2 (2026-11-05T21:00:00+01:00)
+[2026-11-10 15:01:21 CET] [WARNING] HELD overdue item 'item_031_B0BW93676T' | ASIN: B0BW93676T | Slot 1 (2026-11-06T15:00:00+01:00)
+[2026-11-10 15:01:21 CET] [WARNING] HELD overdue item 'item_032_B0CTJGJL2T' | ASIN: B0CTJGJL2T | Slot 2 (2026-11-06T21:00:00+01:00)
+[2026-11-10 15:01:21 CET] [INFO] Processing Item 'item_039_B0GR5WF8M4' | ASIN: B0GR5WF8M4 | Slot 1 (2026-11-10T15:00:00+01:00)
+[2026-11-10 15:01:21 CET] [ERROR] ERROR on Item 'item_039_B0GR5WF8M4': Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish.
+[2026-11-10 15:01:21 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-11-10 15:01:21 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=0, Failed=1
+[2026-11-10 15:01:21 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===

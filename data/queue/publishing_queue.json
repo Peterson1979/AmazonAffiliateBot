@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 9,
-  "total_failed": 0,
-  "scheduled_posts": 9,
-  "unfilled_slots": 51,
+  "total_ready": 8,
+  "total_failed": 1,
+  "scheduled_posts": 8,
+  "unfilled_slots": 52,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -44,9 +44,10 @@
       "attempt": 4
     },
     "2026-11-10-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-10T15:01:18.929093+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-10T15:01:21.437475+01:00"
     }
   },
   "items": [
@@ -1899,9 +1900,11 @@
       "scheduled_at": "2026-11-10T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
-      "status": "READY",
+      "status": "FAILED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish."
+      ],
       "created_at": "2026-11-09T08:03:36.931251+00:00",
       "published_at": null,
       "publishing_results": null,
