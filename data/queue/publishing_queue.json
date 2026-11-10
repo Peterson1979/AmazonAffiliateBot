@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 8,
+  "total_ready": 7,
   "total_failed": 1,
-  "scheduled_posts": 8,
-  "unfilled_slots": 52,
+  "scheduled_posts": 7,
+  "unfilled_slots": 53,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -50,9 +50,10 @@
       "completed_at": "2026-11-10T18:16:14.563875+01:00"
     },
     "2026-11-10-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-10T21:01:12.147950+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-10T21:01:16.447363+01:00"
     }
   },
   "items": [
@@ -1930,12 +1931,123 @@
       "scheduled_at": "2026-11-10T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09D7DWTVB_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Threads Step 1 (Video Container Creation) error (HTTP 400): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
+      ],
       "created_at": "2026-11-09T08:12:35.425538+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-10T21:01:16.450339+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "video_id": "979423258114284",
+          "post_id": "979423258114284",
+          "permalink_url": "https://www.facebook.com/226949230493910/videos/979423258114284",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+          "media_type": "VIDEO",
+          "verified_video_read": false,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "979423258114284"
+          },
+          "message": "Successfully published video 979423258114284 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-10T21:01:16.450339+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999767834",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999767834/",
+          "media_id": "4023474452063102080",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "link": "https://link.amazon/B0eRVtiOe",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_section_id": null,
+            "is_product": false,
+            "product_tags": [],
+            "dominant_color": "#f7f4fa",
+            "board_id": "1033646620665866548",
+            "is_standard": true,
+            "pin_metrics": null,
+            "is_removable": false,
+            "creative_type": "VIDEO",
+            "has_been_promoted": false,
+            "parent_pin_id": null,
+            "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "id": "1033646551999767834",
+            "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "is_owner": true,
+            "link": "https://link.amazon/B0eRVtiOe",
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 397,
+                  "url": "https://i.pinimg.com/564x/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 846,
+                  "url": "https://i.pinimg.com/1200x/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                }
+              }
+            },
+            "alt_text": null,
+            "created_at": "2026-11-10T20:01:28"
+          },
+          "message": "Successfully created video pin 1033646551999767834 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-10T21:01:16.450339+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "errors": [
+            "Threads Step 1 (Video Container Creation) error (HTTP 400): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
+          ],
+          "message": "Threads video container creation rejected with HTTP 400."
+        }
+      },
       "batch_id": "batch_20261109T091145993431_e870885f",
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4"
