@@ -44,9 +44,10 @@
       "attempt": 4
     },
     "2026-11-10-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-10T18:01:15.849726+01:00",
-      "attempt": 3
+      "attempt": 3,
+      "completed_at": "2026-11-10T18:01:18.480892+01:00"
     }
   },
   "items": [
@@ -1902,6 +1903,7 @@
       "status": "FAILED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [
+        "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish.",
         "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish.",
         "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish."
       ],
