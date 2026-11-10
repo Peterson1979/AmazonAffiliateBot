@@ -30,7 +30,7 @@ jobs:
           GRAPH_VERSION = "v27.0"
           EXPECTED_PAGE_ID = os.environ.get("FACEBOOK_PAGE_ID", "226949230493910").strip()
           EXPECTED_PAGE_NAME = "LifeMode"
-          TARGET_ASIN = "B0DWFLY18Y"
+          TARGET_ASIN = "B0D72N7642"
 
           token = os.environ.get("FACEBOOK_PAGE_ACCESS_TOKEN", "").strip()
           page_id = EXPECTED_PAGE_ID
@@ -157,7 +157,13 @@ jobs:
               sys.exit(1)
 
           fb_plat = (pkg.get("platforms") or {}).get("facebook") or {}
-          description = str(fb_plat.get("content") or fb_plat.get("text") or "").strip()
+          fb_variants = fb_plat.get("variants") or {}
+          description = (
+              (fb_variants.get("video") or {}).get("content")
+              or fb_plat.get("content")
+              or fb_plat.get("text")
+              or ""
+          ).strip()
           if not description:
               print(f"[FAIL] Content package for ASIN {TARGET_ASIN} has no Facebook content/text.")
               sys.exit(1)
