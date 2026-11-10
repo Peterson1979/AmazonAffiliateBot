@@ -408,6 +408,28 @@ class TestStageFileFiltering(unittest.TestCase):
             self.assertFalse(path.endswith(".env"))
             self.assertFalse(path.endswith(".log"))
 
+    def test_stage_files_include_creatives_directory(self):
+        """Image creatives (.jpg, .png, .json) are staged with the queue."""
+        queue_file = self.temp_dir / "data" / "queue" / "publishing_queue.json"
+        queue_file.write_text("{}", encoding="utf-8")
+
+        creatives_dir = self.temp_dir / "data" / "creatives" / "B0FLOW"
+        creatives_dir.mkdir(parents=True, exist_ok=True)
+        (creatives_dir / "flow_creatives.json").write_text("{}", encoding="utf-8")
+        (creatives_dir / "everyday_pick_flow.jpg").write_bytes(b"\xff\xd8\xff\xe0")
+
+        merged_queue = {
+            "items": [
+                {
+                    "asin": "B0FLOW",
+                    "package_reference": "data/generated/asin_B0FLOW_content_package.json",
+                }
+            ]
+        }
+        stage_files = find_sync_stage_files(merged_queue, self.temp_dir)
+        self.assertIn("data/creatives/B0FLOW/flow_creatives.json", stage_files)
+        self.assertIn("data/creatives/B0FLOW/everyday_pick_flow.jpg", stage_files)
+
 
 class TestSyncLockAndGitFlow(unittest.TestCase):
     """Tests for sync_with_github locking and error handling."""
@@ -698,6 +720,90 @@ class TestDivergentQueueIdCollision(unittest.TestCase):
         merged, summary = merge_publishing_queues(local, remote)
         self.assertEqual(len(merged["items"]), 1)
         self.assertEqual(summary["local_added_count"], 0)
+
+    def test_merge_paired_image_video_entries_both_preserved(self):
+        """Paired image and video items for the same ASIN must both be preserved during merge."""
+        remote = {
+            "queue_id": "test_q",
+            "items": [
+                {
+                    "queue_item_id": "item_036_B0PAIR",
+                    "asin": "B0PAIR",
+                    "media_type": "video",
+                    "video_url": "https://pub.r2.dev/video.mp4",
+                    "status": STATUS_PARTIALLY_PUBLISHED,
+                    "scheduled_date": "2026-11-08",
+                    "daily_slot": 1,
+                }
+            ],
+        }
+        local = {
+            "queue_id": "test_q",
+            "items": [
+                {
+                    "queue_item_id": "item_036_B0PAIR",
+                    "asin": "B0PAIR",
+                    "media_type": "video",
+                    "video_url": "https://pub.r2.dev/video.mp4",
+                    "status": STATUS_READY,
+                    "scheduled_date": "2026-11-08",
+                    "daily_slot": 1,
+                },
+                {
+                    "queue_item_id": "item_038_B0PAIR",
+                    "asin": "B0PAIR",
+                    "media_type": "image",
+                    "video_url": None,
+                    "status": STATUS_READY,
+                    "scheduled_date": "2026-11-09",
+                    "daily_slot": 1,
+                },
+            ],
+        }
+        merged, summary = merge_publishing_queues(local, remote)
+        self.assertEqual(len(merged["items"]), 2)
+        self.assertEqual(summary["local_added_count"], 1)
+        item_ids = [it["queue_item_id"] for it in merged["items"]]
+        self.assertIn("item_036_B0PAIR", item_ids)
+        self.assertIn("item_038_B0PAIR", item_ids)
+
+    def test_merge_upgrades_status_to_published_when_all_destinations_confirmed(self):
+        """When local + remote combined platform results cover all 4 destinations, status is PUBLISHED."""
+        remote = {
+            "queue_id": "test_q",
+            "items": [
+                {
+                    "queue_item_id": "item_001_B0TEST",
+                    "asin": "B0TEST",
+                    "status": STATUS_PARTIALLY_PUBLISHED,
+                    "publishing_results": {
+                        "facebook": {"platform": "facebook", "status": STATUS_FAILED, "mode": "LIVE"},
+                        "pinterest": {"platform": "pinterest", "status": STATUS_PUBLISHED, "mode": "LIVE", "pin_id": "p1"},
+                        "pinterest_lifemodehq": {"platform": "pinterest", "status": STATUS_PUBLISHED, "mode": "LIVE", "pin_id": "p2"},
+                        "threads": {"platform": "threads", "status": STATUS_PUBLISHED, "mode": "LIVE", "post_id": "t1"},
+                    },
+                }
+            ],
+        }
+        local = {
+            "queue_id": "test_q",
+            "items": [
+                {
+                    "queue_item_id": "item_001_B0TEST",
+                    "asin": "B0TEST",
+                    "status": STATUS_PARTIALLY_PUBLISHED,
+                    "publishing_results": {
+                        "facebook": {"platform": "facebook", "status": STATUS_PUBLISHED, "mode": "LIVE", "video_id": "fb1"},
+                    },
+                }
+            ],
+        }
+        merged, summary = merge_publishing_queues(local, remote)
+        merged_item = merged["items"][0]
+        self.assertEqual(merged_item["status"], STATUS_PUBLISHED)
+        self.assertEqual(merged_item["errors"], [])
+        self.assertEqual(merged_item["publishing_results"]["facebook"]["status"], STATUS_PUBLISHED)
+        self.assertEqual(merged_item["publishing_results"]["pinterest"]["pin_id"], "p1")
 
 
 class TestImportBatchHistorySync(unittest.TestCase):

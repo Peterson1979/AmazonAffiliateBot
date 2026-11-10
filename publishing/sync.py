@@ -308,6 +308,50 @@ def _merge_platform_results(
     return combined
 
 
+REQUIRED_PUBLISHING_DESTINATIONS = ("facebook", "pinterest", "pinterest_lifemodehq", "threads")
+
+
+def _normalize_media_type(item: Dict[str, Any]) -> str:
+    m = item.get("media_type")
+    if m:
+        m_str = str(m).strip().lower()
+        if m_str in ("video", "image"):
+            return m_str
+    if item.get("video_url"):
+        return "video"
+    return "image"
+
+
+def _item_identity_key(item: Dict[str, Any]) -> Tuple[str, str]:
+    asin = str(item.get("asin") or "").upper().strip()
+    return (asin, _normalize_media_type(item))
+
+
+def _is_all_destinations_confirmed(pub_results: Optional[Dict[str, Any]]) -> bool:
+    """Return True if all 4 required platforms have confirmed live or duplicate-safe publications."""
+    if not isinstance(pub_results, dict):
+        return False
+    for dest in REQUIRED_PUBLISHING_DESTINATIONS:
+        res = pub_results.get(dest)
+        if not isinstance(res, dict):
+            return False
+        if res.get("status") != STATUS_PUBLISHED:
+            return False
+        has_evidence = bool(
+            res.get("post_id")
+            or res.get("video_id")
+            or res.get("pin_id")
+            or res.get("photo_id")
+            or res.get("permalink")
+            or res.get("permalink_url")
+            or res.get("pin_url")
+            or res.get("action") == "SKIP_DUPLICATE"
+        )
+        if not has_evidence:
+            return False
+    return True
+
+
 def merge_publishing_queues(
     local_data: Dict[str, Any],
     remote_data: Dict[str, Any],
@@ -320,6 +364,10 @@ def merge_publishing_queues(
     - Remote cloud status (PUBLISHED, PARTIALLY_PUBLISHED, FAILED) takes precedence
       for items published in the cloud. Platform timestamps and results are preserved.
     - Locally added items (present in local but not remote) are preserved with their allocated slots.
+    - Paired image and video entries for the same ASIN are both preserved and indexed
+      by (asin, media_type) to prevent accidental cross-media deduplication.
+    - When all 4 publishing platforms are confirmed published across merged results,
+      the item status is promoted to PUBLISHED.
     - If a slot collision occurs between a local new item and a remote slot, the local item
       is reallocated to the next available vacant slot in Europe/Budapest.
     - Summary counts are recalculated deterministically.
@@ -335,12 +383,12 @@ def merge_publishing_queues(
     local_items = list(local_data.get("items", []))
     remote_items = list(remote_data.get("items", []))
 
-    # Index items
+    # Index items by ID and by composite key (asin, media_type)
     local_by_id = {it.get("queue_item_id"): it for it in local_items if it.get("queue_item_id")}
-    local_by_asin = {it.get("asin", "").upper(): it for it in local_items if it.get("asin")}
+    local_by_key = {_item_identity_key(it): it for it in local_items if it.get("asin")}
 
     remote_by_id = {it.get("queue_item_id"): it for it in remote_items if it.get("queue_item_id")}
-    remote_by_asin = {it.get("asin", "").upper(): it for it in remote_items if it.get("asin")}
+    remote_by_key = {_item_identity_key(it): it for it in remote_items if it.get("asin")}
 
     # Persisted slot claims live at queue level, not on the items, so they
     # must be merged explicitly or the merged queue silently drops them.
@@ -351,7 +399,7 @@ def merge_publishing_queues(
 
     merged_items: List[Dict[str, Any]] = []
     seen_ids: Set[str] = set()
-    seen_asins: Set[str] = set()
+    seen_item_keys: Set[Tuple[str, str]] = set()
 
     remote_updated_count = 0
     local_added_count = 0
@@ -360,9 +408,10 @@ def merge_publishing_queues(
     for r_item in remote_items:
         item_id = r_item.get("queue_item_id")
         asin = r_item.get("asin", "").upper()
+        r_key = _item_identity_key(r_item) if asin else None
 
-        # Match corresponding local item
-        l_item = local_by_id.get(item_id) or (local_by_asin.get(asin) if asin else None)
+        # Match corresponding local item by ID first, then by (asin, media_type)
+        l_item = local_by_id.get(item_id) or (local_by_key.get(r_key) if r_key else None)
 
         if l_item:
             merged = dict(r_item)
@@ -424,26 +473,33 @@ def merge_publishing_queues(
                 if l_item.get("video_url") and not r_item.get("video_url"):
                     merged["video_url"] = l_item.get("video_url")
 
+            # Upgrade status to PUBLISHED if all 4 required platforms are confirmed live
+            if _is_all_destinations_confirmed(merged.get("publishing_results")):
+                merged["status"] = STATUS_PUBLISHED
+                merged["published_at"] = merged.get("published_at") or r_item.get("published_at") or l_item.get("published_at")
+                merged["errors"] = []
+
             merged_items.append(merged)
             if item_id:
                 seen_ids.add(item_id)
-            if asin:
-                seen_asins.add(asin)
+            if r_key:
+                seen_item_keys.add(r_key)
         else:
             # Item exists only on remote
             merged_items.append(dict(r_item))
             if item_id:
                 seen_ids.add(item_id)
-            if asin:
-                seen_asins.add(asin)
+            if r_key:
+                seen_item_keys.add(r_key)
 
     # 2. Process locally added items not present on remote
     for l_item in local_items:
         item_id = l_item.get("queue_item_id")
         asin = l_item.get("asin", "").upper()
+        l_key = _item_identity_key(l_item) if asin else None
 
-        # Deduplicate by ASIN: the same product on both sides is one item.
-        if asin and asin in seen_asins:
+        # Deduplicate by composite key (asin, media_type): the same product & media format on both sides is one item.
+        if l_key and l_key in seen_item_keys:
             continue
         if item_id and item_id in seen_ids and not asin:
             # Identifier-only match without an ASIN cannot be told apart from
@@ -464,8 +520,8 @@ def merge_publishing_queues(
         merged_items.append(dict(l_item))
         if item_id:
             seen_ids.add(item_id)
-        if asin:
-            seen_asins.add(asin)
+        if l_key:
+            seen_item_keys.add(l_key)
         local_added_count += 1
 
     # 3. Detect and resolve any slot collisions among scheduled items
@@ -602,6 +658,12 @@ def find_sync_stage_files(merged_queue_dict: Dict[str, Any], repo_dir: Path) -> 
             pkg_candidate = repo_dir / "data" / "generated" / f"asin_{asin.upper()}_content_package.json"
             if pkg_candidate.exists():
                 stage_set.add(f"data/generated/asin_{asin.upper()}_content_package.json")
+
+            creatives_dir = repo_dir / "data" / "creatives" / asin.upper()
+            if creatives_dir.is_dir():
+                for c_file in creatives_dir.iterdir():
+                    if c_file.is_file() and c_file.suffix.lower() in (".json", ".jpg", ".jpeg", ".png", ".webp"):
+                        stage_set.add(f"data/creatives/{asin.upper()}/{c_file.name}")
 
         pkg_ref = item.get("package_reference")
         if pkg_ref:
