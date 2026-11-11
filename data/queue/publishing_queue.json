@@ -53,6 +53,11 @@
       "state": "COMPLETED",
       "claimed_at": "2026-11-10T23:16:15.812172+01:00",
       "attempt": 5
+    },
+    "2026-11-11-slot-1": {
+      "state": "CLAIMED",
+      "claimed_at": "2026-11-11T15:01:14.580504+01:00",
+      "attempt": 1
     }
   },
   "items": [
@@ -261,8 +266,7 @@
       "published_at": null,
       "publishing_results": null,
       "batch_id": "batch_20261026T141635592098_27945101",
-      "media_type": "image",
-      "video_url": null
+      "media_type": "image"
     },
     {
       "queue_item_id": "item_028_B07H9PZDQW",
