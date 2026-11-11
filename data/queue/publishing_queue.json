@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 8,
+  "total_ready": 7,
   "total_failed": 0,
-  "scheduled_posts": 8,
-  "unfilled_slots": 52,
+  "scheduled_posts": 7,
+  "unfilled_slots": 53,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -55,9 +55,10 @@
       "attempt": 5
     },
     "2026-11-11-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-11T15:01:14.580504+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-11T15:01:16.835541+01:00"
     }
   },
   "items": [
@@ -2450,12 +2451,129 @@
       "scheduled_at": "2026-11-11T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09D7DWTVB_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-09T08:18:13.195227+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-11T15:01:16.838410+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "video_id": "3301234560074972",
+          "post_id": "3301234560074972",
+          "permalink_url": "https://www.facebook.com/reel/3301234560074972/",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+          "media_type": "VIDEO",
+          "verified_video_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "3301234560074972"
+          },
+          "message": "Successfully published video 3301234560074972 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-11T15:01:16.838410+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999786850",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999786850/",
+          "media_id": "4025648826668379264",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+          "link": "https://link.amazon/B0eRVtiOe",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_removable": false,
+            "dominant_color": "#f7f4fa",
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 397,
+                  "url": "https://i.pinimg.com/564x/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 846,
+                  "url": "https://i.pinimg.com/1200x/4f/fb/47/4ffb4772d0d875fca360872c29b93373.jpg"
+                }
+              }
+            },
+            "created_at": "2026-11-11T14:01:30",
+            "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
+            "id": "1033646551999786850",
+            "is_product": false,
+            "is_owner": true,
+            "is_standard": true,
+            "link": "https://link.amazon/B0eRVtiOe",
+            "board_id": "1033646620665866548",
+            "description": "It includes an anti‑slip and anti‑scratch bottom and is machine washable. See more details and explore the available options. https://link.amazon/B0eRVtiOe\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "parent_pin_id": null,
+            "product_tags": [],
+            "creative_type": "VIDEO",
+            "pin_metrics": null,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "board_section_id": null,
+            "alt_text": null,
+            "has_been_promoted": false
+          },
+          "message": "Successfully created video pin 1033646551999786850 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-11T15:01:16.838410+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17988234864139258",
+          "post_id": "18117236258593105",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfmpfVOBkHu",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+          "image_url": "https://m.media-amazon.com/images/I/71cgXdW0WqL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18117236258593105"
+          },
+          "message": "Successfully published video post 18117236258593105 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-11T15:01:16.838410+01:00"
+        }
+      },
       "batch_id": null,
       "media_type": "image"
     },
