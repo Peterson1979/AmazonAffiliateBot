@@ -93,7 +93,7 @@
               {{ item.ui_execution_times or (('15:00 & 18:00 Budapest' if item.daily_slot == 1 else '21:00 & 23:00 Budapest') if item.daily_slot in (1, 2) else 'Unscheduled') }}
             </div>
             <div class="table-subtext" style="font-size: 0.75rem; color: var(--text-muted);">
-              {% if item.daily_slot == 1 %}Slot 1 &bull; 🖼️ Image Windows{% elif item.daily_slot == 2 %}Slot 2 &bull; 🎬 Video Windows{% else %}Slot {{ item.daily_slot or '—' }}{% endif %}
+              {% if item.ui_media_type == 'image' or item.media_type == 'image' %}Slot {{ item.daily_slot or '—' }} &bull; 🖼️ Image Windows{% elif item.daily_slot == 1 %}Slot 1 &bull; 🖼️ Image Windows{% elif item.daily_slot == 2 %}Slot 2 &bull; 🎬 Video Windows{% else %}Slot {{ item.daily_slot or '—' }}{% endif %}
             </div>
           </td>
           <td>
@@ -312,7 +312,7 @@
               {{ item.ui_execution_times or (('15:00 & 18:00 Budapest' if item.daily_slot == 1 else '21:00 & 23:00 Budapest') if item.daily_slot in (1, 2) else 'Unscheduled') }}
             </div>
             <div class="table-subtext" style="font-size: 0.75rem; color: var(--text-muted);">
-              {% if item.daily_slot == 1 %}Slot 1 &bull; 🖼️ Image Windows{% elif item.daily_slot == 2 %}Slot 2 &bull; 🎬 Video Windows{% else %}Slot {{ item.daily_slot or '—' }}{% endif %}
+              {% if item.ui_media_type == 'image' or item.media_type == 'image' %}Slot {{ item.daily_slot or '—' }} &bull; 🖼️ Image Windows{% elif item.daily_slot == 1 %}Slot 1 &bull; 🖼️ Image Windows{% elif item.daily_slot == 2 %}Slot 2 &bull; 🎬 Video Windows{% else %}Slot {{ item.daily_slot or '—' }}{% endif %}
             </div>
           </td>
           <td>

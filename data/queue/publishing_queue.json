@@ -260,7 +260,9 @@
       "created_at": "2026-10-26T13:20:52.251634+00:00",
       "published_at": null,
       "publishing_results": null,
-      "batch_id": "batch_20261026T141635592098_27945101"
+      "batch_id": "batch_20261026T141635592098_27945101",
+      "media_type": "image",
+      "video_url": null
     },
     {
       "queue_item_id": "item_028_B07H9PZDQW",

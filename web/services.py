@@ -679,14 +679,26 @@ def get_windows_for_item(
             win_state = "UNKNOWN"
             win_ui_label = "Awaiting confirmation"
 
+        win_raw_name = win_cfg.get("name", f"Window {win_id}")
+        item_media = (item.media_type or "").strip().lower()
+        if item_media == "image":
+            win_media = "image"
+            win_name = win_raw_name.replace("Video", "Image")
+        elif item_media == "video":
+            win_media = "video"
+            win_name = win_raw_name.replace("Image", "Video")
+        else:
+            win_media = win_cfg.get("media_type", "image" if slot == 1 else "video")
+            win_name = win_raw_name
+
         windows_data.append({
             "window_id": win_id,
-            "name": win_cfg.get("name", f"Window {win_id}"),
+            "name": win_name,
             "time": time_str,
             "execution_time": f"{time_str} Budapest",
             "start_hour": start_hour,
             "scheduled_dt": win_dt.isoformat() if win_dt else None,
-            "media_type": win_cfg.get("media_type", "image" if slot == 1 else "video"),
+            "media_type": win_media,
             "destinations": destinations,
             "platforms": plat_results,
             "state": win_state,

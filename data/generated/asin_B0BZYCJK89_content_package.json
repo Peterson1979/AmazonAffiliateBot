@@ -16,6 +16,13 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
+      },
+      "media_type": "image",
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg"
       }
     },
     "pinterest": {
@@ -34,7 +41,9 @@
         "display_name": "Everyday Pick",
         "image_path": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
         "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg"
-      }
+      },
+      "media_type": "image",
+      "account": "dailyideasforyou"
     },
     "threads": {
       "status": "VALID",
@@ -44,6 +53,33 @@
         "status": "VALID",
         "retry_count": 0,
         "errors": []
+      },
+      "media_type": "image",
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg"
+      }
+    },
+    "pinterest_lifemodehq": {
+      "status": "VALID",
+      "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+      "description": "It features double‑wall insulation that keeps drinks cold. https://link.amazon/B01k4qcKc\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "image_url": "https://m.media-amazon.com/images/I/51VU5d5ySHL._AC_SL1500_.jpg",
+      "link": "https://link.amazon/B01k4qcKc",
+      "account": "lifemodehq",
+      "validation": {
+        "status": "VALID",
+        "retry_count": 0,
+        "errors": []
+      },
+      "media_type": "image",
+      "selected_creative": {
+        "creative_type": "everyday_pick",
+        "display_name": "Everyday Pick",
+        "image_path": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+        "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg"
       }
     }
   },
@@ -518,5 +554,13 @@
         "total_time": 0.517578571
       }
     }
-  ]
+  ],
+  "media_type": "image",
+  "image_url": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+  "selected_creative": {
+    "creative_type": "everyday_pick",
+    "display_name": "Everyday Pick",
+    "image_path": "data/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+    "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg"
+  }
 }
