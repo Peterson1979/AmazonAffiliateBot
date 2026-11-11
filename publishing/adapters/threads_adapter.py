@@ -278,6 +278,21 @@ class ThreadsAdapter(BasePlatformAdapter):
         user_id = str(self.credentials.get("user_id") or account_config.get("user_id", "")).strip()
         access_token = str(self.credentials.get("access_token", "")).strip()
 
+        # Permanent blacklist enforcement
+        from publishing.blacklist import is_asin_blacklisted
+        asin = (content.get("asin") or account_config.get("asin") or "").strip().upper()
+        if is_asin_blacklisted(asin):
+            return {
+                "platform": self.platform_name,
+                "account": account_name,
+                "user_id": user_id,
+                "action": "BLOCKED",
+                "mode": "LIVE",
+                "status": STATUS_FAILED,
+                "errors": [f"ASIN '{asin}' is permanently blacklisted. Publishing is prohibited."],
+                "message": f"Cannot publish to Threads: ASIN '{asin}' is permanently blacklisted."
+            }
+
         text = str(content.get("content") or content.get("text", "")).strip()
         if not text:
             return {
@@ -291,8 +306,34 @@ class ThreadsAdapter(BasePlatformAdapter):
                 "message": f"Cannot publish to Threads account '{account_name}': content is empty."
             }
 
+        declared_media = (content.get("media_type") or account_config.get("media_type") or "").strip().lower()
         video_url = str(content.get("video_url") or account_config.get("video_url", "")).strip()
         image_url = str(content.get("image_url") or account_config.get("image_url", "")).strip()
+
+        if declared_media == "image":
+            # Strict enforcement: an image item must NEVER publish a video
+            video_url = ""
+        elif declared_media == "video":
+            if not video_url:
+                return {
+                    "platform": self.platform_name,
+                    "account": account_name,
+                    "user_id": user_id,
+                    "action": "PUBLISH",
+                    "mode": "LIVE",
+                    "status": STATUS_FAILED,
+                    "errors": [f"Declared media_type is 'video' but video_url is missing for Threads. Image fallback prohibited."],
+                    "message": f"Cannot publish to Threads: missing video_url for video publication."
+                }
+            return self._execute_live_video_publish(
+                video_url=video_url,
+                image_url=image_url,
+                text=text,
+                user_id=user_id,
+                access_token=access_token,
+                account_name=account_name,
+                account_config=account_config,
+            )
 
         if video_url:
             return self._execute_live_video_publish(

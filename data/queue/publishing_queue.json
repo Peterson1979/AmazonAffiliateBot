@@ -55,9 +55,10 @@
       "attempt": 5
     },
     "2026-11-11-slot-1": {
-      "state": "CLAIMED",
+      "state": "COMPLETED",
       "claimed_at": "2026-11-11T15:16:13.286227+01:00",
-      "attempt": 2
+      "attempt": 2,
+      "completed_at": "2026-11-11T15:16:13.286227+01:00"
     }
   },
   "items": [
@@ -2450,9 +2451,11 @@
       "scheduled_at": "2026-11-11T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09D7DWTVB_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
+      "status": "CANCELLED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "ASIN B09D7DWTVB is permanently blacklisted. Remaining destinations cancelled."
+      ],
       "created_at": "2026-11-09T08:18:13.195227+00:00",
       "published_at": "2026-11-11T15:01:16.838410+01:00",
       "publishing_results": {

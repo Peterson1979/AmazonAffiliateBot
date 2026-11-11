@@ -745,7 +745,14 @@ def get_queue_item_presentation(
     time_has_passed = scheduled_dt is not None and scheduled_dt <= now_dt
     is_overdue = is_item_overdue_held(item, now_dt)
 
-    if states and all(s in ("PUBLISHED", "SKIPPED") for s in states):
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(item.asin):
+        state = "CANCELLED"
+        ui_label = "Blacklisted"
+    elif getattr(item, "status", None) == "CANCELLED":
+        state = "CANCELLED"
+        ui_label = "Cancelled"
+    elif states and all(s in ("PUBLISHED", "SKIPPED") for s in states):
         state = "PUBLISHED"
         ui_label = "Published"
     elif has_any_confirmed and (has_failed or not all(s in ("PUBLISHED", "SKIPPED") for s in states)):
@@ -800,7 +807,7 @@ def get_queue_item_presentation(
         "published_at": max(
             (result.get("timestamp") for result in platform_results.values() if result.get("timestamp")),
             default=None,
-        ) if state in ("PUBLISHED", "PARTIAL") else None,
+        ) if (state in ("PUBLISHED", "PARTIAL") or has_live) else None,
         "platforms": platform_results,
         "windows": windows,
         "execution_times": execution_times,
@@ -1581,7 +1588,7 @@ def get_all_products(query: Optional[str] = None, status_filter: Optional[str] =
             product_row["publishing_status"] = status_info["state"]
             product_row["publishing_status_display"] = status_info["ui_label"]
             product_row["ui_label"] = status_info["ui_label"]
-        if product_row.get("publishing_status") not in ("SCHEDULED", "SIMULATED", "NOT_PUBLISHED", "PUBLISHING", "PUBLISHED", "PARTIAL", "FAILED", "UNKNOWN"):
+        if product_row.get("publishing_status") not in ("SCHEDULED", "SIMULATED", "NOT_PUBLISHED", "PUBLISHING", "PUBLISHED", "PARTIAL", "FAILED", "UNKNOWN", "CANCELLED"):
             product_row["publishing_status"] = "UNKNOWN"
         product_row.setdefault("publishing_results", {})
         product_row.setdefault("retryable", False)
@@ -1851,6 +1858,10 @@ def generate_product_creatives_service(
     Supports exactly two creative slots: Gift Inspiration and Everyday Pick.
     """
     asin_clean = asin.upper().strip()
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(asin_clean):
+        return {"success": False, "message": f"ASIN {asin_clean} is permanently blacklisted. Creative generation prohibited."}
+
     prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
     product = None
     if prod_file.exists():
@@ -2047,6 +2058,11 @@ def ensure_image_queue_entry(asin_clean: str, queue_file: Optional[Path] = None)
     Preserves any existing video queue entry in Slot 2.
     Prevents duplicate image queue entries.
     """
+    asin_clean = str(asin_clean or "").upper().strip()
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(asin_clean):
+        return {"success": False, "message": f"ASIN {asin_clean} is permanently blacklisted. Queuing prohibited."}
+
     target_queue_file = queue_file or QUEUE_FILE
     if not target_queue_file.exists():
         return {"success": False, "message": "Queue file does not exist."}
@@ -2331,6 +2347,10 @@ def attach_product_video_service(
     if not asin_clean:
         return {"success": False, "asin": "", "message": "Product ASIN is required."}
 
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(asin_clean):
+        return {"success": False, "asin": asin_clean, "message": f"ASIN {asin_clean} is permanently blacklisted. Video attachment prohibited."}
+
     pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
     if not pkg_file.exists():
         return {
@@ -2577,6 +2597,10 @@ def detach_product_video_service(asin: str) -> Dict[str, Any]:
     if not asin_clean:
         return {"success": False, "asin": "", "message": "Product ASIN is required."}
 
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(asin_clean):
+        return {"success": False, "asin": asin_clean, "message": f"ASIN {asin_clean} is permanently blacklisted. Video attachment prohibited."}
+
     pkg_file = GENERATED_DIR / f"asin_{asin_clean}_content_package.json"
     if not pkg_file.exists():
         return {
@@ -2681,6 +2705,14 @@ def enqueue_existing_product_service(asin: str, media_type: Optional[str] = None
     asin_clean = str(asin or "").upper().strip()
     if not asin_clean:
         return {"success": False, "asin": "", "message": "Product ASIN is required."}
+
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(asin_clean):
+        return {
+            "success": False,
+            "asin": asin_clean,
+            "message": f"ASIN {asin_clean} is permanently blacklisted. Queuing prohibited.",
+        }
 
     prod_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
     product: Optional[Product] = None
@@ -3161,6 +3193,18 @@ def add_products_from_urls(
             continue
         seen_submitted_urls.add(url_clean)
 
+        # Permanent blacklist check
+        from publishing.blacklist import is_asin_blacklisted
+        if extracted_asin and is_asin_blacklisted(extracted_asin):
+            rejected_count += 1
+            results.append({
+                "url": url_clean,
+                "asin": extracted_asin.upper(),
+                "status": "BLOCKED",
+                "reason": f"Product with ASIN {extracted_asin.upper()} is permanently blacklisted. Importing is prohibited."
+            })
+            continue
+
         # 1. Deduplication check
         if extracted_asin and extracted_asin.upper() in published_asins:
             rejected_count += 1
@@ -3612,6 +3656,10 @@ def recover_failed_product(
     automatic maintenance path.
     """
     asin_clean = asin.upper().strip()
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(asin_clean):
+        return {"success": False, "message": f"ASIN {asin_clean} is permanently blacklisted. Recovery prohibited."}
+
     product_file = PRODUCTS_DIR / f"asin_{asin_clean}.json"
     if not product_file.exists():
         return {"success": False, "message": f"Product source data not found for ASIN {asin_clean}."}
@@ -3799,6 +3847,16 @@ def execute_live_publish_item(
         if item is None:
             return {"success": False, "error": f"Queue item '{queue_item_id}' was not found."}
 
+        # Permanent blacklist check
+        from publishing.blacklist import is_asin_blacklisted
+        if is_asin_blacklisted(item.asin):
+            item.status = "CANCELLED"
+            queue.save(QUEUE_FILE)
+            return {
+                "success": False,
+                "error": f"ASIN '{item.asin}' is permanently blacklisted. Publishing is prohibited.",
+            }
+
         # Safe recovery if process restarted while item was left in PUBLISHING status
         if item.status == STATUS_PUBLISHING:
             prev_results = [v for v in (item.publishing_results or {}).values() if isinstance(v, dict)]
@@ -3858,13 +3916,33 @@ def execute_live_publish_item(
         publisher = SocialPublisher(
             config=PublishingConfig.from_dict(cfg, dry_run_override=False)
         )
-        if is_valid_video_url(getattr(item, "video_url", None)) and not is_valid_video_url(package.get("video_url")):
+        declared_media_type = (getattr(item, "media_type", None) or "image").strip().lower()
+        if declared_media_type == "image":
             package = dict(package)
-            ContentPackage.attach_verified_video(package, item.video_url)
+            package["media_type"] = "image"
+            package.pop("video_url", None)
+            if hasattr(ContentPackage, "detach_video"):
+                ContentPackage.detach_video(package)
+            for p_val in (package.get("platforms") or {}).values():
+                if isinstance(p_val, dict):
+                    p_val.pop("video_url", None)
+                    p_val["media_type"] = "image"
+        elif declared_media_type == "video":
+            if is_valid_video_url(getattr(item, "video_url", None)) and not is_valid_video_url(package.get("video_url")):
+                package = dict(package)
+                ContentPackage.attach_verified_video(package, item.video_url)
+            vid = getattr(item, "video_url", None) or package.get("video_url")
+            if not is_valid_video_url(vid):
+                return {
+                    "success": False,
+                    "error": f"Declared media_type is 'video' but no valid video URL exists for item '{item.queue_item_id}'. Image fallback prohibited.",
+                }
+
         report = publisher.publish_package(
             package,
             dry_run=False,
             prior_results=item.publishing_results,
+            declared_media_type=declared_media_type,
         )
         platform_results = report.get("results", {})
 

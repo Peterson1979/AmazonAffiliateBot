@@ -252,6 +252,21 @@ class FacebookAdapter(BasePlatformAdapter):
         page_id = str(self.credentials.get("page_id") or account_config.get("page_id", "")).strip()
         access_token = str(self.credentials.get("access_token", "")).strip()
 
+        # Permanent blacklist enforcement
+        from publishing.blacklist import is_asin_blacklisted
+        asin = (content.get("asin") or account_config.get("asin") or "").strip().upper()
+        if is_asin_blacklisted(asin):
+            return {
+                "platform": self.platform_name,
+                "account": account_name,
+                "page_id": page_id,
+                "action": "BLOCKED",
+                "mode": "LIVE",
+                "status": STATUS_FAILED,
+                "errors": [f"ASIN '{asin}' is permanently blacklisted. Publishing is prohibited."],
+                "message": f"Cannot publish to Facebook: ASIN '{asin}' is permanently blacklisted."
+            }
+
         text = str(content.get("content") or content.get("text", "")).strip()
         if not text:
             return {
@@ -265,7 +280,32 @@ class FacebookAdapter(BasePlatformAdapter):
                 "message": f"Cannot publish to Facebook Page '{account_name}': content is empty."
             }
 
+        declared_media = (content.get("media_type") or account_config.get("media_type") or "").strip().lower()
         video_url = str(content.get("video_url") or account_config.get("video_url", "")).strip()
+
+        if declared_media == "image":
+            # Strict enforcement: an image item must NEVER publish a video
+            video_url = ""
+        elif declared_media == "video":
+            if not video_url:
+                return {
+                    "platform": self.platform_name,
+                    "account": account_name,
+                    "page_id": page_id,
+                    "action": "PUBLISH",
+                    "mode": "LIVE",
+                    "status": STATUS_FAILED,
+                    "errors": [f"Declared media_type is 'video' but video_url is missing for Facebook. Image fallback prohibited."],
+                    "message": f"Cannot publish to Facebook: missing video_url for video publication.",
+                }
+            return self._execute_live_video_publish(
+                video_url=video_url,
+                text=text,
+                page_id=page_id,
+                access_token=access_token,
+                account_name=account_name,
+            )
+
         if video_url:
             return self._execute_live_video_publish(
                 video_url=video_url,

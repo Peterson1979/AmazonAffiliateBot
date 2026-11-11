@@ -1,0 +1,11 @@
+{
+  "blacklisted_asins": [
+    "B09D7DWTVB"
+  ],
+  "description": "Permanent ASIN blacklist. Any product with a blacklisted ASIN is prohibited from import, queueing, and publishing.",
+  "updated_at": "2026-11-11T16:00:00+00:00",
+  "reasons": {
+    "B09D7DWTVB": "Permanently blacklisted: duplicate publication and creative conflict incident."
+  }
+}
+

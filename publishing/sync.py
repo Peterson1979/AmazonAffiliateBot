@@ -479,6 +479,14 @@ def merge_publishing_queues(
                 merged["published_at"] = merged.get("published_at") or r_item.get("published_at") or l_item.get("published_at")
                 merged["errors"] = []
 
+            from publishing.blacklist import is_asin_blacklisted
+            if is_asin_blacklisted(asin):
+                merged["status"] = "CANCELLED"
+                errs = list(merged.get("errors") or [])
+                if "ASIN is permanently blacklisted. Cancelled." not in errs:
+                    errs.append("ASIN is permanently blacklisted. Cancelled.")
+                merged["errors"] = errs
+
             merged_items.append(merged)
             if item_id:
                 seen_ids.add(item_id)
@@ -486,7 +494,15 @@ def merge_publishing_queues(
                 seen_item_keys.add(r_key)
         else:
             # Item exists only on remote
-            merged_items.append(dict(r_item))
+            merged_r = dict(r_item)
+            from publishing.blacklist import is_asin_blacklisted
+            if is_asin_blacklisted(asin):
+                merged_r["status"] = "CANCELLED"
+                errs = list(merged_r.get("errors") or [])
+                if "ASIN is permanently blacklisted. Cancelled." not in errs:
+                    errs.append("ASIN is permanently blacklisted. Cancelled.")
+                merged_r["errors"] = errs
+            merged_items.append(merged_r)
             if item_id:
                 seen_ids.add(item_id)
             if r_key:
@@ -497,6 +513,10 @@ def merge_publishing_queues(
         item_id = l_item.get("queue_item_id")
         asin = l_item.get("asin", "").upper()
         l_key = _item_identity_key(l_item) if asin else None
+
+        from publishing.blacklist import is_asin_blacklisted
+        if is_asin_blacklisted(asin):
+            continue
 
         # Deduplicate by composite key (asin, media_type): the same product & media format on both sides is one item.
         if l_key and l_key in seen_item_keys:

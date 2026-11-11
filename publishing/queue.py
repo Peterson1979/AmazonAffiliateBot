@@ -111,6 +111,7 @@ STATUS_FAILED = "FAILED"
 STATUS_PUBLISHED = "PUBLISHED"
 STATUS_PARTIALLY_PUBLISHED = "PARTIALLY_PUBLISHED"
 STATUS_SKIPPED = "SKIPPED"
+STATUS_CANCELLED = "CANCELLED"
 
 
 def get_budapest_timezone() -> ZoneInfo:
@@ -611,6 +612,9 @@ def is_item_overdue_held(item: "QueueItem", current_dt: Optional[datetime] = Non
     Such an item is deliberately *not* published automatically; it stays READY
     (no status mutation) and is surfaced for explicit review/retry.
     """
+    from publishing.blacklist import is_asin_blacklisted
+    if is_asin_blacklisted(getattr(item, "asin", None)):
+        return False
     if getattr(item, "status", None) != STATUS_READY:
         return False
     item_date = scheduled_budapest_date(item)
@@ -934,6 +938,13 @@ class PublishingQueue:
             data = json.load(f)
         return cls.from_dict(data)
 
+    def add_item(self, item: QueueItem) -> None:
+        """Add an item to the queue after verifying ASIN is not blacklisted."""
+        from publishing.blacklist import assert_not_blacklisted
+        assert_not_blacklisted(item.asin, context=f"PublishingQueue.add_item({item.queue_item_id})")
+        self.items.append(item)
+        self.recalculate_counts()
+
     def remove_item(self, queue_item_id: str) -> Optional[QueueItem]:
         """Remove an item from the queue by its queue_item_id.
         Preserves all underlying product records, generated content, and history.
@@ -1025,8 +1036,14 @@ class PublishingQueue:
                     pass
 
         # 2. Identify unpublished overdue items in their current queue order
+        from publishing.blacklist import is_asin_blacklisted
         overdue_items: List[QueueItem] = []
         for itm in self.items:
+            if is_asin_blacklisted(itm.asin):
+                if itm.status != STATUS_CANCELLED:
+                    itm.status = STATUS_CANCELLED
+                    itm.errors.append("ASIN is permanently blacklisted. Cancelled.")
+                continue
             if itm.status == STATUS_PUBLISHED or (itm.publishing_results and any(
                 isinstance(r, dict) and r.get("status") == "PUBLISHED" and r.get("mode") == "LIVE"
                 for r in itm.publishing_results.values()
@@ -1429,7 +1446,10 @@ class QueuePublisher:
         if win_info and slot_filter is None:
             slot_filter = win_info["daily_slot"]
 
+        from publishing.blacklist import is_asin_blacklisted
         for item in queue.items:
+            if is_asin_blacklisted(item.asin):
+                continue
             if not item.scheduled_at:
                 continue
             if slot_filter is not None and item.daily_slot != slot_filter:
@@ -1622,6 +1642,24 @@ class QueuePublisher:
                 log_file=target_log
             )
 
+            # Permanent blacklist check
+            from publishing.blacklist import is_asin_blacklisted
+            if is_asin_blacklisted(item.asin):
+                item.status = STATUS_CANCELLED
+                err_text = f"ASIN '{item.asin}' is permanently blacklisted. Publishing is cancelled."
+                item.errors.append(err_text)
+                failed_count += 1
+                cls.log_event(f"CANCELLED item '{item.queue_item_id}': {err_text}", log_file=target_log, level="WARNING")
+                items_processed.append({
+                    "item_id": item.queue_item_id,
+                    "asin": item.asin,
+                    "slot": item.daily_slot,
+                    "scheduled_at": item.scheduled_at,
+                    "status": STATUS_CANCELLED,
+                    "errors": item.errors
+                })
+                continue
+
             # 1. Resolve content package path (shared with the preflight check)
             pkg_path = resolve_content_package_path(item)
 
@@ -1661,10 +1699,58 @@ class QueuePublisher:
                 })
                 continue
 
-            # 3. Publish via SocialPublisher (forwarding QueueItem video metadata if missing from package file)
-            if is_valid_video_url(getattr(item, "video_url", None)) and not is_valid_video_url(package_data.get("video_url")):
+            # 3. Authoritative creative type validation and sanitization
+            declared_media_type = (getattr(item, "media_type", None) or "image").strip().lower()
+            if declared_media_type == "image":
                 package_data = dict(package_data)
-                ContentPackage.attach_verified_video(package_data, item.video_url)
+                package_data["media_type"] = "image"
+                package_data.pop("video_url", None)
+                if hasattr(ContentPackage, "detach_video"):
+                    ContentPackage.detach_video(package_data)
+                for p_val in (package_data.get("platforms") or {}).values():
+                    if isinstance(p_val, dict):
+                        p_val.pop("video_url", None)
+                        p_val["media_type"] = "image"
+            elif declared_media_type == "video":
+                if is_valid_video_url(getattr(item, "video_url", None)) and not is_valid_video_url(package_data.get("video_url")):
+                    package_data = dict(package_data)
+                    ContentPackage.attach_verified_video(package_data, item.video_url)
+
+                assigned_video = getattr(item, "video_url", None) or package_data.get("video_url")
+                if not is_valid_video_url(assigned_video):
+                    item.status = STATUS_FAILED
+                    err_text = f"Declared media_type is 'video' but no valid video URL exists for item '{item.queue_item_id}'. Image fallback prohibited."
+                    item.errors.append(err_text)
+                    failed_count += 1
+                    cls.log_event(f"ERROR on Item '{item.queue_item_id}': {err_text}", log_file=target_log, level="ERROR")
+                    items_processed.append({
+                        "item_id": item.queue_item_id,
+                        "asin": item.asin,
+                        "slot": item.daily_slot,
+                        "scheduled_at": item.scheduled_at,
+                        "status": STATUS_FAILED,
+                        "errors": item.errors
+                    })
+                    continue
+
+                # Cross-ASIN video protection
+                video_meta_asin = (package_data.get("video") or {}).get("asin")
+                if video_meta_asin and str(video_meta_asin).strip().upper() != str(item.asin).strip().upper():
+                    item.status = STATUS_FAILED
+                    err_text = f"Video metadata ASIN '{video_meta_asin}' does not match queue item ASIN '{item.asin}'. Cross-ASIN video prohibited."
+                    item.errors.append(err_text)
+                    failed_count += 1
+                    cls.log_event(f"ERROR on Item '{item.queue_item_id}': {err_text}", log_file=target_log, level="ERROR")
+                    items_processed.append({
+                        "item_id": item.queue_item_id,
+                        "asin": item.asin,
+                        "slot": item.daily_slot,
+                        "scheduled_at": item.scheduled_at,
+                        "status": STATUS_FAILED,
+                        "errors": item.errors
+                    })
+                    continue
+
             try:
                 # Resolve target destinations for this pass
                 item_target_destinations = list(target_destinations) if target_destinations is not None else None
@@ -1711,9 +1797,10 @@ class QueuePublisher:
                         dry_run=is_dry_run,
                         prior_results=item.publishing_results,
                         target_destinations=item_target_destinations,
+                        declared_media_type=declared_media_type,
                     )
                 except TypeError as te:
-                    if "target_destinations" in str(te):
+                    if "declared_media_type" in str(te) or "target_destinations" in str(te):
                         pub_report = publisher.publish_package(
                             package_data,
                             dry_run=is_dry_run,

@@ -217,6 +217,9 @@ class QueueReplenisher:
                 break
 
             asin = pfile.stem.split("_", 1)[1].upper()
+            from publishing.blacklist import is_asin_blacklisted
+            if is_asin_blacklisted(asin):
+                continue
             if any(asin.startswith(pfx) for pfx in test_prefixes) or asin == "UNKNOWN":
                 continue
 

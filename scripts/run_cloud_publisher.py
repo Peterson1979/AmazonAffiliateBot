@@ -252,6 +252,21 @@ def audit_queue_items(
         slot = item.daily_slot
         sched_at = item.scheduled_at
 
+        from publishing.blacklist import is_asin_blacklisted
+        if is_asin_blacklisted(asin):
+            if item.status != "CANCELLED":
+                item.status = "CANCELLED"
+                item.errors.append("ASIN is permanently blacklisted. Cancelled.")
+            skipped_items.append({
+                "item_id": item_id,
+                "asin": asin,
+                "slot": slot,
+                "scheduled_at": sched_at,
+                "status": "CANCELLED",
+                "reason": "ASIN is permanently blacklisted."
+            })
+            continue
+
         if status != STATUS_READY:
             reason = f"Status is {status}"
             if status in ("PUBLISHED", "PARTIALLY_PUBLISHED"):

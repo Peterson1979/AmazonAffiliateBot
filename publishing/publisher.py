@@ -6,6 +6,7 @@ Active supported platforms: Facebook, Pinterest, and Threads.
 """
 
 from typing import Dict, Any, Optional, List
+from datetime import datetime, timezone
 from .config import PublishingConfig, DEFAULT_TARGET_ACCOUNTS
 from .adapters import (
     FacebookAdapter,
@@ -63,6 +64,7 @@ class SocialPublisher:
         dry_run: Optional[bool] = None,
         prior_results: Optional[Dict[str, Any]] = None,
         target_destinations: Optional[List[str]] = None,
+        declared_media_type: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Publish a validated Content Package across all configured platforms (or targeted destinations).
@@ -74,6 +76,8 @@ class SocialPublisher:
             target_destinations: Optional list of destination keys to publish in this pass
                                  (e.g. ['facebook', 'threads', 'pinterest'] or ['pinterest_lifemodehq']).
                                  If None, all configured destinations are evaluated.
+            declared_media_type: Declared authoritative media type ('image' or 'video').
+                                 Overrides any package-level media_type.
 
         Returns:
             Dict[str, Any]: Comprehensive publishing report.
@@ -83,6 +87,30 @@ class SocialPublisher:
         """
         is_dry_run = self.config.dry_run if dry_run is None else dry_run
         mode = "DRY_RUN" if is_dry_run else "LIVE"
+
+        asin = (package.get("asin") or "").strip().upper()
+        from publishing.blacklist import is_asin_blacklisted
+        if is_asin_blacklisted(asin):
+            target_keys = target_destinations or ["facebook", "pinterest", "pinterest_lifemodehq", "threads"]
+            return {
+                "asin": asin,
+                "title": package.get("title", "Unknown"),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "mode": mode,
+                "status": STATUS_FAILED,
+                "errors": [f"ASIN '{asin}' is permanently blacklisted. Publishing is prohibited."],
+                "results": {
+                    k: {
+                        "platform": k,
+                        "action": "BLOCKED",
+                        "mode": mode,
+                        "status": STATUS_FAILED,
+                        "errors": [f"ASIN '{asin}' is permanently blacklisted."],
+                        "message": f"Cannot publish to {k}: ASIN '{asin}' is permanently blacklisted."
+                    }
+                    for k in target_keys
+                }
+            }
 
         package_status = package.get("status")
         if package_status != "READY_FOR_REVIEW":
@@ -103,9 +131,23 @@ class SocialPublisher:
 
         project_root = Path(__file__).resolve().parent.parent
 
-        asin = package.get("asin")
+        effective_media_type = (
+            (declared_media_type or package.get("media_type") or "").strip().lower()
+        )
+
         raw_pkg_video = package.get("video_url")
         pkg_video_url = raw_pkg_video.strip() if is_valid_video_url(raw_pkg_video) else None
+
+        if effective_media_type == "image":
+            # An image item must never carry a video_url into platforms
+            pkg_video_url = None
+        elif effective_media_type == "video":
+            # Video integrity check: verify video does not belong to a different ASIN
+            video_meta_asin = (package.get("video") or {}).get("asin")
+            if video_meta_asin and str(video_meta_asin).strip().upper() != asin:
+                raise ValueError(
+                    f"Video metadata ASIN '{video_meta_asin}' does not match package ASIN '{asin}'. Cross-ASIN video prohibited."
+                )
 
         product_has_creative_context = bool(asin and has_creative_context(asin))
         selected_creative_info: Optional[Dict[str, Any]] = None
@@ -193,14 +235,36 @@ class SocialPublisher:
                 all_succeeded = False
                 continue
 
-            raw_plat_video = p_content.get("video_url")
-            target_video_url = (
-                raw_plat_video.strip()
-                if is_valid_video_url(raw_plat_video)
-                else pkg_video_url
-            )
-
             account_cfg_to_use = dict(account_cfg)
+            account_cfg_to_use["asin"] = asin
+
+            if effective_media_type == "image":
+                target_video_url = None
+                p_content = dict(p_content)
+                p_content.pop("video_url", None)
+                p_content["media_type"] = "image"
+                account_cfg_to_use["media_type"] = "image"
+                account_cfg_to_use.pop("video_url", None)
+            else:
+                raw_plat_video = p_content.get("video_url")
+                target_video_url = (
+                    raw_plat_video.strip()
+                    if is_valid_video_url(raw_plat_video)
+                    else pkg_video_url
+                )
+                if not target_video_url and effective_media_type == "video":
+                    results[result_key] = {
+                        "platform": platform_name,
+                        "account": account_cfg.get("account", ""),
+                        "action": "PUBLISH",
+                        "mode": mode,
+                        "status": STATUS_FAILED,
+                        "errors": [
+                            f"Declared media_type is 'video' but no valid video URL exists for {platform_name}. Image fallback prohibited."
+                        ],
+                    }
+                    all_succeeded = False
+                    continue
 
             if target_video_url:
                 # Video publishing path: route public HTTPS R2 video_url to each platform
@@ -208,6 +272,8 @@ class SocialPublisher:
                 p_content = dict(p_content)
                 p_content["video_url"] = target_video_url
                 p_content["media_type"] = "video"
+                account_cfg_to_use["media_type"] = "video"
+                account_cfg_to_use["video_url"] = target_video_url
 
                 variants = p_content.get("variants") or {}
                 vid_var = variants.get("video") or {}

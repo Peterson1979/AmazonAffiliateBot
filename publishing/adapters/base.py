@@ -45,6 +45,41 @@ class BasePlatformAdapter(ABC):
         account_name = account_config.get("account", "")
         mode = "DRY_RUN" if dry_run else "LIVE"
 
+        # 1. Permanent blacklist enforcement at final platform boundary
+        from publishing.blacklist import is_asin_blacklisted
+        asin = (content.get("asin") or account_config.get("asin") or "").strip().upper()
+        if is_asin_blacklisted(asin):
+            return {
+                "platform": self.platform_name,
+                "account": account_name,
+                "action": "BLOCKED",
+                "mode": mode,
+                "status": STATUS_FAILED,
+                "errors": [f"ASIN '{asin}' is permanently blacklisted. Publishing is prohibited."],
+                "message": f"Cannot publish to {self.platform_name}: ASIN '{asin}' is permanently blacklisted."
+            }
+
+        # 2. Strict media type validation
+        declared_media = (content.get("media_type") or account_config.get("media_type") or "").strip().lower()
+        if declared_media == "image":
+            # An image item must never carry a video_url into platform adapters
+            if "video_url" in content:
+                content = dict(content)
+                content.pop("video_url", None)
+            content["media_type"] = "image"
+        elif declared_media == "video":
+            video_url = str(content.get("video_url") or account_config.get("video_url") or "").strip()
+            if not video_url:
+                return {
+                    "platform": self.platform_name,
+                    "account": account_name,
+                    "action": "PUBLISH",
+                    "mode": mode,
+                    "status": STATUS_FAILED,
+                    "errors": [f"Declared media_type is 'video' but video_url is missing for {self.platform_name}. Fallback prohibited."],
+                    "message": f"Cannot publish to {self.platform_name}: missing video_url for video publication."
+                }
+
         if dry_run:
             result = {
                 "platform": self.platform_name,
@@ -54,9 +89,17 @@ class BasePlatformAdapter(ABC):
                 "status": STATUS_WOULD_PUBLISH,
                 "message": f"Simulated publish to {self.platform_name} ({account_name}). No real request sent."
             }
-            if content.get("video_url"):
+            if declared_media == "image":
+                result["media_type"] = "IMAGE"
+                if content.get("image_url"):
+                    result["image_url"] = content.get("image_url")
+                if content.get("image_path"):
+                    result["image_path"] = content.get("image_path")
+            elif content.get("video_url"):
                 result["video_url"] = content.get("video_url")
                 result["media_type"] = "VIDEO"
+            else:
+                result["media_type"] = "IMAGE"
             if self.platform_name == "pinterest":
                 result["board"] = account_config.get("board", "")
                 result["title"] = content.get("title", "")

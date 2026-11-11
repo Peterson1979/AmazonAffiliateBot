@@ -491,8 +491,25 @@ class PinterestAdapter(BasePlatformAdapter):
         board_id = str(configured_board_id) if configured_board_id else ""
         access_token = self.credentials.get("access_token", "")
 
+        # Permanent blacklist enforcement
+        from publishing.blacklist import is_asin_blacklisted
+        asin = (content.get("asin") or account_config.get("asin") or "").strip().upper()
+        if is_asin_blacklisted(asin):
+            return {
+                "platform": self.platform_name,
+                "account": account_name,
+                "board": board_name,
+                "board_id": board_id,
+                "action": "BLOCKED",
+                "mode": "LIVE",
+                "status": STATUS_FAILED,
+                "errors": [f"ASIN '{asin}' is permanently blacklisted. Publishing is prohibited."],
+                "message": f"Cannot publish to Pinterest: ASIN '{asin}' is permanently blacklisted."
+            }
+
         title = str(content.get("title", ""))[:100]
         description = str(content.get("description", ""))[:800]
+        declared_media = (content.get("media_type") or account_config.get("media_type") or "").strip().lower()
         video_url = str(content.get("video_url") or account_config.get("video_url", "")).strip()
         image_url = str(content.get("image_url") or account_config.get("image_url", "")).strip()
         image_path = content.get("image_path")
@@ -502,6 +519,35 @@ class PinterestAdapter(BasePlatformAdapter):
             url_match = re.search(r'https?://\S+', description)
             if url_match:
                 link = url_match.group(0).rstrip(".,)")
+
+        if declared_media == "image":
+            # Strict enforcement: an image item must NEVER publish a video
+            video_url = ""
+        elif declared_media == "video":
+            if not video_url:
+                return {
+                    "platform": self.platform_name,
+                    "account": account_name,
+                    "board": board_name,
+                    "board_id": board_id,
+                    "action": "PUBLISH",
+                    "mode": "LIVE",
+                    "status": STATUS_FAILED,
+                    "errors": [f"Declared media_type is 'video' but video_url is missing for Pinterest. Image fallback prohibited."],
+                    "message": f"Cannot publish to Pinterest: missing video_url for video publication."
+                }
+            return self._execute_live_video_pin(
+                content=content,
+                account_config=account_config,
+                account_name=account_name,
+                board_name=board_name,
+                board_id=board_id,
+                access_token=access_token,
+                title=title,
+                description=description,
+                link=link,
+                video_url=video_url,
+            )
 
         if video_url:
             return self._execute_live_video_pin(
