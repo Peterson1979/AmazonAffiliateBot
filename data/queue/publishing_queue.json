@@ -61,9 +61,10 @@
       "completed_at": "2026-11-11T15:16:13.286227+01:00"
     },
     "2026-11-11-slot-2": {
-      "state": "CLAIMED",
+      "state": "COMPLETED",
       "claimed_at": "2026-11-11T21:14:42.831081+01:00",
-      "attempt": 2
+      "attempt": 2,
+      "completed_at": "2026-11-11T23:01:14.011885+01:00"
     }
   },
   "items": [
@@ -2224,11 +2225,11 @@
       "scheduled_at": "2026-11-11T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-09T08:03:36.931251+00:00",
-      "published_at": "2026-11-11T21:01:19.978834+01:00",
+      "published_at": "2026-11-11T23:01:14.015250+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -2345,6 +2346,81 @@
           },
           "message": "Successfully published video post 18121102349052165 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-11-11T21:01:19.978834+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018370161",
+          "pin_url": "https://www.pinterest.com/pin/495607134018370161/",
+          "media_id": "4026614932385558016",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living - Video",
+          "link": "https://link.amazon/B00TR8Qpy",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "pin_metrics": null,
+            "board_section_id": null,
+            "id": "495607134018370161",
+            "created_at": "2026-11-11T22:01:22",
+            "product_tags": [],
+            "link": "https://link.amazon/B00TR8Qpy",
+            "board_id": "495607202683261042",
+            "has_been_promoted": false,
+            "is_standard": true,
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 591,
+                  "url": "https://i.pinimg.com/564x/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1258,
+                  "url": "https://i.pinimg.com/1200x/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                }
+              }
+            },
+            "creative_type": "VIDEO",
+            "is_product": false,
+            "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "dominant_color": "#d0d0ce",
+            "alt_text": null,
+            "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living - Video",
+            "is_removable": false,
+            "is_owner": true,
+            "parent_pin_id": null
+          },
+          "message": "Successfully created video pin 495607134018370161 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-11T23:01:14.015250+01:00"
         }
       },
       "batch_id": null,
