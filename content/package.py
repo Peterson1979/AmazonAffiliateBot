@@ -214,6 +214,10 @@ class ContentPackage:
         target_dir.mkdir(parents=True, exist_ok=True)
         out_path = target_dir / f"{cache_key}_content_package.json"
 
+        # Canonical top-level package status must be READY_FOR_REVIEW, never raw VALID
+        if package.get("status") == STATUS_VALID:
+            package["status"] = STATUS_READY_FOR_REVIEW
+
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump(package, f, indent=2, ensure_ascii=False)
 

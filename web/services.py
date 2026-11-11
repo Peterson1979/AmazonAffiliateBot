@@ -84,6 +84,7 @@ from publishing.queue import (
     QueueItem,
     QueuePublisher,
     is_item_overdue_held,
+    find_overdue_held_items,
     get_budapest_timezone,
     DEFAULT_QUEUE_FILE,
     DEFAULT_LOGS_DIR,
@@ -1343,6 +1344,7 @@ def get_dashboard_summary() -> Dict[str, Any]:
         "queue": {
             "exists": queue_exists,
             "total_items": total_queued,
+            "overdue": len(find_overdue_held_items(queue, now_dt)) if queue else 0,
             "future_scheduled": future_scheduled,
             "ready": ready_count,
             "scheduled": scheduled_count,

@@ -1705,12 +1705,22 @@ class QueuePublisher:
                     })
                     continue
 
-                pub_report = publisher.publish_package(
-                    package_data,
-                    dry_run=is_dry_run,
-                    prior_results=item.publishing_results,
-                    target_destinations=item_target_destinations,
-                )
+                try:
+                    pub_report = publisher.publish_package(
+                        package_data,
+                        dry_run=is_dry_run,
+                        prior_results=item.publishing_results,
+                        target_destinations=item_target_destinations,
+                    )
+                except TypeError as te:
+                    if "target_destinations" in str(te):
+                        pub_report = publisher.publish_package(
+                            package_data,
+                            dry_run=is_dry_run,
+                            prior_results=item.publishing_results,
+                        )
+                    else:
+                        raise
                 platform_results = pub_report.get("results", {})
 
                 # Check active platform results

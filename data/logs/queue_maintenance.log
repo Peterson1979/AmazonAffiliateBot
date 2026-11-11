@@ -88,3 +88,9 @@
 [2026-10-11 09:08:36 CEST] [INFO] Automatic discovery is disabled (discovery.enabled=False). Queue maintained from existing products only.
 [2026-10-11 09:08:36 CEST] [INFO] Maintenance Finished: Evaluated=0, Added=0, Rejected=0, Final Future Capacity=14/28
 [2026-10-11 09:08:36 CEST] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===
+[2026-11-11 08:00:55 CET] [INFO] === QUEUE MAINTENANCE RUN START ===
+[2026-11-11 08:00:56 CET] [INFO] Image recovery: recovered=0, unresolved=0, already_published=7
+[2026-11-11 08:00:56 CET] [INFO] Current Future Capacity: 10 / Target: 28
+[2026-11-11 08:00:56 CET] [INFO] Automatic discovery is disabled (discovery.enabled=False). Queue maintained from existing products only.
+[2026-11-11 08:00:56 CET] [INFO] Maintenance Finished: Evaluated=0, Added=0, Rejected=0, Final Future Capacity=10/28
+[2026-11-11 08:00:56 CET] [INFO] === QUEUE MAINTENANCE RUN END (SUCCESS) ===

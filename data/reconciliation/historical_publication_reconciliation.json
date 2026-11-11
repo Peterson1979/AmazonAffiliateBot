@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-18T09:22:41.639904+00:00",
+  "generated_at": "2026-11-11T07:36:28.406145+00:00",
   "evidence_policy": "Only LIVE results with a platform ID or permalink are platform_verified; dry-run records remain SIMULATED unless separately reconciled.",
   "destinations": [
     "facebook",
@@ -8,5 +8,738 @@
     "pinterest_lifemodehq",
     "threads"
   ],
-  "products": {}
+  "products": {
+    "B09X5BQ969": {
+      "queue_item_id": "item_026_B09X5BQ969",
+      "product_name": "Bellavita Luxury Honey Oud Eau de Parfum Perfume Unisex, 3.4 fl oz (100 ml)",
+      "original_url": "https://link.amazon/B0g3KMMBy",
+      "source_published_at": "2026-11-04T12:22:38.297557+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122330130866197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122330130818197726&set=a.122110416488197726&type=3",
+          "published_at": "2026-11-04T12:22:38.297557+01:00",
+          "errors": [],
+          "message": "Successfully published photo 122330130818197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999585856",
+          "post_url": "https://www.pinterest.com/pin/1033646551999585856/",
+          "published_at": "2026-11-04T12:22:38.297557+01:00",
+          "errors": [],
+          "message": "Successfully created pin 1033646551999585856 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018315842",
+          "post_url": "https://www.pinterest.com/pin/495607134018315842/",
+          "published_at": "2026-11-04T11:13:47.472252+01:00",
+          "errors": [],
+          "message": "Successfully created pin 495607134018315842 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18185288008420805",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DfUY-ZDDohf",
+          "published_at": "2026-11-04T12:51:12.038720+01:00",
+          "errors": [],
+          "message": "Successfully published image post 18185288008420805 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0BZYCJK89": {
+      "queue_item_id": "item_027_B0BZYCJK89",
+      "product_name": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Denim",
+      "original_url": "https://link.amazon/B01k4qcKc",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B07H9PZDQW": {
+      "queue_item_id": "item_028_B07H9PZDQW",
+      "product_name": "Gaiam Essentials Thick Yoga Mat Fitness & Exercise Mat with Easy-Cinch Yoga Mat Carrier Strap, 72\"L x 24\"W x 2/5 Inch Thick",
+      "original_url": "https://link.amazon/B0b08ATBA",
+      "source_published_at": "2026-11-04T22:21:40.380724+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122330244044197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122330244008197726&set=a.122110416488197726&type=3",
+          "published_at": "2026-11-04T22:21:40.380724+01:00",
+          "errors": [],
+          "message": "Successfully published photo 122330244008197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999599365",
+          "post_url": "https://www.pinterest.com/pin/1033646551999599365/",
+          "published_at": "2026-11-04T22:21:40.380724+01:00",
+          "errors": [],
+          "message": "Successfully created pin 1033646551999599365 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018319273",
+          "post_url": "https://www.pinterest.com/pin/495607134018319273/",
+          "published_at": "2026-11-04T22:21:40.380724+01:00",
+          "errors": [],
+          "message": "Successfully created pin 495607134018319273 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "17952447366302245",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DfVaQ5yDuo8",
+          "published_at": "2026-11-04T22:21:40.380724+01:00",
+          "errors": [],
+          "message": "Successfully published image post 17952447366302245 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0FL6Q8NFQ": {
+      "queue_item_id": "item_029_B0FL6Q8NFQ",
+      "product_name": "Titanium Cutting Board for Kitchen, Cutting Board Set Double Sided Food Grade, Pure Titanium and Wheat Straw PP, Easy to Clean[15.5â€ť*10.5â€ť+12â€ť*8.5â€ť]",
+      "original_url": "https://link.amazon/B05RcKpuU",
+      "source_published_at": "2026-11-05T16:00:34.064122+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "226949230493910_122330445356197726",
+          "post_url": "https://www.facebook.com/photo.php?fbid=122330445320197726&set=a.122110416488197726&type=3",
+          "published_at": "2026-11-05T16:00:34.064122+01:00",
+          "errors": [],
+          "message": "Successfully published photo 122330445320197726 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999619018",
+          "post_url": "https://www.pinterest.com/pin/1033646551999619018/",
+          "published_at": "2026-11-05T16:00:34.064122+01:00",
+          "errors": [],
+          "message": "Successfully created pin 1033646551999619018 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018323896",
+          "post_url": "https://www.pinterest.com/pin/495607134018323896/",
+          "published_at": "2026-11-05T16:00:34.064122+01:00",
+          "errors": [],
+          "message": "Successfully created pin 495607134018323896 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18078941291469053",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DfXTb7ejnfZ",
+          "published_at": "2026-11-05T16:00:34.064122+01:00",
+          "errors": [],
+          "message": "Successfully published image post 18078941291469053 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B07PBXXNCY": {
+      "queue_item_id": "item_030_B07PBXXNCY",
+      "product_name": "Clean Skin Club Clean Towels XLÂ®, 100% USDA Biobased Face Towel, Disposable Face Towelette, Eczema Association Accepted, Makeup Remover Dry Wipes, Ultra Soft, 1 Pack, 50 Ct",
+      "original_url": "https://link.amazon/B03NM8ggp",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "READY",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+        },
+        "pinterest": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "READY",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent."
+        },
+        "pinterest_lifemodehq": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "READY",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent."
+        },
+        "threads": {
+          "state": "SIMULATED",
+          "evidence_status": "dry_run_record",
+          "source_queue_status": "READY",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+        }
+      }
+    },
+    "B0BW93676T": {
+      "queue_item_id": "item_031_B0BW93676T",
+      "product_name": "Trendy Queen Trd1361022 Women's T-Shirt",
+      "original_url": "https://link.amazon/B01JvH5z4",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B0CTJGJL2T": {
+      "queue_item_id": "item_032_B0CTJGJL2T",
+      "product_name": "GODONLIF Candle Warmer Lamp with Timer, Birthday Gifts for Women Home Decor",
+      "original_url": "https://link.amazon/B02XWjJte",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B0DPJRS9DS": {
+      "queue_item_id": "item_033_B0DPJRS9DS",
+      "product_name": "medicube Jelly Gel Mask with Brightening Kojic Acid Turmeric, 4EA",
+      "original_url": "https://link.amazon/B02ZJxUYH",
+      "source_published_at": "2026-11-06T22:34:53.628879+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "1418310947119611",
+          "post_url": "https://www.facebook.com/reel/1418310947119611/",
+          "published_at": "2026-11-06T22:34:53.628879+01:00",
+          "errors": [],
+          "message": "Successfully published video 1418310947119611 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999656386",
+          "post_url": "https://www.pinterest.com/pin/1033646551999656386/",
+          "published_at": "2026-11-06T22:34:53.628879+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 1033646551999656386 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018334229",
+          "post_url": "https://www.pinterest.com/pin/495607134018334229/",
+          "published_at": "2026-11-06T22:34:53.628879+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 495607134018334229 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "17966366904220143",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DfalU8ghB5P",
+          "published_at": "2026-11-06T22:34:53.628879+01:00",
+          "errors": [],
+          "message": "Successfully published video post 17966366904220143 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0CLGNYKFR": {
+      "queue_item_id": "item_035_B0CLGNYKFR",
+      "product_name": "EverFoams Womens Fuzzy Open-toe Slippers Memory Foam Indoor House Shoes",
+      "original_url": "https://link.amazon/B07LDOITU",
+      "source_published_at": "2026-11-07T19:02:05.201483+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "FAILED",
+          "evidence_status": "persisted_failure",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [
+            "Facebook Graph Video API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph Video API rejected video with HTTP 400."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999682075",
+          "post_url": "https://www.pinterest.com/pin/1033646551999682075/",
+          "published_at": "2026-11-07T21:01:11.770281+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 1033646551999682075 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018340385",
+          "post_url": "https://www.pinterest.com/pin/495607134018340385/",
+          "published_at": "2026-11-07T19:02:05.201483+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 495607134018340385 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18025948142719258",
+          "post_url": "https://www.threads.com/@lifemodehq/post/Dfc_e36hWae",
+          "published_at": "2026-11-07T21:01:11.770281+01:00",
+          "errors": [],
+          "message": "Successfully published video post 18025948142719258 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0D72N7642": {
+      "queue_item_id": "item_036_B0D72N7642",
+      "product_name": "Levoit Humidifier for Bedroom, 25dB Ultra Quiet, Top Fill",
+      "original_url": "https://link.amazon/B0dLOKIZO",
+      "source_published_at": "2026-11-08T18:01:17.216195+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "FAILED",
+          "evidence_status": "persisted_failure",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [
+            "Facebook Graph Video API error (HTTP 400): (#100) No permission to publish the video"
+          ],
+          "message": "Facebook Graph Video API rejected video with HTTP 400."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999701533",
+          "post_url": "https://www.pinterest.com/pin/1033646551999701533/",
+          "published_at": "2026-11-08T15:01:14.422948+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 1033646551999701533 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018347911",
+          "post_url": "https://www.pinterest.com/pin/495607134018347911/",
+          "published_at": "2026-11-08T18:01:17.216195+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 495607134018347911 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18141589972554672",
+          "post_url": "https://www.threads.com/@lifemodehq/post/Dfe7NlxMjs7",
+          "published_at": "2026-11-08T15:01:14.422948+01:00",
+          "errors": [],
+          "message": "Successfully published video post 18141589972554672 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0DWFLY18Y": {
+      "queue_item_id": "item_037_B0DWFLY18Y",
+      "product_name": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream, 60ml",
+      "original_url": "https://link.amazon/B0fsIDYI6",
+      "source_published_at": "2026-11-09T23:01:17.954401+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999739584",
+          "post_url": "https://www.pinterest.com/pin/1033646551999739584/",
+          "published_at": "2026-11-09T21:01:18.582496+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 1033646551999739584 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018356102",
+          "post_url": "https://www.pinterest.com/pin/495607134018356102/",
+          "published_at": "2026-11-09T23:01:17.954401+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 495607134018356102 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "lifemodehq",
+          "board": null,
+          "post_id": "18068422382616525",
+          "post_url": "https://www.threads.com/@lifemodehq/post/DfiJF7GBB8a",
+          "published_at": "2026-11-09T21:01:18.582496+01:00",
+          "errors": [],
+          "message": "Successfully published video post 18068422382616525 to Threads account 'lifemodehq' (28272717349017680)."
+        }
+      }
+    },
+    "B0GR5WF8M4": {
+      "queue_item_id": "item_039_B0GR5WF8M4",
+      "product_name": "Veken Innovation Award Winner Stainless Steel Cat Water Fountain 3.2L/108oz",
+      "original_url": "https://link.amazon/B00TR8Qpy",
+      "source_published_at": null,
+      "destinations": {
+        "facebook": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "pinterest_lifemodehq": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    },
+    "B09D7DWTVB": {
+      "queue_item_id": "item_040_B09D7DWTVB",
+      "product_name": "KSIIA Washable Dog Bed Deluxe Plush Dog Crate Beds Fulffy Comfy Kennel Pad Anti-Slip Pet Sleeping Mat for Large, Jumbo, Medium, Small Dogs Breeds, 35\" x 23\", Gray",
+      "original_url": "https://link.amazon/B0eRVtiOe",
+      "source_published_at": "2026-11-10T23:01:15.156136+01:00",
+      "destinations": {
+        "facebook": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": null,
+          "post_id": "979423258114284",
+          "post_url": "https://www.facebook.com/226949230493910/videos/979423258114284",
+          "published_at": "2026-11-10T21:01:16.450339+01:00",
+          "errors": [],
+          "message": "Successfully published video 979423258114284 to Facebook Page 'LifeModeHQ' (226949230493910)."
+        },
+        "pinterest": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "post_id": "1033646551999767834",
+          "post_url": "https://www.pinterest.com/pin/1033646551999767834/",
+          "published_at": "2026-11-10T21:01:16.450339+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 1033646551999767834 on Pinterest board 'Shopping ideas' (dailyideasforyou)."
+        },
+        "pinterest_lifemodehq": {
+          "state": "PUBLISHED",
+          "evidence_status": "platform_verified",
+          "source_queue_status": "PARTIALLY_PUBLISHED",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "post_id": "495607134018362788",
+          "post_url": "https://www.pinterest.com/pin/495607134018362788/",
+          "published_at": "2026-11-10T23:01:15.156136+01:00",
+          "errors": [],
+          "message": "Successfully created video pin 495607134018362788 on Pinterest board 'Home & Everyday Living' (LifeModeHQ)."
+        },
+        "threads": {
+          "state": "UNKNOWN",
+          "evidence_status": "unresolved",
+          "source_queue_status": "READY",
+          "account": null,
+          "board": null,
+          "post_id": null,
+          "post_url": null,
+          "published_at": null,
+          "errors": [],
+          "message": null
+        }
+      }
+    }
+  }
 }

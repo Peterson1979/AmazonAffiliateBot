@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 7,
-  "total_failed": 1,
-  "scheduled_posts": 7,
-  "unfilled_slots": 53,
+  "total_ready": 8,
+  "total_failed": 0,
+  "scheduled_posts": 8,
+  "unfilled_slots": 52,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -50,7 +50,7 @@
       "completed_at": "2026-11-10T18:16:14.563875+01:00"
     },
     "2026-11-10-slot-2": {
-      "state": "CLAIMED",
+      "state": "COMPLETED",
       "claimed_at": "2026-11-10T23:16:15.812172+01:00",
       "attempt": 5
     }
@@ -249,9 +249,9 @@
       "original_url": "https://link.amazon/B01k4qcKc",
       "asin": "B0BZYCJK89",
       "product_name": "Owala FreeSip Insulated Stainless Steel Water Bottle, 710ml, Denim",
-      "scheduled_date": "2026-11-04",
-      "daily_slot": 1,
-      "scheduled_at": "2026-11-04T15:00:00+01:00",
+      "scheduled_date": "2026-11-12",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-12T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0BZYCJK89_content_package.json",
       "status": "READY",
@@ -642,71 +642,378 @@
       "queue_item_id": "item_030_B07PBXXNCY",
       "original_url": "https://link.amazon/B03NM8ggp",
       "asin": "B07PBXXNCY",
-      "product_name": "Clean Skin Club Clean Towels XLÂ®, 100% USDA Biobased Face Towel, Disposable Face Towelette, Eczema Association Accepted, Makeup Remover Dry Wipes, Ultra Soft, 1 Pack, 50 Ct",
-      "scheduled_date": "2026-11-05",
-      "daily_slot": 2,
-      "scheduled_at": "2026-11-05T21:00:00+01:00",
+      "product_name": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette, Eczema Association Accepted, Makeup Remover Dry Wipes, Ultra Soft, 1 Pack, 50 Ct",
+      "scheduled_date": "2026-11-14",
+      "daily_slot": 1,
+      "scheduled_at": "2026-11-14T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B07PBXXNCY_content_package.json",
       "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-26T13:26:55.352825+00:00",
-      "published_at": null,
+      "published_at": "2026-10-31T23:24:13.741306+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
           "account": "LifeModeHQ",
+          "page_id": "226949230493910",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to facebook (LifeModeHQ). No real request sent."
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "AKHScHcSiwszP8bInv2bplA"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
         },
         "pinterest": {
           "platform": "pinterest",
           "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999478971",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999478971/",
+          "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+          "link": "https://link.amazon/B03NM8ggp",
+          "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (dailyideasforyou). No real request sent.",
-          "board": "Shopping ideas"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "parent_pin_id": null,
+            "product_tags": [],
+            "pin_metrics": null,
+            "is_product": false,
+            "is_removable": false,
+            "id": "1033646551999478971",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 674,
+                  "url": "https://i.pinimg.com/564x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1435,
+                  "url": "https://i.pinimg.com/1200x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                }
+              }
+            },
+            "has_been_promoted": false,
+            "board_section_id": null,
+            "is_owner": true,
+            "board_id": "1033646620665866548",
+            "created_at": "2026-10-31T22:24:14",
+            "creative_type": "REGULAR",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "description": "The pack contains 50 single-use dry facial towels made from 100% USDA biobased cellulose fiber. https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "link": "https://link.amazon/B03NM8ggp",
+            "is_standard": true,
+            "dominant_color": "#e4e6e7",
+            "alt_text": null,
+            "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette"
+          },
+          "message": "Successfully created pin 1033646551999478971 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-31T23:24:13.741306+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",
           "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018289044",
+          "pin_url": "https://www.pinterest.com/pin/495607134018289044/",
+          "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+          "link": "https://link.amazon/B03NM8ggp",
+          "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to pinterest (LifeModeHQ). No real request sent.",
-          "board": "Home & Everyday Living"
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "link": "https://link.amazon/B03NM8ggp",
+            "board_section_id": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "description": "The pack contains 50 single-use dry facial towels made from 100% USDA biobased cellulose fiber. https://link.amazon/B03NM8ggp\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "creative_type": "REGULAR",
+            "is_removable": false,
+            "alt_text": null,
+            "id": "495607134018289044",
+            "parent_pin_id": null,
+            "board_id": "495607202683261042",
+            "has_been_promoted": false,
+            "dominant_color": "#e4e6e7",
+            "title": "Clean Skin Club Clean Towels XL®, 100% USDA Biobased Face Towel, Disposable Face Towelette",
+            "product_tags": [],
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 674,
+                  "url": "https://i.pinimg.com/564x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1435,
+                  "url": "https://i.pinimg.com/1200x/cc/77/a5/cc77a57b6b76662bbec5ace655f8d0f6.jpg"
+                }
+              }
+            },
+            "is_standard": true,
+            "created_at": "2026-10-31T22:24:15",
+            "is_product": false,
+            "pin_metrics": null,
+            "is_owner": true
+          },
+          "message": "Successfully created pin 495607134018289044 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-31T23:24:13.741306+01:00"
         },
         "threads": {
           "platform": "threads",
           "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986543458139258",
+          "post_id": "17913588687493261",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfLORbrltmh",
+          "image_url": "https://m.media-amazon.com/images/I/81NxTNUf1WL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
           "action": "PUBLISH",
-          "mode": "DRY_RUN",
-          "status": "WOULD_PUBLISH",
-          "message": "Simulated publish to threads (lifemodehq). No real request sent."
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17913588687493261"
+          },
+          "message": "Successfully published image post 17913588687493261 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-31T23:24:13.741306+01:00"
         }
       },
-      "batch_id": "batch_20261026T142627181488_cd39a9d3"
+      "batch_id": null
     },
     {
       "queue_item_id": "item_031_B0BW93676T",
       "original_url": "https://link.amazon/B01JvH5z4",
       "asin": "B0BW93676T",
       "product_name": "Trendy Queen Trd1361022 Women's T-Shirt",
-      "scheduled_date": "2026-11-06",
-      "daily_slot": 1,
-      "scheduled_at": "2026-11-06T15:00:00+01:00",
+      "scheduled_date": "2026-11-14",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-14T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0BW93676T_content_package.json",
       "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-10-27T11:29:05.011677+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-10-31T23:24:13.741306+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "http_status": 400,
+          "api_response": {
+            "error": {
+              "message": "Invalid OAuth access token - Cannot parse access token",
+              "type": "OAuthException",
+              "code": 190,
+              "fbtrace_id": "A9N8k4Cl8VKp-QcPAf-sqrf"
+            }
+          },
+          "errors": [
+            "Facebook Graph API error (HTTP 400): Invalid OAuth access token - Cannot parse access token"
+          ],
+          "message": "Facebook Graph API rejected post with HTTP 400."
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999474875",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999474875/",
+          "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+          "link": "https://link.amazon/B01JvH5z4",
+          "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+          "action": "SKIP_DUPLICATE",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "description": "The shirt is made from 88% polyester and 12% spandex, providing an ultra‑soft, breathable, high‑stretch fabric. It features a slim‑fit crew neck design that hugs the body while maintaining shape. https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "product_tags": [],
+            "is_owner": true,
+            "created_at": "2026-10-31T19:20:16",
+            "creative_type": "REGULAR",
+            "link": "https://link.amazon/B01JvH5z4",
+            "is_standard": true,
+            "is_product": false,
+            "board_section_id": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 822,
+                  "url": "https://i.pinimg.com/564x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "1200x": {
+                  "width": 1029,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                }
+              }
+            },
+            "is_removable": false,
+            "dominant_color": null,
+            "id": "1033646551999474875",
+            "has_been_promoted": false,
+            "parent_pin_id": null,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+            "board_id": "1033646620665866548",
+            "alt_text": null,
+            "pin_metrics": null
+          },
+          "message": "Successfully created pin 1033646551999474875 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-10-31T21:05:00+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018287979",
+          "pin_url": "https://www.pinterest.com/pin/495607134018287979/",
+          "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+          "link": "https://link.amazon/B01JvH5z4",
+          "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+          "action": "SKIP_DUPLICATE",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_product": false,
+            "board_id": "495607202683261042",
+            "pin_metrics": null,
+            "id": "495607134018287979",
+            "is_owner": true,
+            "product_tags": [],
+            "board_section_id": null,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 822,
+                  "url": "https://i.pinimg.com/564x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                },
+                "1200x": {
+                  "width": 1029,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/5f/56/84/5f568472eb27ade73389c7668ded347c.jpg"
+                }
+              }
+            },
+            "alt_text": null,
+            "title": "Trendy Queen Women's T-Shirt – Ultra‑soft 88% Polyester, 12% Spandex",
+            "parent_pin_id": null,
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "created_at": "2026-10-31T19:20:17",
+            "creative_type": "REGULAR",
+            "is_standard": true,
+            "dominant_color": "#e8e9ef",
+            "is_removable": false,
+            "has_been_promoted": false,
+            "description": "The shirt is made from 88% polyester and 12% spandex, providing an ultra‑soft, breathable, high‑stretch fabric. It features a slim‑fit crew neck design that hugs the body while maintaining shape. https://link.amazon/B01JvH5z4\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "link": "https://link.amazon/B01JvH5z4"
+          },
+          "message": "Successfully created pin 495607134018287979 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-10-31T21:05:00+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17986518708139258",
+          "post_id": "17906645697350440",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfK5OCPlHsM",
+          "image_url": "https://m.media-amazon.com/images/I/71hWicdj77L._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "SKIP_DUPLICATE",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17906645697350440"
+          },
+          "message": "Successfully published image post 17906645697350440 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-10-31T21:05:00+01:00"
+        }
+      },
       "batch_id": "batch_20261027T122840231670_da1691ba"
     },
     {
@@ -714,9 +1021,9 @@
       "original_url": "https://link.amazon/B02XWjJte",
       "asin": "B0CTJGJL2T",
       "product_name": "GODONLIF Candle Warmer Lamp with Timer, Birthday Gifts for Women Home Decor",
-      "scheduled_date": "2026-11-06",
+      "scheduled_date": "2026-11-13",
       "daily_slot": 2,
-      "scheduled_at": "2026-11-06T21:00:00+01:00",
+      "scheduled_at": "2026-11-13T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0CTJGJL2T_content_package.json",
       "status": "READY",
@@ -1900,19 +2207,14 @@
       "original_url": "https://link.amazon/B00TR8Qpy",
       "asin": "B0GR5WF8M4",
       "product_name": "Veken Innovation Award Winner Stainless Steel Cat Water Fountain 3.2L/108oz",
-      "scheduled_date": "2026-11-10",
-      "daily_slot": 1,
-      "scheduled_at": "2026-11-10T15:00:00+01:00",
+      "scheduled_date": "2026-11-11",
+      "daily_slot": 2,
+      "scheduled_at": "2026-11-11T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
-      "status": "FAILED",
+      "status": "READY",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish.",
-        "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish.",
-        "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish.",
-        "Publishing exception: Publisher rejected content package: status is 'VALID'. Package must be 'READY_FOR_REVIEW' to publish."
-      ],
+      "errors": [],
       "created_at": "2026-11-09T08:03:36.931251+00:00",
       "published_at": null,
       "publishing_results": null,
@@ -1930,13 +2232,11 @@
       "scheduled_at": "2026-11-10T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B09D7DWTVB_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [
-        "Threads Step 1 (Video Container Creation) error (HTTP 400): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
-      ],
+      "errors": [],
       "created_at": "2026-11-09T08:12:35.425538+00:00",
-      "published_at": "2026-11-10T23:01:15.156136+01:00",
+      "published_at": "2026-11-11T09:12:58.235709+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -1948,7 +2248,7 @@
           "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
           "media_type": "VIDEO",
           "verified_video_read": false,
-          "action": "SKIP_DUPLICATE",
+          "action": "PUBLISH",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 200,
@@ -1972,7 +2272,7 @@
           "media_type": "VIDEO",
           "title": "KSIIA Washable Dog Bed – Deluxe Plush Kennel Pad, 35\" x 23\"",
           "link": "https://link.amazon/B0eRVtiOe",
-          "action": "SKIP_DUPLICATE",
+          "action": "PUBLISH",
           "mode": "LIVE",
           "status": "PUBLISHED",
           "http_status": 201,
@@ -2037,14 +2337,22 @@
           "platform": "threads",
           "account": "lifemodehq",
           "user_id": "28272717349017680",
+          "creation_id": "17988189147139258",
+          "post_id": "17945385651090869",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfmBfn4Pc5R",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B09D7DWTVB/Because_pets_are_family._1.mp4",
+          "image_url": null,
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
           "action": "PUBLISH",
           "mode": "LIVE",
-          "status": "FAILED",
-          "http_status": 400,
-          "errors": [
-            "Threads Step 1 (Video Container Creation) error (HTTP 400): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
-          ],
-          "message": "Threads video container creation rejected with HTTP 400."
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "17945385651090869"
+          },
+          "message": "Successfully published video post 17945385651090869 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-11T09:12:58.235709+01:00"
         },
         "pinterest_lifemodehq": {
           "platform": "pinterest",

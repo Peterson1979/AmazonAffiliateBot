@@ -74,16 +74,29 @@ def build_report(queue_payload: Dict[str, Any]) -> Dict[str, Any]:
         asin = item.get("asin")
         if not asin:
             continue
-        products[asin] = {
-            "queue_item_id": item.get("queue_item_id"),
-            "product_name": item.get("product_name"),
-            "original_url": item.get("original_url"),
-            "source_published_at": item.get("published_at"),
-            "destinations": {
-                destination: _destination_record(item, destination)
-                for destination in DESTINATIONS
-            },
+        new_dests = {
+            destination: _destination_record(item, destination)
+            for destination in DESTINATIONS
         }
+        if asin in products:
+            existing = products[asin]
+            for dest, rec in new_dests.items():
+                existing_dest = existing.get("destinations", {}).get(dest, {})
+                if existing_dest.get("evidence_status") == "platform_verified":
+                    continue
+                if rec.get("evidence_status") == "platform_verified" or existing_dest.get("evidence_status") != "platform_verified":
+                    existing["destinations"][dest] = rec
+            if item.get("status") == "PUBLISHED" and existing.get("source_published_at") is None:
+                existing["queue_item_id"] = item.get("queue_item_id")
+                existing["source_published_at"] = item.get("published_at")
+        else:
+            products[asin] = {
+                "queue_item_id": item.get("queue_item_id"),
+                "product_name": item.get("product_name"),
+                "original_url": item.get("original_url"),
+                "source_published_at": item.get("published_at"),
+                "destinations": new_dests,
+            }
 
     # This is a user report, not fabricated platform evidence. Keep it separate
     # so the UI can show the report without calling it a verified publication.

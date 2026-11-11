@@ -1,6 +1,6 @@
 {
   "asin": "B0GR5WF8M4",
-  "status": "VALID",
+  "status": "READY_FOR_REVIEW",
   "generated_at": "2026-11-09T07:30:18.620111+00:00",
   "model": "openai/gpt-oss-120b",
   "source": {
@@ -10,21 +10,23 @@
   "platforms": {
     "facebook": {
       "status": "VALID",
-      "content": "The fountain is crafted from 304 stainless steel, includes snap\u2011together assembly, a large water window with an optional blue LED light, a multi\u2011stage filter, and a fully sealed leak\u2011proof structure; all water\u2011contact parts are top\u2011rack dishwasher safe and BPA\u2011free.\n\nIncludes \u3010Ultra-Quiet Suspended Pump Design\u3011The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "content": "The fountain is crafted from 304 stainless steel, includes snap‑together assembly, a large water window with an optional blue LED light, a multi‑stage filter, and a fully sealed leak‑proof structure; all water‑contact parts are top‑rack dishwasher safe and BPA‑free.\n\nIncludes 【Ultra-Quiet Suspended Pump Design】The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
       "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
       "variants": {
         "image": {
-          "content": "The fountain is crafted from 304 stainless steel, includes snap\u2011together assembly, a large water window with an optional blue LED light, a multi\u2011stage filter, and a fully sealed leak\u2011proof structure; all water\u2011contact parts are top\u2011rack dishwasher safe and BPA\u2011free.\n\nIncludes \u3010Ultra-Quiet Suspended Pump Design\u3011The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+          "content": "The fountain is crafted from 304 stainless steel, includes snap‑together assembly, a large water window with an optional blue LED light, a multi‑stage filter, and a fully sealed leak‑proof structure; all water‑contact parts are top‑rack dishwasher safe and BPA‑free.\n\nIncludes 【Ultra-Quiet Suspended Pump Design】The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         },
         "video": {
-          "content": "The fountain is crafted from 304 stainless steel, includes snap\u2011together assembly, a large water window with an optional blue LED light, a multi\u2011stage filter, and a fully sealed leak\u2011proof structure; all water\u2011contact parts are top\u2011rack dishwasher safe and BPA\u2011free.\n\nIncludes \u3010Ultra-Quiet Suspended Pump Design\u3011The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+          "content": "The fountain is crafted from 304 stainless steel, includes snap‑together assembly, a large water window with an optional blue LED light, a multi‑stage filter, and a fully sealed leak‑proof structure; all water‑contact parts are top‑rack dishwasher safe and BPA‑free.\n\nIncludes 【Ultra-Quiet Suspended Pump Design】The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. Explore the product details and available options below.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         }
       },
       "validation": {
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4"
     },
     "pinterest": {
       "status": "VALID",
@@ -83,25 +85,29 @@
             }
           }
         }
-      }
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4"
     },
     "threads": {
       "status": "VALID",
-      "content": "It also includes a leak\u2011proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+      "content": "It also includes a leak‑proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
       "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
       "variants": {
         "image": {
-          "content": "It also includes a leak\u2011proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+          "content": "It also includes a leak‑proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         },
         "video": {
-          "content": "It also includes a leak\u2011proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
+          "content": "It also includes a leak‑proof sealed structure. Check the specifications and current availability.\n\nLink: https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         }
       },
       "validation": {
         "status": "VALID",
         "retry_count": 0,
         "errors": []
-      }
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4"
     },
     "pinterest_lifemodehq": {
       "status": "VALID",
@@ -124,7 +130,9 @@
           "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living - Video",
           "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases."
         }
-      }
+      },
+      "media_type": "video",
+      "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4"
     }
   },
   "provider_diagnostics": [
@@ -312,5 +320,18 @@
       "error_code": "rate_limit_exceeded",
       "error_message": "Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01ks87bp7jfhxavva5tfmfga8z` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6911, Requested 2184. Please try again in 8.2125s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
     }
-  ]
+  ],
+  "media_type": "video",
+  "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+  "video_object_key": "amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+  "video_content_type": "video/mp4",
+  "video": {
+    "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+    "asin": "B0GR5WF8M4",
+    "uploaded_at": "2026-11-10T15:34:16.455771+00:00",
+    "object_key": "amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+    "content_type": "video/mp4",
+    "filename": "ad-@myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+    "size_bytes": 9736837
+  }
 }

@@ -5812,3 +5812,5 @@
 [2026-11-10 23:01:23 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-11-10 23:01:23 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
 [2026-11-10 23:01:23 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-11-11 09:11:42 CET] [INFO] Recovered Threads publication [item_040_B09D7DWTVB]: FAILED (post_id: None)
+[2026-11-11 09:12:58 CET] [INFO] Recovered Threads publication [item_040_B09D7DWTVB]: PUBLISHED (post_id: 17945385651090869)
