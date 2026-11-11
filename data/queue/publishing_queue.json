@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 7,
+  "total_ready": 6,
   "total_failed": 0,
-  "scheduled_posts": 7,
-  "unfilled_slots": 53,
+  "scheduled_posts": 6,
+  "unfilled_slots": 54,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -61,9 +61,10 @@
       "completed_at": "2026-11-11T15:16:13.286227+01:00"
     },
     "2026-11-11-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-11T21:01:15.306963+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-11T21:01:19.974153+01:00"
     }
   },
   "items": [
@@ -2224,12 +2225,129 @@
       "scheduled_at": "2026-11-11T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-09T08:03:36.931251+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-11T21:01:19.978834+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "video_id": "1615359870067776",
+          "post_id": "1615359870067776",
+          "permalink_url": "https://www.facebook.com/reel/1615359870067776/",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+          "media_type": "VIDEO",
+          "verified_video_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "1615359870067776"
+          },
+          "message": "Successfully published video 1615359870067776 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-11T21:01:19.978834+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999795153",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999795153/",
+          "media_id": "4026373770508463680",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "Veken Stainless Steel Cat Water Fountain - Video",
+          "link": "https://link.amazon/B00TR8Qpy",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "dominant_color": null,
+            "title": "Veken Stainless Steel Cat Water Fountain - Video",
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "is_removable": false,
+            "is_product": false,
+            "parent_pin_id": null,
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 591,
+                  "url": "https://i.pinimg.com/564x/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 1258,
+                  "url": "https://i.pinimg.com/1200x/89/84/19/89841915d64f91ed791afc0c6b958bcd.jpg"
+                }
+              }
+            },
+            "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Check the specifications and current availability. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "creative_type": "VIDEO",
+            "pin_metrics": null,
+            "is_owner": true,
+            "is_standard": true,
+            "product_tags": [],
+            "board_id": "1033646620665866548",
+            "board_section_id": null,
+            "alt_text": null,
+            "link": "https://link.amazon/B00TR8Qpy",
+            "id": "1033646551999795153",
+            "has_been_promoted": false,
+            "created_at": "2026-11-11T20:03:58"
+          },
+          "message": "Successfully created video pin 1033646551999795153 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-11T21:01:19.978834+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17988280110139258",
+          "post_id": "18121102349052165",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfnS-HGSA7c",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18121102349052165"
+          },
+          "message": "Successfully published video post 18121102349052165 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-11T21:01:19.978834+01:00"
+        }
+      },
       "batch_id": null,
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0GR5WF8M4/ad-_myusalife4-2026-11-03_2037-Fresh-water-happy-cat-My-cat-is-absolutely-obsessed-with-the-Veken-Pet-Water-Fountain-No-matter-wher-7704031584109841677.mp4"
