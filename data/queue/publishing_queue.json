@@ -73,9 +73,10 @@
       "completed_at": "2026-11-12T18:16:30.252124+01:00"
     },
     "2026-11-12-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-12T23:16:15.367813+01:00",
-      "attempt": 5
+      "attempt": 5,
+      "completed_at": "2026-11-12T23:16:17.666501+01:00"
     }
   },
   "items": [
@@ -284,7 +285,7 @@
         "Pinterest board lookup failed with HTTP 401."
       ],
       "created_at": "2026-10-26T13:20:52.251634+00:00",
-      "published_at": "2026-11-12T23:01:11.882178+01:00",
+      "published_at": "2026-11-12T23:16:17.671833+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
