@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 5,
+  "total_ready": 4,
   "total_failed": 0,
-  "scheduled_posts": 5,
-  "unfilled_slots": 55,
+  "scheduled_posts": 4,
+  "unfilled_slots": 56,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -73,9 +73,10 @@
       "completed_at": "2026-11-12T18:16:30.252124+01:00"
     },
     "2026-11-12-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-12T21:01:14.167277+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-12T21:01:16.747442+01:00"
     }
   },
   "items": [
@@ -277,12 +278,110 @@
       "scheduled_at": "2026-11-12T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0BZYCJK89_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
-      "errors": [],
+      "errors": [
+        "Threads requires a publicly accessible HTTPS image URL for creative image publishing. Local creative path '/creatives/B0BZYCJK89/everyday_pick_flow.jpg' cannot be fetched by Threads API."
+      ],
       "created_at": "2026-10-26T13:20:52.251634+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-12T21:01:16.752462+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122331987368197726",
+          "post_id": "226949230493910_122331987410197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122331987368197726&set=a.122110416488197726&type=3",
+          "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122331987368197726",
+            "post_id": "226949230493910_122331987410197726"
+          },
+          "message": "Successfully published photo 122331987368197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-12T21:01:16.752462+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999822477",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999822477/",
+          "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+          "link": "https://link.amazon/B01k4qcKc",
+          "image_url": "/creatives/B0BZYCJK89/everyday_pick_flow.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "parent_pin_id": null,
+            "dominant_color": null,
+            "is_removable": false,
+            "board_id": "1033646620665866548",
+            "creative_type": "REGULAR",
+            "title": "Owala FreeSip Insulated Stainless Steel Water Bottle 710ml",
+            "pin_metrics": null,
+            "link": "https://link.amazon/B01k4qcKc",
+            "alt_text": null,
+            "is_standard": true,
+            "is_owner": true,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "is_product": false,
+            "description": "It features double‑wall insulation that keeps drinks cold. https://link.amazon/B01k4qcKc\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/ea/1d/8e/ea1d8e021628a0eca35214c7bdacb955.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/ea/1d/8e/ea1d8e021628a0eca35214c7bdacb955.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/ea/1d/8e/ea1d8e021628a0eca35214c7bdacb955.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/ea/1d/8e/ea1d8e021628a0eca35214c7bdacb955.jpg"
+                }
+              }
+            },
+            "has_been_promoted": false,
+            "id": "1033646551999822477",
+            "board_section_id": null,
+            "created_at": "2026-11-12T20:01:23",
+            "product_tags": []
+          },
+          "message": "Successfully created pin 1033646551999822477 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-12T21:01:16.752462+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "errors": [
+            "Threads requires a publicly accessible HTTPS image URL for creative image publishing. Local creative path '/creatives/B0BZYCJK89/everyday_pick_flow.jpg' cannot be fetched by Threads API."
+          ]
+        }
+      },
       "batch_id": "batch_20261026T141635592098_27945101",
       "media_type": "image"
     },
