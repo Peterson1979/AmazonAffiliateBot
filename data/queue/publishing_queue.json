@@ -73,9 +73,10 @@
       "completed_at": "2026-11-12T18:16:30.252124+01:00"
     },
     "2026-11-12-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-12T23:01:09.558767+01:00",
-      "attempt": 4
+      "attempt": 4,
+      "completed_at": "2026-11-12T23:01:11.877857+01:00"
     }
   },
   "items": [
@@ -280,10 +281,11 @@
       "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [
-        "Threads requires a publicly accessible HTTPS image URL for creative image publishing. Local creative path '/creatives/B0BZYCJK89/everyday_pick_flow.jpg' cannot be fetched by Threads API."
+        "Threads requires a publicly accessible HTTPS image URL for creative image publishing. Local creative path '/creatives/B0BZYCJK89/everyday_pick_flow.jpg' cannot be fetched by Threads API.",
+        "Pinterest board lookup failed with HTTP 401."
       ],
       "created_at": "2026-10-26T13:20:52.251634+00:00",
-      "published_at": "2026-11-12T21:53:36.157775+01:00",
+      "published_at": "2026-11-12T23:01:11.882178+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -379,6 +381,19 @@
           "errors": [
             "Threads requires a publicly accessible HTTPS image URL for creative image publishing. Local creative path '/creatives/B0BZYCJK89/everyday_pick_flow.jpg' cannot be fetched by Threads API."
           ]
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "FAILED",
+          "errors": [
+            "Pinterest board lookup failed with HTTP 401."
+          ],
+          "message": "Cannot create pin: board 'Home & Everyday Living' could not be resolved for this account."
         }
       },
       "batch_id": "batch_20261026T141635592098_27945101",
