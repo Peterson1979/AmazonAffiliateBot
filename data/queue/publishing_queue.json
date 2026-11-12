@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 6,
+  "total_ready": 5,
   "total_failed": 0,
-  "scheduled_posts": 6,
-  "unfilled_slots": 54,
+  "scheduled_posts": 5,
+  "unfilled_slots": 55,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -67,9 +67,10 @@
       "completed_at": "2026-11-11T23:01:14.011885+01:00"
     },
     "2026-11-12-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-12T15:01:13.386576+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-12T15:01:15.716326+01:00"
     }
   },
   "items": [
@@ -2794,12 +2795,117 @@
       "scheduled_at": "2026-11-12T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0DWFLY18Y_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-09T09:14:18.045343+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-12T15:01:15.721714+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122331948476197726",
+          "post_id": "226949230493910_122331948500197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122331948476197726&set=a.122110416488197726&type=3",
+          "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122331948476197726",
+            "post_id": "226949230493910_122331948500197726"
+          },
+          "message": "Successfully published photo 122331948476197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-12T15:01:15.721714+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999813697",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999813697/",
+          "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+          "link": "https://link.amazon/B0fsIDYI6",
+          "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "created_at": "2026-11-12T14:01:20",
+            "description": "The formula has a lightweight, fast‑absorbing texture that is non‑greasy, non‑sticky, non‑comedogenic, and does not pill under makeup. See more details and explore the available options. https://link.amazon/B0fsIDYI6\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "alt_text": null,
+            "title": "Anua PDRN Hyaluronic Acid 100 Moisturizing Cream 60ml",
+            "id": "1033646551999813697",
+            "is_product": false,
+            "board_section_id": null,
+            "creative_type": "REGULAR",
+            "product_tags": [],
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "board_id": "1033646620665866548",
+            "link": "https://link.amazon/B0fsIDYI6",
+            "is_standard": true,
+            "parent_pin_id": null,
+            "has_been_promoted": false,
+            "is_owner": true,
+            "is_removable": false,
+            "dominant_color": "#f5f7f7",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/9e/02/e8/9e02e84de6faf99a83abc5076729e25f.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/9e/02/e8/9e02e84de6faf99a83abc5076729e25f.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 734,
+                  "url": "https://i.pinimg.com/564x/9e/02/e8/9e02e84de6faf99a83abc5076729e25f.jpg"
+                },
+                "1200x": {
+                  "width": 1139,
+                  "height": 1484,
+                  "url": "https://i.pinimg.com/1200x/9e/02/e8/9e02e84de6faf99a83abc5076729e25f.jpg"
+                }
+              }
+            },
+            "pin_metrics": null
+          },
+          "message": "Successfully created pin 1033646551999813697 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-12T15:01:15.721714+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17988394479139258",
+          "post_id": "18140762755729825",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfpOQeJlb99",
+          "image_url": "https://m.media-amazon.com/images/I/61zs8IgVTHL._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18140762755729825"
+          },
+          "message": "Successfully published image post 18140762755729825 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-12T15:01:15.721714+01:00"
+        }
+      },
       "batch_id": null,
       "media_type": "image"
     },

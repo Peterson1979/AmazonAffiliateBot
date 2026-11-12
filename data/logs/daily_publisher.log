@@ -5844,3 +5844,13 @@
 [2026-11-11 23:01:22 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
 [2026-11-11 23:01:22 CET] [INFO] Execution Summary: Processed=1, Published=1, Partially=0, Failed=0
 [2026-11-11 23:01:22 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
+[2026-11-12 15:01:15 CET] [INFO] === DAILY PUBLISHER RUN START ===
+[2026-11-12 15:01:15 CET] [INFO] Current Europe/Budapest Time: 2026-11-12T15:01:15.721714+01:00 | Mode: LIVE
+[2026-11-12 15:01:15 CET] [INFO] Queue File: data/queue/publishing_queue.json | Total Items in Queue: 18
+[2026-11-12 15:01:15 CET] [INFO] Due Eligible Items Found: 1
+[2026-11-12 15:01:15 CET] [INFO] Overdue READY Items Held For Review: 0 (policy: same_day; records unchanged)
+[2026-11-12 15:01:15 CET] [INFO] Processing Item 'item_042_B0DWFLY18Y' | ASIN: B0DWFLY18Y | Slot 1 (2026-11-12T15:00:00+01:00)
+[2026-11-12 15:01:31 CET] [INFO] Item 'item_042_B0DWFLY18Y' Platform Results: [facebook=PUBLISHED, pinterest=PUBLISHED, threads=PUBLISHED] -> Status: PARTIALLY_PUBLISHED
+[2026-11-12 15:01:31 CET] [INFO] Queue state saved to: data/queue/publishing_queue.json
+[2026-11-12 15:01:31 CET] [INFO] Execution Summary: Processed=1, Published=0, Partially=1, Failed=0
+[2026-11-12 15:01:31 CET] [INFO] === DAILY PUBLISHER RUN END (SUCCESS) ===
