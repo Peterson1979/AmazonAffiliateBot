@@ -79,9 +79,10 @@
       "completed_at": "2026-11-12T23:16:17.666501+01:00"
     },
     "2026-11-13-slot-1": {
-      "state": "CLAIMED",
+      "state": "COMPLETED",
       "claimed_at": "2026-11-13T15:16:33.400492+01:00",
-      "attempt": 2
+      "attempt": 2,
+      "completed_at": "2026-11-13T18:01:12.558406+01:00"
     }
   },
   "items": [
@@ -3065,11 +3066,11 @@
       "scheduled_at": "2026-11-13T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
-      "status": "PARTIALLY_PUBLISHED",
+      "status": "PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-09T10:02:46.518250+00:00",
-      "published_at": "2026-11-13T15:01:21.570335+01:00",
+      "published_at": "2026-11-13T18:01:12.564215+01:00",
       "publishing_results": {
         "facebook": {
           "platform": "facebook",
@@ -3174,6 +3175,71 @@
           },
           "message": "Successfully published image post 18024585212941304 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-11-13T15:01:21.570335+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "board": "Home & Everyday Living",
+          "board_id": "495607202683261042",
+          "pin_id": "495607134018381964",
+          "pin_url": "https://www.pinterest.com/pin/495607134018381964/",
+          "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living",
+          "link": "https://link.amazon/B00TR8Qpy",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "board_section_id": null,
+            "creative_type": "REGULAR",
+            "is_product": false,
+            "board_id": "495607202683261042",
+            "has_been_promoted": false,
+            "product_tags": [],
+            "board_owner": {
+              "username": "LifeModeHQ"
+            },
+            "title": "Veken Stainless Steel Cat Water Fountain for Everyday Living",
+            "pin_metrics": null,
+            "is_removable": false,
+            "is_standard": true,
+            "link": "https://link.amazon/B00TR8Qpy",
+            "id": "495607134018381964",
+            "description": "Built with robust materials and a fully sealed construction, this fountain is reliably leak- and spill-proof, protecting your floors from unwanted messes. Explore the product details and available options below. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "is_owner": true,
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                }
+              }
+            },
+            "parent_pin_id": null,
+            "dominant_color": "#837970",
+            "alt_text": null,
+            "created_at": "2026-11-13T17:01:13"
+          },
+          "message": "Successfully created pin 495607134018381964 on Pinterest board 'Home & Everyday Living' (LifeModeHQ).",
+          "published_at": "2026-11-13T18:01:12.564215+01:00"
         }
       },
       "batch_id": null,
