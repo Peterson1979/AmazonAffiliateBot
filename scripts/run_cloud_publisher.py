@@ -15,6 +15,7 @@ Handles:
 
 import sys
 import os
+import json
 import argparse
 import shutil
 import tempfile
@@ -585,10 +586,19 @@ def main():
         shutil.copyfile(queue_file, exec_queue_file)
 
     claims_changed = False
+    app_config: Dict[str, Any] = {}
+    config_file = PROJECT_ROOT / "config.json"
+    if config_file.exists():
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                app_config = json.load(f)
+        except Exception:
+            app_config = {}
+
     try:
         report = QueuePublisher.publish_due_items(
             queue_file=exec_queue_file,
-            config={},
+            config=app_config,
             now_str=eval_now,
             dry_run=dry_run,
             slot_filter=effective_slot,

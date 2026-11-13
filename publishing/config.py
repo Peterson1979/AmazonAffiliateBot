@@ -38,6 +38,7 @@ DEFAULT_PINTEREST_ACCOUNTS = {
     "lifemodehq": {
         "account": "LifeModeHQ",
         "board": "Home & Everyday Living",
+        "board_id": "495607202683261042",
     },
 }
 

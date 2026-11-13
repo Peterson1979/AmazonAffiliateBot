@@ -12,6 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from publishing.adapters.pinterest_adapter import PinterestAdapter
 from publishing.publisher import SocialPublisher
 from publishing.adapters import STATUS_PUBLISHED, STATUS_WOULD_PUBLISH
+from publishing.config import DEFAULT_PINTEREST_ACCOUNTS, PublishingConfig
 
 
 class TestPinterestMultiAccount(unittest.TestCase):
@@ -89,6 +90,70 @@ class TestPinterestMultiAccount(unittest.TestCase):
         self.assertEqual(mock_get.call_count, 1)
         payload = mock_post.call_args.kwargs["json"]
         self.assertEqual(payload["board_id"], "life-board-123")
+
+    def test_default_pinterest_accounts_includes_lifemodehq_board_id(self):
+        """Verify that default Pinterest configuration includes LifeModeHQ board_id."""
+        self.assertIn("board_id", DEFAULT_PINTEREST_ACCOUNTS["lifemodehq"])
+        self.assertEqual(DEFAULT_PINTEREST_ACCOUNTS["lifemodehq"]["board_id"], "495607202683261042")
+
+        # Verify PublishingConfig.from_dict({}) preserves board_id
+        config = PublishingConfig.from_dict({})
+        self.assertEqual(
+            config.pinterest_accounts["lifemodehq"]["board_id"],
+            "495607202683261042",
+        )
+
+    @patch("publishing.adapters.pinterest_adapter.requests.post")
+    @patch("publishing.adapters.pinterest_adapter.requests.get")
+    def test_lifemode_configured_board_id_bypasses_board_lookup(self, mock_get, mock_post):
+        """When board_id is pre-configured, live publishing must not call resolve_board_id."""
+        pin_response = MagicMock(status_code=201)
+        pin_response.json.return_value = {"id": "life-pin-456"}
+        mock_post.return_value = pin_response
+
+        adapter = PinterestAdapter(credentials={"access_token": "life-token"})
+        result = adapter._execute_live_publish(
+            self.package["platforms"]["pinterest"],
+            {
+                "account": "LifeModeHQ",
+                "board": "Home & Everyday Living",
+                "board_id": "495607202683261042",
+            },
+        )
+
+        self.assertEqual(result["status"], STATUS_PUBLISHED)
+        self.assertEqual(result["board_id"], "495607202683261042")
+        mock_get.assert_not_called()
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertEqual(payload["board_id"], "495607202683261042")
+
+    @patch("publishing.adapters.pinterest_adapter.requests.get")
+    def test_resolve_board_id_http_401_actionable_error(self, mock_get):
+        """HTTP 401 on board lookup returns clear authentication/reauthorization error."""
+        resp = MagicMock(status_code=401)
+        resp.json.return_value = {"code": 2, "message": "Authentication failed."}
+        mock_get.return_value = resp
+
+        adapter = PinterestAdapter(credentials={"access_token": "expired-token"})
+        board_id, error = adapter.resolve_board_id("Home & Everyday Living")
+
+        self.assertIsNone(board_id)
+        self.assertIn("HTTP 401", error)
+        self.assertIn("Authentication failed", error)
+        self.assertIn("Reauthorization required", error)
+
+    @patch("publishing.adapters.pinterest_adapter.requests.get")
+    def test_resolve_board_id_http_403_actionable_error(self, mock_get):
+        """HTTP 403 on board lookup returns clear authorization/scope error."""
+        resp = MagicMock(status_code=403)
+        mock_get.return_value = resp
+
+        adapter = PinterestAdapter(credentials={"access_token": "token-lacking-scope"})
+        board_id, error = adapter.resolve_board_id("Home & Everyday Living")
+
+        self.assertIsNone(board_id)
+        self.assertIn("HTTP 403", error)
+        self.assertIn("boards:read", error)
 
 
 if __name__ == "__main__":

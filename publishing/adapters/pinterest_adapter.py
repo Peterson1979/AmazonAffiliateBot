@@ -43,6 +43,16 @@ class PinterestAdapter(BasePlatformAdapter):
                 params={"page_size": 100},
                 timeout=30,
             )
+            if resp.status_code == 401:
+                return None, (
+                    "Pinterest board lookup failed with HTTP 401 (Authentication failed: "
+                    "OAuth access token is invalid or expired. Reauthorization required)."
+                )
+            if resp.status_code == 403:
+                return None, (
+                    "Pinterest board lookup failed with HTTP 403 (Authorization failed: "
+                    "token lacks required 'boards:read' scope)."
+                )
             if resp.status_code != 200:
                 return None, f"Pinterest board lookup failed with HTTP {resp.status_code}."
             boards = resp.json().get("items", [])
