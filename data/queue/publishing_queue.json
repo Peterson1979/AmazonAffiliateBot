@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 3,
+  "total_ready": 2,
   "total_failed": 0,
-  "scheduled_posts": 3,
-  "unfilled_slots": 57,
+  "scheduled_posts": 2,
+  "unfilled_slots": 58,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -85,9 +85,10 @@
       "completed_at": "2026-11-13T18:01:12.558406+01:00"
     },
     "2026-11-13-slot-2": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-13T21:01:15.408179+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-13T21:01:20.937431+01:00"
     }
   },
   "items": [
@@ -1174,12 +1175,129 @@
       "scheduled_at": "2026-11-13T21:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0CTJGJL2T_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-05T18:27:53.635802+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-13T21:01:20.942568+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "video_id": "1134214382750952",
+          "post_id": "1134214382750952",
+          "permalink_url": "https://www.facebook.com/reel/1134214382750952/",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+          "media_type": "VIDEO",
+          "verified_video_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "1134214382750952"
+          },
+          "message": "Successfully published video 1134214382750952 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-13T21:01:20.942568+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999852069",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999852069/",
+          "media_id": "4032171955721308288",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+          "cover_image_url": "https://m.media-amazon.com/images/I/810vcJJDrkL._AC_SL1500_.jpg",
+          "image_url": "https://m.media-amazon.com/images/I/810vcJJDrkL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "title": "GODONLIF Candle Warmer Lamp with Timer",
+          "link": "https://link.amazon/B02XWjJte",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "is_standard": true,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "is_removable": false,
+            "id": "1033646551999852069",
+            "is_product": false,
+            "link": "https://link.amazon/B02XWjJte",
+            "has_been_promoted": false,
+            "created_at": "2026-11-13T20:01:40",
+            "is_owner": true,
+            "description": "The GODONLIF Candle Warmer Lamp includes a timer function and fully dimmable lighting. It features a height‑adjustable pole to accommodate various jar candle sizes. https://link.amazon/B02XWjJte\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "creative_type": "VIDEO",
+            "media": {
+              "media_type": "video",
+              "cover_image_url": "https://i.pinimg.com/1200x/bf/10/89/bf1089ea92c8e0959ea7a025ccbf908b.jpg",
+              "video_url": null,
+              "video_url_hls": null,
+              "duration": null,
+              "height": null,
+              "width": null,
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/bf/10/89/bf1089ea92c8e0959ea7a025ccbf908b.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/bf/10/89/bf1089ea92c8e0959ea7a025ccbf908b.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 733,
+                  "url": "https://i.pinimg.com/564x/bf/10/89/bf1089ea92c8e0959ea7a025ccbf908b.jpg"
+                },
+                "1200x": {
+                  "width": 1154,
+                  "height": 1500,
+                  "url": "https://i.pinimg.com/1200x/bf/10/89/bf1089ea92c8e0959ea7a025ccbf908b.jpg"
+                }
+              }
+            },
+            "dominant_color": null,
+            "board_section_id": null,
+            "title": "GODONLIF Candle Warmer Lamp with Timer",
+            "product_tags": [],
+            "alt_text": null,
+            "board_id": "1033646620665866548",
+            "pin_metrics": null,
+            "parent_pin_id": null
+          },
+          "message": "Successfully created video pin 1033646551999852069 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-13T21:01:20.942568+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17988609411139258",
+          "post_id": "18130780432874265",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfscS05ATZZ",
+          "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4",
+          "image_url": "https://m.media-amazon.com/images/I/810vcJJDrkL._AC_SL1500_.jpg",
+          "media_type": "VIDEO",
+          "verified_media_type": "VIDEO",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18130780432874265"
+          },
+          "message": "Successfully published video post 18130780432874265 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-13T21:01:20.942568+01:00"
+        }
+      },
       "batch_id": "batch_20261105T192718144830_c4373ea4",
       "media_type": "video",
       "video_url": "https://pub-8fcd679c40fd4aaa851f6ee7cdd4d083.r2.dev/amazon-affiliate-bot/videos/B0CTJGJL2T/GODONLIF_Candle_Warmer_Lamp.mp4"
