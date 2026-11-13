@@ -7,10 +7,10 @@
   "target_capacity": 60,
   "total_submitted": 16,
   "total_processed": 18,
-  "total_ready": 4,
+  "total_ready": 3,
   "total_failed": 0,
-  "scheduled_posts": 4,
-  "unfilled_slots": 56,
+  "scheduled_posts": 3,
+  "unfilled_slots": 57,
   "slot_claims": {
     "2026-11-07-slot-1": {
       "state": "RETRYABLE",
@@ -79,9 +79,10 @@
       "completed_at": "2026-11-12T23:16:17.666501+01:00"
     },
     "2026-11-13-slot-1": {
-      "state": "CLAIMED",
+      "state": "RETRYABLE",
       "claimed_at": "2026-11-13T15:01:18.175477+01:00",
-      "attempt": 1
+      "attempt": 1,
+      "completed_at": "2026-11-13T15:01:21.566463+01:00"
     }
   },
   "items": [
@@ -3065,12 +3066,117 @@
       "scheduled_at": "2026-11-13T15:00:00+01:00",
       "timezone": "Europe/Budapest",
       "package_reference": "data/generated/asin_B0GR5WF8M4_content_package.json",
-      "status": "READY",
+      "status": "PARTIALLY_PUBLISHED",
       "validation_status": "READY_FOR_REVIEW",
       "errors": [],
       "created_at": "2026-11-09T10:02:46.518250+00:00",
-      "published_at": null,
-      "publishing_results": null,
+      "published_at": "2026-11-13T15:01:21.570335+01:00",
+      "publishing_results": {
+        "facebook": {
+          "platform": "facebook",
+          "account": "LifeModeHQ",
+          "page_id": "226949230493910",
+          "photo_id": "122332120670197726",
+          "post_id": "226949230493910_122332120706197726",
+          "permalink_url": "https://www.facebook.com/photo.php?fbid=122332120670197726&set=a.122110416488197726&type=3",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "verified_image_read": true,
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "122332120670197726",
+            "post_id": "226949230493910_122332120706197726"
+          },
+          "message": "Successfully published photo 122332120670197726 to Facebook Page 'LifeModeHQ' (226949230493910).",
+          "published_at": "2026-11-13T15:01:21.570335+01:00"
+        },
+        "pinterest": {
+          "platform": "pinterest",
+          "account": "dailyideasforyou",
+          "board": "Shopping ideas",
+          "board_id": "1033646620665866548",
+          "pin_id": "1033646551999842962",
+          "pin_url": "https://www.pinterest.com/pin/1033646551999842962/",
+          "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+          "link": "https://link.amazon/B00TR8Qpy",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 201,
+          "api_response": {
+            "link": "https://link.amazon/B00TR8Qpy",
+            "creative_type": "REGULAR",
+            "is_product": false,
+            "pin_metrics": null,
+            "title": "Veken Stainless Steel Cat Water Fountain 3.2L/108oz",
+            "is_standard": true,
+            "is_owner": true,
+            "dominant_color": null,
+            "board_section_id": null,
+            "board_owner": {
+              "username": "everydayideaslife"
+            },
+            "has_been_promoted": false,
+            "board_id": "1033646620665866548",
+            "media": {
+              "media_type": "image",
+              "images": {
+                "150x150": {
+                  "width": 150,
+                  "height": 150,
+                  "url": "https://i.pinimg.com/150x150/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                },
+                "400x300": {
+                  "width": 400,
+                  "height": 300,
+                  "url": "https://i.pinimg.com/400x300/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                },
+                "600x": {
+                  "width": 564,
+                  "height": 1010,
+                  "url": "https://i.pinimg.com/564x/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                },
+                "1200x": {
+                  "width": 1200,
+                  "height": 2150,
+                  "url": "https://i.pinimg.com/1200x/16/f5/f2/16f5f2562c3026c64436dbabee63434e.jpg"
+                }
+              }
+            },
+            "description": "The advanced suspended pump operates at a whisper-quiet 25 dB, ensuring peaceful operation throughout your home. Its innovative design delivers stable, low-noise performance even with continuous, long-term use. See more details and explore the available options. https://link.amazon/B00TR8Qpy\n\nThis post contains affiliate links. As an Amazon Associate I earn from qualifying purchases.",
+            "created_at": "2026-11-13T14:01:28",
+            "is_removable": false,
+            "id": "1033646551999842962",
+            "product_tags": [],
+            "alt_text": null,
+            "parent_pin_id": null
+          },
+          "message": "Successfully created pin 1033646551999842962 on Pinterest board 'Shopping ideas' (dailyideasforyou).",
+          "published_at": "2026-11-13T15:01:21.570335+01:00"
+        },
+        "threads": {
+          "platform": "threads",
+          "account": "lifemodehq",
+          "user_id": "28272717349017680",
+          "creation_id": "17988556350139258",
+          "post_id": "18024585212941304",
+          "permalink": "https://www.threads.com/@lifemodehq/post/DfrzEVcEdu6",
+          "image_url": "https://m.media-amazon.com/images/I/71tvPkDLq7L._AC_SL1500_.jpg",
+          "verified_media_type": "IMAGE",
+          "action": "PUBLISH",
+          "mode": "LIVE",
+          "status": "PUBLISHED",
+          "http_status": 200,
+          "api_response": {
+            "id": "18024585212941304"
+          },
+          "message": "Successfully published image post 18024585212941304 to Threads account 'lifemodehq' (28272717349017680).",
+          "published_at": "2026-11-13T15:01:21.570335+01:00"
+        }
+      },
       "batch_id": null,
       "media_type": "image"
     }
