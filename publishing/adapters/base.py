@@ -80,6 +80,23 @@ class BasePlatformAdapter(ABC):
                     "message": f"Cannot publish to {self.platform_name}: missing video_url for video publication."
                 }
 
+        # 3. Threads image URL validation (fails closed in both dry-run and live)
+        if self.platform_name == "threads":
+            target_image_url = str(content.get("image_url") or account_config.get("image_url") or "").strip()
+            if target_image_url and not (target_image_url.startswith("https://") or target_image_url.startswith("http://")):
+                return {
+                    "platform": self.platform_name,
+                    "account": account_name,
+                    "action": "PUBLISH",
+                    "mode": mode,
+                    "status": STATUS_FAILED,
+                    "errors": [
+                        f"Threads requires a publicly accessible HTTPS image URL. "
+                        f"Local relative path or file '{target_image_url}' cannot be retrieved by Threads API."
+                    ],
+                    "message": f"Cannot publish to Threads account '{account_name}': image_url must be a publicly accessible HTTPS URL.",
+                }
+
         if dry_run:
             result = {
                 "platform": self.platform_name,

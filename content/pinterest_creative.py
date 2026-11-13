@@ -2608,10 +2608,25 @@ def save_uploaded_creative(
     slot["uploaded_at"] = now_iso
     slot["dimensions"] = list(dims) if dims else None
 
+    # Attempt Cloudflare R2 upload if configured
+    try:
+        from publishing.r2_storage import upload_creative_to_r2, R2Config
+        r2_cfg = R2Config.from_env()
+        r2_cfg.validate()
+        r2_res = upload_creative_to_r2(asin_clean, dest_path, config=r2_cfg)
+        if r2_res.get("success") and r2_res.get("public_url"):
+            slot["r2_url"] = r2_res["public_url"]
+            slot["uploaded_image_url"] = r2_res["public_url"]
+            if manifest.get("selected_creative_type") == creative_type:
+                manifest["selected_image_r2_url"] = r2_res["public_url"]
+                manifest["selected_image_url"] = r2_res["public_url"]
+    except Exception:
+        pass
+
     # If this slot was already selected, update selected_image_path
     if manifest.get("selected_creative_type") == creative_type:
         manifest["selected_image_path"] = repo_relative
-        manifest["selected_image_url"] = slot["uploaded_image_url"]
+        manifest["selected_image_url"] = slot.get("r2_url") or slot["uploaded_image_url"]
 
     manifest["updated_at"] = now_iso
 
@@ -2679,7 +2694,27 @@ def set_selected_creative(
     manifest["selected_creative_type"] = creative_type
     manifest["selected_creative_display"] = CREATIVE_TYPE_LABELS[creative_type]
     manifest["selected_image_path"] = slot["uploaded_image_path"]
-    manifest["selected_image_url"] = slot.get("uploaded_image_url")
+
+    # Attempt Cloudflare R2 upload if r2_url is not set yet
+    if not slot.get("r2_url"):
+        try:
+            from publishing.r2_storage import upload_creative_to_r2, R2Config
+            r2_cfg = R2Config.from_env()
+            r2_cfg.validate()
+            local_file = Path(slot["uploaded_image_path"])
+            if not local_file.is_file():
+                local_file = PROJECT_ROOT / slot["uploaded_image_path"]
+            if local_file.is_file():
+                r2_res = upload_creative_to_r2(asin_clean, local_file, config=r2_cfg)
+                if r2_res.get("success") and r2_res.get("public_url"):
+                    slot["r2_url"] = r2_res["public_url"]
+                    slot["uploaded_image_url"] = r2_res["public_url"]
+        except Exception:
+            pass
+
+    manifest["selected_image_url"] = slot.get("r2_url") or slot.get("uploaded_image_url")
+    if slot.get("r2_url"):
+        manifest["selected_image_r2_url"] = slot["r2_url"]
     manifest["updated_at"] = now_iso
 
     for k, s in creatives.items():
@@ -2696,12 +2731,21 @@ def set_selected_creative(
             with open(pkg_file, "r", encoding="utf-8") as handle:
                 pkg_data = json.load(handle)
             pin_p = pkg_data.setdefault("platforms", {}).setdefault("pinterest", {})
-            pin_p["selected_creative"] = {
+            creative_payload = {
                 "creative_type": creative_type,
                 "display_name": CREATIVE_TYPE_LABELS[creative_type],
                 "image_path": slot["uploaded_image_path"],
-                "image_url": slot.get("uploaded_image_url"),
+                "image_url": slot.get("r2_url") or slot.get("uploaded_image_url"),
             }
+            if slot.get("r2_url"):
+                creative_payload["r2_url"] = slot["r2_url"]
+            pin_p["selected_creative"] = creative_payload
+
+            # Also sync to Threads platform entry if present
+            threads_p = pkg_data.setdefault("platforms", {}).setdefault("threads", {})
+            threads_p["selected_creative"] = dict(creative_payload)
+            if slot.get("r2_url"):
+                threads_p["image_url"] = slot["r2_url"]
             with open(pkg_file, "w", encoding="utf-8") as handle:
                 json.dump(pkg_data, handle, indent=2, ensure_ascii=False)
         except Exception:
@@ -2737,12 +2781,14 @@ def get_selected_creative(asin: str, creatives_dir: Optional[Path] = None) -> Op
         return None
 
     slot = data.get("creatives", {}).get(sel_type, {})
+    r2_url = slot.get("r2_url") or data.get("selected_image_r2_url") or data.get("r2_url")
     return {
         "asin": asin_clean,
         "creative_type": sel_type,
         "display_name": CREATIVE_TYPE_LABELS[sel_type],
         "selected_image_path": sel_path,
-        "uploaded_image_url": data.get("selected_image_url") or slot.get("uploaded_image_url"),
+        "uploaded_image_url": r2_url or data.get("selected_image_url") or slot.get("uploaded_image_url"),
+        "r2_url": r2_url,
         "headline": slot.get("headline", ""),
         "subheadline": slot.get("subheadline", ""),
         "benefits": slot.get("benefits", []),

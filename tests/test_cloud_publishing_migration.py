@@ -373,6 +373,11 @@ class TestCloudPublishingMigration(unittest.TestCase):
         self.assertIn("THREADS_USER_ID", content)
         self.assertIn("PINTEREST_ACCESS_TOKEN", content)
         self.assertIn("PINTEREST_LIFEMODEHQ_ACCESS_TOKEN", content)
+        self.assertIn("R2_ACCOUNT_ID", content)
+        self.assertIn("R2_ACCESS_KEY_ID", content)
+        self.assertIn("R2_SECRET_ACCESS_KEY", content)
+        self.assertIn("R2_BUCKET_NAME", content)
+        self.assertIn("R2_PUBLIC_BASE_URL", content)
 
         # Verify git commit occurs before git pull --rebase in persistence step
         persistence_idx = content.find("Persist Queue and Logs")
@@ -381,6 +386,38 @@ class TestCloudPublishingMigration(unittest.TestCase):
         rebase_idx = content.find("git pull --rebase origin", persistence_idx)
         self.assertTrue(commit_idx != -1 and rebase_idx != -1)
         self.assertLess(commit_idx, rebase_idx, "git commit must occur before git pull --rebase to prevent index failure")
+
+    def test_cloud_publisher_r2_secrets_configuration(self):
+        """Verify Cloudflare R2 secrets are mapped into Run Cloud Publisher step environment."""
+        workflow_path = PROJECT_ROOT / ".github" / "workflows" / "scheduled_publishing.yml"
+        self.assertTrue(workflow_path.exists())
+        content = workflow_path.read_text(encoding="utf-8")
+
+        # Find Run Cloud Publisher step
+        publisher_step_idx = content.find("- name: Run Cloud Publisher")
+        self.assertNotEqual(publisher_step_idx, -1, "Run Cloud Publisher step must exist")
+
+        next_step_idx = content.find("- name: Persist Queue and Logs", publisher_step_idx)
+        self.assertNotEqual(next_step_idx, -1, "Persist step must follow publisher step")
+
+        publisher_block = content[publisher_step_idx:next_step_idx]
+
+        # Verify all 5 R2 secrets are explicitly mapped in publisher step
+        expected_mappings = [
+            "R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}",
+            "R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}",
+            "R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}",
+            "R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}",
+            "R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}",
+        ]
+        for mapping in expected_mappings:
+            self.assertIn(mapping, publisher_block)
+
+        # Verify R2 secrets are NOT mapped in preceding steps (claim, preflight)
+        claim_step_idx = content.find("- name: Claim Due Budapest Slots")
+        preceding_content = content[claim_step_idx:publisher_step_idx]
+        for var_name in ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME", "R2_PUBLIC_BASE_URL"]:
+            self.assertNotIn(var_name, preceding_content)
 
     # -------------------------------------------------------------------------
     # 6. Manual Window Bypass & Queue Audit Tests

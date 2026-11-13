@@ -280,8 +280,75 @@ class TestThreadsPayloadAndRejection(unittest.TestCase):
         passed_content = call_kwargs.get("content") or (call_args[0] if call_args else {})
         self.assertEqual(passed_content["image_url"], public_url)
 
+    def test_existing_valid_https_urls_remain_unchanged_and_skips_r2_upload(self):
+        """Verify existing valid HTTPS URLs are preserved unchanged and do not trigger redundant R2 upload."""
+        existing_url = "https://images.lifemode.com/amazon-affiliate-bot/creatives/B09X5BQ969/existing.jpg"
+
+        package = {
+            "asin": "B09X5BQ969",
+            "status": "READY_FOR_REVIEW",
+            "platforms": {
+                "threads": {
+                    "status": "VALID",
+                    "content": "Discover Bellavita Honey Oud",
+                    "image_url": existing_url,
+                }
+            }
+        }
+
+        mock_creative = {
+            "asin": "B09X5BQ969",
+            "selected_image_path": str(self.temp_path),
+            "uploaded_image_url": existing_url,
+            "r2_url": existing_url,
+            "resolved_image_path": str(self.temp_path),
+        }
+
+        publisher = SocialPublisher(config=PublishingConfig.from_dict({}, dry_run_override=True))
+        mock_th_adapter = Mock()
+        mock_th_adapter.publish.return_value = {
+            "platform": "threads",
+            "status": "WOULD_PUBLISH",
+            "mode": "DRY_RUN",
+        }
+        publisher.adapters["threads"] = mock_th_adapter
+
+        with patch("content.pinterest_creative.has_creative_context", return_value=True), \
+             patch("content.pinterest_creative.get_selected_creative", return_value=mock_creative), \
+             patch("publishing.r2_storage.upload_creative_to_r2") as mock_upload:
+
+            report = publisher.publish_package(package, dry_run=True)
+
+        # R2 upload should NOT be called because URL is already a valid HTTPS URL
+        mock_upload.assert_not_called()
+        mock_th_adapter.publish.assert_called_once()
+        call_kwargs = mock_th_adapter.publish.call_args.kwargs
+        call_args = mock_th_adapter.publish.call_args.args
+        passed_content = call_kwargs.get("content") or (call_args[0] if call_args else {})
+        self.assertEqual(passed_content["image_url"], existing_url)
+
+    def test_threads_adapter_rejects_relative_path_in_both_dry_run_and_live(self):
+        """Verify ThreadsAdapter rejects relative path with STATUS_FAILED in both dry-run and live modes without API requests."""
+        content = {
+            "text": "Discover luxury fragrance: Bellavita Honey Oud",
+            "image_url": f"/creatives/B09X5BQ969/{self.temp_path.name}",
+        }
+
+        with patch("requests.post") as mock_post:
+            # 1. Dry-run mode
+            res_dry = self.adapter.publish(content, account_config={"account": "lifemodehq"}, dry_run=True)
+            self.assertEqual(res_dry["status"], "FAILED")
+            self.assertIn("image_url must be a publicly accessible HTTPS URL", res_dry["message"])
+            mock_post.assert_not_called()
+
+            # 2. Live mode
+            res_live = self.adapter.publish(content, account_config={"account": "lifemodehq"}, dry_run=False)
+            self.assertEqual(res_live["status"], "FAILED")
+            self.assertIn("image_url must be a publicly accessible HTTPS URL", res_live["message"])
+            mock_post.assert_not_called()
+
     def test_social_publisher_fails_closed_if_r2_upload_fails(self):
-        """Verify SocialPublisher fails closed if R2 upload fails, rejecting local relative path."""
+        """Verify SocialPublisher fails closed if R2 upload fails, preserving error details rather than falling back to relative path."""
         package = {
             "asin": "B09X5BQ969",
             "status": "READY_FOR_REVIEW",
@@ -302,15 +369,138 @@ class TestThreadsPayloadAndRejection(unittest.TestCase):
 
         publisher = SocialPublisher(config=PublishingConfig.from_dict({}, dry_run_override=True))
 
+        r2_error_msg = "Cloudflare R2 configuration invalid: Missing required Cloudflare R2 configuration: R2_ACCOUNT_ID"
         with patch("content.pinterest_creative.has_creative_context", return_value=True), \
              patch("content.pinterest_creative.get_selected_creative", return_value=mock_creative), \
-             patch("publishing.r2_storage.upload_creative_to_r2", return_value={"success": False, "error": "R2 network failure"}):
+             patch("publishing.r2_storage.upload_creative_to_r2", return_value={"success": False, "error": r2_error_msg}):
 
             report = publisher.publish_package(package, dry_run=True)
 
         th_result = report["results"]["threads"]
         self.assertEqual(th_result["status"], "FAILED")
         self.assertIn("Threads requires a publicly accessible HTTPS image URL", th_result["errors"][0])
+        # Clear error details are propagated, not swallowed
+        self.assertIn(r2_error_msg, th_result["errors"][0])
+
+    def test_social_publisher_fails_closed_when_local_image_file_is_missing(self):
+        """Verify SocialPublisher fails closed with clear error when local image file is missing on disk."""
+        package = {
+            "asin": "B09X5BQ969",
+            "status": "READY_FOR_REVIEW",
+            "platforms": {
+                "threads": {
+                    "status": "VALID",
+                    "content": "Discover Bellavita Honey Oud",
+                }
+            }
+        }
+
+        mock_creative = {
+            "asin": "B09X5BQ969",
+            "selected_image_path": "non_existent_file.jpg",
+            "uploaded_image_url": "/creatives/B09X5BQ969/non_existent_file.jpg",
+            "resolved_image_path": None,
+        }
+
+        publisher = SocialPublisher(config=PublishingConfig.from_dict({}, dry_run_override=True))
+
+        with patch("content.pinterest_creative.has_creative_context", return_value=True), \
+             patch("content.pinterest_creative.get_selected_creative", return_value=mock_creative), \
+             patch("publishing.r2_storage.upload_creative_to_r2") as mock_upload:
+
+            report = publisher.publish_package(package, dry_run=True)
+
+        mock_upload.assert_not_called()
+        th_result = report["results"]["threads"]
+        self.assertEqual(th_result["status"], "FAILED")
+        self.assertIn("does not exist on disk", th_result["errors"][0])
+
+
+class TestPinterestCreativeR2Sync(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.project_dir = Path(self.temp_dir.name)
+        self.creatives_dir = self.project_dir / "data" / "creatives"
+        self.generated_dir = self.project_dir / "data" / "generated"
+        self.creatives_dir.mkdir(parents=True, exist_ok=True)
+        self.generated_dir.mkdir(parents=True, exist_ok=True)
+
+        self.asin = "B0TESTSYNC1"
+        self.asin_dir = self.creatives_dir / f"asin_{self.asin}"
+        self.asin_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create dummy package file in temp generated dir
+        self.pkg_file = self.generated_dir / f"asin_{self.asin}_content_package.json"
+        self.pkg_data = {
+            "asin": self.asin,
+            "platforms": {
+                "pinterest": {},
+                "threads": {},
+            }
+        }
+        with open(self.pkg_file, "w", encoding="utf-8") as f:
+            import json
+            json.dump(self.pkg_data, f)
+
+    def tearDown(self):
+        self.temp_dir.cleanup()
+
+    def test_save_and_set_selected_creative_syncs_r2_url(self):
+        """Verify save_uploaded_creative and set_selected_creative populate r2_url and sync to Threads package."""
+        import io
+        import json
+        from PIL import Image
+        from content.pinterest_creative import (
+            save_uploaded_creative,
+            set_selected_creative,
+            get_selected_creative,
+        )
+
+        img = Image.new("RGB", (100, 100), color=(255, 0, 0))
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG")
+        valid_jpeg_bytes = buf.getvalue()
+
+        r2_public = f"https://images.lifemode.com/amazon-affiliate-bot/creatives/{self.asin}/everyday_pick_flow.jpg"
+
+        with patch("content.pinterest_creative.PROJECT_ROOT", self.project_dir), \
+             patch("publishing.r2_storage.upload_creative_to_r2", return_value={"success": True, "public_url": r2_public}):
+
+            ok, msg, manifest = save_uploaded_creative(
+                asin=self.asin,
+                creative_type="everyday_pick",
+                file_bytes=valid_jpeg_bytes,
+                filename="everyday_pick_flow.jpg",
+                creatives_dir=self.creatives_dir,
+            )
+            self.assertTrue(ok)
+            slot = manifest["creatives"]["everyday_pick"]
+            self.assertEqual(slot.get("r2_url"), r2_public)
+            self.assertEqual(slot.get("uploaded_image_url"), r2_public)
+
+            # Test get_selected_creative and package sync when selected
+            ok_sel, msg_sel, manifest_sel = set_selected_creative(
+                asin=self.asin,
+                creative_type="everyday_pick",
+                creatives_dir=self.creatives_dir,
+            )
+            self.assertTrue(ok_sel)
+            selected = get_selected_creative(self.asin, creatives_dir=self.creatives_dir)
+            self.assertIsNotNone(selected)
+            self.assertEqual(selected["r2_url"], r2_public)
+            self.assertEqual(selected["uploaded_image_url"], r2_public)
+
+            # Verify content package sync for both Pinterest and Threads
+            with open(self.pkg_file, "r", encoding="utf-8") as f:
+                saved_pkg = json.load(f)
+
+            pin_entry = saved_pkg["platforms"]["pinterest"]
+            threads_entry = saved_pkg["platforms"]["threads"]
+
+            self.assertEqual(pin_entry["selected_creative"]["r2_url"], r2_public)
+            self.assertEqual(pin_entry["selected_creative"]["image_url"], r2_public)
+            self.assertEqual(threads_entry["selected_creative"]["r2_url"], r2_public)
+            self.assertEqual(threads_entry["image_url"], r2_public)
 
 
 if __name__ == "__main__":

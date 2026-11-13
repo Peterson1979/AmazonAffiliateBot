@@ -346,22 +346,70 @@ class SocialPublisher:
                     p_content = dict(p_content)
                     p_content["selected_creative"] = selected_creative_info
                     p_content["image_path"] = selected_creative_info.get("resolved_image_path") or selected_creative_info.get("selected_image_path")
-                    p_content["image_url"] = selected_creative_info.get("uploaded_image_url") or selected_creative_info.get("selected_image_path")
+                    creative_img = (
+                        selected_creative_info.get("r2_url")
+                        or selected_creative_info.get("uploaded_image_url")
+                        or selected_creative_info.get("selected_image_path")
+                    )
+                    if is_valid_image_url(creative_img):
+                        p_content["image_url"] = creative_img
+                    elif not is_valid_image_url(p_content.get("image_url")):
+                        p_content["image_url"] = creative_img
 
                     if platform_name == "threads":
                         img_val = p_content.get("image_url")
                         if not is_valid_image_url(img_val):
                             local_img = p_content.get("image_path")
-                            if local_img and Path(local_img).is_file():
+                            resolved_local_img = None
+                            if local_img:
+                                p_cand = Path(local_img)
+                                if p_cand.is_file():
+                                    resolved_local_img = p_cand
+                                elif (project_root / local_img).is_file():
+                                    resolved_local_img = project_root / local_img
+                                elif (project_root / "data" / "creatives" / asin / Path(local_img).name).is_file():
+                                    resolved_local_img = project_root / "data" / "creatives" / asin / Path(local_img).name
+
+                            if resolved_local_img:
                                 from publishing.r2_storage import upload_creative_to_r2
                                 r2_res = upload_creative_to_r2(
                                     asin=asin,
-                                    local_image_path=local_img,
+                                    local_image_path=resolved_local_img,
                                     dry_run=is_dry_run,
                                 )
                                 if r2_res.get("success") and r2_res.get("public_url"):
                                     p_content["image_url"] = r2_res["public_url"]
                                     img_val = p_content["image_url"]
+                                else:
+                                    r2_err = r2_res.get("error") or "Unknown R2 upload failure"
+                                    results[result_key] = {
+                                        "platform": platform_name,
+                                        "account": account_cfg.get("account", ""),
+                                        "action": "PUBLISH",
+                                        "mode": mode,
+                                        "status": STATUS_FAILED,
+                                        "errors": [
+                                            f"Threads requires a publicly accessible HTTPS image URL. Cloudflare R2 upload failed for '{resolved_local_img}': {r2_err}"
+                                        ],
+                                        "message": f"Cannot publish to Threads: R2 upload failed: {r2_err}",
+                                    }
+                                    all_succeeded = False
+                                    continue
+                            else:
+                                results[result_key] = {
+                                    "platform": platform_name,
+                                    "account": account_cfg.get("account", ""),
+                                    "action": "PUBLISH",
+                                    "mode": mode,
+                                    "status": STATUS_FAILED,
+                                    "errors": [
+                                        "Threads requires a publicly accessible HTTPS image URL for creative image publishing. "
+                                        f"Local creative path '{img_val}' cannot be fetched by Threads API."
+                                    ],
+                                    "message": f"Cannot publish to Threads: local creative image file not found on disk for '{local_img or img_val}'.",
+                                }
+                                all_succeeded = False
+                                continue
 
                         if not is_valid_image_url(img_val):
                             results[result_key] = {
@@ -388,18 +436,54 @@ class SocialPublisher:
                     if platform_name in ("pinterest", "threads"):
                         img_val = p_content.get("image_url")
                         if not is_valid_image_url(img_val):
-                            results[result_key] = {
-                                "platform": platform_name,
-                                "account": account_cfg.get("account", ""),
-                                "action": "PUBLISH",
-                                "mode": mode,
-                                "status": STATUS_FAILED,
-                                "errors": [
-                                    f"Blocked: {platform_name.capitalize()} requires a verified HTTPS image URL from the product package or same-ASIN cache."
-                                ],
-                            }
-                            all_succeeded = False
-                            continue
+                            local_img = p_content.get("image_path")
+                            resolved_local_img = None
+                            if local_img:
+                                p_cand = Path(local_img)
+                                if p_cand.is_file():
+                                    resolved_local_img = p_cand
+                                elif (project_root / local_img).is_file():
+                                    resolved_local_img = project_root / local_img
+
+                            if platform_name == "threads" and resolved_local_img:
+                                from publishing.r2_storage import upload_creative_to_r2
+                                r2_res = upload_creative_to_r2(
+                                    asin=asin,
+                                    local_image_path=resolved_local_img,
+                                    dry_run=is_dry_run,
+                                )
+                                if r2_res.get("success") and r2_res.get("public_url"):
+                                    p_content["image_url"] = r2_res["public_url"]
+                                    img_val = p_content["image_url"]
+                                else:
+                                    r2_err = r2_res.get("error") or "Unknown R2 upload failure"
+                                    results[result_key] = {
+                                        "platform": platform_name,
+                                        "account": account_cfg.get("account", ""),
+                                        "action": "PUBLISH",
+                                        "mode": mode,
+                                        "status": STATUS_FAILED,
+                                        "errors": [
+                                            f"Threads requires a publicly accessible HTTPS image URL. Cloudflare R2 upload failed for '{resolved_local_img}': {r2_err}"
+                                        ],
+                                        "message": f"Cannot publish to Threads: R2 upload failed: {r2_err}",
+                                    }
+                                    all_succeeded = False
+                                    continue
+
+                            if not is_valid_image_url(img_val):
+                                results[result_key] = {
+                                    "platform": platform_name,
+                                    "account": account_cfg.get("account", ""),
+                                    "action": "PUBLISH",
+                                    "mode": mode,
+                                    "status": STATUS_FAILED,
+                                    "errors": [
+                                        f"Blocked: {platform_name.capitalize()} requires a verified HTTPS image URL from the product package or same-ASIN cache."
+                                    ],
+                                }
+                                all_succeeded = False
+                                continue
 
                 # Facebook supports a text-only Page feed post when no verified
                 # image is available. Pinterest and Threads require an image.
