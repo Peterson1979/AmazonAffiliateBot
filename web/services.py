@@ -403,6 +403,7 @@ def get_platform_publication_result(
 
     state = "UNKNOWN"
     historical_dry_run_ambiguous = _has_ambiguous_historical_dry_run(item)
+    from publishing.blacklist import is_asin_blacklisted
     if result:
         result_status = result.get("status")
         mode = result.get("mode")
@@ -413,6 +414,8 @@ def get_platform_publication_result(
                 state = "PUBLISHED"
         elif result_status == "FAILED" and (time_has_passed or not is_future):
             state = "FAILED"
+        elif result_status in ("NOT_PUBLISHED", "CANCELLED") or result.get("action") in ("NOT_PUBLISHED", "CANCELLED"):
+            state = "NOT_PUBLISHED"
         elif is_future:
             claim = (item._ui_claim if hasattr(item, "_ui_claim") else {}) or {}
             state = "PUBLISHING" if claim.get("state") == "CLAIMED" else "SCHEDULED"
@@ -420,6 +423,11 @@ def get_platform_publication_result(
             state = "UNKNOWN"
         elif result_status == "WOULD_PUBLISH" or mode == "DRY_RUN":
             state = "SIMULATED"
+    elif (
+        getattr(item, "status", None) == "CANCELLED"
+        or (hasattr(item, "asin") and is_asin_blacklisted(item.asin))
+    ) and not (result and _is_confirmed_live_result(result)):
+        state = "NOT_PUBLISHED"
     elif item.status in (STATUS_READY, STATUS_QUEUED):
         claim = (item._ui_claim if hasattr(item, "_ui_claim") else {}) or {}
         if claim.get("state") == "CLAIMED":
@@ -443,6 +451,7 @@ def get_platform_publication_result(
         "PUBLISHED": "Published",
         "SKIPPED": "Previously published / skipped",
         "FAILED": "Failed",
+        "NOT_PUBLISHED": "Not published",
         "SIMULATED": "Not published",
         "SCHEDULED": "Scheduled",
         "PUBLISHING": "Publishing",
@@ -666,6 +675,9 @@ def get_windows_for_item(
         elif any(s == "FAILED" for s in win_states):
             win_state = "FAILED"
             win_ui_label = "Failed"
+        elif win_states and all(s in ("NOT_PUBLISHED", "CANCELLED") for s in win_states):
+            win_state = "NOT_PUBLISHED"
+            win_ui_label = "Not published"
         elif any(s == "PUBLISHING" for s in win_states):
             win_state = "PUBLISHING"
             win_ui_label = "Publishing..."
@@ -746,15 +758,15 @@ def get_queue_item_presentation(
     is_overdue = is_item_overdue_held(item, now_dt)
 
     from publishing.blacklist import is_asin_blacklisted
-    if is_asin_blacklisted(item.asin):
+    if states and all(s in ("PUBLISHED", "SKIPPED") for s in states):
+        state = "PUBLISHED"
+        ui_label = "Published"
+    elif is_asin_blacklisted(item.asin):
         state = "CANCELLED"
         ui_label = "Blacklisted"
     elif getattr(item, "status", None) == "CANCELLED":
         state = "CANCELLED"
         ui_label = "Cancelled"
-    elif states and all(s in ("PUBLISHED", "SKIPPED") for s in states):
-        state = "PUBLISHED"
-        ui_label = "Published"
     elif has_any_confirmed and (has_failed or not all(s in ("PUBLISHED", "SKIPPED") for s in states)):
         state = "PARTIAL"
         ui_label = "Partial"
@@ -1067,6 +1079,15 @@ def get_git_sync_status() -> Dict[str, Any]:
         )
         unpushed_count = int(proc_unpushed.stdout.strip()) if proc_unpushed.returncode == 0 and proc_unpushed.stdout.strip().isdigit() else 0
 
+        proc_unpulled = subprocess.run(
+            ["git", "rev-list", "--count", "HEAD..origin/master"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=2
+        )
+        unpulled_count = int(proc_unpulled.stdout.strip()) if proc_unpulled.returncode == 0 and proc_unpulled.stdout.strip().isdigit() else 0
+
         if has_uncommitted_queue:
             return {
                 "status": "UNCOMMITTED_CHANGES",
@@ -1081,6 +1102,14 @@ def get_git_sync_status() -> Dict[str, Any]:
                 "label": f"{unpushed_count} commit(s) ahead of GitHub",
                 "description": f"{unpushed_count} local commit(s) ready to sync to GitHub Actions.",
                 "badge_class": "badge-info",
+                "is_synced": False
+            }
+        elif unpulled_count > 0:
+            return {
+                "status": "BEHIND_REMOTE",
+                "label": f"{unpulled_count} commit(s) behind GitHub",
+                "description": f"{unpulled_count} remote commit(s) from GitHub Actions available. Sync to pull live updates.",
+                "badge_class": "badge-warning",
                 "is_synced": False
             }
         else:

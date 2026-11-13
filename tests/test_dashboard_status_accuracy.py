@@ -116,6 +116,83 @@ class TestDashboardStatusAccuracy(unittest.TestCase):
         # pinterest failed
         self.assertEqual(result["failed_platforms"], 1)
 
+    def test_cancelled_and_blacklisted_explicit_not_published(self):
+        """Prove that cancelled or blacklisted items with explicit or unattempted destinations report NOT_PUBLISHED."""
+        item = QueueItem(
+            queue_item_id="item_041_B09D7DWTVB",
+            original_url="https://link.amazon/B0eRVtiOe",
+            asin="B09D7DWTVB",
+            scheduled_date="2026-11-11",
+            daily_slot=1,
+            scheduled_at="2026-11-11T15:00:00+01:00",
+            status="CANCELLED",
+            publishing_results={
+                "facebook": {
+                    "platform": "facebook",
+                    "mode": "LIVE",
+                    "status": "PUBLISHED",
+                    "post_id": "3301234560074972",
+                    "permalink_url": "https://www.facebook.com/reel/3301234560074972/",
+                },
+                "pinterest": {
+                    "platform": "pinterest",
+                    "mode": "LIVE",
+                    "status": "PUBLISHED",
+                    "pin_id": "1033646551999786850",
+                    "pin_url": "https://www.pinterest.com/pin/1033646551999786850/",
+                },
+                "threads": {
+                    "platform": "threads",
+                    "mode": "LIVE",
+                    "status": "PUBLISHED",
+                    "post_id": "18117236258593105",
+                    "permalink": "https://www.threads.com/@lifemodehq/post/DfmpfVOBkHu",
+                },
+                "pinterest_lifemodehq": {
+                    "platform": "pinterest",
+                    "action": "CANCELLED",
+                    "mode": "LIVE",
+                    "status": "NOT_PUBLISHED",
+                    "message": "Cancelled: ASIN B09D7DWTVB is permanently blacklisted. Destination was never published.",
+                },
+            },
+        )
+        queue = PublishingQueue("q-test", "2026-11-11T00:00:00Z", "2026-11-11", items=[item])
+
+        fb_res = get_platform_publication_result(item, "facebook")
+        self.assertEqual(fb_res["state"], "PUBLISHED")
+        self.assertEqual(fb_res["ui_label"], "Published")
+
+        pin_res = get_platform_publication_result(item, "pinterest")
+        self.assertEqual(pin_res["state"], "PUBLISHED")
+        self.assertEqual(pin_res["ui_label"], "Published")
+
+        th_res = get_platform_publication_result(item, "threads")
+        self.assertEqual(th_res["state"], "PUBLISHED")
+        self.assertEqual(th_res["ui_label"], "Published")
+
+        pin_lmhq_res = get_platform_publication_result(item, "pinterest_lifemodehq")
+        self.assertEqual(pin_lmhq_res["state"], "NOT_PUBLISHED")
+        self.assertEqual(pin_lmhq_res["ui_label"], "Not published")
+
+        pres = get_queue_item_presentation(queue, item)
+        self.assertEqual(pres["state"], "CANCELLED")
+        self.assertEqual(pres["ui_label"], "Blacklisted")
+
+    def test_git_sync_status_detects_behind_remote(self):
+        """Prove get_git_sync_status identifies when local is behind origin/master."""
+        from web.services import get_git_sync_status
+
+        mock_status = Mock(stdout="")
+        mock_unpushed = Mock(returncode=0, stdout="0\n")
+        mock_unpulled = Mock(returncode=0, stdout="5\n")
+
+        with patch("subprocess.run", side_effect=[mock_status, mock_unpushed, mock_unpulled]):
+            status = get_git_sync_status()
+            self.assertEqual(status["status"], "BEHIND_REMOTE")
+            self.assertEqual(status["label"], "5 commit(s) behind GitHub")
+            self.assertFalse(status["is_synced"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2898,6 +2898,14 @@
           },
           "message": "Successfully published video post 18117236258593105 to Threads account 'lifemodehq' (28272717349017680).",
           "published_at": "2026-11-11T15:01:16.838410+01:00"
+        },
+        "pinterest_lifemodehq": {
+          "platform": "pinterest",
+          "account": "LifeModeHQ",
+          "action": "CANCELLED",
+          "mode": "LIVE",
+          "status": "NOT_PUBLISHED",
+          "message": "Cancelled: ASIN B09D7DWTVB is permanently blacklisted. Destination was never published."
         }
       },
       "batch_id": null,
